@@ -2,16 +2,23 @@ package puscas.mobilertapp.utils;
 
 import android.graphics.Bitmap;
 import android.widget.Button;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.core.app.DeviceCapture;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.base.Preconditions;
 
 import org.junit.Assert;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
@@ -25,6 +32,7 @@ import puscas.mobilertapp.ViewActionButton;
 import puscas.mobilertapp.ViewActionWait;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
+import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.exceptions.FailureException;
 
@@ -219,6 +227,35 @@ public final class UtilsT {
     public static void rethrowException(@Nullable final Exception exception) {
         if (exception != null) {
             throw new FailureException(exception);
+        }
+    }
+
+    /**
+    * Take a screenshot of MobileRT rendered scene.
+    * <p>
+    * It stores the screenshot in the path: {@code /data/local/tmp/MobileRT/screenshots}.
+    *
+    * @param name The name of the screenshot.
+    */
+    public static void captureScreenshot(final String name) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            final Bitmap bitmap;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                bitmap = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+            } else {
+                bitmap = DeviceCapture.takeScreenshot();
+            }
+            final File path = new File(UtilsContext.getInternalStorageFilePath(), "MobileRT" + ConstantsUI.FILE_SEPARATOR + "screenshots");
+            path.mkdirs();
+            final File imageFile = new File(path, name);
+            try (final FileOutputStream out = new FileOutputStream(imageFile)) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            } catch (final Exception ex) {
+                UtilsLogging.logException(ex, "UtilsT#captureScreenshot");
+                throw new FailureException(ex);
+            }
+        } else {
+            logger.info("Didn't capture screenshot because Android API " + Build.VERSION.SDK_INT + " is not supported yet.");
         }
     }
 

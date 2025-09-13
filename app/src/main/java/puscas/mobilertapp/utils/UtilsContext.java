@@ -258,9 +258,13 @@ public final class UtilsContext {
      */
     public static void checksStoragePermission(@NonNull final Activity activity) {
         logger.info("checksStoragePermission");
+        final String[] permissions;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            checksAccessPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+            permissions = new String[] {Manifest.permission.READ_EXTERNAL_STORAGE};
+        } else {
+            permissions = new String[] {};
         }
+        checksAccessPermission(activity, permissions);
     }
 
     /**
@@ -269,16 +273,18 @@ public final class UtilsContext {
      * An external component can be access to the Internet, access the external
      * SD card, bluetooth, etc.
      *
-     * @param activity   The {@link Activity} of MobileRT.
-     * @param permission The permission to ask access to.
+     * @param activity    The {@link Activity} of MobileRT.
+     * @param permissions The permissions to ask access to.
      */
     private static void checksAccessPermission(@NonNull final Activity activity,
-                                               @NonNull final String permission) {
-        final int permissionAccess = ContextCompat.checkSelfPermission(activity, permission);
-        if (permissionAccess != PackageManager.PERMISSION_GRANTED) {
-            final String[] permissions = {permission};
-            final int permissionCode = 1;
-            ActivityCompat.requestPermissions(activity, permissions, permissionCode);
+                                               @NonNull final String[] permissions) {
+        for (final String permission : permissions) {
+            final int permissionAccess = ContextCompat.checkSelfPermission(activity, permission);
+            if (permissionAccess != PackageManager.PERMISSION_GRANTED) {
+                final int permissionCode = 1;
+                ActivityCompat.requestPermissions(activity, permissions, permissionCode);
+                return;
+            }
         }
     }
 

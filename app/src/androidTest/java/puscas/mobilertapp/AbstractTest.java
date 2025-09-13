@@ -354,6 +354,7 @@ public abstract class AbstractTest {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
             waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+            waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();

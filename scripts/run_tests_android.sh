@@ -412,7 +412,7 @@ copyResources() {
   fi
   set -e;
 
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${mobilert_path}"'; echo ::$?::';
+  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${mobilert_path}"'/screenshots; echo ::$?::';
   callCommandUntilSuccess 5 adb shell 'ls -laR '"${mobilert_path}";
   callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${sdcard_path_android}"'; echo ::$?::';
   callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}";
@@ -663,6 +663,15 @@ runInstrumentationTests() {
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
+    adb pull "${mobilert_path}/screenshots" .;
+    echo 'Checking all files';
+    ls -lahp .;
+    echo 'Checking all screenshots';
+    ls -lahp "screenshots";
+    echo 'Checking CornellBox screenshot';
+    ls -lahp "screenshots/CornellBox.png";
+    echo 'Checking Teapot screenshot';
+    ls -lahp "screenshots/Teapot.png";
   elif echo "${run_test}" | grep -q "rep_"; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";

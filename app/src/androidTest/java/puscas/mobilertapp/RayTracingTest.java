@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import puscas.mobilertapp.constants.Accelerator;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
+import puscas.mobilertapp.utils.UtilsT;
 
 /**
  * The test suite for the Ray Tracing engine used in {@link MainActivity}.
@@ -83,6 +84,7 @@ public final class RayTracingTest extends AbstractTest {
         );
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
+        UtilsT.captureScreenshot("CornellBox.png");
     }
 
     /**
@@ -106,6 +108,7 @@ public final class RayTracingTest extends AbstractTest {
         );
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.BVH, 1, 1, false, false);
+        UtilsT.captureScreenshot("Teapot.png");
     }
 
 }
