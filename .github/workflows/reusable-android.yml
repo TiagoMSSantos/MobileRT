@@ -685,7 +685,7 @@ jobs:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: MobileRT_${{ inputs.type }}_android_api-${{ inputs.android_api }}_test_screenshots
           path: screenshots
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90
           overwrite: true
           include-hidden-files: true
