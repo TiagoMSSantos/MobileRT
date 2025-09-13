@@ -668,10 +668,12 @@ runInstrumentationTests() {
     ls -lahp .;
     echo 'Checking all screenshots';
     ls -lahp "screenshots";
-    echo 'Checking CornellBox screenshot';
-    ls -lahp "screenshots/CornellBox.png";
-    echo 'Checking Teapot screenshot';
-    ls -lahp "screenshots/Teapot.png";
+    if [ "${androidApi}" -ge 18 ] && [ "${androidApi}" -le 22 ]; then
+      echo 'Checking CornellBox screenshot';
+      ls -lahp "screenshots/CornellBox.png";
+      echo 'Checking Teapot screenshot';
+      ls -lahp "screenshots/Teapot.png";
+    fi
   elif echo "${run_test}" | grep -q "rep_"; then
     run_test_without_prefix=${run_test#"rep_"};
     echo "Repeatable of test: ${run_test_without_prefix}";
