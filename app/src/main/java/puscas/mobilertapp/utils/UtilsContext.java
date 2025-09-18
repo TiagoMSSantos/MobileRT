@@ -79,13 +79,14 @@ public final class UtilsContext {
      * This method should get the correct path independently of the
      * device / emulator used.
      *
+     * @param context The {@link Context} of the Android system.
      * @return The path to the internal storage.
      */
     @NonNull
-    public static String getInternalStoragePath() {
+    public static String getInternalStoragePath(@NonNull final Context context) {
         logger.info("Getting internal storage path.");
 
-        final File internalStoragePath = getInternalStorageFilePath();
+        final File internalStoragePath = getInternalStorageFilePath(context);
         logger.info("Internal storage path: " + internalStoragePath);
 
         // If the internal storage path starts with '/data', then it's assumed that it's '/data/local/tmp'.
@@ -127,9 +128,10 @@ public final class UtilsContext {
     /**
      * Gets the {@link File path} to the internal storage.
      *
+     * @param context The {@link Context} of the Android system.
      * @return The {@link File path} to the internal storage.
      */
-    public static File getInternalStorageFilePath() {
+    public static File getInternalStorageFilePath(@NonNull final Context context) {
         logger.info("Using static path to retrieve internal storage path.");
         return new File("/data/local/tmp/");
     }

@@ -528,7 +528,7 @@ public final class MainActivity extends Activity {
             final String mobileRtFolder = "MobileRT";
             final List<File> allowedPaths = List.of(
                 new File(UtilsContext.getSdCardFilePath(this), mobileRtFolder).getCanonicalFile(),
-                new File(UtilsContext.getInternalStorageFilePath(), mobileRtFolder).getCanonicalFile()
+                new File(UtilsContext.getInternalStorageFilePath(this), mobileRtFolder).getCanonicalFile()
             );
             final File canonicalFile = file.getCanonicalFile();
             final String normalizedPathToValidate = canonicalFile.getAbsolutePath();
@@ -662,7 +662,7 @@ public final class MainActivity extends Activity {
         if (externalSDCardPath) {
             devicePath = UtilsContext.getSdCardPath(this);
         } else {
-            devicePath = UtilsContext.getInternalStoragePath();
+            devicePath = UtilsContext.getInternalStoragePath(this);
         }
         logger.info("devicePath: " + devicePath);
 
