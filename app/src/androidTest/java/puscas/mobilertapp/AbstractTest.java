@@ -341,6 +341,9 @@ public abstract class AbstractTest {
                 InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
             );
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
+                InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName(), Manifest.permission.WRITE_EXTERNAL_STORAGE
+            );
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
                 InstrumentationRegistry.getInstrumentation().getContext().getPackageName(), Manifest.permission.READ_EXTERNAL_STORAGE
             );
             InstrumentationRegistry.getInstrumentation().getUiAutomation().grantRuntimePermission(
@@ -348,6 +351,7 @@ public abstract class AbstractTest {
             );
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE");
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp android.permission.WRITE_EXTERNAL_STORAGE");
             InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE");
             InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand("pm grant puscas.mobilertapp.test android.permission.WRITE_EXTERNAL_STORAGE");
         }
@@ -357,6 +361,7 @@ public abstract class AbstractTest {
             waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.MANAGE_EXTERNAL_STORAGE);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+            waitForPermission(InstrumentationRegistry.getInstrumentation().getTargetContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
             waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
             waitForPermission(InstrumentationRegistry.getInstrumentation().getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
