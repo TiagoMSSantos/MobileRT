@@ -80,7 +80,8 @@ echo 'Set path to reports';
 reports_path='app/build/reports';
 
 echo 'Set path to instrumentation tests resources';
-mobilert_path='/data/local/tmp/MobileRT';
+internal_storage_path='/data/local/tmp/MobileRT';
+mobilert_path='/data/user/0/puscas.mobilertapp/files/MobileRT';
 ###############################################################################
 ###############################################################################
 
@@ -234,24 +235,24 @@ unlockDevice() {
   _waitForEmulatorToBoot;
 
   echo 'Unlock device';
-  callAdbShellCommandUntilSuccess adb shell 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
+  callAdbShellCommandUntilSuccess 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS';
+  callAdbShellCommandUntilSuccess 'input keyevent 82';
 
   androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
   echo "androidApi: '${androidApi}'";
 
   if [ "${androidApi}" -gt 15 ]; then
-    callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'input tap 1000 500; echo ::$?::';
+    callAdbShellCommandUntilSuccess 'input tap 800 400';
+    callAdbShellCommandUntilSuccess 'input tap 1000 500';
   fi
 
   callCommandUntilSuccess 5 adb get-state;
   callCommandUntilSuccess 5 adb devices -l;
   callCommandUntilSuccess 5 adb version;
 
-  callAdbShellCommandUntilSuccess adb shell 'input keyevent 82; echo ::$?::';
+  callAdbShellCommandUntilSuccess 'input keyevent 82';
   if [ "${androidApi}" -gt 15 ]; then
-    callAdbShellCommandUntilSuccess adb shell 'input tap 800 400; echo ::$?::';
+    callAdbShellCommandUntilSuccess 'input tap 800 400';
   fi
 }
 
@@ -361,15 +362,15 @@ waitForEmulator() {
   echo 'Disable animations';
   # Error in API 15 & 16: /system/bin/sh: settings: not found
   if [ "${androidApi}" -gt 16 ]; then
-    callAdbShellCommandUntilSuccess adb shell 'settings put global window_animation_scale 0; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'settings put global transition_animation_scale 0; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'settings put global animator_duration_scale 0; echo ::$?::';
+    callAdbShellCommandUntilSuccess 'settings put global window_animation_scale 0';
+    callAdbShellCommandUntilSuccess 'settings put global transition_animation_scale 0';
+    callAdbShellCommandUntilSuccess 'settings put global animator_duration_scale 0';
   fi
 
   echo 'Activate JNI extended checking mode';
   # Command fails on Android 34.
-  # callAdbShellCommandUntilSuccess adb shell 'setprop dalvik.vm.checkjni true; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'setprop debug.checkjni 1; echo ::$?::';
+  # callAdbShellCommandUntilSuccess 'setprop dalvik.vm.checkjni true';
+  callAdbShellCommandUntilSuccess 'setprop debug.checkjni 1';
 
   unlockDevice;
 }
@@ -407,31 +408,32 @@ copyResources() {
   echo 'Prepare copy unit tests';
   set +e;
   adb shell rm -r ${mobilert_path};
+  adb shell rm -r ${internal_storage_path};
   if [ "${androidApi}" -gt 29 ]; then
     adb shell 'rm -r '"${sdcard_path_android}";
   fi
   set -e;
 
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${mobilert_path}"'/screenshots; echo ::$?::';
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${mobilert_path}";
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${sdcard_path_android}"'; echo ::$?::';
+  callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}";
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}";
+  callAdbShellCommandUntilSuccess 'mkdir -p '"${sdcard_path_android}";
   callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}";
 
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${mobilert_path}"'/WavefrontOBJs/CornellBox; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot; echo ::$?::';
+  callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}"'/WavefrontOBJs/CornellBox';
+  callAdbShellCommandUntilSuccess 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot';
 
   echo 'Copy tests resources';
-  callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/CornellBox ${mobilert_path}/WavefrontOBJs;
+  callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/CornellBox ${internal_storage_path}/WavefrontOBJs;
   set +e;
   adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
   set -e;
 
   echo 'Copy File Manager';
-  callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/APKs ${mobilert_path};
+  callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/APKs ${internal_storage_path};
 
   echo 'Change resources permissions';
-  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '"${mobilert_path}"'; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'chmod -R 777 '"${sdcard_path_android}"'; echo ::$?::';
+  callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'';
+  callAdbShellCommandUntilSuccess 'chmod -R 777 '"${sdcard_path_android}"'';
 
   echo 'Install File Manager';
   set +e;
@@ -442,25 +444,25 @@ copyResources() {
     echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApi}";
   elif [ "${androidApi}" -gt 30 ]; then
     set +e;
-    adb shell "pm uninstall ${mobilert_path}/APKs/asus-file-manager-2-8-0-85-230220.apk;";
+    adb shell "pm uninstall ${internal_storage_path}/APKs/asus-file-manager-2-8-0-85-230220.apk;";
     set -e;
-    callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/APKs/asus-file-manager-2-8-0-85-230220.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/asus-file-manager-2-8-0-85-230220.apk';
   elif [ "${androidApi}" -gt 29 ]; then
     set +e;
-    adb shell "pm uninstall ${mobilert_path}/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk;";
+    adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk;";
     set -e;
-    callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk';
   elif [ "${androidApi}" -gt 16 ]; then
     set +e;
-    adb shell "pm uninstall ${mobilert_path}/APKs/com.asus.filemanager.apk";
+    adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager.apk";
     set -e;
-    callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/APKs/com.asus.filemanager.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager.apk';
   elif [ "${androidApi}" -lt 16 ]; then
     set +e;
-    adb shell "pm uninstall ${mobilert_path}/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk;";
+    adb shell "pm uninstall ${internal_storage_path}/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk;";
     set -e;
     # This file manager is compatible with Android 4.0.3 (API 15) which the Asus one is not.
-    callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk; echo ::$?::';
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk';
   fi
 }
 
@@ -477,8 +479,8 @@ startCopyingLogcatToFile() {
     # Android API <= 19 doesn't support the `-G` flag to change logcat buffer size.
     bufferSize='';
   fi
-  callAdbShellCommandUntilSuccess adb shell 'logcat '"${bufferSize}"' -b main -b system -b radio -b events -c; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'logcat '"${bufferSize}"' -c; echo ::$?::';
+  callAdbShellCommandUntilSuccess 'logcat '"${bufferSize}"' -b main -b system -b radio -b events -c';
+  callAdbShellCommandUntilSuccess 'logcat '"${bufferSize}"' -c';
 
   echo 'Copy realtime logcat to file';
   adb logcat -v threadtime "*":V | tee "${reports_path}"/logcat_"${type}".log 2>&1 &
@@ -535,8 +537,8 @@ runUnitTests() {
 
   unlockDevice;
 
-  callCommandUntilSuccess 5 adb push -p "${dirUnitTests}"/bin/* ${mobilert_path};
-  callCommandUntilSuccess 5 adb push -p "${dirUnitTests}"/lib/* ${mobilert_path};
+  callCommandUntilSuccess 5 adb push -p "${dirUnitTests}"/bin/* ${internal_storage_path};
+  callCommandUntilSuccess 5 adb push -p "${dirUnitTests}"/lib/* ${internal_storage_path};
 
   echo 'Run unit tests';
   if [ "${type}" = 'debug' ]; then
@@ -544,10 +546,10 @@ runUnitTests() {
     adb shell setprop debug.asan.enabled true;
     adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
   fi
-  callCommandUntilSuccess 5 adb shell 'ls -la '"${mobilert_path}/UnitTests";
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${mobilert_path}";
-  adb shell "LD_LIBRARY_PATH=${mobilert_path} ${mobilert_path}/UnitTests; echo "'$?'" > ${mobilert_path}/unit_tests_result.log";
-  adb pull "${mobilert_path}"/unit_tests_result.log .;
+  callCommandUntilSuccess 5 adb shell 'ls -la '"${internal_storage_path}/UnitTests";
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}";
+  adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
+  adb pull "${internal_storage_path}"/unit_tests_result.log .;
   resUnitTests=$(cat "unit_tests_result.log");
   if [ "${androidApi}" = '15' ]; then
     # TODO: Fix the native unit tests in Android API 15. Ignore the result for now.
@@ -559,7 +561,7 @@ runUnitTests() {
 
 verifyResources() {
   echo 'Verify resources in SD Card';
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${mobilert_path}/WavefrontOBJs";
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}/WavefrontOBJs";
   callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}";
   callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}/WavefrontOBJs";
 
@@ -572,7 +574,7 @@ verifyResources() {
 
   echo 'Verify memory available on Android emulator:';
   set +e;
-  callAdbShellCommandUntilSuccess adb shell 'cat /proc/meminfo; echo ::$?::';
+  callAdbShellCommandUntilSuccess 'cat /proc/meminfo';
   set -e;
   echo 'Verified memory available on Android emulator.';
 
@@ -616,24 +618,27 @@ runInstrumentationTests() {
   for apkPath in ${apksPath}; do
     echo "Will install APK: ${apkPath}";
     ls -lahp "${apkPath}";
-    callCommandUntilSuccess 5 adb push -p "${apkPath}" "${mobilert_path}";
+    callCommandUntilSuccess 5 adb push -p "${apkPath}" "${internal_storage_path}";
   done;
-  callCommandUntilSuccess 5 adb shell 'ls -la '"${mobilert_path}";
+  callCommandUntilSuccess 5 adb shell 'ls -la '"${internal_storage_path}";
   unlockDevice;
   echo 'Installing both APKs for tests and app.';
   set +e;
-  adb shell "pm uninstall ${mobilert_path}/app-${type}-androidTest.apk;";
-  adb shell "pm uninstall ${mobilert_path}/app-${type}.apk;";
+  adb shell "pm uninstall ${internal_storage_path}/app-${type}-androidTest.apk;";
+  adb shell "pm uninstall ${internal_storage_path}/app-${type}.apk;";
   adb shell rm -r /data/app/puscas.mobilertapp*;
   adb shell ls -la /data/app;
   set -e;
-  callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/app-'"${type}"'.apk; echo ::$?::';
-  callAdbShellCommandUntilSuccess adb shell 'pm install -r '"${mobilert_path}"'/app-'"${type}"'-androidTest.apk; echo ::$?::';
+  callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'.apk';
+  callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'-androidTest.apk';
   if { [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; }; then
     echo 'Granting read external SD Card to MobileRT.';
-    callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
-    callAdbShellCommandUntilSuccess adb shell 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE; echo ::$?::';
+    callAdbShellCommandUntilSuccess 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE';
+    callAdbShellCommandUntilSuccess 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE';
   fi
+  callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}"'/screenshots';
+  callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'';
+  callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}";
 
   # puscas.mobilertapp not found
   # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE;
@@ -663,7 +668,7 @@ runInstrumentationTests() {
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
-    adb pull "${mobilert_path}/screenshots" .;
+    adb pull "${internal_storage_path}/screenshots" .;
     echo 'Checking all files';
     ls -lahp .;
     echo 'Checking all screenshots';
@@ -725,13 +730,15 @@ _waitForEmulatorToBoot() {
   # Make sure ADB daemon started properly.
   callCommandUntilSuccess 25 adb shell 'ps > /dev/null;';
   # adb shell needs ' instead of ", so 'getprop' works properly.
-  # shellcheck disable=SC2016
-  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop sys.boot_completed)-1))::';
-  # shellcheck disable=SC2016
-  callAdbShellCommandUntilSuccess adb shell 'echo -n ::$(($(getprop dev.bootcomplete)-1))::';
-  # Property 'service.bootanim.exit' is not available in Android with API < 16.
-  # shellcheck disable=SC2016
-  adb shell 'getprop service.bootanim.exit';
+  adb shell 'getprop sys.boot_completed';
+  callAdbShellCommandUntilSuccess 'if getprop sys.boot_completed = "1"; then true; else false; fi';
+  adb shell 'false; getprop dev.bootcomplete';
+  callAdbShellCommandUntilSuccess 'if getprop dev.bootcomplete = "1"; then true; else false; fi';
+  if [ "${androidApi}" -gt 15 ]; then
+    # Property 'service.bootanim.exit' is not available in Android with API < 16.
+    adb shell 'false; getprop service.bootanim.exit';
+    callAdbShellCommandUntilSuccess 'if getprop service.bootanim.exit = "1"; then true; else false; fi';
+  fi
 }
 ###############################################################################
 ###############################################################################

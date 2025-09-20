@@ -580,6 +580,31 @@ testCheckPathExists() {
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} file has 110 words";
 }
 
+# Tests the callAdbShellCommandUntilSuccess function.
+testCallAdbShellCommandUntilSuccess() {
+  _functionName='callAdbShellCommandUntilSuccess';
+  _testName="test$(capitalizeFirstletter ${_functionName})";
+
+  # Setup mocks:
+  adb() { echo '::0::'; } # Emulate adb command passed.
+  sleep() { return 0; } # Mock sleep command.
+
+  # Validate the exit code is 0 if command was executed properly.
+  expectedExitCode='0';
+  eval '${_functionName} "chmod -R 777 /tmp" > /dev/null';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} adb shell 'chmod -R 777 /tmp' should PASS";
+
+  # Setup mocks:
+  adb() { echo '::1::'; } # Emulate adb command failed.
+
+  # Validate the exit code is 1 if command was NOT executed properly.
+  expectedExitCode='1';
+  eval '${_functionName} "chmod -R 777 /tmp" > /dev/null';
+  returnValue="$?";
+  assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} adb shell 'chmod -R 777 /tmp' should FAIL";
+}
+
 
 set +eu;
 # Execute all tests.
@@ -596,6 +621,7 @@ testCheckCommand;
 testAddCommandToPath;
 testParallelizeBuild;
 testCheckPathExists;
+testCallAdbShellCommandUntilSuccess;
 set -eu;
 
 # Exit and return whether the tests passed or failed.

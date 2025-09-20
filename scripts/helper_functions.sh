@@ -173,6 +173,7 @@ callCommandUntilError() {
 # Every attempt are made with a 3 seconds delay.
 # Parameters:
 # * The maximum number of retries.
+# * The command to execute.
 callCommandUntilSuccess() {
   echo '';
   echo "Calling until success '$*'";
@@ -202,29 +203,49 @@ callCommandUntilSuccess() {
 }
 
 # Call an ADB shell function multiple times until it doesn't fail and then return.
+# Every attempt are made with a 3 seconds delay.
+# Parameters:
+# * The command to execute in adb shell.
 callAdbShellCommandUntilSuccess() {
   echo '';
   _retry=0;
-  set +e;
-  echo "Calling ADB shell command until success '$*'";
-  output=$("$@");
-  # echo "Output of command: '${output}'";
+  oldSetErrorValue=false;
+  case $- in
+    *e*) set +e; oldSetErrorValue=true ;;
+    esac
+  # shellcheck disable=SC1083
+  # eval lastArgument=\${$#}; # Get last argument
+  # lastArgument="${lastArgument}; echo ::\$?::"; # Add echo to evaluate result
+  # unset b; for a; do set -- "$@" ${b+"$b"}; shift; b="$a"; done # Remove last argument
+  echo "Calling ADB shell command until success 'adb shell $*'";
+  output=$(adb shell "false; $@; echo ::\$?::");
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
+  if echo "${output}" | grep '='; then
+    _lastResultValid=false;
+  else
+    _lastResultValid=true;
+  fi
   echo "result: '${lastResult}'";
-  while [ "${lastResult}" != '0' ] && [ ${_retry} -lt 60 ]; do
+  while [ "${lastResult}" != '0' ] && [ "${lastResult}" != '127' ] && [ "${lastResult}" != '2' ] && [ ${_retry} -lt 60 ]; do
     _retry=$(( _retry + 1 ));
-    output=$("$@");
-    # echo "Output of command: '${output}'";
+    output=$(adb shell "false; $@; echo ::\$?::");
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
-    echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
+    if echo "${output}" | grep '='; then
+      _lastResultValid=false;
+    else
+      _lastResultValid=true;
+    fi
+    echo "Retry: ${_retry} of command 'adb shell $*'; result: '${lastResult}'";
     sleep 3;
   done
-  set -e;
-  if [ "${lastResult}" = '0' ]; then
-    echo "'$*': success";
+  if [ "${oldSetErrorValue}" = 'true' ]; then
+    set -e;
+  fi
+  if [ "${lastResult}" = '0' ] && [ "${_lastResultValid}" = 'true' ]; then
+    echo "'adb shell $*' succeded: '${output}'";
   else
-    echo "'$*': failed";
-    exit "${lastResult}";
+    echo "'adb shell $*' failed: '${output}'";
+    return 1;
   fi
 }
 
@@ -485,7 +506,7 @@ generateCodeCoverage() {
     qtPathExcludeFilter='*/Qt/*/*/include/*';
   fi
   set +u;
-  lcov --ignore-errors format --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' ${qtPathExcludeFilter} -o code_coverage_filtered.info;
+  lcov --ignore-errors format --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' "${qtPathExcludeFilter}" -o code_coverage_filtered.info;
   set -u;
   echo 'Generating HTML page with code coverage';
   genhtml code_coverage_filtered.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
