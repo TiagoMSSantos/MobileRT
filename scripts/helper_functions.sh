@@ -229,7 +229,7 @@ callAdbShellCommandUntilSuccess() {
     # shellcheck disable=SC2145
     output=$(adb shell "false; $@; echo ::\$?::");
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
-    if echo "${output}" | grep '='; then
+    if echo "${output}" | grep '^='; then
       _lastResultValid=false;
     else
       _lastResultValid=true;
