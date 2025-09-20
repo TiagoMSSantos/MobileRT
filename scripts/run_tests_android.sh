@@ -238,9 +238,6 @@ unlockDevice() {
   callAdbShellCommandUntilSuccess 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS';
   callAdbShellCommandUntilSuccess 'input keyevent 82';
 
-  androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
-  echo "androidApi: '${androidApi}'";
-
   if [ "${androidApi}" -gt 15 ]; then
     callAdbShellCommandUntilSuccess 'input tap 800 400';
     callAdbShellCommandUntilSuccess 'input tap 1000 500';
@@ -734,6 +731,8 @@ _waitForEmulatorToBoot() {
   callAdbShellCommandUntilSuccess 'if getprop sys.boot_completed = "1"; then true; else false; fi';
   adb shell 'false; getprop dev.bootcomplete';
   callAdbShellCommandUntilSuccess 'if getprop dev.bootcomplete = "1"; then true; else false; fi';
+  androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
+  echo "androidApi: '${androidApi}'";
   if [ "${androidApi}" -gt 15 ]; then
     # Property 'service.bootanim.exit' is not available in Android with API < 16.
     adb shell 'false; getprop service.bootanim.exit';
