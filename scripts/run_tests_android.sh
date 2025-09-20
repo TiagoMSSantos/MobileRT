@@ -728,15 +728,18 @@ _waitForEmulatorToBoot() {
   callCommandUntilSuccess 25 adb shell 'ps > /dev/null;';
   # adb shell needs ' instead of ", so 'getprop' works properly.
   adb shell 'getprop sys.boot_completed';
-  callAdbShellCommandUntilSuccess 'if getprop sys.boot_completed = "1"; then true; else false; fi';
+  # shellcheck disable=SC2016
+  callAdbShellCommandUntilSuccess 'booted=$(getprop sys.boot_completed); if "${booted}" = "1"; then true; else false; fi';
   adb shell 'false; getprop dev.bootcomplete';
-  callAdbShellCommandUntilSuccess 'if getprop dev.bootcomplete = "1"; then true; else false; fi';
+  # shellcheck disable=SC2016
+  callAdbShellCommandUntilSuccess 'if $(getprop dev.bootcomplete) = "1"; then true; else false; fi';
   androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
   echo "androidApi: '${androidApi}'";
   if [ "${androidApi}" -gt 15 ]; then
     # Property 'service.bootanim.exit' is not available in Android with API < 16.
     adb shell 'false; getprop service.bootanim.exit';
-    callAdbShellCommandUntilSuccess 'if getprop service.bootanim.exit = "1"; then true; else false; fi';
+    # shellcheck disable=SC2016
+    callAdbShellCommandUntilSuccess 'if $(getprop service.bootanim.exit) = "1"; then true; else false; fi';
   fi
 }
 ###############################################################################

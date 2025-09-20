@@ -224,6 +224,7 @@ callAdbShellCommandUntilSuccess() {
     _lastResultValid=true;
   fi
   echo "result: '${lastResult}'";
+
   while [ "${lastResult}" != '0' ] && [ "${lastResult}" != '127' ] && [ "${lastResult}" != '2' ] && [ ${_retry} -lt 60 ]; do
     _retry=$(( _retry + 1 ));
     # shellcheck disable=SC2145
@@ -237,6 +238,7 @@ callAdbShellCommandUntilSuccess() {
     echo "Retry: ${_retry} of command 'adb shell $*'; result: '${lastResult}'";
     sleep 3;
   done
+
   if [ "${_oldSetErrorValue}" = 'true' ]; then
     set -e;
   fi
