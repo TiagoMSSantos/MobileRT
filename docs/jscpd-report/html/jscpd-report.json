@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-09-20T15:50:36.263Z",
+    "detectionDate": "2025-09-20T15:56:31.103Z",
     "formats": {
       "java": {
         "sources": {
@@ -2278,7 +2278,7 @@
           },
           "scripts/helper_functions.sh": {
             "lines": 589,
-            "tokens": 4312,
+            "tokens": 4310,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2339,7 +2339,7 @@
         },
         "total": {
           "lines": 4562,
-          "tokens": 30798,
+          "tokens": 30796,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 244,
@@ -3273,7 +3273,7 @@
     },
     "total": {
       "lines": 29862,
-      "tokens": 231026,
+      "tokens": 231024,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1376,

@@ -218,7 +218,7 @@ callAdbShellCommandUntilSuccess() {
   # shellcheck disable=SC2145
   output=$(adb shell "false; $@; echo ::\$?::");
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
-  if echo "${output}" | grep '='; then
+  if echo "${output}" | grep '^='; then
     _lastResultValid=false;
   else
     _lastResultValid=true;
@@ -505,7 +505,7 @@ generateCodeCoverage() {
     qtPathExcludeFilter='*/Qt/*/*/include/*';
   fi
   set +u;
-  lcov --ignore-errors format --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' "${qtPathExcludeFilter}" -o code_coverage_filtered.info;
+  lcov --ignore-errors format --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' ${qtPathExcludeFilter} -o code_coverage_filtered.info;
   set -u;
   echo 'Generating HTML page with code coverage';
   genhtml code_coverage_filtered.info -o code_coverage_report --no-branch-coverage -t MobileRT_code_coverage;
