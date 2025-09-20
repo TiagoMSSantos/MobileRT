@@ -209,15 +209,13 @@ callCommandUntilSuccess() {
 callAdbShellCommandUntilSuccess() {
   echo '';
   _retry=0;
-  oldSetErrorValue=false;
+  _oldSetErrorValue=false;
   case $- in
-    *e*) set +e; oldSetErrorValue=true ;;
+    *e*) set +e; _oldSetErrorValue=true ;;
     esac
-  # shellcheck disable=SC1083
-  # eval lastArgument=\${$#}; # Get last argument
-  # lastArgument="${lastArgument}; echo ::\$?::"; # Add echo to evaluate result
-  # unset b; for a; do set -- "$@" ${b+"$b"}; shift; b="$a"; done # Remove last argument
+
   echo "Calling ADB shell command until success 'adb shell $*'";
+  # shellcheck disable=SC2145
   output=$(adb shell "false; $@; echo ::\$?::");
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   if echo "${output}" | grep '='; then
@@ -228,6 +226,7 @@ callAdbShellCommandUntilSuccess() {
   echo "result: '${lastResult}'";
   while [ "${lastResult}" != '0' ] && [ "${lastResult}" != '127' ] && [ "${lastResult}" != '2' ] && [ ${_retry} -lt 60 ]; do
     _retry=$(( _retry + 1 ));
+    # shellcheck disable=SC2145
     output=$(adb shell "false; $@; echo ::\$?::");
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
     if echo "${output}" | grep '='; then
@@ -238,7 +237,7 @@ callAdbShellCommandUntilSuccess() {
     echo "Retry: ${_retry} of command 'adb shell $*'; result: '${lastResult}'";
     sleep 3;
   done
-  if [ "${oldSetErrorValue}" = 'true' ]; then
+  if [ "${_oldSetErrorValue}" = 'true' ]; then
     set -e;
   fi
   if [ "${lastResult}" = '0' ] && [ "${_lastResultValid}" = 'true' ]; then
