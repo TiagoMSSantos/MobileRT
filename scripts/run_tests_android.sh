@@ -238,7 +238,7 @@ unlockDevice() {
   callAdbShellCommandUntilSuccess 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS';
   callAdbShellCommandUntilSuccess 'input keyevent 82';
 
-  if [ "${androidApi}" -gt 15 ]; then
+  if [ "${androidApiDevice}" -gt 15 ]; then
     callAdbShellCommandUntilSuccess 'input tap 800 400';
     callAdbShellCommandUntilSuccess 'input tap 1000 500';
   fi
@@ -248,7 +248,7 @@ unlockDevice() {
   callCommandUntilSuccess 5 adb version;
 
   callAdbShellCommandUntilSuccess 'input keyevent 82';
-  if [ "${androidApi}" -gt 15 ]; then
+  if [ "${androidApiDevice}" -gt 15 ]; then
     callAdbShellCommandUntilSuccess 'input tap 800 400';
   fi
 }
@@ -358,7 +358,7 @@ waitForEmulator() {
 
   echo 'Disable animations';
   # Error in API 15 & 16: /system/bin/sh: settings: not found
-  if [ "${androidApi}" -gt 16 ]; then
+  if [ "${androidApiDevice}" -gt 16 ]; then
     callAdbShellCommandUntilSuccess 'settings put global window_animation_scale 0';
     callAdbShellCommandUntilSuccess 'settings put global transition_animation_scale 0';
     callAdbShellCommandUntilSuccess 'settings put global animator_duration_scale 0';
@@ -394,7 +394,7 @@ copyResources() {
     # If there is no SD card volume mounted on /storage/ path, then use the legacy path.
     sdcard_path_android='/mnt/sdcard/MobileRT';
   else
-    if [ "${androidApi}" -lt 22 ]; then
+    if [ "${androidApiDevice}" -lt 22 ]; then
       sdcard_path_android="${sdcard_path_android}/MobileRT";
     else
       sdcard_path_android="${sdcard_path_android}/Android/data/puscas.mobilertapp/files/MobileRT";
@@ -406,7 +406,7 @@ copyResources() {
   set +e;
   adb shell rm -r ${mobilert_path};
   adb shell rm -r ${internal_storage_path};
-  if [ "${androidApi}" -gt 29 ]; then
+  if [ "${androidApiDevice}" -gt 29 ]; then
     adb shell 'rm -r '"${sdcard_path_android}";
   fi
   set -e;
@@ -437,24 +437,24 @@ copyResources() {
   adb shell pm;
   set -e;
   unlockDevice;
-  if [ "${androidApi}" -gt 31 ]; then
-    echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApi}";
-  elif [ "${androidApi}" -gt 30 ]; then
+  if [ "${androidApiDevice}" -gt 31 ]; then
+    echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApiDevice}";
+  elif [ "${androidApiDevice}" -gt 30 ]; then
     set +e;
     adb shell "pm uninstall ${internal_storage_path}/APKs/asus-file-manager-2-8-0-85-230220.apk;";
     set -e;
     callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/asus-file-manager-2-8-0-85-230220.apk';
-  elif [ "${androidApi}" -gt 29 ]; then
+  elif [ "${androidApiDevice}" -gt 29 ]; then
     set +e;
     adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk;";
     set -e;
     callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk';
-  elif [ "${androidApi}" -gt 16 ]; then
+  elif [ "${androidApiDevice}" -gt 16 ]; then
     set +e;
     adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager.apk";
     set -e;
     callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager.apk';
-  elif [ "${androidApi}" -lt 16 ]; then
+  elif [ "${androidApiDevice}" -lt 16 ]; then
     set +e;
     adb shell "pm uninstall ${internal_storage_path}/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk;";
     set -e;
@@ -470,7 +470,7 @@ startCopyingLogcatToFile() {
   # -b all -> Unable to open log device '/dev/log/all': No such file or directory
   # -b crash -> Unable to open log device '/dev/log/crash': No such file or directory
   # TODO: Validate whether '-G' flag is supported by Android 20.
-  if [ "${androidApi}" -gt 19 ]; then
+  if [ "${androidApiDevice}" -gt 19 ]; then
     bufferSize='-G 10M';
   else
     # Android API <= 19 doesn't support the `-G` flag to change logcat buffer size.
@@ -548,7 +548,7 @@ runUnitTests() {
   adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
   adb pull "${internal_storage_path}"/unit_tests_result.log .;
   resUnitTests=$(cat "unit_tests_result.log");
-  if [ "${androidApi}" = '15' ]; then
+  if [ "${androidApiDevice}" = '15' ]; then
     # TODO: Fix the native unit tests in Android API 15. Ignore the result for now.
     printCommandExitCode '0' "Unit tests (result: ${resUnitTests})";
   else
@@ -628,7 +628,7 @@ runInstrumentationTests() {
   set -e;
   callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'.apk';
   callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'-androidTest.apk';
-  if { [ "${androidApi}" -gt 22 ] && [ "${androidApi}" -lt 28 ]; }; then
+  if { [ "${androidApiDevice}" -gt 22 ] && [ "${androidApiDevice}" -lt 28 ]; }; then
     echo 'Granting read external SD Card to MobileRT.';
     callAdbShellCommandUntilSuccess 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE';
     callAdbShellCommandUntilSuccess 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE';
@@ -670,7 +670,7 @@ runInstrumentationTests() {
     ls -lahp .;
     echo 'Checking all screenshots';
     ls -lahp "screenshots";
-    if [ "${androidApi}" -ge 18 ] && [ "${androidApi}" -le 22 ]; then
+    if [ "${androidApiDevice}" -ge 18 ] && [ "${androidApiDevice}" -le 22 ]; then
       echo 'Checking CornellBox screenshot';
       ls -lahp "screenshots/CornellBox.png";
       echo 'Checking Teapot screenshot';
@@ -726,17 +726,25 @@ _restartAdbProcesses() {
 _waitForEmulatorToBoot() {
   # Make sure ADB daemon started properly.
   callCommandUntilSuccess 25 adb shell 'ps > /dev/null;';
+  callCommandUntilSuccess 25 adb shell 'getprop ro.build.version.sdk;';
   # adb shell needs ' instead of ", so 'getprop' works properly.
+  callAdbShellCommandUntilSuccess 'getprop ro.build.version.sdk';
+  echo 'sys.boot_completed: ';
   adb shell 'getprop sys.boot_completed';
-  callAdbShellCommandUntilSuccess 'if getprop sys.boot_completed = "1"; then true; else false; fi';
-  adb shell 'false; getprop dev.bootcomplete';
-  callAdbShellCommandUntilSuccess 'if getprop dev.bootcomplete = "1"; then true; else false; fi';
-  androidApi=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
-  echo "androidApi: '${androidApi}'";
-  if [ "${androidApi}" -gt 15 ]; then
-    # Property 'service.bootanim.exit' is not available in Android with API < 16.
-    adb shell 'false; getprop service.bootanim.exit';
-    callAdbShellCommandUntilSuccess 'if getprop service.bootanim.exit = "1"; then true; else false; fi';
+  echo 'dev.bootcomplete: ';
+  adb shell 'getprop dev.bootcomplete';
+  echo 'service.bootanim.exit: ';
+  adb shell 'getprop service.bootanim.exit';
+  androidApiDevice=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
+  echo "androidApiDevice: '${androidApiDevice}'";
+
+  # shellcheck disable=SC2016
+  callAdbShellCommandUntilSuccess 'echo -n ::$(($(getprop sys.boot_completed)-1))::';
+  # shellcheck disable=SC2016
+  callAdbShellCommandUntilSuccess 'echo -n ::$(($(getprop dev.bootcomplete)-1))::';
+  if [ "${androidApiDevice}" -gt 15 ] && [ "${androidApiDevice}" -lt 31 ]; then
+    # shellcheck disable=SC2016
+    callAdbShellCommandUntilSuccess 'echo -n ::$(($(getprop service.bootanim.exit)-1))::';
   fi
 }
 ###############################################################################
@@ -762,7 +770,7 @@ runInstrumentationTests;
 ###############################################################################
 # Exit code
 ###############################################################################
-if [ "${androidApi}" = '15' ]; then
+if [ "${androidApiDevice}" = '15' ]; then
   # TODO: Fix the native unit tests in Android API 15. Ignore the result for now.
   printCommandExitCode '0' "Unit tests (result: ${resUnitTests})";
 else
