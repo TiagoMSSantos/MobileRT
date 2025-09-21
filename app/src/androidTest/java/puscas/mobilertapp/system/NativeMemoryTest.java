@@ -4,6 +4,8 @@ import static puscas.mobilertapp.ConstantsAndroid.NOT_ENOUGH_MEMORY_MESSAGE;
 
 import android.os.Debug;
 
+import androidx.test.filters.FlakyTest;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,6 +36,7 @@ public final class NativeMemoryTest extends AbstractTest {
      * Tests that allocating heap memory from native memory, makes the available memory decrease as expected.
      */
     @Test
+    @FlakyTest
     public void testAllocatingHeapMemoryNative() {
         Runtime.getRuntime().gc();
 

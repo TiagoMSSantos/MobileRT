@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-09-21T13:21:13.004Z",
+    "detectionDate": "2025-09-21T14:22:24.992Z",
     "formats": {
       "java": {
         "sources": {
@@ -677,8 +677,8 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/system/NativeMemoryTest.java": {
-            "lines": 124,
-            "tokens": 839,
+            "lines": 127,
+            "tokens": 854,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1050,13 +1050,13 @@
           }
         },
         "total": {
-          "lines": 9736,
-          "tokens": 67661,
+          "lines": 9739,
+          "tokens": 67676,
           "sources": 87,
           "clones": 59,
           "duplicatedLines": 574,
           "duplicatedTokens": 5416,
-          "percentage": 5.9,
+          "percentage": 5.89,
           "percentageTokens": 8,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 29890,
-      "tokens": 231192,
+      "lines": 29893,
+      "tokens": 231207,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1376,
