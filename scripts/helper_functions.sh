@@ -507,6 +507,7 @@ generateCodeCoverage() {
     qtPathExcludeFilter='*/Qt/*/*/include/*';
   fi
   set +u;
+  # shellcheck disable=SC2086
   lcov --ignore-errors format --remove code_coverage.info '*third_party*' '*build*' '*Unit_Testing*' ${qtPathExcludeFilter} -o code_coverage_filtered.info;
   set -u;
   echo 'Generating HTML page with code coverage';

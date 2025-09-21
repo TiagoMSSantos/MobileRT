@@ -415,7 +415,9 @@ testCheckCommand() {
 
   # Validate the exit code is 0 if python command DOES exist on Windows OS.
   # Setup mocks:
+  # shellcheck disable=SC2317
   uname() { echo 'msys'; } # Emulate Windows OS.
+  # shellcheck disable=SC2317
   command() { return 0; } # Emulate command found.
   expectedExitCode='0';
   commandToCheck='python';
@@ -426,7 +428,9 @@ testCheckCommand() {
 
   # Validate the exit code is 0 if python command does NOT exist on Windows OS.
   # Setup mocks:
+  # shellcheck disable=SC2317
   uname() { echo 'msys'; } # Emulate Windows OS.
+  # shellcheck disable=SC2317
   command() { return 1; } # Emulate command not found.
   expectedExitCode='0';
   commandToCheck='python';
@@ -450,7 +454,9 @@ testAddCommandToPath() {
 
   # Validate the exit code is 0 after adding the command 'wc' to the PATH environment variable.
   # Setup mocks:
+  # shellcheck disable=SC2317
   command() { return 1; } # Emulate command not found.
+  # shellcheck disable=SC2317,SC2005
   find() { echo "$(which wc)"; } # Emulate command was found.
   expectedExitCode='0';
   commandToAdd='wc';
@@ -461,7 +467,9 @@ testAddCommandToPath() {
 
   # Validate the exit code is 1 if adding the command 'wc' is not successful since the command was not found.
   # Setup mocks:
+  # shellcheck disable=SC2317
   command() { return 1; } # Emulate command not found.
+  # shellcheck disable=SC2317
   find() { echo ''; } # Emulate command was not found.
   expectedExitCode='1';
   commandToAdd='wc';
@@ -479,7 +487,9 @@ testParallelizeBuild() {
   _clearEnvVariables;
   # Validate the exit code is 0 if using Linux, and the 'NCPU_CORES' is properly set.
   # Setup mocks:
+  # shellcheck disable=SC2317
   uname() { echo 'linux'; } # Emulate Linux OS.
+  # shellcheck disable=SC2317
   nproc() { echo '11'; } # Emulate 11 CPU cores available.
   expectedExitCode='0';
   eval '${_functionName} > /dev/null';
@@ -492,7 +502,9 @@ testParallelizeBuild() {
   _clearEnvVariables;
   # Validate the exit code is 0 if using MacOS, and the 'NCPU_CORES' is properly set.
   # Setup mocks:
+  # shellcheck disable=SC2317
   uname() { echo 'darwin'; } # Emulate MacOS.
+  # shellcheck disable=SC2317
   sysctl() { echo '22'; } # Emulate 22 CPU cores available.
   expectedExitCode='0';
   eval '${_functionName} > /dev/null';
@@ -505,7 +517,9 @@ testParallelizeBuild() {
   _clearEnvVariables;
   # Validate the exit code is 0 if using Windows, and the 'NCPU_CORES' is properly set.
   # Setup mocks:
+  # shellcheck disable=SC2317
   uname() { echo 'msys'; } # Emulate Windows OS.
+  # shellcheck disable=SC2317
   nproc() { echo '33'; } # Emulate 33 CPU cores available.
   expectedExitCode='0';
   eval '${_functionName} > /dev/null';
@@ -586,7 +600,9 @@ testCallAdbShellCommandUntilSuccess() {
   _testName="test$(capitalizeFirstletter ${_functionName})";
 
   # Setup mocks:
+  # shellcheck disable=SC2317
   adb() { echo '::0::'; } # Emulate adb command passed.
+  # shellcheck disable=SC2317
   sleep() { return 0; } # Mock sleep command.
 
   # Validate the exit code is 0 if command was executed properly.
@@ -596,6 +612,7 @@ testCallAdbShellCommandUntilSuccess() {
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} adb shell 'chmod -R 777 /tmp' should PASS";
 
   # Setup mocks:
+  # shellcheck disable=SC2317
   adb() { echo '::1::'; } # Emulate adb command failed.
 
   # Validate the exit code is 1 if command was NOT executed properly.
