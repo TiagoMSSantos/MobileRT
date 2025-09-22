@@ -168,7 +168,22 @@
       "matchStrings": [
         "androidX_test_core_version = ['\"](?<currentValue>.*)['\"]"
       ],
-      "depNameTemplate": "androidx.test:core.*",
+      "depNameTemplate": "androidx.test:core",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://maven.google.com"
+    },
+    {
+      "description": "Update Android test core Kotlin",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_test_core_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test:core-ktx",
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",
