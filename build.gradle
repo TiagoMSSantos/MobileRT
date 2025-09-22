@@ -106,7 +106,7 @@ buildscript {
             bouncycastle_version = '1.82'
         }
         if (project.properties["androidX_test_core_version"] == null) {
-            androidX_test_core_version = '1.5.0'
+            androidX_test_core_version = '1.7.0'
         }
 
         // Unit tests dependencies
