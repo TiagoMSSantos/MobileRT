@@ -49,6 +49,7 @@ buildscript {
             androidX_core_version = '1.17.0'
             androidX_test_espresso_version = '3.7.0'
             androidX_test_junit_version = '1.3.0'
+            androidX_test_core_version = '1.7.0'
         }
         if (androidApiVersionValue >= 19) {
             if (project.properties["androidX_test_junit_version"] == null) {
@@ -62,6 +63,9 @@ buildscript {
             }
             if (project.properties["androidX_core_version"] == null) {
                 androidX_core_version = '1.13.1'
+            }
+            if (project.properties["androidX_test_core_version"] == null) {
+                androidX_test_core_version = '1.6.1'
             }
         }
         if (androidApiVersionValue >= 16) {
@@ -100,6 +104,9 @@ buildscript {
         }
         if (project.properties["bouncycastle_version"] == null) {
             bouncycastle_version = '1.82'
+        }
+        if (project.properties["androidX_test_core_version"] == null) {
+            androidX_test_core_version = '1.5.0'
         }
 
         // Unit tests dependencies

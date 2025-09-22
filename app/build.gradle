@@ -470,6 +470,8 @@ dependencies {
 
 
     println('Adding dependencies for the instrumentation tests.')
+    androidTestImplementation "androidx.test:core:${androidX_test_core_version}"
+    androidTestImplementation "androidx.test:core-ktx:${androidX_test_core_version}"
     androidTestImplementation "androidx.test.espresso:espresso-intents:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.ext:junit:${androidX_test_junit_version}"
 
