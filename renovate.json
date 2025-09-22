@@ -160,6 +160,21 @@
       "registryUrlTemplate": "https://repo1.maven.org/maven2/"
     },
     {
+      "description": "Update Android test core",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_test_core_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test:core.*",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://maven.google.com"
+    },
+    {
       "description": "Update JUnit",
       "managerFilePatterns": [
         "/.*build.gradle/"
@@ -467,6 +482,20 @@
       ],
       "matchCurrentVersion": "/^1\\.6\\..+/",
       "matchCurrentValue": "/^1\\.6\\..+/"
+    },
+    {
+      "groupName": "Only update androidx.test:core for Android API >= 21",
+      "enabled": false,
+      "matchDepNames": [
+        "androidx.test:core",
+        "androidx.test:core-ktx"
+      ],
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
+      "matchCurrentVersion": "/^(1\\.5\\.0)|(1\\.6\\.1)$/",
+      "matchCurrentValue": "/^(1\\.5\\.0)|(1\\.6\\.1)$/"
     },
     {
       "groupName": "Only update patches of androidx.test.ext:junit for Android API >= 21",
