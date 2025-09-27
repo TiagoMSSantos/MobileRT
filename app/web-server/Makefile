@@ -26,6 +26,8 @@ LD_PATH := ../../build_release/lib
 clean:
 	rm -rf $(CLEAN_FILES) || true
 
+# By default, use release mode
+build: build_release
 build_release: clean libcpp.so
 	cargo build --release -j8
 

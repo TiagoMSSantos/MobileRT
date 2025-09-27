@@ -1,5 +1,5 @@
 use anyhow::Result;
-use std::{slice, time::Duration};
+use std::{time::Duration};
 use tokio::time;
 use tokio_stream::wrappers::IntervalStream;
 use warp::{Filter, ws::Ws};
@@ -19,6 +19,7 @@ const BITS_PER_PIXEL: u16 = 32;
 const COMPRESSION: u32 = 0;
 pub const BMP_HEADER_SIZE: usize = 54;
 pub const PIXEL_BYTE_SIZE: usize = 4;
+static EMPTY_BITMAP: &[u8] = &[0; BMP_HEADER_SIZE + WIDTH as usize * HEIGHT as usize * PIXEL_BYTE_SIZE]; // Set an empty bitmap with zeros
 
 #[link(name = "cpp", kind = "dylib")]
 extern "C" {
@@ -27,6 +28,27 @@ extern "C" {
     fn select_obj_path(input: *const libc::c_char) -> ();
 }
 
+// Safe wrapper that calls MobileRT start rendering
+pub fn start_rendering_safe() {
+    unsafe { start_rendering() };
+}
+
+// Safe wrapper that returns a slice if the pointer is valid
+pub fn get_bitmap_safe(len: usize) -> Option<&'static [u8]> {
+    unsafe {
+        let ptr = get_bitmap();
+        if ptr.is_null() {
+            None
+        } else {
+            Some(std::slice::from_raw_parts(ptr, len))
+        }
+    }
+}
+
+// Safe wrapper that selects OBJ file for MobileRT 
+pub fn select_obj_path_safe(input: *const libc::c_char) -> () {
+    unsafe { select_obj_path(input) };
+}
 
 
 // Handler for the button action
@@ -38,7 +60,7 @@ async fn restart_button_action_handler(body: serde_json::Value, should_update: A
         *update_flag = true; // Resume updates
     }
 
-    unsafe { start_rendering() };
+    start_rendering_safe();
     Ok(warp::reply::json(&json!({"status": "success"})))
 }
 
@@ -54,16 +76,14 @@ async fn select_obj_button_action_handler(body: bytes::Bytes) -> Result<impl war
 
     println!("OBJ path: {:?}", input_string);
     let c_string: CString = CString::new(input_string).unwrap(); // Convert to CString
-    unsafe { select_obj_path(c_string.into_raw()) };
+    select_obj_path_safe(c_string.into_raw());
     Ok(warp::reply::json(&json!({"status": "success"})))
 }
 
 pub async fn start_http_server() -> tokio::task::JoinHandle<()> {
     // Log the start of MobileRT
     println!("Initializing MobileRT...");
-    unsafe {
-        start_rendering(); // Ensure this unsafe block is truly necessary
-    }
+    // start_rendering_safe();
 
     // Set up HTTP server
     println!("Starting HTTP server asynchronously...");
@@ -76,7 +96,7 @@ pub async fn start_http_server() -> tokio::task::JoinHandle<()> {
 
     // Verify server startup (use a minimal delay or ensure health check implementation)
     println!(
-        "HTTP server running at http://{}:{}",
+        "HTTP server running at http://{}:{}/mobilert",
         Ipv4Addr::from(server_address.0),
         server_address.1
     );
@@ -136,7 +156,7 @@ pub fn routes() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejecti
 }
 
 async fn handle_websocket(websocket: warp::ws::WebSocket, should_update: Arc<Mutex<bool>>) {
-    let (mut tx, _rx) = websocket.split();
+    let (mut transmitter, _receiver) = websocket.split();
 
     let interval: IntervalStream = IntervalStream::new(time::interval(Duration::from_millis(100)));
     tokio::pin!(interval);
@@ -145,21 +165,36 @@ async fn handle_websocket(websocket: warp::ws::WebSocket, should_update: Arc<Mut
     let mut unchanged_frames: u32 = 0;
     const MAX_UNCHANGED_FRAMES: u32 = 10;
 
+    println!("Sending data from websocket");
     while let Some(_) = interval.next().await {
         let should_continue: bool = *should_update.lock().unwrap();
         if !should_continue {
-            continue; // Pause updates if flag is false
+            // println!("Pause updates since should_update flag is false");
+            continue;
         }
 
         match generate_bitmap() {
             Ok(bitmap_data) => {
-                // Check if the bitmap is all zero (all black)
+                // Check if the bitmap is all zeros (black image)
                 let is_uniform_color = bitmap_data[BMP_HEADER_SIZE..] // Skip the first BMP_HEADER_SIZE bytes
                     .chunks(PIXEL_BYTE_SIZE) // Process the remaining data in chunks of PIXEL_BYTE_SIZE bytes (RGBA)
                     .all(|pixel| pixel == &bitmap_data[BMP_HEADER_SIZE..BMP_HEADER_SIZE+PIXEL_BYTE_SIZE]); // Compare each chunk with the first pixel (after BMP_HEADER_SIZE bytes)            
 
                 if is_uniform_color {
                     println!("Bitmap is empty. Continuing updates.");
+                    if let Some(last) = &last_bitmap {
+                        // Check if the bitmap is unchanged
+                        if *last == bitmap_data {
+                            unchanged_frames += 1;
+                            if unchanged_frames >= MAX_UNCHANGED_FRAMES {
+                                println!("Bitmap unchanged for too long. Stopping updates.");
+                                let mut update_flag = should_update.lock().unwrap();
+                                *update_flag = false; // Stop updates
+                                unchanged_frames = 0;
+                            }
+                            continue;
+                        }
+                    }
                 } else {
                     println!("Bitmap updated.");
                     if let Some(last) = &last_bitmap {
@@ -170,19 +205,22 @@ async fn handle_websocket(websocket: warp::ws::WebSocket, should_update: Arc<Mut
                                 println!("Bitmap unchanged for too long. Stopping updates.");
                                 let mut update_flag = should_update.lock().unwrap();
                                 *update_flag = false; // Stop updates
+                                unchanged_frames = 0;
                             }
                             continue;
                         }
                     }
                 }
 
-                // Reset the unchanged counter and update the last bitmap
+                println!("Reset the unchanged counter and update the last bitmap");
                 unchanged_frames = 0;
                 last_bitmap = Some(bitmap_data.clone());
 
-                if let Err(e) = tx.send(warp::ws::Message::binary(bitmap_data)).await {
-                    panic!("Failed to send WebSocket message: {}", e);
+                if let Err(_e) = transmitter.send(warp::ws::Message::binary(bitmap_data)).await {
+                    println!("Failed to send WebSocket message.");
+                    break;
                 }
+
             }
             Err(e) => {
                 panic!("Error generating bitmap: {}", e);
@@ -190,12 +228,26 @@ async fn handle_websocket(websocket: warp::ws::WebSocket, should_update: Arc<Mut
         }
     }
 
-    println!("WebSocket connection closed or stopped.");
+    println!("Closing connection websocket.");
+    // Send a Close frame to the client
+    let _ = transmitter.send(warp::ws::Message::close()).await;
+    // After sending, the connection will close automatically
+    println!("Closed connection websocket.");
 }
 
 // Generate binary data for the bitmap
 fn generate_bitmap() -> Result<Vec<u8>, String> {
-    let pixels_slice: &[u8] = unsafe { slice::from_raw_parts(get_bitmap(), LENGTH) };
+    let pixels_slice_option: Option<&[u8]> = get_bitmap_safe(LENGTH);
+    let pixels_slice : &[u8] = match pixels_slice_option {
+        Some(slice) => {
+            println!("Bitmap retrieved from MobileRT.");
+            slice
+        }
+        None => {
+            println!("MobileRT didn't render anything. Returning an empty bitmap.");
+            &EMPTY_BITMAP
+        }
+    };
 
     // Precompute file size and allocate vector
     let file_size: usize = LENGTH + BMP_HEADER_SIZE;

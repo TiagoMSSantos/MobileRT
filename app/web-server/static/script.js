@@ -6,7 +6,7 @@ let numberOfUnchangedFrames = 0; // Counter for unchanged frames
 const webSocket = new WebSocket('ws://127.0.0.1:3030/ws'); // Replace with your WebSocket URL
 webSocket.binaryType = 'arraybuffer'; // Set to receive binary data
 
-const isProduction = window.location.hostname !== 'localhost';
+const isProduction = (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1');
 function getTimestamp() {
     return `[${new Date().toISOString()}]`;
 }
@@ -82,7 +82,7 @@ document.getElementById('restartButton').addEventListener('click', async () => {
         numberOfUnchangedFrames = 0;
         continueUpdatingBitmap = true;
 
-        const response = await fetch('http://localhost:3030/api/restart', {
+        const response = await fetch('http://127.0.0.1:3030/api/restart', {
             method: 'POST', // Use POST or GET based on your API design
             headers: {
                 'Content-Type': 'application/json',
