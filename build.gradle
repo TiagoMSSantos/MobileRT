@@ -166,6 +166,9 @@ subprojects {
                 if (details.requested.group == 'org.jacoco') {
                     details.useVersion "${jacoco_version}"
                 }
+                if (details.requested.group == 'com.android.application') {
+                    details.useVersion "${gradle_version}"
+                }
             }
         }
     }

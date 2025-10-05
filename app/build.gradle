@@ -21,16 +21,18 @@ plugins {
     // insight of this dependency.
     id 'project-report'
 
-    // Add support for the language Kotlin.
-    id 'kotlin-android'
-    id 'org.jetbrains.kotlin.android'
-
     // Add support for IDE plugin.
     // Useful to add custom sources and tests directories.
     id 'idea'
 
     // Gradle plugin to discover dependency updates
     id 'com.github.ben-manes.versions'
+}
+
+if (gradleVersionMajor < 9) {
+    // Add support for the language Kotlin.
+    apply plugin: 'kotlin-android'
+    apply plugin: 'org.jetbrains.kotlin.android'
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -207,7 +209,7 @@ android {
     setTestBuildType systemTestType
 
     // Setup required versions to compile
-    setCompileSdkVersion androidApiVersionValue >= 16? 36 : 34
+    compileSdkVersion androidApiVersionValue >= 16? 36 : 34
     setBuildToolsVersion '36.0.0'
 
     // Setup signing configurations

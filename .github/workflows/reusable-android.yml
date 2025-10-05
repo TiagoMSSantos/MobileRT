@@ -240,15 +240,18 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
+          find app/build/ -iname "*.class";
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
-          . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
+          if [ "${{ inputs.android_api }}" -lt 16 ]; then
+            . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+          fi
 
       - name: Upload generated binaries to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -450,15 +453,18 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
+          find app/build/ -iname "*.class";
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
-          . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
+          if [ "${{ inputs.android_api }}" -lt 16 ]; then
+            . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+          fi
 
       - name: Enable KVM group permissions
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -786,15 +792,18 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
+          find app/build/ -iname "*.class";
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
-          . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
+          if [ "${{ inputs.android_api }}" -lt 16 ]; then
+            . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+          fi
 
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1016,6 +1025,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
+          find app/build/ -iname "*.class";
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
@@ -1023,10 +1033,12 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;
-          . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
+          if [ "${{ inputs.android_api }}" -lt 16 ]; then
+            . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+          fi
 
       - name: Create report's folders
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
