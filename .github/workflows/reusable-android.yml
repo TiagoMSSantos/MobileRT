@@ -249,7 +249,11 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
-          if [ "${{ inputs.android_api }}" -lt 16 ]; then
+          if [ "${{ inputs.android_api }}" -gt 15 ]; then
+            typeWithCapitalLetter=$(. scripts/helper_functions.sh && capitalizeFirstletter ${{ inputs.type }});
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
+          else
             . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           fi
 
@@ -462,7 +466,11 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
-          if [ "${{ inputs.android_api }}" -lt 16 ]; then
+          if [ "${{ inputs.android_api }}" -gt 15 ]; then
+            typeWithCapitalLetter=$(. scripts/helper_functions.sh && capitalizeFirstletter ${{ inputs.type }});
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
+          else
             . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           fi
 
@@ -801,7 +809,11 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
-          if [ "${{ inputs.android_api }}" -lt 16 ]; then
+          if [ "${{ inputs.android_api }}" -gt 15 ]; then
+            typeWithCapitalLetter=$(. scripts/helper_functions.sh && capitalizeFirstletter ${{ inputs.type }});
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
+          else
             . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           fi
 
@@ -1036,7 +1048,11 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
-          if [ "${{ inputs.android_api }}" -lt 16 ]; then
+          if [ "${{ inputs.android_api }}" -gt 15 ]; then
+            typeWithCapitalLetter=$(. scripts/helper_functions.sh && capitalizeFirstletter ${{ inputs.type }});
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
+          else
             . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           fi
 

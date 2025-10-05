@@ -46,7 +46,12 @@ println('Gradle version: ' + gradle_version)
 println('Gradle major version: ' + gradleVersionMajor)
 println('Gradle minor version: ' + gradleVersionMinor)
 def javaBinariesPath, javaUnitTestBinaries, javaAndroidTestBinaries
-if (gradleVersionMajor >= 8 && gradleVersionMinor >= 3) {
+if (gradleVersionMajor >= 9) {
+    println('Gradle version is more recent than 9 so using new path to classes.')
+    javaBinariesPath = 'compileDebugJavaWithJavac/classes/'
+    javaUnitTestBinaries = 'compileDebugUnitTestJavaWithJavac/classes/'
+    javaAndroidTestBinaries = 'compileDebugAndroidTestJavaWithJavac/classes/'
+} else if (gradleVersionMajor >= 8 && gradleVersionMinor >= 3) {
     println('Gradle version is more recent than 8.3 so using new path to classes.')
     javaBinariesPath = 'compileDebugJavaWithJavac/classes/'
     javaUnitTestBinaries = 'compileDebugUnitTestJavaWithJavac/classes/'
@@ -164,7 +169,7 @@ sonar {
         property 'sonar.java.target', JavaVersion.VERSION_21.toString()
         property 'sonar.sources', 'src/main/java'
         property 'sonar.tests', 'src/test/java, src/androidTest/java'
-        property 'sonar.java.binaries', "build/intermediates/javac/debug/${javaBinariesPath},build/tmp/kotlin-classes/debug/"
+        property 'sonar.java.binaries', "build/intermediates/javac/debug/${javaBinariesPath},build/tmp/kotlin-classes/debug/,build/intermediates/classes/debug/jacocoDebug/dirs/"
         properties['sonar.java.test.binaries'] += "build/intermediates/javac/debugUnitTest/${javaUnitTestBinaries}"
         properties['sonar.java.test.binaries'] += "build/intermediates/javac/debugAndroidTest/${javaAndroidTestBinaries}"
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
@@ -425,10 +430,18 @@ tasks.register('jacocoTestReport', JacocoReport) {
         // Exclude the 'BuildConfig.class' because it is an automatically generated file.
         excludes: ['**/BuildConfig.class', '**/package-info.class', '**/AgentJar.class'],
     )
-    def kotlinClasses = fileTree(
-        dir: "${layout.buildDirectory.getAsFile().get().toString()}/tmp/kotlin-classes/debug/",
-        excludes: ['**/BuildConfig.class', '**/package-info.class', '**/AgentJar.class'],
-    )
+    def kotlinClasses
+    if (gradleVersionMajor >= 9) {
+        kotlinClasses = fileTree(
+            dir: "${layout.buildDirectory.getAsFile().get().toString()}/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes/",
+            excludes: ['**/BuildConfig.class', '**/package-info.class', '**/AgentJar.class'],
+        )
+    } else {
+        kotlinClasses = fileTree(
+            dir: "${layout.buildDirectory.getAsFile().get().toString()}/tmp/kotlin-classes/debug/",
+            excludes: ['**/BuildConfig.class', '**/package-info.class', '**/AgentJar.class'],
+        )
+    }
     def allClasses = javaClasses + kotlinClasses
     println('allClasses: ' + allClasses)
     classDirectories.setFrom(allClasses)
