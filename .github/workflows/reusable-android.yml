@@ -252,7 +252,7 @@ jobs:
           if [ "${{ inputs.android_api }}" -gt 15 ]; then
             typeWithCapitalLetter=$(. scripts/helper_functions.sh && capitalizeFirstletter ${{ inputs.type }});
             . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
-            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
+            # . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
           else
             . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           fi
@@ -469,7 +469,7 @@ jobs:
           if [ "${{ inputs.android_api }}" -gt 15 ]; then
             typeWithCapitalLetter=$(. scripts/helper_functions.sh && capitalizeFirstletter ${{ inputs.type }});
             . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
-            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
+            # . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
           else
             . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           fi
@@ -812,7 +812,7 @@ jobs:
           if [ "${{ inputs.android_api }}" -gt 15 ]; then
             typeWithCapitalLetter=$(. scripts/helper_functions.sh && capitalizeFirstletter ${{ inputs.type }});
             . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
-            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
+            # . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
           else
             . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           fi
@@ -1051,7 +1051,7 @@ jobs:
           if [ "${{ inputs.android_api }}" -gt 15 ]; then
             typeWithCapitalLetter=$(. scripts/helper_functions.sh && capitalizeFirstletter ${{ inputs.type }});
             . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
-            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
+            # . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
           else
             . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
           fi
