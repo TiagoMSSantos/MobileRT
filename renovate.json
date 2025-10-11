@@ -692,6 +692,16 @@
       "versioning": "regex:^(v|release-)?(?<major>[0-9]+)\\.(?<minor>[0-9]+)\\.(?<patch>[0-9]+)-?(?<prerelease>[0-9a-z]+)?$"
     },
     {
+      "groupName": "Only update minor and major of ruby",
+      "enabled": false,
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "matchDepNames": [
+        "ruby"
+      ]
+    },
+    {
       "groupName": "MobileRT docker images",
       "enabled": true,
       "matchDepNames": [
