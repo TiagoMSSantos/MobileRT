@@ -1,7 +1,7 @@
 [requires]
 icu/77.1
 qt/6.8.3
-boost/1.88.0
+boost/1.89.0
 gtest/1.17.0
 tinyobjloader/1.0.7
 glm/1.0.1
