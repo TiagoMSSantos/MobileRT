@@ -103,7 +103,7 @@ buildscript {
             androidX_test_junit_version = '1.1.5'
         }
         if (project.properties["bouncycastle_version"] == null) {
-            bouncycastle_version = '1.82'
+            bouncycastle_version = '1.83'
         }
         if (project.properties["androidX_test_core_version"] == null) {
             androidX_test_core_version = '1.5.0'
