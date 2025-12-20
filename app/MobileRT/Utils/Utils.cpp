@@ -283,6 +283,8 @@ namespace MobileRT {
             const int bytesInMegabyte {1048576};
             LOG_ERROR("Free memory: ",  (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte,
                 " MB [Available memory: ",  (sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGESIZE)) / bytesInMegabyte, " MB]");
+        #else
+            LOG_ERROR("Only possible to check available memory on Linux OS.");
         #endif
     }
 
@@ -293,6 +295,8 @@ namespace MobileRT {
         // Only log stack trace for Linux systems, since boost stacktrace doesn't work on Windows nor MacOS.
         #if !defined(BOOST_STACKTRACE_NOT_SUPPORTED) && !defined(_WIN32) && !defined(__APPLE__)
             LOG_ERROR("Stack trace:\n", ::boost::stacktrace::stacktrace());
+        #else
+            LOG_ERROR("Stack trace is only available on Linux OS.");
         #endif
     }
 

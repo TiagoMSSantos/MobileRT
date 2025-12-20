@@ -184,7 +184,7 @@ jobs:
           --info --warning-mode all --stacktrace;
 
     - name: Run Android tests
-      timeout-minutes: 20
+      timeout-minutes: 30
       if: success() && !startsWith(matrix.host_os, 'windows')
       uses: ReactiveCircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2
       env:

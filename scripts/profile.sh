@@ -435,10 +435,10 @@ executePerf() {
   fi
   set -u;
 
-  echo 'All events:';
+  echo 'All perf events:';
   perf list | tee perf_events.log;
 
-  echo 'Hardware events:';
+  echo 'Hardware perf events:';
   perf list hw | tee perf_events_hw.log;
 
   # perf script report callgrind > perf.callgrind
