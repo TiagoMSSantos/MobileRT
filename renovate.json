@@ -250,6 +250,66 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
+      "description": "Update kotlin-gradle-plugin",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "kotlin_gradle_plugin_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "org.jetbrains.kotlin:kotlin-gradle-plugin",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
+    },
+    {
+      "description": "Update androidx.core",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_core_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.core:core-ktx",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://maven.google.com"
+    },
+    {
+      "description": "Update gradle-versions-plugin",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "gradle_versions_plugin_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "com.github.ben-manes:gradle-versions-plugin",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
+    },
+    {
+      "description": "Update bouncycastle",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "bouncycastle_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "org.bouncycastle:bcutil-jdk18on",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
+    },
+    {
       "description": "Update Gradle Service",
       "managerFilePatterns": [
         "/.*build.gradle/"
@@ -664,6 +724,15 @@
       ],
       "matchCurrentVersion": "/^8\\.7$/",
       "matchCurrentValue": "/^8\\.7$/"
+    },
+    {
+      "groupName": "Do not update kotlin-gradle-plugin versions for Android API <= 15",
+      "enabled": false,
+      "matchDepNames": [
+        "org.jetbrains.kotlin:kotlin-gradle-plugin"
+      ],
+      "matchCurrentVersion": "/^2\\.2\\.21$/",
+      "matchCurrentValue": "/^2\\.2\\.21$/"
     },
     {
       "groupName": "Do not update Gradle versions plugin for Android API <= 15",
