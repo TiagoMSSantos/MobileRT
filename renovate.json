@@ -538,8 +538,8 @@
         "custom.regex",
         "gradle"
       ],
-      "matchCurrentVersion": "/^1\\.12\\..+/",
-      "matchCurrentValue": "/^1\\.12\\..+/"
+      "matchCurrentVersion": "/^(1\\.12\\..+)|(1\\.13\\..+)/",
+      "matchCurrentValue": "/^(1\\.12\\..+)|(1\\.13\\..+)/"
     },
     {
       "groupName": "Only update patches of androidx.test:monitor for Android API >= 19",
