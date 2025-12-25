@@ -97,10 +97,10 @@ jobs:
       - name: Setup Ruby, JRuby and TruffleRuby
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: ruby/setup-ruby@472790540115ce5bd69d399a020189a8c87d641f # v1.247.0
+        uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b # v1.275.0
         with:
           # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
-          ruby-version: '3.4'
+          ruby-version: '4.0.0-preview3'
           bundler-cache: false
           cache-version: 0
 
