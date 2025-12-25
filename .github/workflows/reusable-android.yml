@@ -40,7 +40,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -224,7 +224,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -341,7 +341,7 @@ jobs:
         timeout-minutes: 20
         if: success() && strategy.job-index == 0 && !startsWith(inputs.host_os, 'windows')
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: gradle-packages
@@ -369,7 +369,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -576,7 +576,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -681,7 +681,7 @@ jobs:
       - name: Upload APK as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: MobileRT_${{ inputs.type }}_android_api-${{ inputs.android_api }}_exp-apk
@@ -694,7 +694,7 @@ jobs:
       - name: Upload test screenshots as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: MobileRT_${{ inputs.type }}_android_api-${{ inputs.android_api }}_test_screenshots
@@ -720,7 +720,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -872,7 +872,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -950,7 +950,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -1145,7 +1145,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -1175,7 +1175,7 @@ jobs:
       - name: Upload reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: reports_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}

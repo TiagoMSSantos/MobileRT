@@ -6,7 +6,7 @@
 # The "paths"/"paths-ignore" fields of the config only have effect for Python, Ruby, and JavaScript/TypeScript.
 #
 # For more information, check:
-# https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/customizing-code-scanning#
+# https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/customizing-code-scanning
 ###############################################################################
 ###############################################################################
 
