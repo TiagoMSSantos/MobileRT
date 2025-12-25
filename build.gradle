@@ -71,6 +71,7 @@ buildscript {
         if (androidApiVersionValue >= 16) {
             gradle_version = '8.13.2'
             gradle_versions_plugin_version = '0.52.0'
+            kotlin_gradle_plugin_version = '2.3.0'
         }
 
         // Default dependencies versions which are used on all Android APIs supported >= 14
@@ -88,6 +89,9 @@ buildscript {
         }
         if (project.properties["gradle_versions_plugin_version"] == null) {
             gradle_versions_plugin_version = '0.51.0'
+        }
+        if (project.properties["kotlin_gradle_plugin_version"] == null) {
+            kotlin_gradle_plugin_version = '2.2.21'
         }
 
         final def gradleVersionArray = gradle_version.split("\\.")
@@ -119,7 +123,7 @@ buildscript {
         // Compatibility matrix: https://developer.android.com/build/releases/gradle-plugin#android_gradle_plugin_and_android_studio_compatibility
         classpath "com.android.tools.build:gradle:${gradle_version}"
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:6.2.0.5505'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.21'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_gradle_plugin_version}"
         classpath "com.github.ben-manes:gradle-versions-plugin:${gradle_versions_plugin_version}"
 
         /* To confirm JaCoCo version run: $ sh gradlew buildEnvironment */
