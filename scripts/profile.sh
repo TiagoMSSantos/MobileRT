@@ -444,13 +444,23 @@ executePerf() {
   # perf script report callgrind > perf.callgrind
   # kcachegrind perf.callgrind
   # perf record -g --call-graph 'fp' --freq=3250 --sample-cpu --period
-  QT_QPA_PLATFORM='offscreen' perf stat --detailed --detailed --detailed --verbose --output perf.log -- \
-    "${BIN_PATH_EXE}" \
-    "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
-    "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
-  # perf report -i 'perf.data' -g '' --show-nr-samples --hierarchy --header > perf.log;
-  echo 'Perf results:';
-  cat perf.log;
+  cpuArch="$(uname -m)";
+  if [ "${cpuArch}" != 'aarch64' ]; then
+    QT_QPA_PLATFORM='offscreen' perf stat --detailed --detailed --detailed --verbose --output perf.log -- \
+      "${BIN_PATH_EXE}" \
+      "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
+      "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
+      # perf report -i 'perf.data' -g '' --show-nr-samples --hierarchy --header > perf.log;
+      echo 'Perf results:';
+      cat perf.log;
+  else
+    echo 'Perf not available on ARM CPU';
+    QT_QPA_PLATFORM='offscreen' \
+      "${BIN_PATH_EXE}" \
+      "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
+      "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
+    echo "Didn't use perf";
+  fi
 }
 
 ###############################################################################
