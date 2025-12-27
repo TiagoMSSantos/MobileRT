@@ -295,16 +295,29 @@ executeTimeout() {
   set +u;
   if [ "${1}" = 'release' ]; then
     echo 'Executing in release mode.';
+    echo 'ls build_release/bin:';
     ls -lahp "${MOBILERT_PATH}/build_release/bin/" || true;
+    echo 'ls build_release/bin/Release:';
     ls -lahp "${MOBILERT_PATH}/build_release/bin/Release" || true;
+    echo 'ls build_release/lib/Release:';
+    ls -lahp "${MOBILERT_PATH}/build_release/lib/Release";
     BIN_PATH_EXE="${BIN_RELEASE_EXE}";
+    LIB_PATH_MOBILERT="${MOBILERT_PATH}/build_release/lib/Release";
   elif [ "${1}" = 'debug' ]; then
     echo 'Executing in debug mode.';
+    echo 'ls build_debug/bin:';
     ls -lahp "${MOBILERT_PATH}/build_debug/bin/" || true;
+    echo 'ls build_debug/bin/Debug:';
     ls -lahp "${MOBILERT_PATH}/build_debug/bin/Debug" || true;
+    echo 'ls build_debug/lib/Debug:';
+    ls -lahp "${MOBILERT_PATH}/build_debug/lib/Debug";
     BIN_PATH_EXE="${BIN_DEBUG_EXE}";
+    LIB_PATH_MOBILERT="${MOBILERT_PATH}/build_debug/lib/Debug";
   fi
   set -u;
+  ls -lahp "${LIB_PATH_MOBILERT}";
+  echo 'ls Qt/5.15.2/mingw81_64/lib:';
+  ls -lahp Qt/5.15.2/mingw81_64/lib;
 
   echo '';
   echo "BIN_DEBUG_PATH = ${BIN_DEBUG_PATH}";
@@ -312,6 +325,7 @@ executeTimeout() {
   echo "BIN_DEBUG_EXE = ${BIN_DEBUG_EXE}";
   echo "BIN_RELEASE_EXE = ${BIN_RELEASE_EXE}";
   echo "BIN_PATH_EXE = ${BIN_PATH_EXE}";
+  echo "LIB_PATH_MOBILERT = ${LIB_PATH_MOBILERT}";
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";
   echo "SCENE = ${SCENE}";
@@ -330,6 +344,8 @@ executeTimeout() {
   ls -lahp "${OBJ}";
   ls -lahp "${MTL}";
   ls -lahp "${CAM}";
+  export PATH=.:Qt/5.15.2/mingw81_64/bin:Qt/5.15.2/mingw81_64/lib:Qt/5.15.2/mingw81_64:"${LIB_PATH_MOBILERT}":"${PATH}";
+  export LD_LIBRARY_PATH=.:Qt/5.15.2/mingw81_64/bin:Qt/5.15.2/mingw81_64/lib:Qt/5.15.2/mingw81_64:"${LIB_PATH_MOBILERT}";
   QT_QPA_PLATFORM='offscreen' timeout "${3}" "${BIN_PATH_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
     "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";

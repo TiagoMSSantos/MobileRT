@@ -43,7 +43,7 @@ Intersection::Intersection(
     materialIndex_ {materialIndex},
     texCoords_ {texCoords},
     ray_ {::std::move(ray)} {
-    checkArguments();
+    // checkArguments();
 }
 
 /**

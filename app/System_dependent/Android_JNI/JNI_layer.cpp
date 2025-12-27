@@ -592,9 +592,9 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                         ::std::istream iCam {isCam.rdbuf()};
                         camera = cameraFactory.loadFromFile(iCam, ratio);
 
-                        const ::std::istringstream isObj {objDefinition_};
-                        const ::std::istringstream isMtl {mtlDefinition_};
-                        ::Components::OBJLoader objLoader {::std::istream {isObj.rdbuf()}, ::std::istream {isMtl.rdbuf()}};
+                        ::std::istringstream isObj {objDefinition_};
+                        ::std::istringstream isMtl {mtlDefinition_};
+                        ::Components::OBJLoader objLoader {isObj, isMtl};
                         objDefinition_.clear();
                         mtlDefinition_.clear();
                         camDefinition_.clear();

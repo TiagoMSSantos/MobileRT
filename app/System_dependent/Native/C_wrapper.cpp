@@ -91,14 +91,30 @@ static void work_thread(::MobileRT::Config &config) {
                     maxDist = ::glm::vec3 {8, 8, 8};
                     break;
 
-                default: {
-                    LOG_INFO("OBJLoader starting loading scene. OBJ: ", config.objFilePath, ", MTL: ", config.mtlFilePath);
+                default:
+                    LOG_WARN("OBJLoader starting loading scene. OBJ: ", config.objFilePath, ", MTL: ", config.mtlFilePath);
                     const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartLoading {::std::chrono::system_clock::now()};
-                    ::Components::OBJLoader objLoader {::std::ifstream {config.objFilePath}, ::std::ifstream {config.mtlFilePath}};
+                    LOG_WARN("Creating ifstream for OBJ file");
+                    ::std::ifstream objStream (config.objFilePath, ::std::ios::in);
+                    objStream.seekg(0, ::std::ios::beg);
+                    if (!objStream.is_open()) {
+                        LOG_ERROR("Could NOT open OBJ file.");
+                        exit(102);
+                    }
+                    LOG_WARN("Creating ifstream for MTL file");
+                    ::std::ifstream mtlStream {config.mtlFilePath, ::std::ios::in};
+                    LOG_WARN("Created ifstream for MTL file");
+                    mtlStream.seekg(0, ::std::ios::beg);
+                    if (!mtlStream.is_open()) {
+                        LOG_ERROR("Could NOT open MTL file.");
+                        exit(103);
+                    }
+                    ::Components::OBJLoader objLoader (objStream, mtlStream);
                     if (!objLoader.isProcessed()) {
                         LOG_ERROR("Error occurred while loading scene.");
-                        exit(1);
+                        exit(104);
                     }
+                    LOG_WARN("Loaded scene into OBJLoader");
                     const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndLoading {::std::chrono::system_clock::now()};
                     timeLoading = chronoEndLoading - chronoStartLoading;
                     ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache {};
@@ -123,21 +139,23 @@ static void work_thread(::MobileRT::Config &config) {
                     ::Components::CameraFactory cameraFactory {::Components::CameraFactory()};
                     ::std::ifstream ifCamera {config.camFilePath};
                     ::std::istream iCam {ifCamera.rdbuf()};
+                    LOG_WARN("Loading Camera file.");
                     ::MobileRT::checkSystemError("Loading Camera file.");
                     camera = cameraFactory.loadFromFile(iCam, ratio);
                     ::MobileRT::checkSystemError("Loaded Camera file.");
                     maxDist = ::glm::vec3 {1, 1, 1};
-                }
-                    break;
+                    LOG_WARN("Loaded Camera file.");
             }
             // Setup sampler
+            LOG_WARN("Creating Sampler.");
             ::MobileRT::checkSystemError("Creating Sampler.");
             if (config.samplesPixel > 1) {
                 samplerPixel = ::MobileRT::std::make_unique<::Components::StaticHaltonSeq> ();
             } else {
                 samplerPixel = ::MobileRT::std::make_unique<::Components::Constant> (0.5F);
             }
-            ::MobileRT::checkSystemError("Starting creating shader");
+            LOG_WARN("Starting creating shader.");
+            ::MobileRT::checkSystemError("Starting creating shader.");
             // Start timer to measure latency of creating shader (including the build of
             // acceleration structure)
             const ::std::chrono::time_point<::std::chrono::system_clock> chronoStartCreating {::std::chrono::system_clock::now()};

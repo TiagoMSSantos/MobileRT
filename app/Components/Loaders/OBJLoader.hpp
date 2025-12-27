@@ -28,7 +28,7 @@ namespace Components {
     public:
         explicit OBJLoader() = delete;
 
-        explicit OBJLoader(::std::istream&& isObj, ::std::istream&& isMtl);
+        explicit OBJLoader(::std::istream& isObj, ::std::istream& isMtl);
 
         OBJLoader(const OBJLoader &objLoader) = delete;
 

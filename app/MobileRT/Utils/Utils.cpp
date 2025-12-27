@@ -19,7 +19,7 @@ namespace MobileRT {
         LOG_ERROR("ErrorMessage: ", getErrorMessage("Signal handler called"));
         logStackTrace();
         logFreeMemory();
-        ::std::exit(EXIT_FAILURE);
+        ::std::exit(101);
     }
 
     // Public methods

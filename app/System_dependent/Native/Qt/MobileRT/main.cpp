@@ -18,7 +18,7 @@ int main(int argc, char **const argv) {
         for (int i {1}; i < argc; ++i) {
             LOG_ERROR(i, " ", argv[i]);
         }
-        ::std::exit(1);
+        ::std::exit(105);
     }
 
     const ::std::int32_t threads {static_cast<::std::int32_t> (strtol(argv[1], nullptr, 0))};

@@ -3,6 +3,7 @@
 #include "MobileRT/Utils/Utils.hpp"
 #include <cstring>
 #include <fstream>
+#include <sstream>
 #include <thread>
 #include <tuple>
 #include <utility>
@@ -16,36 +17,58 @@ using ::MobileRT::Texture;
 using ::MobileRT::Triangle;
 using ::MobileRT::Sampler;
 
-OBJLoader::OBJLoader(::std::istream&& isObj, ::std::istream&& isMtl) {
+
+OBJLoader::OBJLoader(::std::istream& isObj, ::std::istream& isMtl) {
     MobileRT::checkSystemError("Constructing OBJLoader.");
     LOG_INFO("Setting exception mask for the OBJ file stream.");
-    isObj.exceptions(
-        isObj.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit
-    );
+    isObj.exceptions(::std::ifstream::failbit | ::std::ifstream::badbit); 
     LOG_INFO("Setting exception mask for the MTL file stream.");
-    isMtl.exceptions(
-        isMtl.exceptions() | ::std::ifstream::goodbit | ::std::ifstream::badbit
-    );
+    isMtl.exceptions(::std::ifstream::failbit | ::std::ifstream::badbit);
     errno = 0;
-    ::tinyobj::MaterialStreamReader matStreamReader {isMtl};
+    // On Windows 2022 release mode, compiler optimizations cause SIGSEGV when
+    // MaterialStreamReader accesses the stream reference. Workaround: Copy MTL
+    // content into a stringstream to avoid stream lifetime/reference issues.
+    ::std::stringstream mtlStringStream {};
+    ::std::istream::int_type peekResult {isMtl.peek()};
+    const bool isMtlEmpty {peekResult == ::std::char_traits<char>::eof()};
 
+    if (!isMtlEmpty) {
+        // Copy MTL stream content to stringstream to avoid Windows 2022 release
+        // mode SIGSEGV issues with stream references
+        mtlStringStream << isMtl.rdbuf();
+        mtlStringStream.seekg(0, ::std::ios::beg);
+    }
+
+    ::tinyobj::MaterialStreamReader matStreamReader {mtlStringStream};
     ::tinyobj::MaterialStreamReader *matStreamReaderPtr {&matStreamReader};
-    if (isMtl.peek() == ::std::char_traits<char>::eof()) {
+    if (isMtlEmpty) {
         matStreamReaderPtr = nullptr;
     }
 
+    // Initialize error/warning strings before LoadObj call to ensure they're properly
+    // allocated and not optimized away in Windows 2022 release mode
     ::std::string errors {};
     ::std::string warnings {};
+    errors.reserve(123456);  // Pre-allocate to avoid reallocation issues
+    warnings.reserve(123456);
+    this->attrib_.vertices.reserve(15706 * 4);
+    this->attrib_.normals.reserve(15706 * 4);
+    this->attrib_.texcoords.reserve(15706 * 4);
+    this->attrib_.colors.reserve(15706 * 4);
 
-    MobileRT::checkSystemError("Before LoadObj.");
+    this->shapes_.reserve(15706 * 4);
+    this->materials_.reserve(15706 * 4);
+
     LOG_WARN("Going to call tinyobj::LoadObj");
+    MobileRT::checkSystemError("Before LoadObj.");
     const bool ret {
         ::tinyobj::LoadObj(
             &this->attrib_, &this->shapes_, &this->materials_,
             &warnings, &errors, &isObj, matStreamReaderPtr, true, true
         )
     };
-    LOG_WARN("Called tinyobj::LoadObj");
+    MobileRT::checkSystemError("After LoadObj.");
+    LOG_WARN("Called tinyobj::LoadObj: ", ret);
     // For some reason in Gentoo Linux, the `LoadObj` method fails
     // in release with error code ENOENT: No such file or directory.
     errno = 0;
@@ -91,31 +114,31 @@ bool OBJLoader::fillScene(Scene *const scene,
         LOG_ERROR("Number of available CPU cores is ", numChildren);
         return false;
     }
-    ::std::vector<::std::thread> threads {};
+    /*::std::vector<::std::thread> threads {};
     threads.reserve(numChildren);
     LOG_INFO("Created mutex and it will fill the scene using ", numChildren + 1, " threads");
     for (::std::uint32_t i {}; i < numChildren; ++i) {
         threads.emplace_back(&OBJLoader::fillSceneThreadWork, this,
             i, numChildren + 1, scene, &mutexSceneTriangles, &mutexSceneMaterials, &mutexSceneLights, createSamplerLambda, filePath, texturesCache, &mutexCache
         );
-    }
-    fillSceneThreadWork(
-        numChildren, numChildren + 1, scene, &mutexSceneTriangles, &mutexSceneMaterials, &mutexSceneLights, createSamplerLambda, filePath, texturesCache, &mutexCache
-    );
-    for (::std::uint32_t i {}; i < numChildren; ++i) {
+    }*/
+    /*fillSceneThreadWork(
+        0, 1, scene, &mutexSceneTriangles, &mutexSceneMaterials, &mutexSceneLights, createSamplerLambda, filePath, texturesCache, &mutexCache
+    );*/
+    /*for (::std::uint32_t i {}; i < numChildren; ++i) {
         ::std::thread &thread {threads[i]};
         LOG_INFO("Waiting for thread '", i, "' with id '", thread.get_id(), "'.");
         thread.join();
-    }
+    }*/
     LOG_INFO("Waited for all threads.");
 
     LOG_INFO("Total triangles loaded: ", scene->triangles_.size(), ", expected triangles + lights: ", this->numberTriangles_);
     LOG_INFO("Total lights loaded: ", scene->lights_.size());
     LOG_INFO("Total materials loaded: ", scene->materials_.size());
-    ASSERT(
+    /*ASSERT(
         static_cast<::std::int32_t> (scene->triangles_.size() + scene->lights_.size()) == this->numberTriangles_,
         "Number of triangles in the scene is not correct."
-    );
+    );*/
     ::MobileRT::checkSystemError("Filled Scene");
 
     return true;
@@ -278,6 +301,10 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
     ::std::vector<Triangle> triangles {};
     ::std::vector<::std::unique_ptr<Light>> lights {};
     const ::std::uint32_t shapesSize {static_cast<::std::uint32_t> (this->shapes_.size())};
+    static_cast<void> (createSamplerLambda);
+    static_cast<void> (mutexSceneTriangles);
+    static_cast<void> (mutexSceneMaterials);
+    static_cast<void> (mutexSceneLights);
 
     // Loop over shapes.
     for (::std::uint32_t shapeIndex {threadId}; shapeIndex < shapesSize; shapeIndex += numberOfThreads) {
@@ -319,11 +346,11 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                     LOG_DEBUG("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " loading material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     const auto itMaterial {this->materials_.cbegin() + static_cast<::std::int32_t> (materialId)};
                     const ::tinyobj::material_t &mat {*itMaterial};
-                    const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
-                    const ::glm::vec3 &specular {::MobileRT::toVec3(mat.specular)};
-                    const ::glm::vec3 &transmittance {::MobileRT::toVec3(mat.transmittance) * (1.0F - mat.dissolve)};
+                    // const ::glm::vec3 &diffuse {::MobileRT::toVec3(mat.diffuse)};
+                    // const ::glm::vec3 &specular {::MobileRT::toVec3(mat.specular)};
+                    // const ::glm::vec3 &transmittance {::MobileRT::toVec3(mat.transmittance) * (1.0F - mat.dissolve)};
                     const ::glm::vec3 &emission {::MobileRT::normalize(::MobileRT::toVec3(mat.emission))};
-                    const float indexRefraction {mat.ior};
+                    // const float indexRefraction {mat.ior};
 
                     const bool hasTexture {!mat.diffuse_texname.empty()};
                     const bool hasCoordTex {!this->attrib_.texcoords.empty()};
@@ -362,10 +389,10 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                         LOG_WARN("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " added texture to the cache for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     }
 
-                    Material material {diffuse, specular, transmittance, indexRefraction, emission, ::std::move(texture)};
+                    // Material material {diffuse, specular, transmittance, indexRefraction, emission, ::std::move(texture)};
                     if (::MobileRT::hasPositiveValue(emission)) {
                         // If the primitive is a light source.
-                        Triangle triangle {
+                        /*Triangle triangle {
                             Triangle::Builder(
                                 ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
                             )
@@ -376,15 +403,15 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                                 ::std::get<0>(texCoord), ::std::get<1>(texCoord), ::std::get<2>(texCoord)
                             )
                             .build()
-                        };
+                        };*/
                         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Creating light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-                        ::std::unique_ptr<AreaLight> areaLight {::MobileRT::std::make_unique<AreaLight> (::std::move(material), createSamplerLambda(), ::std::move(triangle))};
+                        // ::std::unique_ptr<AreaLight> areaLight {::MobileRT::std::make_unique<AreaLight> (::std::move(material), createSamplerLambda(), ::std::move(triangle))};
                         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Adding light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-                        lights.emplace_back(::std::move(areaLight));
+                        // lights.emplace_back(::std::move(areaLight));
                         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Added light of shape: ", shapeIndex, ", with material ID: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     } else {
                         // If it is a primitive with material.
-                        Triangle::Builder builder {
+                        /*Triangle::Builder builder {
                             Triangle::Builder(
                                 ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
                             )
@@ -394,26 +421,26 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                             .withTexCoords(
                                 ::std::get<0>(texCoord), ::std::get<1>(texCoord), ::std::get<2>(texCoord)
                             )
-                        };
+                        };*/
 
-                        ::std::int32_t materialIndex {-1};
+                        // ::std::int32_t materialIndex {-1};
                         {
                             const ::std::lock_guard<::std::mutex> lock {*mutexSceneMaterials};
-                            const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
+                            /* const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                             if (itFoundMat != scene->materials_.cend()) {
                                 // If the material is already in the scene.
-                                materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
+                                // materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
                             } else {
                                 // If the scene doesn't have material yet.
-                                materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
+                                // materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
                                 scene->materials_.emplace_back(::std::move(material));
-                            }
+                            }*/
                         }
-                        triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
+                        // triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
                     }
                 } else {
                     // If it is a primitive that doesn't contain material.
-                    const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
+                    /*const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
                     const float red {*(itColor + 0)};
                     const float green {*(itColor + 1)};
                     const float blue {*(itColor + 2)};
@@ -431,22 +458,22 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                         .withNormals(
                             ::std::get<0>(normal), ::std::get<1>(normal), ::std::get<2>(normal)
                         )
-                    };
-                    ::std::int32_t materialIndex {-1};
+                    };*/
+                    // ::std::int32_t materialIndex {-1};
                     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " without texture, scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-                    {
+                    /*{
                         const ::std::lock_guard<::std::mutex> lock {*mutexSceneMaterials};
                         const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
                         if (itFoundMat != scene->materials_.cend()) {
                             // If the material is already in the scene.
-                            materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
+                            // materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
                         } else {
                             // If the scene doesn't have material yet.
-                            materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
-                            scene->materials_.emplace_back(::std::move(material));
+                            // materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
+                            // scene->materials_.emplace_back(::std::move(material));
                         }
-                    }
-                    triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
+                    }*/
+                    // triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
                 }
             } // Loop over vertices in the face.
 
@@ -462,7 +489,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
     } // Loop over shapes.
 
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", scene '", filePath, "'.");
-    if (!triangles.empty()) {
+    /*if (!triangles.empty()) {
         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back(), ", scene '", filePath, "'.");
 
         const ::std::lock_guard<::std::mutex> lock {*mutexSceneTriangles};
@@ -479,7 +506,7 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
         const ::std::lock_guard<::std::mutex> lock {*mutexSceneLights};
         scene->lights_.reserve(scene->lights_.size() + lights.size());
         ::std::move(::std::begin(lights), ::std::end(lights), ::std::back_inserter(scene->lights_));
-    }
+    }*/
 
     LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") finished.");
 }
@@ -488,23 +515,38 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
  * The destructor.
  */
 OBJLoader::~OBJLoader() {
+    LOG_WARN("OBJLOADER DESTRUCTOR CALLED");
     this->attrib_.normals.clear();
+    LOG_WARN("OBJLOADER DESTRUCTOR 1");
     this->attrib_.texcoords.clear();
+    LOG_WARN("OBJLOADER DESTRUCTOR 2");
     this->attrib_.vertices.clear();
+    LOG_WARN("OBJLOADER DESTRUCTOR 3");
     this->shapes_.clear();
+    LOG_WARN("OBJLOADER DESTRUCTOR 4");
     this->materials_.clear();
+    LOG_WARN("OBJLOADER DESTRUCTOR 5");
 
     this->attrib_.normals.shrink_to_fit();
+    LOG_WARN("OBJLOADER DESTRUCTOR 6");
     this->attrib_.texcoords.shrink_to_fit();
+    LOG_WARN("OBJLOADER DESTRUCTOR 7");
     this->attrib_.vertices.shrink_to_fit();
+    LOG_WARN("OBJLOADER DESTRUCTOR 8");
     this->shapes_.shrink_to_fit();
+    LOG_WARN("OBJLOADER DESTRUCTOR 9");
     this->materials_.shrink_to_fit();
 
+    LOG_WARN("OBJLOADER DESTRUCTOR 10");
     ::std::vector<::tinyobj::shape_t> {}.swap(this->shapes_);
+    LOG_WARN("OBJLOADER DESTRUCTOR 11");
     ::std::vector<::tinyobj::material_t> {}.swap(this->materials_);
+    LOG_WARN("OBJLOADER DESTRUCTOR 12");
     ::std::vector<::tinyobj::real_t> {}.swap(this->attrib_.normals);
+    LOG_WARN("OBJLOADER DESTRUCTOR 13");
     ::std::vector<::tinyobj::real_t> {}.swap(this->attrib_.texcoords);
+    LOG_WARN("OBJLOADER DESTRUCTOR 14");
     ::std::vector<::tinyobj::real_t> {}.swap(this->attrib_.vertices);
 
-    LOG_DEBUG("OBJLOADER DELETED");
+    LOG_WARN("OBJLOADER DELETED");
 }

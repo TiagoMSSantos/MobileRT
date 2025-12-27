@@ -103,7 +103,7 @@ void MainWindow::setImage(const ::MobileRT::Config &config, const bool async) {
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent) {
     LOG_DEBUG("KEY PRESSED");
     if (keyEvent->key() == ::Qt::Key_Escape) {
-        ::QApplication::exit();
+        ::QApplication::exit(106);
     }
 }
 
