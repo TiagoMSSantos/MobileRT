@@ -235,6 +235,7 @@ execute() {
   echo "WIDTH = ${WIDTH}";
   echo "HEIGHT = ${HEIGHT}";
   echo "OBJ = ${OBJ}";
+  echo 'execute';
 
   #perf script report callgrind > perf.callgrind
   #kcachegrind perf.callgrind
@@ -270,6 +271,7 @@ debug() {
   echo "SHADER = ${SHADER}";
   echo "SCENE = ${SCENE}";
   echo "ACC = ${ACC}";
+  echo 'debug';
 
   # gdb --args \
   "${BIN_DEBUG_EXE}" \
@@ -295,13 +297,21 @@ executeTimeout() {
   set +u;
   if [ "${1}" = 'release' ]; then
     echo 'Executing in release mode.';
-    ls -lahp "${MOBILERT_PATH}/build_release/bin/" || true;
+    echo 'ls build_release/bin:';
+    ls -lahp "${MOBILERT_PATH}/build_release/bin";
+    echo 'ls build_release/bin/Release:';
     ls -lahp "${MOBILERT_PATH}/build_release/bin/Release" || true;
+    echo 'ls build_release/lib/Release:';
+    ls -lahp "${MOBILERT_PATH}/build_release/lib/Release" || true;
     BIN_PATH_EXE="${BIN_RELEASE_EXE}";
   elif [ "${1}" = 'debug' ]; then
     echo 'Executing in debug mode.';
-    ls -lahp "${MOBILERT_PATH}/build_debug/bin/" || true;
+    echo 'ls build_debug/bin:';
+    ls -lahp "${MOBILERT_PATH}/build_debug/bin";
+    echo 'ls build_debug/bin/Debug:';
     ls -lahp "${MOBILERT_PATH}/build_debug/bin/Debug" || true;
+    echo 'ls build_debug/lib/Debug:';
+    ls -lahp "${MOBILERT_PATH}/build_debug/lib/Debug" || true;
     BIN_PATH_EXE="${BIN_DEBUG_EXE}";
   fi
   set -u;
@@ -330,10 +340,13 @@ executeTimeout() {
   ls -lahp "${OBJ}";
   ls -lahp "${MTL}";
   ls -lahp "${CAM}";
-  QT_QPA_PLATFORM='offscreen' timeout "${3}" "${BIN_PATH_EXE}" \
+  ls -lahp "${BIN_PATH_EXE}";
+  echo 'executeTimeout';
+  QT_QPA_PLATFORM='offscreen' PATH=./build_release/bin:./build_debug/bin:"${PATH}" timeout "${3}" "${BIN_PATH_EXE}" \
     "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" \
     "${REP}" "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}";
   returnValue="$?";
+  echo 'executeTimeout finished';
   return "${returnValue}";
 }
 
@@ -385,6 +398,7 @@ profile() {
 
             PLOT_FILE="SC${SCENE}${SEP}SH${SHADER}${SEP}A${ACC}${SEP}R${WIDTH}x${HEIGHT}";
 
+            echo 'profile';
             "${BIN_RELEASE_PATH}"/AppMobileRT \
               "${THREAD}" "${SHADER}" "${SCENE}" "${SPP}" "${SPL}" "${WIDTH}" "${HEIGHT}" "${ACC}" "${REP}" \
               "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}" |
@@ -445,6 +459,7 @@ executePerf() {
   # kcachegrind perf.callgrind
   # perf record -g --call-graph 'fp' --freq=3250 --sample-cpu --period
   cpuArch="$(uname -m)";
+  echo 'executePerf';
   if [ "${cpuArch}" != 'aarch64' ]; then
     QT_QPA_PLATFORM='offscreen' perf stat --detailed --detailed --detailed --verbose --output perf.log -- \
       "${BIN_PATH_EXE}" \

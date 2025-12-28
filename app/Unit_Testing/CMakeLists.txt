@@ -76,7 +76,7 @@ target_compile_options( ${PROJECT_NAME} PRIVATE
 target_compile_options( ${PROJECT_NAME} PRIVATE
   $<$<CONFIG:DEBUG>:${COMMON_FLAGS_TEST}> )
 target_compile_options( ${PROJECT_NAME} PRIVATE
-  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE}> )
+  $<$<CONFIG:RELEASE>:${COMMON_FLAGS_RELEASE_WINDOWS_2022}> )
 
 # Turn off warnings because of Google Test
 if( NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio" )
