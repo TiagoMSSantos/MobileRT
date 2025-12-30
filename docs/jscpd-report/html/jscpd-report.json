@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-12-30T13:15:33.436Z",
+    "detectionDate": "2025-12-30T18:39:22.511Z",
     "formats": {
       "java": {
         "sources": {
@@ -2045,26 +2045,26 @@
             "newClones": 0
           },
           ".github/workflows/codeql.yml": {
-            "lines": 351,
-            "tokens": 2147,
+            "lines": 350,
+            "tokens": 2141,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 59,
-            "duplicatedTokens": 325,
-            "percentage": 16.81,
-            "percentageTokens": 15.14,
+            "clones": 1,
+            "duplicatedLines": 42,
+            "duplicatedTokens": 226,
+            "percentage": 12,
+            "percentageTokens": 10.56,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
-            "lines": 219,
-            "tokens": 1225,
+            "lines": 218,
+            "tokens": 1219,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 59,
-            "duplicatedTokens": 325,
-            "percentage": 26.94,
-            "percentageTokens": 26.53,
+            "clones": 1,
+            "duplicatedLines": 42,
+            "duplicatedTokens": 226,
+            "percentage": 19.27,
+            "percentageTokens": 18.54,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2166,14 +2166,14 @@
           }
         },
         "total": {
-          "lines": 2650,
-          "tokens": 15898,
+          "lines": 2648,
+          "tokens": 15886,
           "sources": 23,
-          "clones": 5,
-          "duplicatedLines": 172,
-          "duplicatedTokens": 930,
-          "percentage": 6.49,
-          "percentageTokens": 5.85,
+          "clones": 4,
+          "duplicatedLines": 155,
+          "duplicatedTokens": 831,
+          "percentage": 5.85,
+          "percentageTokens": 5.23,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3272,14 +3272,14 @@
       }
     },
     "total": {
-      "lines": 29929,
-      "tokens": 231608,
+      "lines": 29927,
+      "tokens": 231596,
       "sources": 259,
-      "clones": 113,
-      "duplicatedLines": 1367,
-      "duplicatedTokens": 13174,
-      "percentage": 4.57,
-      "percentageTokens": 5.69,
+      "clones": 112,
+      "duplicatedLines": 1350,
+      "duplicatedTokens": 13075,
+      "percentage": 4.51,
+      "percentageTokens": 5.65,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7062,42 +7062,6 @@
           "line": 78,
           "column": 55,
           "position": 375
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 18,
-      "fragment": "uses: actions/setup-java@v5\n      with:\n        # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml\n        java-version: 21\n        distribution: zulu\n        java-package: jdk\n        check-latest: false\n        server-id: github\n        server-username: GITHUB_ACTOR\n        server-password: GITHUB_TOKEN\n        settings-path: ~/.gradle\n        overwrite-settings: true\n        gpg-private-key: ''\n        gpg-passphrase: GPG_PASSPHRASE\n        cache: gradle\n        cache-dependency-path: '**/build.gradle'\n\n    - name: Delete",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/android_repeatable.yml",
-        "start": 81,
-        "end": 98,
-        "startLoc": {
-          "line": 81,
-          "column": 7,
-          "position": 476
-        },
-        "endLoc": {
-          "line": 98,
-          "column": 7,
-          "position": 575
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/codeql.yml",
-        "start": 105,
-        "end": 122,
-        "startLoc": {
-          "line": 105,
-          "column": 7,
-          "position": 578
-        },
-        "endLoc": {
-          "line": 122,
-          "column": 4,
-          "position": 677
         }
       }
     },

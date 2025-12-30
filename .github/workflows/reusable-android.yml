@@ -68,7 +68,6 @@ jobs:
           overwrite-settings: true
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
-          cache: gradle
           cache-dependency-path: '**/build.gradle'
 
       - name: Add custom environment variables
@@ -391,7 +390,6 @@ jobs:
           overwrite-settings: true
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
-          cache: gradle
           cache-dependency-path: '**/build.gradle'
 
       - name: Add custom environment variables
@@ -742,7 +740,6 @@ jobs:
           overwrite-settings: true
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
-          cache: gradle
           cache-dependency-path: '**/build.gradle'
 
       - name: Add custom environment variables
@@ -979,7 +976,6 @@ jobs:
           overwrite-settings: true
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
-          cache: gradle
           cache-dependency-path: '**/build.gradle'
 
       - name: Add custom environment variables

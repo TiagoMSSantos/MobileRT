@@ -116,7 +116,6 @@ jobs:
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
-        cache: gradle
         cache-dependency-path: '**/build.gradle'
 
     - name: Add project root path
