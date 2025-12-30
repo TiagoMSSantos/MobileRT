@@ -69,7 +69,7 @@ buildscript {
             }
         }
         if (androidApiVersionValue >= 16) {
-            gradle_version = '8.13.2'
+            gradle_version = '9.1.0-alpha01'
             gradle_versions_plugin_version = '0.52.0'
             kotlin_gradle_plugin_version = '2.3.0'
         }
@@ -148,7 +148,7 @@ tasks.named('wrapper', Wrapper) {it ->
     println('Setting Gradle wrapper version')
     it.distributionType = Wrapper.DistributionType.BIN
     if (androidApiVersionValue >= 16) {
-        it.gradleVersion = '9.0.0'
+        it.gradleVersion = '9.2.1'
     } else {
         it.gradleVersion = '8.7'
     }

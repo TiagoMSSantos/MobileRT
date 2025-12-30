@@ -227,10 +227,11 @@ android {
         }
     }
 
-    configurations {
+    // Set configurations lazily to avoid "resolving the special 'all' configuration" error
+    configurations.configureEach {
         // Necessary to remove `listenablefuture` from dependencies:
         // https://stackoverflow.com/questions/56639529/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
-        all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+        exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 
     // Setup default configurations
