@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2025-09-21T14:22:24.992Z",
+    "detectionDate": "2025-12-30T10:49:16.293Z",
     "formats": {
       "java": {
         "sources": {
@@ -1297,8 +1297,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.cpp": {
-            "lines": 317,
-            "tokens": 2391,
+            "lines": 321,
+            "tokens": 2409,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1874,8 +1874,8 @@
           }
         },
         "total": {
-          "lines": 6130,
-          "tokens": 61835,
+          "lines": 6134,
+          "tokens": 61853,
           "sources": 59,
           "clones": 34,
           "duplicatedLines": 334,
@@ -1997,8 +1997,8 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 411,
-            "tokens": 2156,
+            "lines": 412,
+            "tokens": 2162,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2166,8 +2166,8 @@
           }
         },
         "total": {
-          "lines": 2649,
-          "tokens": 15892,
+          "lines": 2650,
+          "tokens": 15898,
           "sources": 23,
           "clones": 5,
           "duplicatedLines": 172,
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 780,
-            "tokens": 5701,
+            "lines": 782,
+            "tokens": 5742,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2253,14 +2253,14 @@
             "newClones": 0
           },
           "scripts/profile.sh": {
-            "lines": 528,
-            "tokens": 3563,
+            "lines": 553,
+            "tokens": 3794,
             "sources": 1,
             "clones": 5,
-            "duplicatedLines": 71,
-            "duplicatedTokens": 517,
-            "percentage": 13.45,
-            "percentageTokens": 14.51,
+            "duplicatedLines": 69,
+            "duplicatedTokens": 519,
+            "percentage": 12.48,
+            "percentageTokens": 13.68,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2338,14 +2338,14 @@
           }
         },
         "total": {
-          "lines": 4590,
-          "tokens": 30964,
+          "lines": 4617,
+          "tokens": 31236,
           "sources": 13,
           "clones": 11,
-          "duplicatedLines": 244,
-          "duplicatedTokens": 1205,
-          "percentage": 5.32,
-          "percentageTokens": 3.89,
+          "duplicatedLines": 243,
+          "duplicatedTokens": 1206,
+          "percentage": 5.26,
+          "percentageTokens": 3.86,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2390,13 +2390,13 @@
           },
           "app/Unit_Testing/CMakeLists.txt": {
             "lines": 103,
-            "tokens": 643,
+            "tokens": 647,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 23,
-            "duplicatedTokens": 92,
-            "percentage": 22.33,
-            "percentageTokens": 14.31,
+            "duplicatedLines": 15,
+            "duplicatedTokens": 81,
+            "percentage": 14.56,
+            "percentageTokens": 12.52,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2429,10 +2429,10 @@
             "tokens": 329,
             "sources": 1,
             "clones": 1,
-            "duplicatedLines": 23,
-            "duplicatedTokens": 92,
-            "percentage": 41.82,
-            "percentageTokens": 27.96,
+            "duplicatedLines": 15,
+            "duplicatedTokens": 81,
+            "percentage": 27.27,
+            "percentageTokens": 24.62,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2521,8 +2521,8 @@
             "newClones": 0
           },
           "app/CMakeLists.txt": {
-            "lines": 679,
-            "tokens": 4844,
+            "lines": 686,
+            "tokens": 4955,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2558,14 +2558,14 @@
           }
         },
         "total": {
-          "lines": 2445,
-          "tokens": 24490,
+          "lines": 2452,
+          "tokens": 24605,
           "sources": 17,
           "clones": 1,
-          "duplicatedLines": 23,
-          "duplicatedTokens": 92,
-          "percentage": 0.94,
-          "percentageTokens": 0.38,
+          "duplicatedLines": 15,
+          "duplicatedTokens": 81,
+          "percentage": 0.61,
+          "percentageTokens": 0.33,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3177,8 +3177,8 @@
             "newClones": 0
           },
           "gradle.properties": {
-            "lines": 91,
-            "tokens": 223,
+            "lines": 88,
+            "tokens": 213,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3190,8 +3190,8 @@
           }
         },
         "total": {
-          "lines": 132,
-          "tokens": 347,
+          "lines": 129,
+          "tokens": 337,
           "sources": 3,
           "clones": 0,
           "duplicatedLines": 0,
@@ -3272,14 +3272,14 @@
       }
     },
     "total": {
-      "lines": 29893,
-      "tokens": 231207,
+      "lines": 29929,
+      "tokens": 231608,
       "sources": 259,
       "clones": 113,
-      "duplicatedLines": 1376,
-      "duplicatedTokens": 13184,
-      "percentage": 4.6,
-      "percentageTokens": 5.7,
+      "duplicatedLines": 1367,
+      "duplicatedTokens": 13174,
+      "percentage": 4.57,
+      "percentageTokens": 5.69,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6887,44 +6887,44 @@
     },
     {
       "format": "markdown",
-      "lines": 24,
-      "fragment": "#############################\n\n\n###############################################################################\n# Set headers\n###############################################################################\nmessage( STATUS \"Adding MobileRT and third party headers.\" )\ntarget_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC \"${THIRD_PARTY_HEADERS}\" )\ntarget_include_directories( ${PROJECT_NAME} PRIVATE \"${MOBILE_R",
+      "lines": 16,
+      "fragment": "#############################\n\n\n###############################################################################\n# Set headers\n###############################################################################\nmessage( STATUS \"Adding MobileRT and third party headers.\" )\ntarget_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC \"${THIRD_PARTY_HEADERS}\" )\ntarget_include_directories( ${PROJECT_NAME} P",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/CMakeLists.txt",
         "start": 30,
-        "end": 53,
+        "end": 45,
         "startLoc": {
           "line": 30,
           "column": 2,
           "position": 186
         },
         "endLoc": {
-          "line": 53,
-          "column": 9,
-          "position": 278
+          "line": 45,
+          "column": 16,
+          "position": 267
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/CMakeLists.txt",
         "start": 70,
-        "end": 82,
+        "end": 79,
         "startLoc": {
           "line": 70,
           "column": 2,
           "position": 393
         },
         "endLoc": {
-          "line": 82,
-          "column": 4,
-          "position": 474
+          "line": 79,
+          "column": 6,
+          "position": 468
         }
       }
     },
     {
       "format": "yaml",
       "lines": 23,
-      "fragment": "-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v5\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/jekyll-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/jekyll-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/jekyll.yml",
@@ -6960,7 +6960,7 @@
     {
       "format": "yaml",
       "lines": 50,
-      "fragment": "- '!**/CMakeLists*'\n    - '!**/AndroidTest/resources/**'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!**/*.ui*'\n\npermissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v5\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/docker-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "- '!**/CMakeLists*'\n    - '!**/AndroidTest/resources/**'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!**/*.ui*'\n\npermissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/docker-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/docker.yml",
@@ -6996,7 +6996,7 @@
     {
       "format": "yaml",
       "lines": 43,
-      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v5\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/codeql-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/codeql-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/codeql.yml",
@@ -7032,7 +7032,7 @@
     {
       "format": "yaml",
       "lines": 43,
-      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v5\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/android_repeatable-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/android_repeatable-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android_repeatable.yml",
@@ -7211,22 +7211,22 @@
     },
     {
       "format": "bash",
-      "lines": 23,
-      "fragment": "() {\n  set +u;\n  if [ -z \"${1}\" ]; then\n    WIDTH='900';\n    HEIGHT='900';\n  else\n    WIDTH=\"${1}\";\n    HEIGHT=\"${1}\";\n  fi\n  if [ -z \"${1}\" ]; then\n    ASYNC='true';\n  else\n    ASYNC=\"${2}\";\n  fi\n  set -u;\n\n  echo '';\n  echo \"THREAD = ${THREAD}\";\n  echo \"SHADER = ${SHADER}\";\n  echo \"SCENE = ${SCENE}\";\n  echo \"ACC = ${ACC}\";\n\n  # gdb --args \\",
+      "lines": 22,
+      "fragment": "() {\n  set +u;\n  if [ -z \"${1}\" ]; then\n    WIDTH='900';\n    HEIGHT='900';\n  else\n    WIDTH=\"${1}\";\n    HEIGHT=\"${1}\";\n  fi\n  if [ -z \"${1}\" ]; then\n    ASYNC='true';\n  else\n    ASYNC=\"${2}\";\n  fi\n  set -u;\n\n  echo '';\n  echo \"THREAD = ${THREAD}\";\n  echo \"SHADER = ${SHADER}\";\n  echo \"SCENE = ${SCENE}\";\n  echo \"ACC = ${ACC}\";\n  echo 'debug'",
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
-        "start": 252,
+        "start": 253,
         "end": 274,
         "startLoc": {
-          "line": 252,
+          "line": 253,
           "column": 6,
-          "position": 1378
+          "position": 1384
         },
         "endLoc": {
           "line": 274,
-          "column": 15,
-          "position": 1522
+          "column": 8,
+          "position": 1529
         }
       },
       "secondFile": {
@@ -7240,8 +7240,8 @@
         },
         "endLoc": {
           "line": 234,
-          "column": 5,
-          "position": 1253
+          "column": 10,
+          "position": 1255
         }
       }
     },
