@@ -245,7 +245,7 @@ public final class UtilsT {
             } else {
                 bitmap = DeviceCapture.takeScreenshot();
             }
-            final File path = new File(UtilsContext.getInternalStorageFilePath(InstrumentationRegistry.getInstrumentation().getTargetContext()), "MobileRT" + ConstantsUI.FILE_SEPARATOR + "screenshots");
+            final File path = new File(UtilsContext.getInternalStorageFilePath(), "MobileRT" + ConstantsUI.FILE_SEPARATOR + "screenshots");
             path.mkdirs();
             final File imageFile = new File(path, name);
             try (final FileOutputStream out = new FileOutputStream(imageFile)) {

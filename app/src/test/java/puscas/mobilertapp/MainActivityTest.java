@@ -191,13 +191,13 @@ public final class MainActivityTest {
         EasyMock.replay(intentMocked, uriMocked);
 
         PowerMock.mockStatic(UtilsContext.class);
-        EasyMock.expect(UtilsContext.getInternalStorageFilePath(EasyMock.anyObject(Context.class)))
+        EasyMock.expect(UtilsContext.getInternalStorageFilePath())
             .andReturn(new File (PATH_TO_INTERNAL_STORAGE))
             .anyTimes();
         EasyMock.expect(UtilsContext.getSdCardFilePath(EasyMock.anyObject(Context.class)))
             .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))
             .anyTimes();
-        EasyMock.expect(UtilsContext.getInternalStoragePath(EasyMock.anyObject(Context.class)))
+        EasyMock.expect(UtilsContext.getInternalStoragePath())
             .andReturn(PATH_TO_INTERNAL_STORAGE)
             .anyTimes();
         EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))
@@ -250,13 +250,13 @@ public final class MainActivityTest {
         EasyMock.replay(intentMocked, uriMocked);
 
         PowerMock.mockStatic(UtilsContext.class);
-        EasyMock.expect(UtilsContext.getInternalStorageFilePath(EasyMock.anyObject(Context.class)))
+        EasyMock.expect(UtilsContext.getInternalStorageFilePath())
             .andReturn(new File (PATH_TO_INTERNAL_STORAGE))
             .anyTimes();
         EasyMock.expect(UtilsContext.getSdCardFilePath(EasyMock.anyObject(Context.class)))
             .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))
             .anyTimes();
-        EasyMock.expect(UtilsContext.getInternalStoragePath(EasyMock.anyObject(Context.class)))
+        EasyMock.expect(UtilsContext.getInternalStoragePath())
             .andReturn(PATH_TO_INTERNAL_STORAGE)
             .anyTimes();
         EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))

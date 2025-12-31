@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2025-12-31T11:19:55.102Z",
+    "detectionDate": "2025-12-31T11:29:19.394Z",
     "formats": {
       "java": {
         "sources": {
@@ -403,8 +403,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/utils/UtilsContext.java": {
-            "lines": 292,
-            "tokens": 1975,
+            "lines": 290,
+            "tokens": 1960,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -644,13 +644,13 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/utils/UtilsT.java": {
             "lines": 261,
-            "tokens": 1917,
+            "tokens": 1908,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 17,
             "duplicatedTokens": 225,
             "percentage": 6.51,
-            "percentageTokens": 11.74,
+            "percentageTokens": 11.79,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -692,7 +692,7 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/system/FileSystemTest.java": {
             "lines": 150,
-            "tokens": 1135,
+            "tokens": 1117,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -812,13 +812,13 @@
           },
           "app/src/test/java/puscas/mobilertapp/MainActivityTest.java": {
             "lines": 284,
-            "tokens": 2426,
+            "tokens": 2394,
             "sources": 1,
             "clones": 5,
             "duplicatedLines": 108,
-            "duplicatedTokens": 1153,
+            "duplicatedTokens": 1121,
             "percentage": 38.03,
-            "percentageTokens": 47.53,
+            "percentageTokens": 46.83,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1040,26 +1040,26 @@
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
             "lines": 484,
-            "tokens": 4401,
+            "tokens": 4392,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 8,
             "duplicatedTokens": 75,
             "percentage": 1.65,
-            "percentageTokens": 1.7,
+            "percentageTokens": 1.71,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 9739,
-          "tokens": 67676,
+          "lines": 9737,
+          "tokens": 67593,
           "sources": 87,
           "clones": 59,
           "duplicatedLines": 574,
-          "duplicatedTokens": 5416,
-          "percentage": 5.89,
-          "percentageTokens": 8,
+          "duplicatedTokens": 5400,
+          "percentage": 5.9,
+          "percentageTokens": 7.99,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3274,14 +3274,14 @@
       }
     },
     "total": {
-      "lines": 29927,
-      "tokens": 231596,
+      "lines": 29925,
+      "tokens": 231513,
       "sources": 259,
       "clones": 112,
       "duplicatedLines": 1350,
-      "duplicatedTokens": 13075,
+      "duplicatedTokens": 13059,
       "percentage": 4.51,
-      "percentageTokens": 5.65,
+      "percentageTokens": 5.64,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4955,12 +4955,12 @@
         "startLoc": {
           "line": 233,
           "column": 37,
-          "position": 1822
+          "position": 1806
         },
         "endLoc": {
           "line": 246,
           "column": 6,
-          "position": 1968
+          "position": 1952
         }
       },
       "secondFile": {
@@ -4982,7 +4982,7 @@
     {
       "format": "java",
       "lines": 38,
-      "fragment": ")\n            .anyTimes();\n        EasyMock.replay(intentMocked, uriMocked);\n\n        PowerMock.mockStatic(UtilsContext.class);\n        EasyMock.expect(UtilsContext.getInternalStorageFilePath(EasyMock.anyObject(Context.class)))\n            .andReturn(new File (PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardFilePath(EasyMock.anyObject(Context.class)))\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getInternalStoragePath(EasyMock.anyObject(Context.class)))\n            .andReturn(PATH_TO_INTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))\n            .andReturn(PATH_TO_EXTERNAL_STORAGE)\n            .anyTimes();\n        PowerMock.mockStatic(Environment.class);\n        EasyMock.expect(Environment.getExternalStorageDirectory())\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(Environment.getDataDirectory())\n            .andReturn(new File(PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        PowerMock.replayAll();\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isNull();\n\n        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, \"OPEN_FILE_REQUEST_CODE\"));\n        this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isEqualTo(PATH_TO_OBJ_FILE);\n    }\n}",
+      "fragment": ")\n            .anyTimes();\n        EasyMock.replay(intentMocked, uriMocked);\n\n        PowerMock.mockStatic(UtilsContext.class);\n        EasyMock.expect(UtilsContext.getInternalStorageFilePath())\n            .andReturn(new File (PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardFilePath(EasyMock.anyObject(Context.class)))\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getInternalStoragePath())\n            .andReturn(PATH_TO_INTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))\n            .andReturn(PATH_TO_EXTERNAL_STORAGE)\n            .anyTimes();\n        PowerMock.mockStatic(Environment.class);\n        EasyMock.expect(Environment.getExternalStorageDirectory())\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(Environment.getDataDirectory())\n            .andReturn(new File(PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        PowerMock.replayAll();\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isNull();\n\n        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, \"OPEN_FILE_REQUEST_CODE\"));\n        this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isEqualTo(PATH_TO_OBJ_FILE);\n    }\n}",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
@@ -4991,12 +4991,12 @@
         "startLoc": {
           "line": 248,
           "column": 9,
-          "position": 2036
+          "position": 2020
         },
         "endLoc": {
           "line": 285,
           "column": 2,
-          "position": 2426
+          "position": 2394
         }
       },
       "secondFile": {
@@ -5011,7 +5011,7 @@
         "endLoc": {
           "line": 231,
           "column": 8,
-          "position": 1811
+          "position": 1795
         }
       }
     },
