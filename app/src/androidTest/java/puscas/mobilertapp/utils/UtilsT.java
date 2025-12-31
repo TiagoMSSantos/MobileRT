@@ -238,7 +238,7 @@ public final class UtilsT {
     * @param name The name of the screenshot.
     */
     public static void captureScreenshot(final String name) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             final Bitmap bitmap;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 bitmap = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
