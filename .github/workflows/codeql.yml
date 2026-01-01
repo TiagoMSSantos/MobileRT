@@ -153,6 +153,8 @@ jobs:
         config-file: .github/codeql/codeql-config.yml
         source-root: ${{ env.source_root }}
         debug: true
+        trap-caching: false
+        dependency-caching: false
 
     - name: Set Qt CPU Architecture (Windows & MacOS)
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
