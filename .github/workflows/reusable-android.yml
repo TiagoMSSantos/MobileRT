@@ -92,7 +92,7 @@ jobs:
         id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        uses: dawidd6/action-download-artifact@ac66b43f0e6a346234dd65d4d0c8fbb31cb316e5 # v11
+        uses: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
         continue-on-error: true
         with:
           # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
@@ -312,10 +312,10 @@ jobs:
           find ${{ env.GRADLE_PATH }} -iname "*.jpg*" -exec rm -rf {} \;
           find ${{ env.GRADLE_PATH }} -iname "*.jpeg*" -exec rm -rf {} \;
           find ${{ env.GRADLE_PATH }} -iname "*.gif*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -name "*README*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -name "*NOTICE*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -name "*LICENSE*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -name "transforms" -exec rm -rf {} \;
+          find ${{ env.GRADLE_PATH }} -iname "*README*" -exec rm -rf {} \;
+          find ${{ env.GRADLE_PATH }} -iname "*NOTICE*" -exec rm -rf {} \;
+          find ${{ env.GRADLE_PATH }} -iname "*LICENSE*" -exec rm -rf {} \;
+          find ${{ env.GRADLE_PATH }} -iname "transforms" -exec rm -rf {} \;
 
           find ${{ env.GRADLE_PATH }} -empty -exec rm -rf {} \;
           find ${{ env.GRADLE_PATH }} -size 0 -exec rm -rf {} \;
@@ -323,18 +323,6 @@ jobs:
 
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && zipFilesForArtifact ${{ env.GRADLE_PATH }} gradle-packages.zip;
-
-      - name: Upload gradle packages to cache
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
-        uses: actions/cache/save@v4
-        with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          upload-chunk-size: 536870912
-          enableCrossOsArchive: false
-          path: |
-            ${{ env.GRADLE_PATH }}/gradle-packages.zip
 
       - name: Upload Gradle packages as artifact
         timeout-minutes: 20
@@ -430,19 +418,64 @@ jobs:
             app/.cxx
             app/third_party
 
-      - name: Download gradle packages from cache
+      # Useful step to avoid gradle having to download Gradle dependencies
+      # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
+      - name: Download Gradle packages artifact
+        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        uses: actions/cache/restore@v4
+        uses: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
-          fail-on-cache-miss: true
-          lookup-only: false
-          path: |
-            ${{ env.GRADLE_PATH }}/gradle-packages.zip
+          # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
+          # Required, if the artifact is from a different repo
+          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional, workflow file name or ID
+          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
+          workflow: android.yml
+          # Optional, the status or conclusion of a completed workflow to search for
+          # Can be one of a workflow conclusion:
+          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+          # Or a workflow status:
+          #   "completed", "in_progress", "queued"
+          workflow_conclusion: ''
+          # Optional, will get head commit SHA
+          pr: ${{ github.event.pull_request.number }}
+          # Optional, no need to specify if PR is
+          commit: ${{ github.event.pull_request.head.sha }}
+          # Optional, will use the branch
+          # branch: master
+          # Optional, defaults to all types
+          # event: push
+          # Optional, will use specified workflow run
+          # run_id: 1122334455
+          # Optional, run number from the workflow
+          # run_number: 34
+          # Optional, uploaded artifact name,
+          # will download all artifacts if not specified
+          # and extract them into respective subdirectories
+          # https://github.com/actions/download-artifact#download-all-artifacts
+          name: gradle-packages
+          # Optional, a directory where to extract artifact(s), defaults to the current directory
+          path: ${{ env.GRADLE_PATH }}
+          # Optional, defaults to current repo
+          repo: ${{ github.repository }}
+          # Optional, check the workflow run to whether it has an artifact
+          # then will get the last available artifact from the previous workflow
+          # default false, just try to download from the last one
+          check_artifacts:  true
+          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
+          # default false
+          search_artifacts: true
+          # Optional, choose to skip unpacking the downloaded artifact(s)
+          # default false
+          skip_unpack: true
+          # Optional, choose how to exit the action if no artifact is found
+          # can be one of:
+          #  "fail", "warn", "ignore"
+          # default fail
+          if_no_artifact_found: fail
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -756,19 +789,64 @@ jobs:
           du -h -d 1 ${HOME};
           echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
 
-      - name: Download gradle packages from cache
+      # Useful step to avoid gradle having to download Gradle dependencies
+      # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
+      - name: Download Gradle packages artifact
+        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        uses: actions/cache/restore@v4
+        uses: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
-          fail-on-cache-miss: true
-          lookup-only: false
-          path: |
-            ${{ env.GRADLE_PATH }}/gradle-packages.zip
+          # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
+          # Required, if the artifact is from a different repo
+          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional, workflow file name or ID
+          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
+          workflow: android.yml
+          # Optional, the status or conclusion of a completed workflow to search for
+          # Can be one of a workflow conclusion:
+          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+          # Or a workflow status:
+          #   "completed", "in_progress", "queued"
+          workflow_conclusion: ''
+          # Optional, will get head commit SHA
+          pr: ${{ github.event.pull_request.number }}
+          # Optional, no need to specify if PR is
+          commit: ${{ github.event.pull_request.head.sha }}
+          # Optional, will use the branch
+          # branch: master
+          # Optional, defaults to all types
+          # event: push
+          # Optional, will use specified workflow run
+          # run_id: 1122334455
+          # Optional, run number from the workflow
+          # run_number: 34
+          # Optional, uploaded artifact name,
+          # will download all artifacts if not specified
+          # and extract them into respective subdirectories
+          # https://github.com/actions/download-artifact#download-all-artifacts
+          name: gradle-packages
+          # Optional, a directory where to extract artifact(s), defaults to the current directory
+          path: ${{ env.GRADLE_PATH }}
+          # Optional, defaults to current repo
+          repo: ${{ github.repository }}
+          # Optional, check the workflow run to whether it has an artifact
+          # then will get the last available artifact from the previous workflow
+          # default false, just try to download from the last one
+          check_artifacts:  true
+          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
+          # default false
+          search_artifacts: true
+          # Optional, choose to skip unpacking the downloaded artifact(s)
+          # default false
+          skip_unpack: true
+          # Optional, choose how to exit the action if no artifact is found
+          # can be one of:
+          #  "fail", "warn", "ignore"
+          # default fail
+          if_no_artifact_found: fail
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -992,19 +1070,64 @@ jobs:
           du -h -d 1 ${HOME};
           echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
 
-      - name: Download gradle packages from cache
+      # Useful step to avoid gradle having to download Gradle dependencies
+      # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
+      - name: Download Gradle packages artifact
+        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
-        uses: actions/cache/restore@v4
+        uses: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: gradle_packages_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
-          fail-on-cache-miss: true
-          lookup-only: false
-          path: |
-            ${{ env.GRADLE_PATH }}/gradle-packages.zip
+          # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
+          # Required, if the artifact is from a different repo
+          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional, workflow file name or ID
+          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
+          workflow: android.yml
+          # Optional, the status or conclusion of a completed workflow to search for
+          # Can be one of a workflow conclusion:
+          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+          # Or a workflow status:
+          #   "completed", "in_progress", "queued"
+          workflow_conclusion: ''
+          # Optional, will get head commit SHA
+          pr: ${{ github.event.pull_request.number }}
+          # Optional, no need to specify if PR is
+          commit: ${{ github.event.pull_request.head.sha }}
+          # Optional, will use the branch
+          # branch: master
+          # Optional, defaults to all types
+          # event: push
+          # Optional, will use specified workflow run
+          # run_id: 1122334455
+          # Optional, run number from the workflow
+          # run_number: 34
+          # Optional, uploaded artifact name,
+          # will download all artifacts if not specified
+          # and extract them into respective subdirectories
+          # https://github.com/actions/download-artifact#download-all-artifacts
+          name: gradle-packages
+          # Optional, a directory where to extract artifact(s), defaults to the current directory
+          path: ${{ env.GRADLE_PATH }}
+          # Optional, defaults to current repo
+          repo: ${{ github.repository }}
+          # Optional, check the workflow run to whether it has an artifact
+          # then will get the last available artifact from the previous workflow
+          # default false, just try to download from the last one
+          check_artifacts:  true
+          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
+          # default false
+          search_artifacts: true
+          # Optional, choose to skip unpacking the downloaded artifact(s)
+          # default false
+          skip_unpack: true
+          # Optional, choose how to exit the action if no artifact is found
+          # can be one of:
+          #  "fail", "warn", "ignore"
+          # default fail
+          if_no_artifact_found: fail
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

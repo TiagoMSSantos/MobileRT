@@ -155,7 +155,7 @@ jobs:
         # Check available parameters in: https://github.com/docker/setup-buildx-action/blob/master/action.yml
         version: latest
         platforms: linux/amd64
-        cache-binary: true
+        cache-binary: false
         cleanup: false
 
     - name: Login to DockerHub Registry

@@ -182,7 +182,7 @@ jobs:
         dir: '${{ github.workspace }}'
         install-deps: 'false'
         modules: ''
-        cache: 'true'
+        cache: 'false'
         cache-key-prefix: '${{ env.qt_host }}-${{ env.qt_arch }}'
         setup-python: 'true'
         set-env: 'true'
@@ -218,7 +218,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language == 'java-kotlin'
       uses: github/codeql-action/autobuild@v4
-      continue-on-error: false
       env:
         MAKEFLAGS: "-j$(($(nproc --all) * 2 - 1))"
         GRADLE_OPTS: '-Xms8G -Xmx8G -XX:ActiveProcessorCount=5'
