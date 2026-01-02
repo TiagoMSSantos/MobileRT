@@ -347,8 +347,8 @@ waitForEmulator() {
   _waitForEmulatorToBoot;
 
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
-  sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
-  sh gradlew --parallel --daemon --no-rebuild -DtestType="${type}" -DandroidApiVersion="${android_api_version}" \
+  callCommandUntilSuccess 2 sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+  callCommandUntilSuccess 2 sh gradlew --parallel --daemon --no-rebuild -DtestType="${type}" -DandroidApiVersion="${android_api_version}" \
     -DabiFilters="[${cpu_architecture}]" --info --warning-mode fail --stacktrace;
 
   unlockDevice;
@@ -591,7 +591,7 @@ runInstrumentationTests() {
     for GRADLE_PROCESS in ${GRADLE_PROCESSES}; do
       kill -TERM "${GRADLE_PROCESS}";
     done;
-    sh gradlew --offline --parallel --stop \
+    callCommandUntilSuccess 2 sh gradlew --offline --parallel --stop \
       --no-rebuild \
       -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
       --info --warning-mode fail --stacktrace;
@@ -662,7 +662,7 @@ runInstrumentationTests() {
     # This allows for tests to pass when using Android emulator without hardware acceleration (e.g.: MacOS on Github Actions).
     echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
     adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
-    callCommandUntilSuccess 1 sh gradlew ${gradle_command} -DtestType="${type}" \
+    callCommandUntilSuccess 2 sh gradlew ${gradle_command} -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
@@ -686,7 +686,7 @@ runInstrumentationTests() {
     echo "Running test: ${run_test}";
     echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
     adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
-    sh gradlew --offline connectedAndroidTest -DtestType="${type}" \
+    callCommandUntilSuccess 2 sh gradlew --offline connectedAndroidTest -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       -DabiFilters="[${cpu_architecture}]" \

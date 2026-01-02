@@ -103,13 +103,13 @@ build() {
   export MAKEFLAGS="${jobsFlags}";
 
   echo 'Calling the Gradle assemble to compile code for Android.';
-  sh gradlew --offline --parallel \
+  callCommandUntilSuccess 2 sh gradlew --offline --parallel \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild --stop --info --warning-mode fail --stacktrace;
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
-  sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+  callCommandUntilSuccess 2 sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
   echo 'Compiling MobileRT.';
-  sh gradlew clean \
+  callCommandUntilSuccess 2 sh gradlew clean \
     build"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}" \
     assemble"${typeWithCapitalLetter}"AndroidTest \
@@ -124,7 +124,7 @@ build() {
     --console plain --info --warning-mode all --stacktrace;
   resCompile=${?};
   echo 'Compiling APK to execute Android instrumentation tests.';
-  sh gradlew createDebugAndroidTestApkListingFileRedirect \
+  callCommandUntilSuccess 2 sh gradlew createDebugAndroidTestApkListingFileRedirect \
     -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --profile --parallel --console plain --info --warning-mode fail --stacktrace;
   echo 'Android application compiled.';

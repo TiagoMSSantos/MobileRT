@@ -104,10 +104,11 @@ bool OBJLoader::fillScene(Scene *const scene,
     );
     for (::std::uint32_t i {}; i < numChildren; ++i) {
         ::std::thread &thread {threads[i]};
-        LOG_INFO("Waiting for thread '", i, "' with id '", thread.get_id(), "'.");
+        LOG_WARN("Waiting for thread '", i, "' with id '", thread.get_id(), "'.");
         thread.join();
+        LOG_WARN("Waited for thread '", i, "' with id '", thread.get_id(), "'.");
     }
-    LOG_INFO("Waited for all threads.");
+    LOG_WARN("Waited for all threads.");
 
     LOG_INFO("Total triangles loaded: ", scene->triangles_.size(), ", expected triangles + lights: ", this->numberTriangles_);
     LOG_INFO("Total lights loaded: ", scene->lights_.size());
@@ -251,15 +252,15 @@ Texture OBJLoader::getTextureFromCache(
 ) {
     if (texturesCache->find(texPath) == texturesCache->cend()) {// If the texture is not in the cache.
         const ::std::string texturePath {filePath + texPath};
-        LOG_INFO("Loading texture: ", texturePath);
+        LOG_DEBUG("Loading texture: ", texturePath);
         Texture texture {Texture::createTexture(texturePath)};
         LOG_INFO("Adding texture ", texturePath, " to the cache.");
-        mutexCache->lock();
-        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->try_emplace(texPath, ::std::move(texture))};
-        mutexCache->unlock();
-        LOG_INFO("Added texture ", texturePath, " to the cache.");
-        Texture res {::std::get<0>(pairResult)->second};
-        return res;
+        {
+            const ::std::lock_guard<::std::mutex> cacheLock {*mutexCache};
+            const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->try_emplace(texPath, ::std::move(texture))};
+            Texture res {::std::get<0>(pairResult)->second};
+            return res;
+        }
     }
 
     return texturesCache->find(texPath)->second;

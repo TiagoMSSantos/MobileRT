@@ -88,15 +88,15 @@ runUnitTests() {
   echo 'Calling Gradle test';
   echo 'Increasing ADB timeout to 10 minutes';
   export ADB_INSTALL_TIMEOUT=60000;
-  sh gradlew --offline --parallel \
+  callCommandUntilSuccess 2 sh gradlew --offline --parallel \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     -no-rebuild --stop --info --warning-mode fail --stacktrace;
 
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
-  sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+  callCommandUntilSuccess 2 sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
 
   echo 'Executing unit tests';
-  sh gradlew test"${type}"UnitTest --profile --parallel \
+  callCommandUntilSuccess 2 sh gradlew test"${type}"UnitTest --profile --parallel \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --no-rebuild \
     --console plain --info --warning-mode all --stacktrace;

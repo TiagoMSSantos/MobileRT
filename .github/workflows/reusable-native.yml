@@ -113,7 +113,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && (startsWith(inputs.host_os, 'windows') || startsWith(inputs.host_os, 'macos-12'))
         uses: jurplel/install-qt-action@d325aaf2a8baeeda41ad0b5d39f84a6af9bcf005 # v4.3.0
-        # Download Qt from: https://download.qt.io/online/qtsdkrepository/
+        # Download Qt from: https://download.qt.io/online/qtsdkrepository
         with:
           # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
           version: '${{ inputs.qt_version }}' # Also update: app/CMakeLists.txt
@@ -320,7 +320,7 @@ jobs:
       - name: Upload code coverage to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
@@ -352,7 +352,7 @@ jobs:
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}

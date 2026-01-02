@@ -615,6 +615,7 @@ jint Java_puscas_mobilertapp_MainRenderer_rtInitialize(
                             objFilePath,
                             &texturesCache_
                         )};
+                        LOG_WARN("OBJLOADER FILLED SCENE");
                         texturesCache_.clear();
                         MobileRT::checkSystemError("rtInitialize after filling scene");
                         if (!sceneBuilt) {

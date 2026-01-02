@@ -71,7 +71,7 @@ jobs:
         if: success()
         shell: bash
         run: |
-          # Android usage: https://apilevels.com/
+          # Android usage: https://apilevels.com
           MATRIX=$(echo $(cat .github/workflows/android-matrix.json) | sed 's/ //g');
           randomAndroidApi=$(shuf -i17-35 -n1);
           while [ "${randomAndroidApi}" = '19' ] || [ "${randomAndroidApi}" = '20' ] || [ "${randomAndroidApi}" = '21' ]; do

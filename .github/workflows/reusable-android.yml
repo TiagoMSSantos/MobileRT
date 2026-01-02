@@ -196,7 +196,7 @@ jobs:
         timeout-minutes: 8
         if: success()
         run: |
-          sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -259,12 +259,58 @@ jobs:
       - name: Upload generated binaries to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           upload-chunk-size: 536870912
           enableCrossOsArchive: false
+          path: |
+            app/build
+            app/.cxx
+            app/third_party
+
+      - name: Check generated binaries from cache
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/cache/restore@v5
+        with:
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
+          fail-on-cache-miss: true
+          lookup-only: true
+          path: |
+            app/build
+            app/.cxx
+            app/third_party
+
+      - name: Upload generated binaries to cache - retry
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: failure()
+        uses: actions/cache/save@v5
+        with:
+          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          upload-chunk-size: 536870912
+          enableCrossOsArchive: false
+          path: |
+            app/build
+            app/.cxx
+            app/third_party
+
+      - name: Check generated binaries from cache
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/cache/restore@v5
+        with:
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
+          fail-on-cache-miss: true
+          lookup-only: true
           path: |
             app/build
             app/.cxx
@@ -405,7 +451,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -555,7 +601,7 @@ jobs:
           else
             gradle_command='connectedAndroidTest';
           fi
-          sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -679,7 +725,7 @@ jobs:
       - name: Upload reports to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'debug'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -858,7 +904,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -920,7 +966,7 @@ jobs:
         timeout-minutes: 8
         if: success()
         run: |
-          sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -1042,7 +1088,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-          # Sonar recommended JVM: https://docs.sonarqube.org/latest/requirements/prerequisites-and-overview/
+          # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
           java-version: 21
           distribution: zulu
           java-package: jdk
@@ -1139,7 +1185,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -1184,7 +1230,7 @@ jobs:
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -1230,7 +1276,7 @@ jobs:
         timeout-minutes: 8
         if: success()
         run: |
-          sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             --info --warning-mode all --stacktrace sonar;
 
@@ -1239,11 +1285,11 @@ jobs:
         if: success()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
-          # https://docs.sonarqube.org/latest/requirements/prerequisites-and-overview/
+          # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+          # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
           GRADLE_OPTS: -Xms8G -Xmx8G -XX:ActiveProcessorCount=5
         run: |
-          sh gradlew --offline --profile --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew --offline --profile --parallel \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             --info --warning-mode all --stacktrace sonar;
 

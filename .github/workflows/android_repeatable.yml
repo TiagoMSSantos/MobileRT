@@ -156,7 +156,7 @@ jobs:
       timeout-minutes: 8
       if: success()
       run: |
-        sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+        . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
@@ -178,7 +178,7 @@ jobs:
       timeout-minutes: 8
       if: success()
       run: |
-        sh gradlew connectedAndroidTest --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+        . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew connectedAndroidTest --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
