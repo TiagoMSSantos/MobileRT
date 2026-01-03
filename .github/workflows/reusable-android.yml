@@ -45,31 +45,6 @@ jobs:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
 
-      - name: Validate codecov config
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'debug'
-        run: |
-          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
-
-      - name: Set up JDK
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/setup-java@v5
-        with:
-          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-          java-version: 21
-          distribution: zulu
-          java-package: jdk
-          check-latest: false
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          settings-path: ~/.gradle
-          overwrite-settings: true
-          gpg-private-key: ''
-          gpg-passphrase: GPG_PASSPHRASE
-          cache-dependency-path: '**/build.gradle'
-
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
@@ -130,6 +105,7 @@ jobs:
           path: ${{ env.GRADLE_PATH }}
           # Optional, defaults to current repo
           repo: ${{ github.repository }}
+          allow_forks: true
           # Optional, check the workflow run to whether it has an artifact
           # then will get the last available artifact from the previous workflow
           # default false, just try to download from the last one
@@ -150,11 +126,37 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && steps.download-gradle-artifact.outcome == 'success'
         run: |
+          ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
           set +e;
           find ${{ env.GRADLE_PATH }} -name "transforms" -exec rm -rf {} \;
           set -e;
+
+      - name: Validate codecov config
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && inputs.type == 'debug'
+        run: |
+          curl --fail-with-body --retry 5 --retry-delay 2 --connect-timeout 2 --data-binary @codecov.yml https://codecov.io/validate;
+
+      - name: Set up JDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/setup-java@v5
+        with:
+          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+          java-version: 21
+          distribution: zulu
+          java-package: jdk
+          check-latest: false
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          settings-path: ~/.gradle
+          overwrite-settings: true
+          gpg-private-key: ''
+          gpg-passphrase: GPG_PASSPHRASE
+          cache-dependency-path: '**/build.gradle'
 
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -407,25 +409,6 @@ jobs:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
 
-      - name: Set up JDK
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/setup-java@v5
-        with:
-          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-          java-version: 21
-          distribution: zulu
-          java-package: jdk
-          check-latest: false
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          settings-path: ~/.gradle
-          overwrite-settings: true
-          gpg-private-key: ''
-          gpg-passphrase: GPG_PASSPHRASE
-          cache-dependency-path: '**/build.gradle'
-
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
@@ -447,22 +430,6 @@ jobs:
           echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
           df -Pk -h ${HOME};
           env;
-
-      - name: Download generated binaries from cache
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/cache/restore@v5
-        with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
-          fail-on-cache-miss: true
-          lookup-only: false
-          path: |
-            app/build
-            app/.cxx
-            app/third_party
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
@@ -507,6 +474,7 @@ jobs:
           path: ${{ env.GRADLE_PATH }}
           # Optional, defaults to current repo
           repo: ${{ github.repository }}
+          allow_forks: true
           # Optional, check the workflow run to whether it has an artifact
           # then will get the last available artifact from the previous workflow
           # default false, just try to download from the last one
@@ -527,8 +495,44 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         run: |
+          ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
+
+      - name: Set up JDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/setup-java@v5
+        with:
+          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+          java-version: 21
+          distribution: zulu
+          java-package: jdk
+          check-latest: false
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          settings-path: ~/.gradle
+          overwrite-settings: true
+          gpg-private-key: ''
+          gpg-passphrase: GPG_PASSPHRASE
+          cache-dependency-path: '**/build.gradle'
+
+      - name: Download generated binaries from cache
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/cache/restore@v5
+        with:
+          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          enableCrossOsArchive: false
+          fail-on-cache-miss: true
+          lookup-only: false
+          path: |
+            app/build
+            app/.cxx
+            app/third_party
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -606,12 +610,12 @@ jobs:
             --info --warning-mode all --stacktrace;
 
       - name: Run Android tests
-        timeout-minutes: 30
+        timeout-minutes: 20
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: ReactiveCircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
-          MEM_MB: 1024
+          MEM_MB: 2048
         with:
           # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
           # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
@@ -623,11 +627,11 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           channel: stable
-          emulator-options: -no-metrics -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size 512 -partition-size 1024 -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
+          emulator-options: -no-metrics -no-window -accel on -cores ${{ env.NCPU_CORES }} -memory ${{ env.MEM_MB }} -cache-size 512 -partition-size ${{ env.MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
           cores: ${{ env.NCPU_CORES }}
           ram-size: ${{ env.MEM_MB }}M
-          heap-size: 512M
-          disk-size: 10000M
+          heap-size: 1024M
+          disk-size: 10240M
           sdcard-path-or-size: 2048M
           avd-name: Android_Emulator_API_${{ inputs.android_api }}
           force-avd-creation: true
@@ -802,25 +806,6 @@ jobs:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
 
-      - name: Set up JDK
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/setup-java@v5
-        with:
-          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-          java-version: 21
-          distribution: zulu
-          java-package: jdk
-          check-latest: false
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          settings-path: ~/.gradle
-          overwrite-settings: true
-          gpg-private-key: ''
-          gpg-passphrase: GPG_PASSPHRASE
-          cache-dependency-path: '**/build.gradle'
-
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
@@ -878,6 +863,7 @@ jobs:
           path: ${{ env.GRADLE_PATH }}
           # Optional, defaults to current repo
           repo: ${{ github.repository }}
+          allow_forks: true
           # Optional, check the workflow run to whether it has an artifact
           # then will get the last available artifact from the previous workflow
           # default false, just try to download from the last one
@@ -898,8 +884,28 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         run: |
+          ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
+
+      - name: Set up JDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/setup-java@v5
+        with:
+          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+          java-version: 21
+          distribution: zulu
+          java-package: jdk
+          check-latest: false
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          settings-path: ~/.gradle
+          overwrite-settings: true
+          gpg-private-key: ''
+          gpg-passphrase: GPG_PASSPHRASE
+          cache-dependency-path: '**/build.gradle'
 
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -1076,32 +1082,6 @@ jobs:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
 
-      - name: Unshallow repository
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        run: |
-          git fetch --unshallow;
-
-      - name: Set up JDK
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/setup-java@v5
-        with:
-          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-          # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
-          java-version: 21
-          distribution: zulu
-          java-package: jdk
-          check-latest: false
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          settings-path: ~/.gradle
-          overwrite-settings: true
-          gpg-private-key: ''
-          gpg-passphrase: GPG_PASSPHRASE
-          cache-dependency-path: '**/build.gradle'
-
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
@@ -1159,6 +1139,7 @@ jobs:
           path: ${{ env.GRADLE_PATH }}
           # Optional, defaults to current repo
           repo: ${{ github.repository }}
+          allow_forks: true
           # Optional, check the workflow run to whether it has an artifact
           # then will get the last available artifact from the previous workflow
           # default false, just try to download from the last one
@@ -1179,8 +1160,35 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         run: |
+          ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
+
+      - name: Unshallow repository
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          git fetch --unshallow;
+
+      - name: Set up JDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/setup-java@v5
+        with:
+          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+          # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
+          java-version: 21
+          distribution: zulu
+          java-package: jdk
+          check-latest: false
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          settings-path: ~/.gradle
+          overwrite-settings: true
+          gpg-private-key: ''
+          gpg-passphrase: GPG_PASSPHRASE
+          cache-dependency-path: '**/build.gradle'
 
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

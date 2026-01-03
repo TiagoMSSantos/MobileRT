@@ -22,6 +22,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.NoActivityResumedException;
 import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.VerificationMode;
 import androidx.test.espresso.intent.VerificationModes;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -30,6 +31,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -247,11 +249,12 @@ public abstract class AbstractTest {
             newActivityScenario.onActivity(newActivity -> activity = newActivity);
         }
         final List<Intent> intentsToVerify = Intents.getIntents();
+        logger.info(this.testName.getMethodName() + ": " + methodName + " will validate '" + intentsToVerify.size() + "' Intents");
+        final Matcher<Intent> matcher = Matchers.allOf(IntentMatchers.hasCategories(Collections.singleton(Intent.CATEGORY_LAUNCHER)), IntentMatchers.hasAction(Intent.ACTION_MAIN));
+        final VerificationMode verificationMode = VerificationModes.times(intentsToVerify.size());
         logger.info(this.testName.getMethodName() + ": " + methodName + " validating '" + intentsToVerify.size() + "' Intents");
-        Intents.intended(
-            Matchers.allOf(IntentMatchers.hasCategories(Collections.singleton(Intent.CATEGORY_LAUNCHER)), IntentMatchers.hasAction(Intent.ACTION_MAIN)),
-            VerificationModes.times(intentsToVerify.size())
-        );
+        Intents.intended(matcher, verificationMode);
+        logger.info(this.testName.getMethodName() + ": " + methodName + " validating unverified Intents");
         Intents.assertNoUnverifiedIntents();
 
         logger.info(this.testName.getMethodName() + " started");

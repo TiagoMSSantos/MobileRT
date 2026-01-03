@@ -646,7 +646,7 @@ runInstrumentationTests() {
   # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE;
 
   echo 'List of instrumented APKs:';
-  adb shell 'pm list instrumentation;';
+  callAdbShellCommandUntilSuccess 'pm list instrumentation';
   unlockDevice;
 
   if [ "${type}" = 'debug' ]; then
