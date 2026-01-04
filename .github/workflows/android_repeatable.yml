@@ -190,6 +190,8 @@ jobs:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
       with:
         # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
+        # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+        # Max api level for 32bit is: 30
         api-level: ${{ matrix.android_api }}
         target: google_apis
         arch: ${{ env.android_emulator_arch }}
@@ -198,7 +200,7 @@ jobs:
         channel: stable
         emulator-options: -no-metrics -no-window -cores ${{ env.NCPU_CORES }} -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
         cores: ${{ env.NCPU_CORES }}
-        disk-size: 10240M
+        disk-size: 3072M
         sdcard-path-or-size: 2048M
         ram-size: 2048M
         emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.

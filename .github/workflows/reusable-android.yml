@@ -631,7 +631,7 @@ jobs:
           cores: ${{ env.NCPU_CORES }}
           ram-size: ${{ env.MEM_MB }}M
           heap-size: 1024M
-          disk-size: 10240M
+          disk-size: 3072M
           sdcard-path-or-size: 2048M
           avd-name: Android_Emulator_API_${{ inputs.android_api }}
           force-avd-creation: true

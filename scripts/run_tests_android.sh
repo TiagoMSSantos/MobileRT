@@ -638,7 +638,6 @@ runInstrumentationTests() {
     callAdbShellCommandUntilSuccess 'pm grant puscas.mobilertapp.test android.permission.READ_EXTERNAL_STORAGE';
     callAdbShellCommandUntilSuccess 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE';
   fi
-  callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}"'/screenshots';
   callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'';
   callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}";
 
@@ -660,13 +659,7 @@ runInstrumentationTests() {
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
     # Allow to execute the tests a 2nd time in case it fails.
     # This allows for tests to pass when using Android emulator without hardware acceleration (e.g.: MacOS on Github Actions).
-    echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
-    adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
-    callCommandUntilSuccess 2 sh gradlew ${gradle_command} -DtestType="${type}" \
-      -DandroidApiVersion="${android_api_version}" \
-      -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
-      -DabiFilters="[${cpu_architecture}]" \
-      --console plain --parallel --info --warning-mode all --stacktrace;
+    callCommandUntilSuccess 2 _executeAndroidTests;
     adb pull "${internal_storage_path}/screenshots" .;
     echo 'Checking all files';
     ls -lahp .;
@@ -684,13 +677,7 @@ runInstrumentationTests() {
     callCommandUntilError _executeAndroidTests;
   else
     echo "Running test: ${run_test}";
-    echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
-    adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
-    callCommandUntilSuccess 2 sh gradlew --offline connectedAndroidTest -DtestType="${type}" \
-      -DandroidApiVersion="${android_api_version}" \
-      -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
-      -DabiFilters="[${cpu_architecture}]" \
-      --console plain --parallel --info --warning-mode all --stacktrace;
+    callCommandUntilSuccess 2 _executeAndroidTests;
   fi
   resInstrumentationTests=${?};
   pid_instrumentation_tests="$!";
@@ -699,17 +686,35 @@ runInstrumentationTests() {
 }
 
 _executeAndroidTests() {
+  callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}"'/screenshots';
+  callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'/screenshots';
+  callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}"'/screenshots';
+
   echo "Copying OBJ to ${sdcard_path_android}/WavefrontOBJs";
   adb shell 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot;';
   adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
   echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
   adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
-  echo "Running test: ${run_test_without_prefix}";
-  sh gradlew connectedAndroidTest -DtestType="${type}" \
-    -DandroidApiVersion="${android_api_version}" \
-    -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
-    -DabiFilters="[${cpu_architecture}]" \
-    --console plain --parallel --info --warning-mode all --stacktrace;
+
+  if [ "${run_test}" = 'all' ]; then
+    sh gradlew "${gradle_command}" -DtestType="${type}" \
+      -DandroidApiVersion="${android_api_version}" \
+      -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
+      -DabiFilters="[${cpu_architecture}]" \
+      --console plain --parallel --info --warning-mode all --stacktrace;
+  elif echo "${run_test}" | grep -q "rep_"; then
+    sh gradlew connectedAndroidTest -DtestType="${type}" \
+      -DandroidApiVersion="${android_api_version}" \
+      -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
+      -DabiFilters="[${cpu_architecture}]" \
+      --console plain --parallel --info --warning-mode all --stacktrace;
+  else
+    sh gradlew connectedAndroidTest -DtestType="${type}" \
+      -DandroidApiVersion="${android_api_version}" \
+      -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
+      -DabiFilters="[${cpu_architecture}]" \
+      --console plain --parallel --info --warning-mode all --stacktrace;
+  fi
 }
 
 _restartAdbProcesses() {

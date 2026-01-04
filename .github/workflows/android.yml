@@ -89,19 +89,13 @@ jobs:
           BRANCH=${GITHUB_REF#refs/heads/};
           echo "BRANCH: ${BRANCH}";
           echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}";
-          response_running=$(curl --fail-with-body -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+          responses_triggered=$(curl --fail-with-body -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/runs?status=in_progress&branch=${BRANCH}");
-          response_queued=$(curl --fail-with-body -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/runs?status=queued&branch=${BRANCH}");
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/runs?branch=${BRANCH}&head_sha=${GITHUB_SHA}");
           echo "response obtained";
-          workflows_running=$(printf '%s\n' "${response_running}" | jq '.total_count');
-          workflows_queued=$(printf '%s\n' "${response_queued}" | jq '.total_count');
-          echo "workflows running: ${workflows_running}";
-          echo "workflows queued: ${workflows_queued}";
-          workflows_all=$((workflows_running + workflows_queued));
-          echo "workflows all: ${workflows_all}";
+          workflows_triggered=$(printf '%s\n' "${responses_triggered}" | jq '.total_count');
+          workflows_all=$(( workflows_triggered ));
+          echo "workflows triggered: ${workflows_all}";
           echo "workflows_all=${workflows_all}" >> ${GITHUB_OUTPUT};
 
       - name: Trigger code coverage if not running

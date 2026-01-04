@@ -145,7 +145,7 @@ parseArgumentsToCheck() {
 }
 
 # Call function multiple times until it fails and exit the process.
-callCommandUntilError() {
+callCommandUntilError() { (
   echo '';
   echo "Calling until error '$*'";
   _retry=0;
@@ -167,14 +167,14 @@ callCommandUntilError() {
     echo '';
     exit "${lastResult}";
   fi
-}
+) }
 
 # Call function multiple times until it doesn't fail and then return.
 # Every attempt are made with a 3 seconds delay.
 # Parameters:
 # * The maximum number of retries.
 # * The command to execute.
-callCommandUntilSuccess() {
+callCommandUntilSuccess() { (
   echo '';
   echo "Calling until success '$*'";
   _retry=0;
@@ -200,13 +200,13 @@ callCommandUntilSuccess() {
     echo "'$*': failed";
     exit "${lastResult}";
   fi
-}
+) }
 
 # Call an ADB shell function multiple times until it doesn't fail and then return.
 # Every attempt are made with a 3 seconds delay.
 # Parameters:
 # * The command to execute in adb shell.
-callAdbShellCommandUntilSuccess() {
+callAdbShellCommandUntilSuccess() { (
   echo '';
   _retry=0;
   _oldSetErrorValue=false;
@@ -248,7 +248,7 @@ callAdbShellCommandUntilSuccess() {
     echo "'adb shell $*' failed: '${output}'";
     return 1;
   fi
-}
+) }
 
 # Outputs the exit code received by argument and exits the current process with
 # that exit code.
@@ -353,7 +353,7 @@ checkCodeCoverageIsNotZero() {
 }
 
 # Private method which kills a process that is using a file.
-_killProcessUsingFile() {
+_killProcessUsingFile() { (
   processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ');
   _retry=0;
   while [ "${processes_using_file}" != '' ] && [ ${_retry} -lt 5 ]; do
@@ -370,10 +370,10 @@ _killProcessUsingFile() {
     fi
     processes_using_file=$(lsof "${1}" | tail -n +2 | tr -s ' ' || true);
   done
-}
+) }
 
 # Method which kills the processes that are using a port.
-killProcessesUsingPort() {
+killProcessesUsingPort() { (
   processes_using_port=$(lsof -i ":${1}" | tail -n +2 | tr -s ' ' | cut -d ' ' -f 2);
   _retry=0;
   while [ "${processes_using_port}" != '' ] && [ ${_retry} -lt 5 ]; do
@@ -384,7 +384,7 @@ killProcessesUsingPort() {
     kill -KILL "${process_id_using_port}" || true;
     processes_using_port=$(lsof -i ":${1}" | tail -n +2 | tr -s ' ' | cut -d ' ' -f 2 || true);
   done
-}
+) }
 
 # Delete all old build files (commonly called ".fuse_hidden<id>") that might not be able to be
 # deleted due to some process still using it. So this method detects which process uses them and
