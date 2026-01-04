@@ -9,6 +9,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.util.logging.Logger
 
 /**
@@ -131,26 +132,31 @@ abstract class AsyncTaskCoroutine protected constructor(
     }
 
     /**
-     * Waits for the task to finish.
+     * Suspendable implementation which waits for the task to finish.
+     * Use this from coroutines to avoid blocking shared dispatcher threads.
      */
-    fun waitToFinish() {
-        logger.info("waitToFinish")
-
-        runBlocking(dispatcherBackground) {
-            logger.info("waitToFinish 1")
-            val finished: Unit? = lastJob?.await()
-            logger.info("waitToFinish 2: $finished")
-            lastJob?.join()
-            logger.info("waitToFinish 3")
-            if (finished != null) {
-                waitForTaskToFinish()
-            } else {
-                stopTask()
-            }
-            logger.info("waitToFinish 4")
+    protected suspend fun waitToFinishSuspend() {
+        logger.info("waitToFinish 1")
+        val finished: Unit? = lastJob?.await()
+        logger.info("waitToFinish 2: $finished")
+        lastJob?.join()
+        logger.info("waitToFinish 3")
+        if (finished != null) {
+            withContext(dispatcherBackground) { waitForTaskToFinish() }
+        } else {
+            withContext(dispatcherBackground) { stopTask() }
         }
 
         logger.info("waitToFinish finished: " + lastJob?.isCompleted)
+    }
+
+    /**
+     * Blocking wrapper kept for Java callers; it delegates to [waitToFinishSuspend].
+     * This will block the calling thread until completion — avoid calling this from
+     * threads belonging to `dispatcherBackground` to prevent starvation.
+     */
+    fun waitToFinish() {
+        runBlocking { waitToFinishSuspend() }
     }
 
 }

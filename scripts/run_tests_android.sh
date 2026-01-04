@@ -196,7 +196,7 @@ kill_adb_processes() {
     for ADB_PROCESS in ${ADB_PROCESSES}; do
       kill -TERM "${ADB_PROCESS}";
     done;
-    sleep 3;
+    sleep 1;
   fi
   set -eu;
 }
@@ -235,7 +235,6 @@ unlockDevice() {
   _waitForEmulatorToBoot;
 
   echo 'Unlock device';
-  callAdbShellCommandUntilSuccess 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS';
   callAdbShellCommandUntilSuccess 'input keyevent 82';
 
   if [ "${androidApiDevice}" -gt 15 ]; then
@@ -417,9 +416,9 @@ copyResources() {
   set -e;
 
   callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}";
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}";
+  callAdbShellCommandUntilSuccess 'ls -laR '"${internal_storage_path}";
   callAdbShellCommandUntilSuccess 'mkdir -p '"${sdcard_path_android}";
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}";
+  callAdbShellCommandUntilSuccess 'ls -laR '"${sdcard_path_android}";
 
   callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}"'/WavefrontOBJs/CornellBox';
   callAdbShellCommandUntilSuccess 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot';
@@ -548,8 +547,8 @@ runUnitTests() {
     adb shell setprop debug.asan.enabled true;
     adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
   fi
-  callCommandUntilSuccess 5 adb shell 'ls -la '"${internal_storage_path}/UnitTests";
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}";
+  callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}/UnitTests";
+  callAdbShellCommandUntilSuccess 'ls -laR '"${internal_storage_path}";
   adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
   adb pull "${internal_storage_path}"/unit_tests_result.log .;
   resUnitTests=$(cat "unit_tests_result.log");
@@ -563,9 +562,9 @@ runUnitTests() {
 
 verifyResources() {
   echo 'Verify resources in SD Card';
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}/WavefrontOBJs";
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}";
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${sdcard_path_android}/WavefrontOBJs";
+  callAdbShellCommandUntilSuccess 'ls -laR '"${internal_storage_path}/WavefrontOBJs";
+  callAdbShellCommandUntilSuccess 'ls -laR '"${sdcard_path_android}";
+  callAdbShellCommandUntilSuccess 'ls -laR '"${sdcard_path_android}/WavefrontOBJs";
 
   echo 'Verify memory available on host:';
   if command -v free > /dev/null; then
@@ -622,7 +621,7 @@ runInstrumentationTests() {
     ls -lahp "${apkPath}";
     callCommandUntilSuccess 5 adb push -p "${apkPath}" "${internal_storage_path}";
   done;
-  callCommandUntilSuccess 5 adb shell 'ls -la '"${internal_storage_path}";
+  callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}";
   unlockDevice;
   echo 'Installing both APKs for tests and app.';
   set +e;
@@ -639,7 +638,7 @@ runInstrumentationTests() {
     callAdbShellCommandUntilSuccess 'pm grant puscas.mobilertapp android.permission.READ_EXTERNAL_STORAGE';
   fi
   callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'';
-  callCommandUntilSuccess 5 adb shell 'ls -laR '"${internal_storage_path}";
+  callAdbShellCommandUntilSuccess 'ls -laR '"${internal_storage_path}";
 
   # puscas.mobilertapp not found
   # adb shell pm grant puscas.mobilertapp android.permission.SET_ANIMATION_SCALE;
@@ -691,10 +690,10 @@ _executeAndroidTests() {
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}"'/screenshots';
 
   echo "Copying OBJ to ${sdcard_path_android}/WavefrontOBJs";
-  adb shell 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot;';
+  callAdbShellCommandUntilSuccess 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot';
   adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
   echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
-  adb shell "ls -la ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
+  callAdbShellCommandUntilSuccess 'ls -la '"${sdcard_path_android}"'/WavefrontOBJs/teapot/teapot.obj';
 
   if [ "${run_test}" = 'all' ]; then
     sh gradlew "${gradle_command}" -DtestType="${type}" \
@@ -732,8 +731,8 @@ _restartAdbProcesses() {
 # E.g.: Android API 33 can take more than 1 minute to boot.
 _waitForEmulatorToBoot() {
   # Make sure ADB daemon started properly.
-  callCommandUntilSuccess 25 adb shell 'ps > /dev/null;';
-  callCommandUntilSuccess 25 adb shell 'getprop ro.build.version.sdk;';
+  callCommandUntilSuccess 70 adb shell 'ps > /dev/null';
+  callCommandUntilSuccess 70 adb shell 'getprop ro.build.version.sdk';
   # adb shell needs ' instead of ", so 'getprop' works properly.
   callAdbShellCommandUntilSuccess 'getprop ro.build.version.sdk';
   echo 'sys.boot_completed: ';

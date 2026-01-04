@@ -157,7 +157,7 @@ callCommandUntilError() { (
     "$@";
     lastResult=${?};
     echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
-    sleep 2;
+    sleep 1;
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
@@ -191,7 +191,7 @@ callCommandUntilSuccess() { (
     "${@}";
     lastResult=${?};
     echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
-    sleep 3;
+    sleep 1;
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
@@ -225,7 +225,7 @@ callAdbShellCommandUntilSuccess() { (
   fi
   echo "result: '${lastResult}'";
 
-  while [ "${lastResult}" -ne 0 ] && [ "${lastResult}" != '127' ] && [ "${lastResult}" != '2' ] && [ "${_lastResultValid}" = 'true' ] && [ ${_retry} -lt 60 ]; do
+  while [ "${lastResult}" -ne 0 ] && [ "${lastResult}" != '127' ] && [ "${lastResult}" != '2' ] && [ "${_lastResultValid}" = 'true' ] && [ ${_retry} -lt 5 ]; do
     _retry=$(( _retry + 1 ));
     # shellcheck disable=SC2145
     output=$(adb shell "false; $@; echo ::\$?::");
@@ -236,7 +236,7 @@ callAdbShellCommandUntilSuccess() { (
       _lastResultValid=true;
     fi
     echo "Retry: ${_retry} of command 'adb shell $*'; result: '${lastResult}'";
-    sleep 3;
+    sleep 1;
   done
 
   if [ "${_oldSetErrorValue}" = 'true' ]; then
