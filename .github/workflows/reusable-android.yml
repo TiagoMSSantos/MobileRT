@@ -627,7 +627,7 @@ jobs:
           action: ReactiveCircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2
           pre_retry_command: 'echo "Retrying Run Android tests step..."'
           attempt_limit: 4
-          attempt_delay: 30000
+          attempt_delay: 20000
           with: |
             # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
             # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
