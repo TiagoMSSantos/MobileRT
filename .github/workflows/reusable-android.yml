@@ -442,8 +442,8 @@ jobs:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
           action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
-          attempt_limit: 2
-          attempt_delay: 0
+          attempt_limit: 3
+          attempt_delay: 10000
           with: |
             # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
             # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
@@ -627,7 +627,7 @@ jobs:
           action: ReactiveCircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2
           pre_retry_command: 'echo "Retrying Run Android tests step..."'
           attempt_limit: 4
-          attempt_delay: 20000
+          attempt_delay: 30000
           with: |
             # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
             # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
@@ -843,8 +843,8 @@ jobs:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
           action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
-          attempt_limit: 2
-          attempt_delay: 0
+          attempt_limit: 3
+          attempt_delay: 10000
           with: |
             # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
             # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
@@ -1125,8 +1125,8 @@ jobs:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
           action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
-          attempt_limit: 2
-          attempt_delay: 0
+          attempt_limit: 3
+          attempt_delay: 10000
           with: |
             # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
             # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
