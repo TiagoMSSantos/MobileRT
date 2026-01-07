@@ -273,6 +273,7 @@ jobs:
             app/third_party
 
       - name: Check generated binaries from cache
+        id: check_cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
         uses: actions/cache/restore@v5
@@ -281,7 +282,7 @@ jobs:
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
           enableCrossOsArchive: false
-          fail-on-cache-miss: true
+          fail-on-cache-miss: false
           lookup-only: true
           path: |
             app/build
@@ -290,7 +291,7 @@ jobs:
 
       - name: Upload generated binaries to cache - retry
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: failure()
+        if: success() && steps.check_cache.outputs.cache-hit == false
         uses: actions/cache/save@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
