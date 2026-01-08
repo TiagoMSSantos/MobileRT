@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-01-07T18:23:20.228Z",
+    "detectionDate": "2026-01-08T10:21:56.215Z",
     "formats": {
       "java": {
         "sources": {
@@ -1037,27 +1037,27 @@
             "newClones": 0
           },
           "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java": {
-            "lines": 487,
-            "tokens": 4499,
+            "lines": 513,
+            "tokens": 4855,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 8,
-            "duplicatedTokens": 75,
-            "percentage": 1.64,
-            "percentageTokens": 1.67,
+            "clones": 3,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 409,
+            "percentage": 6.24,
+            "percentageTokens": 8.42,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 9740,
-          "tokens": 67700,
+          "lines": 9766,
+          "tokens": 68056,
           "sources": 87,
-          "clones": 59,
-          "duplicatedLines": 574,
-          "duplicatedTokens": 5400,
-          "percentage": 5.89,
-          "percentageTokens": 7.98,
+          "clones": 60,
+          "duplicatedLines": 586,
+          "duplicatedTokens": 5567,
+          "percentage": 6,
+          "percentageTokens": 8.18,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 786,
-            "tokens": 5724,
+            "lines": 787,
+            "tokens": 5730,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2338,8 +2338,8 @@
           }
         },
         "total": {
-          "lines": 4621,
-          "tokens": 31278,
+          "lines": 4622,
+          "tokens": 31284,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 243,
@@ -3272,14 +3272,14 @@
       }
     },
     "total": {
-      "lines": 29943,
-      "tokens": 231595,
+      "lines": 29970,
+      "tokens": 231957,
       "sources": 259,
-      "clones": 112,
-      "duplicatedLines": 1350,
-      "duplicatedTokens": 13059,
-      "percentage": 4.51,
-      "percentageTokens": 5.64,
+      "clones": 113,
+      "duplicatedLines": 1362,
+      "duplicatedTokens": 13226,
+      "percentage": 4.54,
+      "percentageTokens": 5.7,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5406,6 +5406,42 @@
           "line": 34,
           "column": 6,
           "position": 295
+        }
+      }
+    },
+    {
+      "format": "java",
+      "lines": 13,
+      "fragment": "actTest.activity = newActivity);\n\n            // Ensure the activity's window has focus so Espresso can interact with views.\n            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {\n                if (AbstractTest.activity.getWindow() != null && AbstractTest.activity.getWindow().getDecorView() != null) {\n                    logger.info(this.testName.getMethodName() + \" requesting focus\");\n                    AbstractTest.activity.getWindow().getDecorView().requestFocus();\n                    logger.info(this.testName.getMethodName() + \" requested focus\");\n                } else {\n                    logger.severe(this.testName.getMethodName() + \" couldn't request focus\");\n                }\n            });\n            InstrumentationRegistry.getInstrumentation().waitForIdleSy",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
+        "start": 264,
+        "end": 276,
+        "startLoc": {
+          "line": 264,
+          "column": 13,
+          "position": 2198
+        },
+        "endLoc": {
+          "line": 276,
+          "column": 2,
+          "position": 2365
+        }
+      },
+      "secondFile": {
+        "name": "app/src/androidTest/java/puscas/mobilertapp/AbstractTest.java",
+        "start": 243,
+        "end": 256,
+        "startLoc": {
+          "line": 243,
+          "column": 13,
+          "position": 1913
+        },
+        "endLoc": {
+          "line": 256,
+          "column": 15,
+          "position": 2081
         }
       }
     },

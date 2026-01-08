@@ -236,6 +236,7 @@ unlockDevice() {
 
   echo 'Unlock device';
   callAdbShellCommandUntilSuccess 'input keyevent 82';
+  callAdbShellCommandUntilSuccess 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS';
 
   if [ "${androidApiDevice}" -gt 15 ]; then
     callAdbShellCommandUntilSuccess 'input tap 800 400';
