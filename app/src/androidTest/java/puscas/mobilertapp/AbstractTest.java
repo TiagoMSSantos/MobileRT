@@ -190,7 +190,7 @@ public abstract class AbstractTest {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName);
 
-        mainActivityActivityTestRule.getScenario().onActivity(newActivity -> activity = newActivity);
+        mainActivityActivityTestRule.getScenario().onActivity(newActivity -> AbstractTest.activity = newActivity);
         grantPermissions();
 
         logger.info("---------------------------------------------------");
@@ -227,7 +227,7 @@ public abstract class AbstractTest {
         logger.info(methodName + ": " + this.testName.getMethodName());
         Assume.assumeFalse(oneTestFailed);
 
-        Preconditions.checkNotNull(activity, "The Activity didn't start as expected!");
+        Preconditions.checkNotNull(AbstractTest.activity, "The Activity didn't start as expected!");
 
         Intents.init();
         final List<Intent> intents = Intents.getIntents();
@@ -240,13 +240,39 @@ public abstract class AbstractTest {
             Intents.assertNoUnverifiedIntents();
         }
         try {
+            // Ensure the activity's window has focus so Espresso can interact with views.
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+                if (AbstractTest.activity.getWindow() != null && AbstractTest.activity.getWindow().getDecorView() != null) {
+                    logger.info(this.testName.getMethodName() + " requesting focus");
+                    AbstractTest.activity.getWindow().getDecorView().requestFocus();
+                    logger.info(this.testName.getMethodName() + " requested focus");
+                } else {
+                    logger.severe(this.testName.getMethodName() + " couldn't request focus");
+                }
+            });
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
+
             ViewActionWait.waitForButtonUpdate(0);
         } catch (final NoActivityResumedException ex) {
             UtilsLogging.logException(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
             logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
             mainActivityActivityTestRule.getScenario().close();
             final ActivityScenario<MainActivity> newActivityScenario = ActivityScenario.launch(MainActivity.class);
-            newActivityScenario.onActivity(newActivity -> activity = newActivity);
+            newActivityScenario.onActivity(newActivity -> AbstractTest.activity = newActivity);
+
+            // Ensure the activity's window has focus so Espresso can interact with views.
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+                if (AbstractTest.activity.getWindow() != null && AbstractTest.activity.getWindow().getDecorView() != null) {
+                    logger.info(this.testName.getMethodName() + " requesting focus");
+                    AbstractTest.activity.getWindow().getDecorView().requestFocus();
+                    logger.info(this.testName.getMethodName() + " requested focus");
+                } else {
+                    logger.severe(this.testName.getMethodName() + " couldn't request focus");
+                }
+            });
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
         }
         final List<Intent> intentsToVerify = Intents.getIntents();
         logger.info(this.testName.getMethodName() + ": " + methodName + " will validate '" + intentsToVerify.size() + "' Intents");
@@ -270,7 +296,7 @@ public abstract class AbstractTest {
         logger.info(methodName + ": " + this.testName.getMethodName());
 
         if (!oneTestFailed) {
-            Preconditions.checkNotNull(activity, "The Activity didn't finish as expected!");
+            Preconditions.checkNotNull(AbstractTest.activity, "The Activity didn't finish as expected!");
         }
 
         logger.info(this.testName.getMethodName() + " finished");
@@ -285,20 +311,20 @@ public abstract class AbstractTest {
         logger.info(methodName);
 
         if (!oneTestFailed) {
-            Preconditions.checkNotNull(activity, "The Activity didn't finish as expected!");
+            Preconditions.checkNotNull(AbstractTest.activity, "The Activity didn't finish as expected!");
 
             final int timeToWaitSecs = 20;
             logger.info(methodName + ": Will wait for the Activity triggered by the test to finish. Max timeout in secs: " + timeToWaitSecs);
             final int waitInSecs = 1;
             int currentTimeSecs = 0;
-            while (isActivityRunning(activity) && currentTimeSecs < timeToWaitSecs) {
+            while (isActivityRunning(AbstractTest.activity) && currentTimeSecs < timeToWaitSecs) {
                 logger.info(methodName + ": Finishing the Activity.");
-                activity.finish();
+                AbstractTest.activity.finish();
                 currentTimeSecs += waitInSecs;
             }
             // Wait for the app to be closed. Necessary for Android 12+.
             mainActivityActivityTestRule.getScenario().close();
-            logger.info(methodName + ": Activity finished: " + !isActivityRunning(activity) + " (" + currentTimeSecs + "secs)");
+            logger.info(methodName + ": Activity finished: " + !isActivityRunning(AbstractTest.activity) + " (" + currentTimeSecs + "secs)");
         }
 
         logger.info(methodName + " finished");
@@ -434,9 +460,9 @@ public abstract class AbstractTest {
 
         UtilsT.startRendering(showRenderWhenPressingButton);
         if (!expectedSameValues) {
-            UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.STOP, State.BUSY);
+            UtilsContextT.waitUntil(this.testName.getMethodName(), AbstractTest.activity, Constants.STOP, State.BUSY);
         }
-        UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.RENDER, State.IDLE, State.FINISHED);
+        UtilsContextT.waitUntil(this.testName.getMethodName(), AbstractTest.activity, Constants.RENDER, State.IDLE, State.FINISHED);
         ViewActionWait.waitForButtonUpdate(0);
 
         UtilsT.assertRenderButtonText(Constants.RENDER);
