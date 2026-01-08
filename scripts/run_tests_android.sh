@@ -686,6 +686,8 @@ runInstrumentationTests() {
 }
 
 _executeAndroidTests() {
+  unlockDevice;
+
   callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}"'/screenshots';
   callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'/screenshots';
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}"'/screenshots';
