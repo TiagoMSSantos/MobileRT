@@ -160,7 +160,8 @@ catch_signal() {
 }
 
 kill_mobilert_processes() {
-  pid_apps=$(adb shell ps | grep -i "puscas.mobilertapp" | tr -s ' ' | cut -d ' ' -f 2);
+  echo 'Killing MobileRT process in Android device';
+  pid_apps=$(timeout 10 adb shell ps | grep -i "puscas.mobilertapp" | tr -s ' ' | cut -d ' ' -f 2);
   for pid_app in ${pid_apps}; do
     echo "Killing pid of MobileRT: '${pid_app}'";
     set +e;
@@ -170,6 +171,7 @@ kill_mobilert_processes() {
 }
 
 kill_gradle_processes() {
+  echo 'Killing Gradle process';
   set +e;
   scriptName=$(basename "${0}");
   # shellcheck disable=SC2009
@@ -187,6 +189,7 @@ kill_gradle_processes() {
 }
 
 kill_adb_processes() {
+  echo 'Killing ADB process';
   # shellcheck disable=SC2009
   ADB_PROCESSES=$(ps aux | grep -i " adb " | grep -v "grep" | tr -s ' ' | cut -d ' ' -f 2);
   ADB_PROCESSES_STR="$(echo "${ADB_PROCESSES}" | tr '\n' ',' | sed 's/,$//')";
@@ -699,19 +702,19 @@ _executeAndroidTests() {
   callAdbShellCommandUntilSuccess 'ls -la '"${sdcard_path_android}"'/WavefrontOBJs/teapot/teapot.obj';
 
   if [ "${run_test}" = 'all' ]; then
-    sh gradlew "${gradle_command}" -DtestType="${type}" \
+    timeout 1200 sh gradlew "${gradle_command}" -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
   elif echo "${run_test}" | grep -q "rep_"; then
-    sh gradlew connectedAndroidTest -DtestType="${type}" \
+    timeout 180 sh gradlew connectedAndroidTest -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
   else
-    sh gradlew connectedAndroidTest -DtestType="${type}" \
+    timeout 180 sh gradlew connectedAndroidTest -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       -DabiFilters="[${cpu_architecture}]" \

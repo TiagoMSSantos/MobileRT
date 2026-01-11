@@ -186,19 +186,19 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         run: |
-          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
       - name: Download Android CMake Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.host_os, 'windows')
         run: |
-          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
       - name: Download Android dependencies
         timeout-minutes: 8
         if: success()
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -431,6 +431,25 @@ jobs:
           echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
           df -Pk -h ${HOME};
           env;
+          sudo rm -rf /usr/lib/jvm;
+          sudo rm -rf /usr/share/dotnet;
+          sudo rm -rf /usr/share/swift;
+          sudo rm -rf /usr/local/.ghcup;
+          sudo rm -rf /usr/local/julia*;
+          sudo rm -rf /usr/local/share/chromium;
+          sudo rm -rf /opt/microsoft;
+          sudo rm -rf /opt/google;
+          sudo rm -rf /opt/az;
+          sudo rm -rf /usr/local/share/powershell;
+          sudo rm -rf /opt/hostedtoolcache;
+          docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')" || true;
+          docker system prune --volumes --force;
+          docker network prune --force;
+          docker volume prune --force;
+          docker system prune --all --force;
+          docker builder prune --all --force;
+          docker system df;
+          df -h;
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
@@ -612,7 +631,7 @@ jobs:
           else
             gradle_command='connectedAndroidTest';
           fi
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -627,8 +646,8 @@ jobs:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
           action: ReactiveCircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2
           pre_retry_command: 'echo "Retrying Run Android tests step..."'
-          attempt_limit: 4
-          attempt_delay: 20000
+          attempt_limit: 2
+          attempt_delay: 30000
           with: |
             # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
             # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
@@ -991,7 +1010,7 @@ jobs:
         timeout-minutes: 8
         if: success()
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -1309,7 +1328,7 @@ jobs:
         timeout-minutes: 8
         if: success()
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             --info --warning-mode all --stacktrace sonar;
 
@@ -1322,7 +1341,7 @@ jobs:
           # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
           GRADLE_OPTS: -Xms8G -Xmx8G -XX:ActiveProcessorCount=5
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew --offline --profile --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew --offline --profile --parallel \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             --info --warning-mode all --stacktrace sonar;
 

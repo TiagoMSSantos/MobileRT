@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-01-08T17:32:28.791Z",
+    "detectionDate": "2026-01-11T12:26:04.701Z",
     "formats": {
       "java": {
         "sources": {
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 789,
-            "tokens": 5735,
+            "lines": 792,
+            "tokens": 5766,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2278,7 +2278,7 @@
           },
           "scripts/helper_functions.sh": {
             "lines": 592,
-            "tokens": 4363,
+            "tokens": 4365,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2338,13 +2338,13 @@
           }
         },
         "total": {
-          "lines": 4624,
-          "tokens": 31289,
+          "lines": 4627,
+          "tokens": 31322,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 243,
           "duplicatedTokens": 1206,
-          "percentage": 5.26,
+          "percentage": 5.25,
           "percentageTokens": 3.85,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 29972,
-      "tokens": 231962,
+      "lines": 29975,
+      "tokens": 231995,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1362,

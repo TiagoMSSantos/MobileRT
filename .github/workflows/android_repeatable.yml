@@ -144,19 +144,19 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && !startsWith(matrix.host_os, 'windows') && !endsWith(matrix.host_os, '-arm')
       run: |
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
+        . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
     - name: Download Android CMake Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && startsWith(matrix.host_os, 'windows')
       run: |
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
+        . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
     - name: Download Android dependencies
       timeout-minutes: 8
       if: success()
       run: |
-        . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+        . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew build --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
@@ -178,7 +178,7 @@ jobs:
       timeout-minutes: 8
       if: success()
       run: |
-        . scripts/helper_functions.sh && callCommandUntilSuccess 2 sh gradlew connectedAndroidTest --dry-run -Dorg.gradle.configuration-cache=true --parallel \
+        . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew connectedAndroidTest --dry-run -Dorg.gradle.configuration-cache=true --parallel \
           -DtestType="${{ matrix.type }}" -DandroidApiVersion="${{ matrix.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
           --info --warning-mode all --stacktrace;
 
