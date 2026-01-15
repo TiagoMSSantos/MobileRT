@@ -194,6 +194,32 @@ jobs:
         run: |
           . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
+      - name: Download NDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && !startsWith(matrix.host_os, 'windows')
+        run: |
+          if [ "${{ matrix.android_api }}" -ge 21 ]; then
+            export NDK_VERSION='29.0.14206865';
+          elif [ "${{ matrix.android_api }}" -ge 19 ]; then
+            export NDK_VERSION='25.2.9519653';
+          else
+            export NDK_VERSION='23.2.8568313';
+          fi
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${NDK_VERSION}";
+
+      - name: Download NDK Windows
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && startsWith(inputs.host_os, 'windows')
+        run: |
+          if [ "${{ matrix.android_api }}" -ge 21 ]; then
+            export NDK_VERSION='29.0.14206865';
+          elif [ "${{ matrix.android_api }}" -ge 19 ]; then
+            export NDK_VERSION='25.2.9519653';
+          else
+            export NDK_VERSION='23.2.8568313';
+          fi
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install "ndk;${NDK_VERSION}";
+
       - name: Download Android dependencies
         timeout-minutes: 8
         if: success()

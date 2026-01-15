@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-01-11T12:26:04.701Z",
+    "detectionDate": "2026-01-15T07:55:25.035Z",
     "formats": {
       "java": {
         "sources": {
@@ -2057,14 +2057,14 @@
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
-            "lines": 227,
-            "tokens": 1097,
+            "lines": 253,
+            "tokens": 1186,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 226,
-            "percentage": 18.5,
-            "percentageTokens": 20.6,
+            "percentage": 16.6,
+            "percentageTokens": 19.06,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2166,14 +2166,14 @@
           }
         },
         "total": {
-          "lines": 2652,
-          "tokens": 15770,
+          "lines": 2678,
+          "tokens": 15859,
           "sources": 23,
           "clones": 4,
           "duplicatedLines": 155,
           "duplicatedTokens": 831,
-          "percentage": 5.84,
-          "percentageTokens": 5.27,
+          "percentage": 5.79,
+          "percentageTokens": 5.24,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 29975,
-      "tokens": 231995,
+      "lines": 30001,
+      "tokens": 232084,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1362,
