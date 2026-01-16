@@ -722,6 +722,12 @@
       "matchDepNames": [
         "gradle"
       ],
+      "matchPackageNames": [
+        "gradle"
+      ],
+      "matchDatasources": [
+        "gradle-version"
+      ],
       "matchCurrentVersion": "/^8\\.7$/",
       "matchCurrentValue": "/^8\\.7$/"
     },
