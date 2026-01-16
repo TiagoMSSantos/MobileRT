@@ -719,6 +719,10 @@
     {
       "groupName": "Do not update Gradle for Android API <= 15",
       "enabled": false,
+      "matchManagers": [
+        "custom.regex",
+        "gradle"
+      ],
       "matchDepNames": [
         "gradle"
       ],
