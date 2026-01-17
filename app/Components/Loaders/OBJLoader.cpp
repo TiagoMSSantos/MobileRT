@@ -488,24 +488,6 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
 /**
  * The destructor.
  */
-OBJLoader::~OBJLoader() {
-    this->attrib_.normals.clear();
-    this->attrib_.texcoords.clear();
-    this->attrib_.vertices.clear();
-    this->shapes_.clear();
-    this->materials_.clear();
-
-    this->attrib_.normals.shrink_to_fit();
-    this->attrib_.texcoords.shrink_to_fit();
-    this->attrib_.vertices.shrink_to_fit();
-    this->shapes_.shrink_to_fit();
-    this->materials_.shrink_to_fit();
-
-    ::std::vector<::tinyobj::shape_t> {}.swap(this->shapes_);
-    ::std::vector<::tinyobj::material_t> {}.swap(this->materials_);
-    ::std::vector<::tinyobj::real_t> {}.swap(this->attrib_.normals);
-    ::std::vector<::tinyobj::real_t> {}.swap(this->attrib_.texcoords);
-    ::std::vector<::tinyobj::real_t> {}.swap(this->attrib_.vertices);
-
-    LOG_DEBUG("OBJLOADER DELETED");
+OBJLoader::~OBJLoader() noexcept {
+    LOG_INFO("OBJLOADER DELETED");
 }

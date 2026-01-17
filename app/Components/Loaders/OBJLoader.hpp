@@ -34,7 +34,7 @@ namespace Components {
 
         OBJLoader(OBJLoader &&objLoader) noexcept = delete;
 
-        ~OBJLoader() final;
+        ~OBJLoader() noexcept final;
 
         OBJLoader &operator=(const OBJLoader &objLoader) = delete;
 

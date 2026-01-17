@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-01-16T15:29:01.798Z",
+    "detectionDate": "2026-01-17T07:06:54.837Z",
     "formats": {
       "java": {
         "sources": {
@@ -1537,14 +1537,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 501,
-            "tokens": 7246,
+            "lines": 483,
+            "tokens": 6997,
             "sources": 1,
             "clones": 8,
             "duplicatedLines": 76,
             "duplicatedTokens": 1076,
-            "percentage": 15.17,
-            "percentageTokens": 14.85,
+            "percentage": 15.73,
+            "percentageTokens": 15.38,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1802,7 +1802,7 @@
           },
           "app/MobileRT/ObjectLoader.cpp": {
             "lines": 15,
-            "tokens": 46,
+            "tokens": 48,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1874,14 +1874,14 @@
           }
         },
         "total": {
-          "lines": 6135,
-          "tokens": 61873,
+          "lines": 6117,
+          "tokens": 61626,
           "sources": 59,
           "clones": 34,
           "duplicatedLines": 334,
           "duplicatedTokens": 5227,
-          "percentage": 5.44,
-          "percentageTokens": 8.45,
+          "percentage": 5.46,
+          "percentageTokens": 8.48,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2898,7 +2898,7 @@
           },
           "app/Components/Loaders/OBJLoader.hpp": {
             "lines": 104,
-            "tokens": 826,
+            "tokens": 828,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3054,7 +3054,7 @@
           },
           "app/MobileRT/ObjectLoader.hpp": {
             "lines": 48,
-            "tokens": 248,
+            "tokens": 250,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3139,7 +3139,7 @@
         },
         "total": {
           "lines": 3493,
-          "tokens": 25914,
+          "tokens": 25918,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 30001,
-      "tokens": 232084,
+      "lines": 29983,
+      "tokens": 231841,
       "sources": 259,
       "clones": 113,
       "duplicatedLines": 1362,

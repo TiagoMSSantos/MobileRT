@@ -14,5 +14,5 @@ bool ObjectLoader::isProcessed() const {
 /**
  * The destructor.
  */
-ObjectLoader::~ObjectLoader() {
+ObjectLoader::~ObjectLoader() noexcept {
 }
