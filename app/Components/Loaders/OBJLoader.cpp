@@ -139,24 +139,32 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadVertices
     const ::tinyobj::index_t idx2 {*(itIdx + 1)};
     const ::tinyobj::index_t idx3 {*(itIdx + 2)};
 
-    const auto itVertex1 {this->attrib_.vertices.cbegin() + 3 * idx1.vertex_index};
-    const float vx1 {*(itVertex1 + 0)};
-    const float vy1 {*(itVertex1 + 1)};
-    const float vz1 {*(itVertex1 + 2)};
-    const auto itVertex2 {this->attrib_.vertices.cbegin() + 3 * idx2.vertex_index};
-    const float vx2 {*(itVertex2 + 0)};
-    const float vy2 {*(itVertex2 + 1)};
-    const float vz2 {*(itVertex2 + 2)};
-    const auto itVertex3 {this->attrib_.vertices.cbegin() + 3 * idx3.vertex_index};
-    const float vx3 {*(itVertex3 + 0)};
-    const float vy3 {*(itVertex3 + 1)};
-    const float vz3 {*(itVertex3 + 2)};
+    if (idx1.vertex_index >= 0 && idx2.vertex_index >= 0 && idx3.vertex_index >= 0 &&
+        this->attrib_.vertices.size() > static_cast<::std::size_t> (idx1.vertex_index * 3) &&
+        this->attrib_.vertices.size() > static_cast<::std::size_t> (idx2.vertex_index * 3) &&
+        this->attrib_.vertices.size() > static_cast<::std::size_t> (idx3.vertex_index * 3)) {
 
-    const ::glm::vec3 &vertex1 {-vx1, vy1, vz1};
-    const ::glm::vec3 &vertex2 {-vx2, vy2, vz2};
-    const ::glm::vec3 &vertex3 {-vx3, vy3, vz3};
+        const auto itVertex1 {this->attrib_.vertices.cbegin() + 3 * idx1.vertex_index};
+        const float vx1 {*(itVertex1 + 0)};
+        const float vy1 {*(itVertex1 + 1)};
+        const float vz1 {*(itVertex1 + 2)};
+        const auto itVertex2 {this->attrib_.vertices.cbegin() + 3 * idx2.vertex_index};
+        const float vx2 {*(itVertex2 + 0)};
+        const float vy2 {*(itVertex2 + 1)};
+        const float vz2 {*(itVertex2 + 2)};
+        const auto itVertex3 {this->attrib_.vertices.cbegin() + 3 * idx3.vertex_index};
+        const float vx3 {*(itVertex3 + 0)};
+        const float vy3 {*(itVertex3 + 1)};
+        const float vz3 {*(itVertex3 + 2)};
 
-    return triple<::glm::vec3, ::glm::vec3, ::glm::vec3> {vertex1, vertex2, vertex3};
+        const ::glm::vec3 &vertex1 {-vx1, vy1, vz1};
+        const ::glm::vec3 &vertex2 {-vx2, vy2, vz2};
+        const ::glm::vec3 &vertex3 {-vx3, vy3, vz3};
+
+        return triple<::glm::vec3, ::glm::vec3, ::glm::vec3> {vertex1, vertex2, vertex3};
+    } else {
+        throw ::std::runtime_error {"Error loading vertices from OBJ file: Invalid vertex index."};
+    }
 }
 
 /**
@@ -177,7 +185,12 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(
     const ::tinyobj::index_t idx2 {*(itIdx + 1)};
     const ::tinyobj::index_t idx3 {*(itIdx + 2)};
 
-    if (!this->attrib_.normals.empty()) {// If it has normals.
+    // If it has normals.
+    if (idx1.normal_index >= 0 && idx2.normal_index >= 0 && idx3.normal_index >= 0 &&
+        this->attrib_.normals.size() > static_cast<::std::size_t>(idx1.normal_index * 3) &&
+        this->attrib_.normals.size() > static_cast<::std::size_t>(idx2.normal_index * 3) &&
+        this->attrib_.normals.size() > static_cast<::std::size_t>(idx3.normal_index * 3)) {
+
         const auto itNormal1 {this->attrib_.normals.cbegin() + 3 * idx1.normal_index};
         const auto itNormal2 {this->attrib_.normals.cbegin() + 3 * idx2.normal_index};
         const auto itNormal3 {this->attrib_.normals.cbegin() + 3 * idx3.normal_index};
@@ -330,7 +343,12 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                     const bool hasCoordTex {!this->attrib_.texcoords.empty()};
                     Texture texture {};
                     ::std::tuple<::glm::vec2, ::glm::vec2, ::glm::vec2> texCoord {::std::make_tuple(::glm::vec2 {-1}, ::glm::vec2 {-1}, ::glm::vec2 {-1})};
-                    if (hasTexture && hasCoordTex) {
+                    if (hasTexture && hasCoordTex &&
+                        idx1.texcoord_index >= 0 && idx2.texcoord_index >= 0 && idx3.texcoord_index >= 0 &&
+                        this->attrib_.texcoords.size() > static_cast<::std::size_t>(idx1.texcoord_index * 2) &&
+                        this->attrib_.texcoords.size() > static_cast<::std::size_t>(idx2.texcoord_index * 2) &&
+                        this->attrib_.texcoords.size() > static_cast<::std::size_t>(idx3.texcoord_index * 2)) {
+
                         LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " loading texture for material: ", materialId, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                         const auto itTexCoords1 {
                             this->attrib_.texcoords.cbegin() +
@@ -414,40 +432,44 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                     }
                 } else {
                     // If it is a primitive that doesn't contain material.
-                    const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
-                    const float red {*(itColor + 0)};
-                    const float green {*(itColor + 1)};
-                    const float blue {*(itColor + 2)};
+                    if (idx1.vertex_index >= 0 && this->attrib_.colors.size() > static_cast<::std::size_t>(idx1.vertex_index * 3)) {
+                        const auto itColor {this->attrib_.colors.cbegin() + 3 * idx1.vertex_index};
+                        const float red {*(itColor + 0)};
+                        const float green {*(itColor + 1)};
+                        const float blue {*(itColor + 2)};
 
-                    const ::glm::vec3 &diffuse {red, green, blue};
-                    const ::glm::vec3 &specular {0.0F, 0.0F, 0.0F};
-                    const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
-                    const float indexRefraction {1.0F};
-                    const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
-                    Material material {diffuse, specular, transmittance, indexRefraction, emission};
-                    Triangle::Builder builder {
-                        Triangle::Builder(
-                            ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
-                        )
-                        .withNormals(
-                            ::std::get<0>(normal), ::std::get<1>(normal), ::std::get<2>(normal)
-                        )
-                    };
-                    ::std::int32_t materialIndex {-1};
-                    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " without texture, scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
-                    {
-                        const ::std::lock_guard<::std::mutex> lock {*mutexSceneMaterials};
-                        const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
-                        if (itFoundMat != scene->materials_.cend()) {
-                            // If the material is already in the scene.
-                            materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
-                        } else {
-                            // If the scene doesn't have material yet.
-                            materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
-                            scene->materials_.emplace_back(::std::move(material));
+                        const ::glm::vec3 &diffuse {red, green, blue};
+                        const ::glm::vec3 &specular {0.0F, 0.0F, 0.0F};
+                        const ::glm::vec3 &transmittance {0.0F, 0.0F, 0.0F};
+                        const float indexRefraction {1.0F};
+                        const ::glm::vec3 &emission {0.0F, 0.0F, 0.0F};
+                        Material material {diffuse, specular, transmittance, indexRefraction, emission};
+                        Triangle::Builder builder {
+                            Triangle::Builder(
+                                ::std::get<0> (vertices), ::std::get<1> (vertices), ::std::get<2> (vertices)
+                            )
+                            .withNormals(
+                                ::std::get<0>(normal), ::std::get<1>(normal), ::std::get<2>(normal)
+                            )
+                        };
+                        ::std::int32_t materialIndex {-1};
+                        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Loading shape: ", shapeIndex, " without texture, scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
+                        {
+                            const ::std::lock_guard<::std::mutex> lock {*mutexSceneMaterials};
+                            const auto itFoundMat {::std::find(scene->materials_.begin(), scene->materials_.end(), material)};
+                            if (itFoundMat != scene->materials_.cend()) {
+                                // If the material is already in the scene.
+                                materialIndex = static_cast<::std::int32_t> (itFoundMat - scene->materials_.cbegin());
+                            } else {
+                                // If the scene doesn't have material yet.
+                                materialIndex = static_cast<::std::int32_t> (scene->materials_.size());
+                                scene->materials_.emplace_back(::std::move(material));
+                            }
                         }
+                        triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
+                    } else {
+                        LOG_ERROR("Thread ", threadId, " (", numberOfThreads, ") Vertex index is negative for shape: ", shapeIndex, ", scene: ", filePath, ", shapeIndex: ", shapeIndex, ", vertex: ", vertex, ", face: ", face);
                     }
-                    triangles.emplace_back(builder.withMaterialIndex(materialIndex).build());
                 }
             } // Loop over vertices in the face.
 
@@ -462,20 +484,20 @@ void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
         } // The number of vertices per face.
     } // Loop over shapes.
 
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", scene '", filePath, "'.");
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", scene '", filePath, "'.");
     if (!triangles.empty()) {
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", total: ", scene->triangles_.size(), ", last triangle: ", triangles.back(), ", scene '", filePath, "'.");
+        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local triangles: ", triangles.size(), ", last triangle: ", triangles.back(), ", scene '", filePath, "'.");
 
         const ::std::lock_guard<::std::mutex> lock {*mutexSceneTriangles};
         scene->triangles_.reserve(scene->triangles_.size() + triangles.size());
         ::std::move(::std::begin(triangles), ::std::end(triangles), ::std::back_inserter(scene->triangles_));
     }
-    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", scene '", filePath, "'.");
+    LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", scene '", filePath, "'.");
     if (!lights.empty()) {
         const ::std::unique_ptr<Light> &light {lights.back()};
         const ::glm::vec3 &lightPos {light->getPosition()};
         const ::glm::vec3 &lightRadiance {light->radiance_.Le_};
-        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", total: ", scene->lights_.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance, ", scene '", filePath, "'.");
+        LOG_INFO("Thread ", threadId, " (", numberOfThreads, ") Local lights: ", lights.size(), ", last light: ", lightPos, ", radiance: ", lightRadiance, ", scene '", filePath, "'.");
 
         const ::std::lock_guard<::std::mutex> lock {*mutexSceneLights};
         scene->lights_.reserve(scene->lights_.size() + lights.size());
