@@ -452,6 +452,7 @@ namespace MobileRT {
              */
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
+                (void)sizeof...(args); // Ensure args is considered used in all builds.
                 // Use log to avoid CodeQL false positive.
                 LOG_INFO("Called make_unique of ", typeid(T).name(), " with args: ", args...);
                 return ::std::make_unique<T>(::std::forward<Args>(args)...);
