@@ -482,6 +482,7 @@ public final class MainActivity extends Activity {
                     final String filePath = getPathFromFile(uri);
                     setSceneFilePathIfObjFile(filePath);
                     final File[] files = getFilesFromDirectory(baseFile);
+                    logger.info("Will read every file in a path: " + files.length);
                     for(final File file : files) {
                         tasks.add(executor.submit(() -> readFile(Uri.fromFile(file))));
                     }

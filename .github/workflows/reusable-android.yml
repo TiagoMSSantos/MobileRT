@@ -489,7 +489,7 @@ jobs:
           action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
-          attempt_delay: 10000
+          attempt_delay: 20000
           with: |
             # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
             # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
@@ -890,7 +890,7 @@ jobs:
           action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
-          attempt_delay: 10000
+          attempt_delay: 20000
           with: |
             # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
             # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
@@ -1172,7 +1172,7 @@ jobs:
           action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
-          attempt_delay: 10000
+          attempt_delay: 20000
           with: |
             # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
             # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
