@@ -263,21 +263,36 @@ Texture OBJLoader::getTextureFromCache(
     const ::std::string &filePath,
     const ::std::string &texPath
 ) {
-    if (texturesCache->find(texPath) == texturesCache->cend()) {// If the texture is not in the cache.
-        const ::std::string texturePath {filePath + texPath};
-        LOG_DEBUG("Loading texture: ", texturePath);
-        Texture texture {Texture::createTexture(texturePath)};
-        LOG_INFO("Adding texture ", texturePath, " to the cache.");
-        {
-            const ::std::lock_guard<::std::mutex> cacheLock {*mutexCache};
-            const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->try_emplace(texPath, ::std::move(texture))};
-            Texture res {::std::get<0>(pairResult)->second};
-            return res;
+    // 1. Return cached texture
+    {
+        const ::std::lock_guard<::std::mutex> cacheLock {*mutexCache};
+        const ::std::unordered_map<::std::string, Texture>::iterator it {texturesCache->find(texPath)};
+        if (it != texturesCache->end()) {
+            return it->second;
         }
     }
 
-    return texturesCache->find(texPath)->second;
+    // 2. Create texture
+    const ::std::string texturePath {filePath + texPath};
+    LOG_DEBUG("Loading texture: ", texturePath);
+    Texture newTexture {Texture::createTexture(texturePath)};
+
+    // 3. Add new texture to cache
+    {
+        const ::std::lock_guard<::std::mutex> cacheLock {*mutexCache};
+        const ::std::unordered_map<::std::string, Texture>::iterator it {texturesCache->find(texPath)};
+        if (it != texturesCache->end()) {
+            // Return cached texture if another thread inserted while this thread was loading the texture
+            return it->second;
+        }
+
+        LOG_INFO("Adding texture ", texturePath, " to the cache.");
+        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->try_emplace(texPath, ::std::move(newTexture))};
+        Texture res {::std::get<0>(pairResult)->second};
+        return res;
+    }
 }
+
 
 void OBJLoader::fillSceneThreadWork(const ::std::uint32_t threadId,
                                     const ::std::uint32_t numberOfThreads,
