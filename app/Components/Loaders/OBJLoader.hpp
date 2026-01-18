@@ -102,6 +102,7 @@ namespace Components {
     public:
         static ::MobileRT::Texture getTextureFromCache(
             ::std::unordered_map<::std::string, ::MobileRT::Texture> *const texturesCache,
+            ::std::mutex *const mutexCache,
             ::std::string &&textureBinary,
             long size,
             const ::std::string &texPath

@@ -133,8 +133,11 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadVertices
     const ::tinyobj::shape_t &shape,
     const ::std::int32_t indexOffset
 ) const {
-    const auto itIdx {shape.mesh.indices.cbegin() + indexOffset};
+    if (shape.mesh.indices.size() < static_cast<::std::size_t>(indexOffset + 3)) {
+        throw ::std::runtime_error {"Error loading vertices from OBJ file: Index offset out of bounds."};
+    }
 
+    const auto itIdx {shape.mesh.indices.cbegin() + indexOffset};
     const ::tinyobj::index_t idx1 {*(itIdx + 0)};
     const ::tinyobj::index_t idx2 {*(itIdx + 1)};
     const ::tinyobj::index_t idx3 {*(itIdx + 2)};
@@ -180,6 +183,10 @@ OBJLoader::triple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(
     const ::std::int32_t indexOffset,
     const triple<::glm::vec3, ::glm::vec3, ::glm::vec3> &vertex
 ) const {
+    if (shape.mesh.indices.size() < static_cast<::std::size_t>(indexOffset + 3)) {
+        throw ::std::runtime_error {"Error loading normals from OBJ file: Index offset out of bounds."};
+    }
+
     const auto itIdx {shape.mesh.indices.cbegin() + indexOffset};
     const ::tinyobj::index_t idx1 {*(itIdx + 0)};
     const ::tinyobj::index_t idx2 {*(itIdx + 1)};
@@ -233,6 +240,7 @@ OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTex
  * If the cache, does not have the texture, then it will create one and add it in it.
  *
  * @param texturesCache The cache for the textures.
+ * @param mutexCache    Mutex for the texture cache.
  * @param textureBinary The texture in binary format.
  * @param size          The size of the texture in bytes.
  * @param texPath       The texture file name.
@@ -240,21 +248,38 @@ OBJLoader::triple<::glm::vec2, ::glm::vec2, ::glm::vec2> OBJLoader::normalizeTex
  */
 Texture OBJLoader::getTextureFromCache(
     ::std::unordered_map<::std::string, Texture> *const texturesCache,
+    ::std::mutex *const mutexCache,
     ::std::string &&textureBinary,
     const long size,
     const ::std::string &texPath
 ) {
-    if (texturesCache->find(texPath) == texturesCache->cend()) { // If the texture is not in the cache.
-        LOG_INFO("Loading texture: ", texPath);
-        Texture texture {Texture::createTexture(::std::move(textureBinary), size)};
+    // 1. Return cached texture
+    {
+        const ::std::lock_guard<::std::mutex> cacheLock {*mutexCache};
+        const ::std::unordered_map<::std::string, Texture>::iterator it {texturesCache->find(texPath)};
+        if (it != texturesCache->end()) {
+            return it->second;
+        }
+    }
+
+    // 2. Create texture
+    LOG_INFO("Loading texture: ", texPath);
+    Texture newTexture {Texture::createTexture(::std::move(textureBinary), size)};
+
+    // 3. Add new texture to cache
+    {
+        const ::std::lock_guard<::std::mutex> cacheLock {*mutexCache};
+        const ::std::unordered_map<::std::string, Texture>::iterator it {texturesCache->find(texPath)};
+        if (it != texturesCache->end()) {
+            // Return cached texture if another thread inserted while this thread was loading the texture
+            return it->second;
+        }
+
         LOG_INFO("Adding texture ", texPath, " to the cache.");
-        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->try_emplace(texPath, ::std::move(texture))};
-        LOG_INFO("Added texture ", texPath, " to the cache.");
+        const ::std::pair<::std::unordered_map<::std::string, Texture>::iterator, bool> pairResult {texturesCache->try_emplace(texPath, ::std::move(newTexture))};
         Texture res {::std::get<0>(pairResult)->second};
         return res;
     }
-
-    return texturesCache->find(texPath)->second;
 }
 
 Texture OBJLoader::getTextureFromCache(

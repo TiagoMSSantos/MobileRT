@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-01-18T10:25:51.233Z",
+    "detectionDate": "2026-01-18T12:50:25.333Z",
     "formats": {
       "java": {
         "sources": {
@@ -809,14 +809,14 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/MainActivityTest.java": {
-            "lines": 284,
-            "tokens": 2394,
+            "lines": 304,
+            "tokens": 2584,
             "sources": 1,
             "clones": 5,
-            "duplicatedLines": 108,
-            "duplicatedTokens": 1121,
-            "percentage": 38.03,
-            "percentageTokens": 46.83,
+            "duplicatedLines": 126,
+            "duplicatedTokens": 1285,
+            "percentage": 41.45,
+            "percentageTokens": 49.73,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1050,14 +1050,14 @@
           }
         },
         "total": {
-          "lines": 9766,
-          "tokens": 68056,
+          "lines": 9786,
+          "tokens": 68246,
           "sources": 87,
           "clones": 60,
-          "duplicatedLines": 586,
-          "duplicatedTokens": 5567,
-          "percentage": 6,
-          "percentageTokens": 8.18,
+          "duplicatedLines": 595,
+          "duplicatedTokens": 5649,
+          "percentage": 6.08,
+          "percentageTokens": 8.28,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -1537,14 +1537,14 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.cpp": {
-            "lines": 520,
-            "tokens": 7582,
+            "lines": 545,
+            "tokens": 7832,
             "sources": 1,
-            "clones": 8,
-            "duplicatedLines": 74,
-            "duplicatedTokens": 1070,
-            "percentage": 14.23,
-            "percentageTokens": 14.11,
+            "clones": 14,
+            "duplicatedLines": 142,
+            "duplicatedTokens": 1694,
+            "percentage": 26.06,
+            "percentageTokens": 21.63,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1874,14 +1874,14 @@
           }
         },
         "total": {
-          "lines": 6154,
-          "tokens": 62211,
+          "lines": 6179,
+          "tokens": 62461,
           "sources": 59,
-          "clones": 34,
-          "duplicatedLines": 333,
-          "duplicatedTokens": 5224,
-          "percentage": 5.41,
-          "percentageTokens": 8.4,
+          "clones": 37,
+          "duplicatedLines": 367,
+          "duplicatedTokens": 5536,
+          "percentage": 5.94,
+          "percentageTokens": 8.86,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2897,8 +2897,8 @@
             "newClones": 0
           },
           "app/Components/Loaders/OBJLoader.hpp": {
-            "lines": 104,
-            "tokens": 828,
+            "lines": 105,
+            "tokens": 840,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3138,8 +3138,8 @@
           }
         },
         "total": {
-          "lines": 3493,
-          "tokens": 25918,
+          "lines": 3494,
+          "tokens": 25930,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
@@ -3272,14 +3272,14 @@
       }
     },
     "total": {
-      "lines": 30020,
-      "tokens": 232426,
+      "lines": 30066,
+      "tokens": 232878,
       "sources": 259,
-      "clones": 113,
-      "duplicatedLines": 1361,
-      "duplicatedTokens": 13223,
-      "percentage": 4.53,
-      "percentageTokens": 5.69,
+      "clones": 116,
+      "duplicatedLines": 1404,
+      "duplicatedTokens": 13617,
+      "percentage": 4.67,
+      "percentageTokens": 5.85,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -4912,17 +4912,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 17,
-        "end": 25,
+        "start": 19,
+        "end": 27,
         "startLoc": {
-          "line": 17,
+          "line": 19,
           "column": 7,
-          "position": 137
+          "position": 153
         },
         "endLoc": {
-          "line": 25,
+          "line": 27,
           "column": 3,
-          "position": 218
+          "position": 234
         }
       },
       "secondFile": {
@@ -4948,68 +4948,68 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 233,
-        "end": 246,
+        "start": 244,
+        "end": 257,
         "startLoc": {
-          "line": 233,
+          "line": 244,
           "column": 37,
-          "position": 1806
+          "position": 1914
         },
         "endLoc": {
-          "line": 246,
+          "line": 257,
           "column": 6,
-          "position": 1952
+          "position": 2060
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 178,
-        "end": 191,
+        "start": 181,
+        "end": 194,
         "startLoc": {
-          "line": 178,
+          "line": 181,
           "column": 38,
-          "position": 1282
+          "position": 1309
         },
         "endLoc": {
-          "line": 191,
+          "line": 194,
           "column": 9,
-          "position": 1428
+          "position": 1455
         }
       }
     },
     {
       "format": "java",
-      "lines": 38,
-      "fragment": ")\n            .anyTimes();\n        EasyMock.replay(intentMocked, uriMocked);\n\n        PowerMock.mockStatic(UtilsContext.class);\n        EasyMock.expect(UtilsContext.getInternalStorageFilePath())\n            .andReturn(new File (PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardFilePath(EasyMock.anyObject(Context.class)))\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getInternalStoragePath())\n            .andReturn(PATH_TO_INTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))\n            .andReturn(PATH_TO_EXTERNAL_STORAGE)\n            .anyTimes();\n        PowerMock.mockStatic(Environment.class);\n        EasyMock.expect(Environment.getExternalStorageDirectory())\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(Environment.getDataDirectory())\n            .andReturn(new File(PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        PowerMock.replayAll();\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isNull();\n\n        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, \"OPEN_FILE_REQUEST_CODE\"));\n        this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isEqualTo(PATH_TO_OBJ_FILE);\n    }\n}",
+      "lines": 47,
+      "fragment": ")\n            .anyTimes();\n        EasyMock.replay(intentMocked, uriMocked);\n\n        PowerMock.mockStatic(UtilsContext.class);\n        EasyMock.expect(UtilsContext.getInternalStorageFilePath())\n            .andReturn(new File (PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardFilePath(EasyMock.anyObject(Context.class)))\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getInternalStoragePath())\n            .andReturn(PATH_TO_INTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))\n            .andReturn(PATH_TO_EXTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getNumOfCores(EasyMock.anyObject(Context.class)))\n            .andReturn(1)\n            .anyTimes();\n\n        PowerMock.mockStatic(Executors.class);\n        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt()))\n            .andReturn(MoreExecutors.newDirectExecutorService())\n            .anyTimes();\n\n        PowerMock.mockStatic(Environment.class);\n        EasyMock.expect(Environment.getExternalStorageDirectory())\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(Environment.getDataDirectory())\n            .andReturn(new File(PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        PowerMock.replayAll();\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isNull();\n\n        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, \"OPEN_FILE_REQUEST_CODE\"));\n        this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isEqualTo(PATH_TO_OBJ_FILE);\n    }\n}",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 248,
-        "end": 285,
+        "start": 259,
+        "end": 305,
         "startLoc": {
-          "line": 248,
+          "line": 259,
           "column": 9,
-          "position": 2020
+          "position": 2128
         },
         "endLoc": {
-          "line": 285,
+          "line": 305,
           "column": 2,
-          "position": 2394
+          "position": 2584
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 189,
-        "end": 231,
+        "start": 192,
+        "end": 242,
         "startLoc": {
-          "line": 189,
+          "line": 192,
           "column": 10,
-          "position": 1418
+          "position": 1445
         },
         "endLoc": {
-          "line": 231,
+          "line": 242,
           "column": 8,
-          "position": 1795
+          "position": 1903
         }
       }
     },
@@ -6203,37 +6203,145 @@
     },
     {
       "format": "cpp",
-      "lines": 7,
-      "fragment": "riple<::glm::vec3, ::glm::vec3, ::glm::vec3> OBJLoader::loadNormal(\n    const ::tinyobj::shape_t &shape,\n    const ::std::int32_t indexOffset,\n    const triple<::glm::vec3, ::glm::vec3, ::glm::vec3> &vertex\n) const {\n    const auto itIdx {shape.mesh.in",
+      "lines": 9,
+      "fragment": "c3> &vertex\n) const {\n    if (shape.mesh.indices.size() < static_cast<::std::size_t>(indexOffset + 3)) {\n        throw ::std::runtime_error {\"Error loading normals from OBJ file: Index offset out of bounds.\"};\n    }\n\n    const auto itIdx {shape.mesh.in",
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 182,
-        "end": 188,
+        "start": 187,
+        "end": 195,
         "startLoc": {
-          "line": 182,
-          "column": 1,
-          "position": 2054
+          "line": 187,
+          "column": 67,
+          "position": 2154
         },
         "endLoc": {
-          "line": 188,
+          "line": 195,
           "column": 22,
-          "position": 2152
+          "position": 2253
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 135,
-        "end": 142,
+        "start": 137,
+        "end": 145,
         "startLoc": {
-          "line": 135,
-          "column": 1,
-          "position": 1345
+          "line": 137,
+          "column": 68,
+          "position": 1395
         },
         "endLoc": {
-          "line": 142,
+          "line": 145,
           "column": 3,
-          "position": 1444
+          "position": 1494
+        }
+      }
+    },
+    {
+      "format": "cpp",
+      "lines": 14,
+      "fragment": "      return res;\n    }\n}\n\nTexture OBJLoader::getTextureFromCache(\n    ::std::unordered_map<::std::string, Texture> *const texturesCache,\n    ::std::mutex *const mutexCache,\n    const ::std::string &filePath,\n    const ::std::string &texPath\n) {\n    // 1. Return cached texture\n    {\n        const ::std::lock_guard<::std::mutex> cacheLock {*mutexCache};\n        const ::std::",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 288,
+        "end": 301,
+        "startLoc": {
+          "line": 288,
+          "column": 9,
+          "position": 3380
+        },
+        "endLoc": {
+          "line": 301,
+          "column": 6,
+          "position": 3495
+        }
+      },
+      "secondFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 253,
+        "end": 266,
+        "startLoc": {
+          "line": 253,
+          "column": 5,
+          "position": 2990
+        },
+        "endLoc": {
+          "line": 266,
+          "column": 9,
+          "position": 3105
+        }
+      }
+    },
+    {
+      "format": "cpp",
+      "lines": 12,
+      "fragment": "        }\n    }\n\n    // 2. Create texture\n    const ::std::string texturePath {filePath + texPath};\n    LOG_DEBUG(\"Loading texture: \", texturePath);\n    Texture newTexture {Texture::createTexture(texturePath)};\n\n    // 3. Add new texture to cache\n    {\n        const ::std::lock_guard<::std::mutex> cacheLock {*mutexCache};\n        const ::std::unordered_map<::std::string, Texture>::iterator it {texturesCache->find(texPath)};\n        if (it != texturesCach",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 303,
+        "end": 314,
+        "startLoc": {
+          "line": 303,
+          "column": 12,
+          "position": 3534
+        },
+        "endLoc": {
+          "line": 314,
+          "column": 12,
+          "position": 3639
+        }
+      },
+      "secondFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 267,
+        "end": 278,
+        "startLoc": {
+          "line": 267,
+          "column": 5,
+          "position": 3134
+        },
+        "endLoc": {
+          "line": 278,
+          "column": 8,
+          "position": 3239
+        }
+      }
+    },
+    {
+      "format": "cpp",
+      "lines": 9,
+      "fragment": "e->end()) {\n            // Return cached texture if another thread inserted while this thread was loading the texture\n            return it->second;\n        }\n\n        LOG_INFO(\"Adding texture \", texturePath, \" to the cache.\");\n        const ::std::pair<::std::unordered_map<",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 314,
+        "end": 322,
+        "startLoc": {
+          "line": 314,
+          "column": 12,
+          "position": 3640
+        },
+        "endLoc": {
+          "line": 322,
+          "column": 5,
+          "position": 3731
+        }
+      },
+      "secondFile": {
+        "name": "app/Components/Loaders/OBJLoader.cpp",
+        "start": 278,
+        "end": 285,
+        "startLoc": {
+          "line": 278,
+          "column": 8,
+          "position": 3240
+        },
+        "endLoc": {
+          "line": 285,
+          "column": 8,
+          "position": 3330
         }
       }
     },
@@ -6244,32 +6352,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 421,
-        "end": 431,
+        "start": 446,
+        "end": 456,
         "startLoc": {
-          "line": 421,
+          "line": 446,
           "column": 2,
-          "position": 5801
+          "position": 6051
         },
         "endLoc": {
-          "line": 431,
+          "line": 456,
           "column": 2,
-          "position": 5940
+          "position": 6190
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 402,
-        "end": 412,
+        "start": 427,
+        "end": 437,
         "startLoc": {
-          "line": 402,
+          "line": 427,
           "column": 2,
-          "position": 5417
+          "position": 5667
         },
         "endLoc": {
-          "line": 412,
+          "line": 437,
           "column": 2,
-          "position": 5556
+          "position": 5806
         }
       }
     },
@@ -6280,32 +6388,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 462,
-        "end": 469,
+        "start": 487,
+        "end": 494,
         "startLoc": {
-          "line": 462,
+          "line": 487,
           "column": 25,
-          "position": 6422
+          "position": 6672
         },
         "endLoc": {
-          "line": 469,
+          "line": 494,
           "column": 2,
-          "position": 6523
+          "position": 6773
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 421,
-        "end": 409,
+        "start": 446,
+        "end": 434,
         "startLoc": {
-          "line": 421,
+          "line": 446,
           "column": 25,
-          "position": 5795
+          "position": 6045
         },
         "endLoc": {
-          "line": 409,
+          "line": 434,
           "column": 2,
-          "position": 5512
+          "position": 5762
         }
       }
     },
@@ -6316,32 +6424,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 471,
-        "end": 485,
+        "start": 496,
+        "end": 510,
         "startLoc": {
-          "line": 471,
+          "line": 496,
           "column": 2,
-          "position": 6584
+          "position": 6834
         },
         "endLoc": {
-          "line": 485,
+          "line": 510,
           "column": 5,
-          "position": 6781
+          "position": 7031
         }
       },
       "secondFile": {
         "name": "app/Components/Loaders/OBJLoader.cpp",
-        "start": 433,
-        "end": 448,
+        "start": 458,
+        "end": 473,
         "startLoc": {
-          "line": 433,
+          "line": 458,
           "column": 2,
-          "position": 5956
+          "position": 6206
         },
         "endLoc": {
-          "line": 448,
+          "line": 473,
           "column": 2,
-          "position": 6154
+          "position": 6404
         }
       }
     },

@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.widget.Button;
 
+import com.google.common.util.concurrent.MoreExecutors;
+
 import org.assertj.core.api.Assertions;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -23,6 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
+import java.util.concurrent.Executors;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -203,6 +206,14 @@ public final class MainActivityTest {
         EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))
             .andReturn(PATH_TO_EXTERNAL_STORAGE)
             .anyTimes();
+        EasyMock.expect(UtilsContext.getNumOfCores(EasyMock.anyObject(Context.class)))
+            .andReturn(1)
+            .anyTimes();
+
+        PowerMock.mockStatic(Executors.class);
+        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt()))
+            .andReturn(MoreExecutors.newDirectExecutorService())
+            .anyTimes();
 
         PowerMock.mockStatic(Environment.class);
         EasyMock.expect(Environment.getExternalStorageDirectory())
@@ -262,6 +273,15 @@ public final class MainActivityTest {
         EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))
             .andReturn(PATH_TO_EXTERNAL_STORAGE)
             .anyTimes();
+        EasyMock.expect(UtilsContext.getNumOfCores(EasyMock.anyObject(Context.class)))
+            .andReturn(1)
+            .anyTimes();
+
+        PowerMock.mockStatic(Executors.class);
+        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt()))
+            .andReturn(MoreExecutors.newDirectExecutorService())
+            .anyTimes();
+
         PowerMock.mockStatic(Environment.class);
         EasyMock.expect(Environment.getExternalStorageDirectory())
             .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))

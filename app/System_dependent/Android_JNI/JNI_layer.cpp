@@ -104,6 +104,10 @@ static ::std::string camDefinition_ {};
  */
 static ::std::unordered_map<::std::string, ::MobileRT::Texture> texturesCache_ {};
 
+/**
+ * The mutex for the textures cache.
+ */
+static ::std::mutex mutexCache_ {};
 
 /**
  * Helper method that throws a Java exception.
@@ -1011,7 +1015,7 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
         MobileRT::checkSystemError("After read file.");
         ASSERT(remainingLength == 0 || remainingLength == fileSize, "File not read entirely.");
         const ::std::string fileName {filePathRaw.substr(filePathRaw.find_last_of('/') + 1, filePathRaw.size())};
-        ::Components::OBJLoader::getTextureFromCache(&texturesCache_, ::std::move(texture), static_cast<long> (fileSize), fileName);
+        ::Components::OBJLoader::getTextureFromCache(&texturesCache_, &mutexCache_, ::std::move(texture), static_cast<long> (fileSize), fileName);
         LOG_INFO("Read a texture file: ", filePathRaw);
     }
 }

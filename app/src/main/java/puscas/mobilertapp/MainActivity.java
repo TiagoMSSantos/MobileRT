@@ -30,14 +30,20 @@ import androidx.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import java8.util.Optional;
@@ -449,18 +455,24 @@ public final class MainActivity extends Activity {
 
         try {
             if (resultCode == Activity.RESULT_OK && data != null) {
+                final int maxCores = UtilsContext.getNumOfCores(this);
+                final ExecutorService executor = Executors.newFixedThreadPool(maxCores + 1);
+                final List<Future<?>> tasks = new ArrayList<>();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
                     final ClipData clipData = data.getClipData();
                     final int numFiles = clipData.getItemCount();
                     logger.info("Will read every selected file: " + numFiles);
                     for (int i = 0; i < numFiles; ++i) {
-                        final ClipData.Item item = clipData.getItemAt(i);
-                        final Uri uri = item.getUri();
-                        final File file = new File(Objects.requireNonNull(Objects.requireNonNull(uri).getPath()));
-                        validatePath(file);
-                        final String filePath = getPathFromFile(uri);
-                        readFile(uri);
-                        setSceneFilePathIfObjFile(filePath);
+                        final int fileIndex = i;
+                        tasks.add(executor.submit(() -> {
+                            final ClipData.Item item = clipData.getItemAt(fileIndex);
+                            final Uri uri = item.getUri();
+                            final File file = new File(Objects.requireNonNull(Objects.requireNonNull(uri).getPath()));
+                            validatePath(file);
+                            final String filePath = getPathFromFile(uri);
+                            readFile(uri);
+                            setSceneFilePathIfObjFile(filePath);
+                        }));
                     }
                 } else {
                     logger.info("Will read every file in a path.");
@@ -471,9 +483,16 @@ public final class MainActivity extends Activity {
                     setSceneFilePathIfObjFile(filePath);
                     final File[] files = getFilesFromDirectory(baseFile);
                     for(final File file : files) {
-                        readFile(Uri.fromFile(file));
+                        tasks.add(executor.submit(() -> readFile(Uri.fromFile(file))));
                     }
                 }
+                logger.info("Waiting for all tasks: " + tasks.size());
+                for (final Future<?> task : tasks) {
+                    task.get();
+                }
+                logger.info("Waited for all tasks: " + tasks.size());
+                final boolean finished = MoreExecutors.shutdownAndAwaitTermination(executor, 5, TimeUnit.SECONDS);
+                assert finished == true;
             } else {
                 logger.severe("There is no URI to a File!");
                 this.sceneFilePath = null;
