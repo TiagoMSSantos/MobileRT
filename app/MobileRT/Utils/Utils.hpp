@@ -452,6 +452,9 @@ namespace MobileRT {
              */
             template<typename T, typename... Args>
             ::std::unique_ptr<T> make_unique(Args &&... args) {
+                // Ensure args are considered used even if logging is compiled out.
+                auto _mobilert_unused_args = {0, (static_cast<void>(args), 0)...};
+                (void)_mobilert_unused_args;
                 // Use log to avoid CodeQL false positive.
                 LOG_INFO("Called make_unique of ", typeid(T).name(), " with args: ", args...);
                 return ::std::make_unique<T>(::std::forward<Args>(args)...);
