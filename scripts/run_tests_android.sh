@@ -746,7 +746,7 @@ _waitForEmulatorToBoot() {
   echo 'dev.bootcomplete: ';
   timeout 60 adb shell 'getprop dev.bootcomplete';
   echo 'service.bootanim.exit: ';
-  timeout 60adb shell 'getprop service.bootanim.exit';
+  timeout 60 adb shell 'getprop service.bootanim.exit';
   androidApiDevice=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
   echo "androidApiDevice: '${androidApiDevice}'";
 
