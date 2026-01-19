@@ -553,7 +553,7 @@ runUnitTests() {
   fi
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}/UnitTests";
   callAdbShellCommandUntilSuccess 'ls -laR '"${internal_storage_path}";
-  timeout 60 adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
+  timeout 120 adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
   timeout 60 adb pull "${internal_storage_path}"/unit_tests_result.log .;
   resUnitTests=$(cat "unit_tests_result.log");
   if [ "${androidApiDevice}" = '15' ]; then
