@@ -165,7 +165,7 @@ kill_mobilert_processes() {
   for pid_app in ${pid_apps}; do
     echo "Killing pid of MobileRT: '${pid_app}'";
     set +e;
-    adb shell 'kill -TERM '"${pid_app}";
+    timeout 60 adb shell 'kill -TERM '"${pid_app}";
     set -e;
   done
 }
@@ -385,10 +385,10 @@ copyResources() {
 
   unlockDevice;
   echo 'Possible SD Card paths:';
-  adb shell ls -d '/storage/*' | grep -v 'self';
-  adb shell df;
+  timeout 60 adb shell ls -d '/storage/*' | grep -v 'self';
+  timeout 60 adb shell df;
   set +e;
-  adb shell env | grep -i "storage";
+  timeout 60 adb shell env | grep -i "storage";
   set -e;
   sdcard_path_android="$(adb shell ls -d '/storage/*' | grep -v '/storage/emulated' | grep -v 'self' | tail -1)";
   # Delete all special character that might be invisible!
@@ -412,10 +412,10 @@ copyResources() {
 
   echo 'Prepare copy unit tests';
   set +e;
-  adb shell rm -r ${mobilert_path};
-  adb shell rm -r ${internal_storage_path};
+  timeout 60 adb shell rm -r ${mobilert_path};
+  timeout 60 adb shell rm -r ${internal_storage_path};
   if [ "${androidApiDevice}" -gt 29 ]; then
-    adb shell 'rm -r '"${sdcard_path_android}";
+    timeout 60 adb shell 'rm -r '"${sdcard_path_android}";
   fi
   set -e;
 
@@ -430,7 +430,7 @@ copyResources() {
   echo 'Copy tests resources';
   callCommandUntilSuccess 5 timeout 60 adb push -p app/src/androidTest/resources/CornellBox ${internal_storage_path}/WavefrontOBJs;
   set +e;
-  adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
+  timeout 60 adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
   set -e;
 
   echo 'Copy File Manager';
@@ -442,29 +442,29 @@ copyResources() {
 
   echo 'Install File Manager';
   set +e;
-  adb shell pm;
+  timeout 60 adb shell pm;
   set -e;
   unlockDevice;
   if [ "${androidApiDevice}" -gt 31 ]; then
     echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApiDevice}";
   elif [ "${androidApiDevice}" -gt 30 ]; then
     set +e;
-    adb shell "pm uninstall ${internal_storage_path}/APKs/asus-file-manager-2-8-0-85-230220.apk;";
+    timeout 60 adb shell "pm uninstall ${internal_storage_path}/APKs/asus-file-manager-2-8-0-85-230220.apk;";
     set -e;
     callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/asus-file-manager-2-8-0-85-230220.apk';
   elif [ "${androidApiDevice}" -gt 29 ]; then
     set +e;
-    adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk;";
+    timeout 60 adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk";
     set -e;
     callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk';
   elif [ "${androidApiDevice}" -gt 16 ]; then
     set +e;
-    adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager.apk";
+    timeout 60 adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager.apk";
     set -e;
     callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager.apk';
   elif [ "${androidApiDevice}" -lt 16 ]; then
     set +e;
-    adb shell "pm uninstall ${internal_storage_path}/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk;";
+    timeout 60 adb shell "pm uninstall ${internal_storage_path}/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk";
     set -e;
     # This file manager is compatible with Android 4.0.3 (API 15) which the Asus one is not.
     callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk';
@@ -488,7 +488,7 @@ startCopyingLogcatToFile() {
   callAdbShellCommandUntilSuccess 'logcat '"${bufferSize}"' -c';
 
   echo 'Copy realtime logcat to file';
-  adb logcat -v threadtime "*":V | tee "${reports_path}"/logcat_"${type}".log 2>&1 &
+  timeout 60 adb logcat -v threadtime "*":V | tee "${reports_path}"/logcat_"${type}".log 2>&1 &
   pid_logcat="$!";
   echo "pid of logcat: '${pid_logcat}'";
 }
@@ -548,13 +548,13 @@ runUnitTests() {
   echo 'Run unit tests';
   if [ "${type}" = 'debug' ]; then
     echo 'Enabling AddressSanitizer';
-    adb shell setprop debug.asan.enabled true;
-    adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
+    timeout 60 adb shell setprop debug.asan.enabled true;
+    timeout 60 adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
   fi
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}/UnitTests";
   callAdbShellCommandUntilSuccess 'ls -laR '"${internal_storage_path}";
-  adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
-  adb pull "${internal_storage_path}"/unit_tests_result.log .;
+  timeout 60 adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
+  timeout 60 adb pull "${internal_storage_path}"/unit_tests_result.log .;
   resUnitTests=$(cat "unit_tests_result.log");
   if [ "${androidApiDevice}" = '15' ]; then
     # TODO: Fix the native unit tests in Android API 15. Ignore the result for now.
@@ -609,14 +609,14 @@ runInstrumentationTests() {
       pidsToKill=$(adb shell ps | grep -ine "graphics.allocator" | tr -s ' ' | cut -d ' ' -f 2);
       for pidToKill in ${pidsToKill}; do
         echo "Killing Android process: '${pidToKill}'";
-        adb shell kill "${pidToKill}";
+        timeout 60 adb shell kill "${pidToKill}";
       done;
       set -e;
     fi
   fi
   set -eu;
 
-  adb shell df;
+  timeout 60 adb shell df;
   echo 'Searching for APK to install in Android emulator.';
   apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}");
   echo "Will install the following APKs: ${apksPath}";
@@ -629,10 +629,10 @@ runInstrumentationTests() {
   unlockDevice;
   echo 'Installing both APKs for tests and app.';
   set +e;
-  adb shell "pm uninstall ${internal_storage_path}/app-${type}-androidTest.apk;";
-  adb shell "pm uninstall ${internal_storage_path}/app-${type}.apk;";
-  adb shell rm -r /data/app/puscas.mobilertapp*;
-  adb shell ls -la /data/app;
+  timeout 60 adb shell "pm uninstall ${internal_storage_path}/app-${type}-androidTest.apk;";
+  timeout 60 adb shell "pm uninstall ${internal_storage_path}/app-${type}.apk;";
+  timeout 60 adb shell rm -r /data/app/puscas.mobilertapp*;
+  timeout 60 adb shell ls -la /data/app;
   set -e;
   callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'.apk';
   callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'-androidTest.apk';
@@ -653,8 +653,8 @@ runInstrumentationTests() {
 
   if [ "${type}" = 'debug' ]; then
     echo 'Enabling AddressSanitizer';
-    adb shell setprop debug.asan.enabled true;
-    adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
+    timeout 60 adb shell setprop debug.asan.enabled true;
+    timeout 60 adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
   fi
 
   if [ "${run_test}" = 'all' ]; then
@@ -663,7 +663,7 @@ runInstrumentationTests() {
     # Allow to execute the tests a 2nd time in case it fails.
     # This allows for tests to pass when using Android emulator without hardware acceleration (e.g.: MacOS on Github Actions).
     callCommandUntilSuccess 2 _executeAndroidTests;
-    adb pull "${internal_storage_path}/screenshots" .;
+    timeout 60 adb pull "${internal_storage_path}/screenshots" .;
     echo 'Checking all files';
     ls -lahp .;
     echo 'Checking all screenshots';
@@ -697,7 +697,7 @@ _executeAndroidTests() {
 
   echo "Copying OBJ to ${sdcard_path_android}/WavefrontOBJs";
   callAdbShellCommandUntilSuccess 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot';
-  adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
+  timeout 60 adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
   echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
   callAdbShellCommandUntilSuccess 'ls -la '"${sdcard_path_android}"'/WavefrontOBJs/teapot/teapot.obj';
 
@@ -742,11 +742,11 @@ _waitForEmulatorToBoot() {
   # adb shell needs ' instead of ", so 'getprop' works properly.
   callAdbShellCommandUntilSuccess 'getprop ro.build.version.sdk';
   echo 'sys.boot_completed: ';
-  adb shell 'getprop sys.boot_completed';
+  timeout 60 adb shell 'getprop sys.boot_completed';
   echo 'dev.bootcomplete: ';
-  adb shell 'getprop dev.bootcomplete';
+  timeout 60 adb shell 'getprop dev.bootcomplete';
   echo 'service.bootanim.exit: ';
-  adb shell 'getprop service.bootanim.exit';
+  timeout 60adb shell 'getprop service.bootanim.exit';
   androidApiDevice=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
   echo "androidApiDevice: '${androidApiDevice}'";
 
