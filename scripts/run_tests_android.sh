@@ -219,7 +219,7 @@ unlockDevice() {
     --info --warning-mode fail --stacktrace;
 
   echo 'Set adb as root, to be able to change files permissions';
-  callCommandUntilSuccess 5 adb root;
+  callCommandUntilSuccess 5 timeout 60 adb root;
 
   set +e;
   # shellcheck disable=SC2009
@@ -246,9 +246,9 @@ unlockDevice() {
     callAdbShellCommandUntilSuccess 'input tap 1000 500';
   fi
 
-  callCommandUntilSuccess 5 adb get-state;
-  callCommandUntilSuccess 5 adb devices -l;
-  callCommandUntilSuccess 5 adb version;
+  callCommandUntilSuccess 5 timeout 60 adb get-state;
+  callCommandUntilSuccess 5 timeout 60 adb devices -l;
+  callCommandUntilSuccess 5 timeout 60 adb version;
 
   callAdbShellCommandUntilSuccess 'input keyevent 82';
   if [ "${androidApiDevice}" -gt 15 ]; then
@@ -297,9 +297,9 @@ runEmulator() {
 waitForEmulator() {
   echo 'Wait for device to be available.';
 
-  callCommandUntilSuccess 5 adb kill-server;
+  callCommandUntilSuccess 5 timeout 60 adb kill-server;
   #_restartAdbProcesses;
-  callCommandUntilSuccess 5 adb start-server;
+  callCommandUntilSuccess 5 timeout 60 adb start-server;
   set +e;
   adb_devices_running=$(adb devices | tail -n +2);
   retry=0;
@@ -336,7 +336,7 @@ waitForEmulator() {
       -no-mouse-reposition -no-nested-warnings -verbose \
       -qemu -m size=4096M,slots=1,maxmem=8192M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp cpus=8,maxcpus=8,cores=8,threads=1,sockets=1
     sleep 20;
-    adb_devices_running=$(callCommandUntilSuccess 5 adb devices | tail -n +2);
+    adb_devices_running=$(callCommandUntilSuccess 5 timeout 60 adb devices | tail -n +2);
   done
   set -eu;
   echo "Devices running: '${adb_devices_running}'";
@@ -356,7 +356,7 @@ waitForEmulator() {
 
   unlockDevice;
 
-  adb_devices_running=$(callCommandUntilSuccess 5 adb devices | grep -v 'List of devices attached' || true);
+  adb_devices_running=$(callCommandUntilSuccess 5 timeout 60 adb devices | grep -v 'List of devices attached' || true);
   echo "Devices running after triggering boot: '${adb_devices_running}'";
   if [ -z "${adb_devices_running}" ]; then
     # Abort if emulator didn't start.
@@ -428,13 +428,13 @@ copyResources() {
   callAdbShellCommandUntilSuccess 'mkdir -p '"${sdcard_path_android}"'/WavefrontOBJs/teapot';
 
   echo 'Copy tests resources';
-  callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/CornellBox ${internal_storage_path}/WavefrontOBJs;
+  callCommandUntilSuccess 5 timeout 60 adb push -p app/src/androidTest/resources/CornellBox ${internal_storage_path}/WavefrontOBJs;
   set +e;
   adb push -p app/src/androidTest/resources/teapot "${sdcard_path_android}/WavefrontOBJs";
   set -e;
 
   echo 'Copy File Manager';
-  callCommandUntilSuccess 5 adb push -p app/src/androidTest/resources/APKs ${internal_storage_path};
+  callCommandUntilSuccess 5 timeout 60 adb push -p app/src/androidTest/resources/APKs ${internal_storage_path};
 
   echo 'Change resources permissions';
   callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'';
@@ -542,8 +542,8 @@ runUnitTests() {
 
   unlockDevice;
 
-  callCommandUntilSuccess 5 adb push -p "${dirUnitTests}"/bin/* ${internal_storage_path};
-  callCommandUntilSuccess 5 adb push -p "${dirUnitTests}"/lib/* ${internal_storage_path};
+  callCommandUntilSuccess 5 timeout 60 adb push -p "${dirUnitTests}"/bin/* ${internal_storage_path};
+  callCommandUntilSuccess 5 timeout 60 adb push -p "${dirUnitTests}"/lib/* ${internal_storage_path};
 
   echo 'Run unit tests';
   if [ "${type}" = 'debug' ]; then
@@ -623,7 +623,7 @@ runInstrumentationTests() {
   for apkPath in ${apksPath}; do
     echo "Will install APK: ${apkPath}";
     ls -lahp "${apkPath}";
-    callCommandUntilSuccess 5 adb push -p "${apkPath}" "${internal_storage_path}";
+    callCommandUntilSuccess 5 timeout 60 adb push -p "${apkPath}" "${internal_storage_path}";
   done;
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}";
   unlockDevice;
@@ -737,8 +737,8 @@ _restartAdbProcesses() {
 # E.g.: Android API 33 can take more than 1 minute to boot.
 _waitForEmulatorToBoot() {
   # Make sure ADB daemon started properly.
-  callCommandUntilSuccess 70 adb shell 'ps > /dev/null';
-  callCommandUntilSuccess 70 adb shell 'getprop ro.build.version.sdk';
+  callCommandUntilSuccess 70 timeout 60 adb shell 'ps > /dev/null';
+  callCommandUntilSuccess 70 timeout 60 adb shell 'getprop ro.build.version.sdk';
   # adb shell needs ' instead of ", so 'getprop' works properly.
   callAdbShellCommandUntilSuccess 'getprop ro.build.version.sdk';
   echo 'sys.boot_completed: ';
