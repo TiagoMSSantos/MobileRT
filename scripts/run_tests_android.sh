@@ -301,7 +301,7 @@ waitForEmulator() {
   #_restartAdbProcesses;
   callCommandUntilSuccess 5 timeout 60 adb start-server;
   set +e;
-  adb_devices_running=$(adb devices | tail -n +2);
+  adb_devices_running=$(timeout 60 adb devices | tail -n +2);
   retry=0;
   # Truncate nohup.out log file.
   : > nohup.out;
@@ -390,7 +390,7 @@ copyResources() {
   set +e;
   timeout 60 adb shell env | grep -i "storage";
   set -e;
-  sdcard_path_android="$(adb shell ls -d '/storage/*' | grep -v '/storage/emulated' | grep -v 'self' | tail -1)";
+  sdcard_path_android="$(timeout 60 adb shell ls -d '/storage/*' | grep -v '/storage/emulated' | grep -v 'self' | tail -1)";
   # Delete all special character that might be invisible!
   sdcard_path_android="$(echo "${sdcard_path_android}" | tr -d '[:space:]')";
   if [ "${sdcard_path_android}" = '' ] || [ "${sdcard_path_android}" = '/storage/emulated' ]; then
@@ -505,7 +505,7 @@ runUnitTests() {
   dirUnitTests="app/.cxx/${typeWithDebInfo}";
   echo 'Found binary generated ids:';
   ls "${dirUnitTests}";
-  android_cpu_architecture=$(adb shell getprop ro.product.cpu.abi | tr -d '[:space:]');
+  android_cpu_architecture=$(timeout 60 adb shell getprop ro.product.cpu.abi | tr -d '[:space:]');
   echo "Checking generated id for: ${android_cpu_architecture}";
   # Note: flag `-t` of `ls` is to sort by date (newest first).
   # shellcheck disable=SC2012
@@ -599,14 +599,14 @@ runInstrumentationTests() {
       -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
       --info --warning-mode fail --stacktrace;
 
-    numberOfFilesOpened=$(adb shell lsof /dev/goldfish_pipe | wc -l);
+    numberOfFilesOpened=$(timeout 60 adb shell lsof /dev/goldfish_pipe | wc -l);
     if [ "${numberOfFilesOpened}" -gt '32000' ]; then
       echo "Kill 'graphics.allocator' process since it has a bug where it
         accumulates a memory leak by continuously using more and more
         files of '/dev/goldfish_pipe' and never freeing them.";
       echo 'This might make the device restart!';
       set +e;
-      pidsToKill=$(adb shell ps | grep -ine "graphics.allocator" | tr -s ' ' | cut -d ' ' -f 2);
+      pidsToKill=$(timeout 60 adb shell ps | grep -ine "graphics.allocator" | tr -s ' ' | cut -d ' ' -f 2);
       for pidToKill in ${pidsToKill}; do
         echo "Killing Android process: '${pidToKill}'";
         timeout 60 adb shell kill "${pidToKill}";
@@ -747,7 +747,7 @@ _waitForEmulatorToBoot() {
   timeout 60 adb shell 'getprop dev.bootcomplete';
   echo 'service.bootanim.exit: ';
   timeout 60 adb shell 'getprop service.bootanim.exit';
-  androidApiDevice=$(adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
+  androidApiDevice=$(timeout 60 adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
   echo "androidApiDevice: '${androidApiDevice}'";
 
   # shellcheck disable=SC2016
