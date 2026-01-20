@@ -431,6 +431,7 @@ void Java_puscas_mobilertapp_DrawView_rtStartRender(
 
     try {
         if (wait) {
+            LOG_INFO("rtStartRender - waiting for previous render to finish");
             ::std::unique_lock<::std::mutex> lock {mutex_};
             rendered_.wait(lock, [&] { return finishedRendering_.load(); });
             finishedRendering_ = false;

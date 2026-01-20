@@ -237,6 +237,7 @@ public final class MainActivity extends Activity {
             numberPicker.setMaxValue(names.length);
         } catch (final NumberFormatException ex) {
             UtilsLogging.logException(ex, "MainActivity#initializePicker");
+            logger.info("initializePicker - the values to display are not integers. Setting min and max values by indexes.");
             numberPicker.setMinValue(0);
             numberPicker.setMaxValue(names.length - 1);
         }
