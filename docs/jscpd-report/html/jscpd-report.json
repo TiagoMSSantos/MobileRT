@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-01-21T14:58:59.003Z",
+    "detectionDate": "2026-01-24T17:48:51.536Z",
     "formats": {
       "java": {
         "sources": {
@@ -2229,8 +2229,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 792,
-            "tokens": 5952,
+            "lines": 790,
+            "tokens": 5932,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2338,8 +2338,8 @@
           }
         },
         "total": {
-          "lines": 4627,
-          "tokens": 31508,
+          "lines": 4625,
+          "tokens": 31488,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 243,
@@ -2389,14 +2389,14 @@
             "newClones": 0
           },
           "app/Unit_Testing/CMakeLists.txt": {
-            "lines": 103,
-            "tokens": 647,
+            "lines": 108,
+            "tokens": 708,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 15,
             "duplicatedTokens": 81,
-            "percentage": 14.56,
-            "percentageTokens": 12.52,
+            "percentage": 13.89,
+            "percentageTokens": 11.44,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2558,8 +2558,8 @@
           }
         },
         "total": {
-          "lines": 2452,
-          "tokens": 24605,
+          "lines": 2457,
+          "tokens": 24666,
           "sources": 17,
           "clones": 1,
           "duplicatedLines": 15,
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 30066,
-      "tokens": 233064,
+      "lines": 30069,
+      "tokens": 233105,
       "sources": 259,
       "clones": 116,
       "duplicatedLines": 1404,
@@ -7051,17 +7051,17 @@
       },
       "secondFile": {
         "name": "app/Unit_Testing/CMakeLists.txt",
-        "start": 70,
-        "end": 79,
+        "start": 75,
+        "end": 84,
         "startLoc": {
-          "line": 70,
+          "line": 75,
           "column": 2,
-          "position": 393
+          "position": 454
         },
         "endLoc": {
-          "line": 79,
+          "line": 84,
           "column": 6,
-          "position": 468
+          "position": 529
         }
       }
     },

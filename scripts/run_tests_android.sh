@@ -59,6 +59,7 @@ android_api_version='14';
 kill_previous='true';
 cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
+checkCommand readelf;
 
 printEnvironment() {
   echo '';
@@ -239,7 +240,6 @@ unlockDevice() {
 
   echo 'Unlock device';
   callAdbShellCommandUntilSuccess 'input keyevent 82';
-  callAdbShellCommandUntilSuccess 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS';
 
   if [ "${androidApiDevice}" -gt 15 ]; then
     callAdbShellCommandUntilSuccess 'input tap 800 400';
@@ -539,6 +539,7 @@ runUnitTests() {
   files=$(ls "${dirUnitTests}");
   echo "Copy unit tests bin: ${files}/bin";
   echo "Copy unit tests libs: ${files}/lib";
+  readelf -h "${dirUnitTests}"/bin/UnitTests;
 
   unlockDevice;
 
@@ -556,12 +557,7 @@ runUnitTests() {
   timeout 180 adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
   timeout 60 adb pull "${internal_storage_path}"/unit_tests_result.log .;
   resUnitTests=$(cat "unit_tests_result.log");
-  if [ "${androidApiDevice}" = '15' ]; then
-    # TODO: Fix the native unit tests in Android API 15. Ignore the result for now.
-    printCommandExitCode '0' "Unit tests (result: ${resUnitTests})";
-  else
-    printCommandExitCode "${resUnitTests}" 'Unit tests';
-  fi
+  printCommandExitCode "${resUnitTests}" 'Unit tests';
 }
 
 verifyResources() {
@@ -656,6 +652,8 @@ runInstrumentationTests() {
     timeout 60 adb shell setprop debug.asan.enabled true;
     timeout 60 adb shell setprop debug.asan.options detect_leaks=1:verbosity=1:shadow_mapping=1;
   fi
+
+  callAdbShellCommandUntilSuccess 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS';
 
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';

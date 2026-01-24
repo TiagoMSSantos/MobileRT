@@ -86,8 +86,8 @@ echo "type: '${type}'";
 
 runUnitTests() {
   echo 'Calling Gradle test';
-  echo 'Increasing ADB timeout to 10 minutes';
-  export ADB_INSTALL_TIMEOUT=60000;
+  echo 'Increasing ADB timeout to 4 minutes';
+  export ADB_INSTALL_TIMEOUT=4;
   callCommandUntilSuccess 2 sh gradlew --offline --parallel \
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     -no-rebuild --stop --info --warning-mode fail --stacktrace;
