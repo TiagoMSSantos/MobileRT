@@ -124,7 +124,7 @@ jobs:
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && steps.download-gradle-artifact.outcome == 'success'
+        if: success() && steps.download-gradle-artifact.outputs.found_artifact == 'true'
         run: |
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
@@ -196,11 +196,11 @@ jobs:
 
       - name: Download NDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(matrix.host_os, 'windows')
+        if: success() && !startsWith(inputs.host_os, 'windows')
         run: |
-          if [ "${{ matrix.android_api }}" -ge 21 ]; then
+          if [ "${{ inputs.android_api }}" -ge 21 ]; then
             export NDK_VERSION='29.0.14206865';
-          elif [ "${{ matrix.android_api }}" -ge 19 ]; then
+          elif [ "${{ inputs.android_api }}" -ge 19 ]; then
             export NDK_VERSION='25.2.9519653';
           else
             export NDK_VERSION='23.2.8568313';
@@ -211,9 +211,9 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.host_os, 'windows')
         run: |
-          if [ "${{ matrix.android_api }}" -ge 21 ]; then
+          if [ "${{ inputs.android_api }}" -ge 21 ]; then
             export NDK_VERSION='29.0.14206865';
-          elif [ "${{ matrix.android_api }}" -ge 19 ]; then
+          elif [ "${{ inputs.android_api }}" -ge 19 ]; then
             export NDK_VERSION='25.2.9519653';
           else
             export NDK_VERSION='23.2.8568313';
