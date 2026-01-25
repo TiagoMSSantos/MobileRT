@@ -330,7 +330,7 @@ waitForEmulator() {
     setsid nohup cpulimit --cpu 8 --limit 800 -- \
       emulator -avd "${avd_emulator}" -cores 8 -memory 4096 -cache-size 512 -partition-size 800 \
       -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
-      -no-snapshot -no-snapstorage -no-snapshot-update-time -no-snapshot-save -no-snapshot-load \
+      -no-snapstorage -no-snapshot -no-snapshot-update-time -no-snapshot-save -no-snapshot-load \
       -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim \
       -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling \
       -no-mouse-reposition -no-nested-warnings -verbose \

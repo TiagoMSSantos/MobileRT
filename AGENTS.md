@@ -25,6 +25,7 @@ This AGENTS.md file provides comprehensive guidance for AI agents working with t
 ### General Conventions
 
 - Ensure all files have an empty line at the end of the file
+- Ensure the commments are not deleted, but updated instead when updating the codebase
 
 ### C++ Conventions
 

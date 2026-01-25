@@ -213,13 +213,15 @@ jobs:
       if: success() && !startsWith(matrix.host_os, 'windows')
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
       env:
-        ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 1
+        ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
+        ANDROID_EMULATOR_MEM_MB: 3072
+        ANDROID_EMULATOR_CPU_CORES: 2
       with:
         # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
         action: ReactiveCircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2
         pre_retry_command: 'echo "Retrying Run Android tests step..."'
         attempt_limit: 3
-        attempt_delay: 20000
+        attempt_delay: 30000
         with: |
           # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
           # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
@@ -230,11 +232,13 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           channel: stable
-          emulator-options: -no-metrics -no-window -cores ${{ env.NCPU_CORES }} -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
-          cores: ${{ env.NCPU_CORES }}
-          disk-size: 3072M
+          emulator-options: -no-metrics -no-window -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
+          ram-size: ${{ env.ANDROID_EMULATOR_MEM_MB }}M
+          disk-size: 4096M
           sdcard-path-or-size: 2048M
-          ram-size: 2048M
+          avd-name: Android_Emulator_API_${{ matrix.android_api }}
+          force-avd-creation: false
           emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
           script: |
             sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -a ${{ matrix.android_api }} -k false -f ${{ env.android_arch }};
