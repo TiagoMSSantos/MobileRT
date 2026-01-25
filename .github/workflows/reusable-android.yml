@@ -646,7 +646,6 @@ jobs:
           echo "android_arch: ${{ env.android_arch }}";
           echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
           . scripts/helper_functions.sh && parallelizeBuild && echo "NCPU_CORES=${NCPU_CORES}" >> "${GITHUB_ENV}";
-          mkdir -p ~/.android/avd/Android_Emulator_API_34.avd;
 
       - name: Download Android dependencies
         timeout-minutes: 8
