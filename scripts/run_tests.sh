@@ -84,7 +84,6 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 echo "type: '${type}'";
 
 runUnitTests() {
-  echo 'Calling Gradle test';
   echo 'Increasing ADB timeout to 4 minutes';
   export ADB_INSTALL_TIMEOUT=4;
   callCommandUntilSuccess 2 sh gradlew --offline --parallel \

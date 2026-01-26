@@ -343,11 +343,6 @@ install_dependencies_macos() {
     fi
   fi
 
-  # echo 'Checking Qt path.';
-  # find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "Qt5Config.cmake" 2> /dev/null || true;
-  # find /opt/homebrew/opt /opt/homebrew/Cellar /usr/local/opt /usr/local/Cellar /opt/local/libexec -iname "QDialog*" 2> /dev/null || true;
-  # find /opt/homebrew/opt/qt@5 /opt/homebrew/Cellar/qt@5 /usr/local/opt/qt@5 /usr/local/Cellar/qt@5 /opt/local/libexec/qt5 -iname "*.dylib*" 2> /dev/null || true;
-
   MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
   echo "MacOS '${MAJOR_MAC_VERSION}' detected";
   # This command needs sudo.
