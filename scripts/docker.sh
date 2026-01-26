@@ -220,14 +220,10 @@ squashMobileRTDockerImage() {
   export DOCKER_BUILDKIT=1;
   _installDockerSquashCommand;
   echo 'docker history 1';
-  docker history ptpuscas/mobile_rt:"${1}" || true;
+  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" || true;
   echo 'docker history 2';
-  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" || true;
-  echo 'docker history 3';
-  docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" || true;
-  echo 'docker history 4';
   docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 || true;
-  echo 'docker history 5';
+  echo 'docker history 3';
   docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 || true;
   LAST_LAYER_ID=$(docker history ptpuscas/mobile_rt:"${1}" | grep -v "<missing>" | head -2 | tail -1 | tr -s ' ' | cut -d ' ' -f 1 || true);
   echo "LAST_LAYER_ID=${LAST_LAYER_ID}";

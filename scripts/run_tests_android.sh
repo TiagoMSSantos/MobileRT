@@ -737,12 +737,9 @@ _waitForEmulatorToBoot() {
   callCommandUntilSuccess 70 timeout 60 adb shell 'getprop ro.build.version.sdk';
   # adb shell needs ' instead of ", so 'getprop' works properly.
   callAdbShellCommandUntilSuccess 'getprop ro.build.version.sdk';
-  echo 'sys.boot_completed: ';
-  timeout 60 adb shell 'getprop sys.boot_completed';
-  echo 'dev.bootcomplete: ';
-  timeout 60 adb shell 'getprop dev.bootcomplete';
-  echo 'service.bootanim.exit: ';
-  timeout 60 adb shell 'getprop service.bootanim.exit';
+  printf "sys.boot_completed: %s\n" "$(timeout 60 adb shell 'getprop sys.boot_completed')";
+  printf "dev.bootcomplete: %s\n" "$(timeout 60 adb shell 'getprop dev.bootcomplete')";
+  printf "service.bootanim.exit: %s\n" "$(timeout 60 adb shell 'getprop service.bootanim.exit')";
   androidApiDevice=$(timeout 60 adb shell getprop ro.build.version.sdk | tr -d '[:space:]');
   echo "androidApiDevice: '${androidApiDevice}'";
 
