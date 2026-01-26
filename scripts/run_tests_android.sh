@@ -62,7 +62,6 @@ parallelizeBuild;
 checkCommand readelf;
 
 printEnvironment() {
-  echo '';
   echo 'Selected arguments:';
   echo "type: ${type}";
   echo "run_test: ${run_test}";
@@ -148,7 +147,6 @@ clear_func() {
 }
 
 catch_signal() {
-  echo '';
   echo 'Caught signal';
   trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
 

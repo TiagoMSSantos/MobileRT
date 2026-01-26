@@ -226,7 +226,6 @@ execute() {
     ASYNC="${2}";
   fi
   set -u;
-  echo '';
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";
   echo "SCENE = ${SCENE}";
@@ -266,7 +265,6 @@ debug() {
   fi
   set -u;
 
-  echo '';
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";
   echo "SCENE = ${SCENE}";
@@ -316,7 +314,6 @@ executeTimeout() {
   fi
   set -u;
 
-  echo '';
   echo "BIN_DEBUG_PATH = ${BIN_DEBUG_PATH}";
   echo "BIN_RELEASE_PATH = ${BIN_RELEASE_PATH}";
   echo "BIN_DEBUG_EXE = ${BIN_DEBUG_EXE}";
@@ -388,7 +385,6 @@ profile() {
       for SHADER in ${SHADERS}; do
         for SCENE in ${SCENES}; do
           for ACC in ${ACCELERATORS}; do
-            echo '';
             echo "REPETITION = ${R}";
             echo "THREAD = ${THREAD}";
             echo "SHADER = ${SHADER}";
@@ -429,7 +425,6 @@ executePerf() {
   fi
   set -u;
 
-  echo '';
   echo "SHOWIMAGE = ${SHOWIMAGE}";
   echo "THREAD = ${THREAD}";
   echo "SHADER = ${SHADER}";

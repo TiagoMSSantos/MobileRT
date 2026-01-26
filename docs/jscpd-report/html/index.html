@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-01-25T18:31:58.248Z",
+    "detectionDate": "2026-01-26T08:09:18.182Z",
     "formats": {
       "java": {
         "sources": {
@@ -2231,8 +2231,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 790,
-            "tokens": 5932,
+            "lines": 788,
+            "tokens": 5920,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2243,26 +2243,26 @@
             "newClones": 0
           },
           "scripts/run_tests.sh": {
-            "lines": 126,
-            "tokens": 555,
+            "lines": 122,
+            "tokens": 534,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 131,
             "duplicatedTokens": 373,
-            "percentage": 103.97,
-            "percentageTokens": 67.21,
+            "percentage": 107.38,
+            "percentageTokens": 69.85,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/profile.sh": {
-            "lines": 553,
-            "tokens": 3794,
+            "lines": 548,
+            "tokens": 3764,
             "sources": 1,
             "clones": 5,
-            "duplicatedLines": 69,
-            "duplicatedTokens": 519,
-            "percentage": 12.48,
-            "percentageTokens": 13.68,
+            "duplicatedLines": 67,
+            "duplicatedTokens": 507,
+            "percentage": 12.23,
+            "percentageTokens": 13.47,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2279,8 +2279,8 @@
             "newClones": 0
           },
           "scripts/helper_functions.sh": {
-            "lines": 592,
-            "tokens": 4365,
+            "lines": 588,
+            "tokens": 4357,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2303,8 +2303,8 @@
             "newClones": 0
           },
           "scripts/compile_native.sh": {
-            "lines": 351,
-            "tokens": 2301,
+            "lines": 350,
+            "tokens": 2295,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2315,39 +2315,39 @@
             "newClones": 0
           },
           "scripts/compile_android.sh": {
-            "lines": 175,
-            "tokens": 957,
+            "lines": 174,
+            "tokens": 951,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 45,
             "duplicatedTokens": 129,
-            "percentage": 25.71,
-            "percentageTokens": 13.48,
+            "percentage": 25.86,
+            "percentageTokens": 13.56,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/check_android.sh": {
-            "lines": 120,
-            "tokens": 487,
+            "lines": 119,
+            "tokens": 481,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 44,
             "duplicatedTokens": 124,
-            "percentage": 36.67,
-            "percentageTokens": 25.46,
+            "percentage": 36.97,
+            "percentageTokens": 25.78,
             "newDuplicatedLines": 0,
             "newClones": 0
           }
         },
         "total": {
-          "lines": 4625,
-          "tokens": 31488,
+          "lines": 4607,
+          "tokens": 31399,
           "sources": 13,
           "clones": 11,
-          "duplicatedLines": 243,
-          "duplicatedTokens": 1206,
+          "duplicatedLines": 242,
+          "duplicatedTokens": 1200,
           "percentage": 5.25,
-          "percentageTokens": 3.83,
+          "percentageTokens": 3.82,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3274,12 +3274,12 @@
       }
     },
     "total": {
-      "lines": 30074,
-      "tokens": 233145,
+      "lines": 30056,
+      "tokens": 233056,
       "sources": 259,
       "clones": 116,
-      "duplicatedLines": 1404,
-      "duplicatedTokens": 13617,
+      "duplicatedLines": 1403,
+      "duplicatedTokens": 13611,
       "percentage": 4.67,
       "percentageTokens": 5.84,
       "newDuplicatedLines": 0,
@@ -7321,37 +7321,37 @@
     },
     {
       "format": "bash",
-      "lines": 22,
-      "fragment": "() {\n  set +u;\n  if [ -z \"${1}\" ]; then\n    WIDTH='900';\n    HEIGHT='900';\n  else\n    WIDTH=\"${1}\";\n    HEIGHT=\"${1}\";\n  fi\n  if [ -z \"${1}\" ]; then\n    ASYNC='true';\n  else\n    ASYNC=\"${2}\";\n  fi\n  set -u;\n\n  echo '';\n  echo \"THREAD = ${THREAD}\";\n  echo \"SHADER = ${SHADER}\";\n  echo \"SCENE = ${SCENE}\";\n  echo \"ACC = ${ACC}\";\n  echo 'debug'",
+      "lines": 21,
+      "fragment": "() {\n  set +u;\n  if [ -z \"${1}\" ]; then\n    WIDTH='900';\n    HEIGHT='900';\n  else\n    WIDTH=\"${1}\";\n    HEIGHT=\"${1}\";\n  fi\n  if [ -z \"${1}\" ]; then\n    ASYNC='true';\n  else\n    ASYNC=\"${2}\";\n  fi\n  set -u;\n\n  echo \"THREAD = ${THREAD}\";\n  echo \"SHADER = ${SHADER}\";\n  echo \"SCENE = ${SCENE}\";\n  echo \"ACC = ${ACC}\";\n  echo 'debug'",
       "tokens": 0,
       "firstFile": {
         "name": "scripts/profile.sh",
-        "start": 253,
-        "end": 274,
+        "start": 252,
+        "end": 272,
         "startLoc": {
-          "line": 253,
+          "line": 252,
           "column": 6,
-          "position": 1384
+          "position": 1378
         },
         "endLoc": {
-          "line": 274,
+          "line": 272,
           "column": 8,
-          "position": 1529
+          "position": 1517
         }
       },
       "secondFile": {
         "name": "scripts/profile.sh",
         "start": 214,
-        "end": 234,
+        "end": 233,
         "startLoc": {
           "line": 214,
           "column": 8,
           "position": 1111
         },
         "endLoc": {
-          "line": 234,
+          "line": 233,
           "column": 10,
-          "position": 1255
+          "position": 1249
         }
       }
     },

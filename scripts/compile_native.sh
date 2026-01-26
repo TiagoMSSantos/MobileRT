@@ -60,7 +60,6 @@ recompile='no';
 parallelizeBuild;
 
 printEnvironment() {
-  echo '';
   echo 'Selected arguments:';
   echo "type: ${type}";
   echo "compiler: ${compiler}";

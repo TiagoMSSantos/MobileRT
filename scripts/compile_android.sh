@@ -56,7 +56,6 @@ cpu_architecture='"x86_64"';
 parallelizeBuild;
 
 printEnvironment() {
-  echo '';
   echo 'Selected arguments:';
   echo "type: ${type}";
   echo "recompile: ${recompile}";

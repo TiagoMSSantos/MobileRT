@@ -146,7 +146,6 @@ parseArgumentsToCheck() {
 
 # Call function multiple times until it fails and exit the process.
 callCommandUntilError() { (
-  echo '';
   echo "Calling until error '$*'";
   _retry=0;
   set +e;
@@ -164,7 +163,6 @@ callCommandUntilError() { (
     echo "$*: success - '${lastResult}'";
   else
     echo "$*: failed - '${lastResult}'";
-    echo '';
     exit "${lastResult}";
   fi
 ) }
@@ -175,7 +173,6 @@ callCommandUntilError() { (
 # * The maximum number of retries.
 # * The command to execute.
 callCommandUntilSuccess() { (
-  echo '';
   echo "Calling until success '$*'";
   _retry=0;
   _maxRetries=${1};
@@ -207,7 +204,6 @@ callCommandUntilSuccess() { (
 # Parameters:
 # * The command to execute in adb shell.
 callAdbShellCommandUntilSuccess() { (
-  echo '';
   _retry=0;
   _oldSetErrorValue=false;
   case $- in
@@ -216,7 +212,7 @@ callAdbShellCommandUntilSuccess() { (
 
   echo "Calling ADB shell command until success 'adb shell $*'";
   # shellcheck disable=SC2145
-  output=$(timeout 300 adb shell "false; $@; echo ::\$?::");
+  output=$(timeout 300 adb shell "false; $@; echo ::\$?::" | sed '${/^$/d}');
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g'| tr -d '[:space:]');
   if echo "${output}" | grep '^='; then
     _lastResultValid=false;
@@ -228,7 +224,7 @@ callAdbShellCommandUntilSuccess() { (
   while [ "${lastResult}" -ne 0 ] && [ "${lastResult}" != '127' ] && [ "${lastResult}" != '2' ] && [ "${_lastResultValid}" = 'true' ] && [ ${_retry} -lt 3 ]; do
     _retry=$(( _retry + 1 ));
     # shellcheck disable=SC2145
-    output=$(timeout 300 adb shell "false; $@; echo ::\$?::");
+    output=$(timeout 300 adb shell "false; $@; echo ::\$?::" | sed '${/^$/d}');
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/:://g' | tr -d '[:space:]');
     if echo "${output}" | grep '^=' || echo "${output}" | grep '^/system/bin/sh: .*: not found'; then
       _lastResultValid=false;

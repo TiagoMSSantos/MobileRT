@@ -53,7 +53,6 @@ cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
 
 printEnvironment() {
-  echo '';
   echo 'Selected arguments:';
   echo "android_api_version: ${android_api_version}";
   echo "cpu_architecture: ${cpu_architecture}";

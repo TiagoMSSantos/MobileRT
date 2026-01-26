@@ -54,7 +54,6 @@ cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
 
 printEnvironment() {
-  echo '';
   echo 'Selected arguments:';
   echo "type: ${type}";
   echo "android_api_version: ${android_api_version}";
@@ -114,10 +113,7 @@ unitTestsReportPath="${PWD}/${reports_path}/tests/test${typeWithCapitalLetter}Un
 unitTestsReport='index.html';
 checkPathExists "${unitTestsReportPath}" "${unitTestsReport}";
 
-echo '';
 printf '\e]8;;file://'"%s"'\aClick here to check the Unit tests report.\e]8;;\a\n' "${unitTestsReportPath}/${unitTestsReport}";
-echo '';
-echo '';
 
 ###############################################################################
 # Exit code.
