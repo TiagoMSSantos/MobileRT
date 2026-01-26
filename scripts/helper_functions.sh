@@ -160,9 +160,9 @@ callCommandUntilError() { (
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
-    echo "$*: success - '${lastResult}'";
+    printf "'%s': succeeded - %s" "$*" "${lastResult}";
   else
-    echo "$*: failed - '${lastResult}'";
+    printf "'%s': failed - %s" "$*" "${lastResult}";
     exit "${lastResult}";
   fi
 ) }
@@ -192,9 +192,9 @@ callCommandUntilSuccess() { (
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
-    echo "'$*': success";
+    printf "'%s': succeeded" "$*";
   else
-    echo "'$*': failed";
+    printf "'%s': failed" "$*";
     exit "${lastResult}";
   fi
 ) }
@@ -239,9 +239,9 @@ callAdbShellCommandUntilSuccess() { (
     set -e;
   fi
   if [ "${lastResult}" -eq 0 ] && [ "${_lastResultValid}" = 'true' ]; then
-    echo "'adb shell $*' succeded: '${output}'";
+    printf "'adb shell %s' succeeded: %s\n" "$*" "${output}";
   else
-    echo "'adb shell $*' failed: '${output}'";
+    printf "'adb shell %s' failed: %s\n" "$*" "${output}";
     return 1;
   fi
 ) }
@@ -255,7 +255,7 @@ printCommandExitCode() {
   echo '#####################################################################';
   echo 'Results:';
   if [ "${1}" = '0' ]; then
-    echo "${2}: success (${1})";
+    echo "${2}: succeeded (${1})";
   else
     echo "${2}: failed (${1})";
     exit "${1}";

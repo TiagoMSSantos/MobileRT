@@ -438,11 +438,8 @@ copyResources() {
   callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'';
   callAdbShellCommandUntilSuccess 'chmod -R 777 '"${sdcard_path_android}"'';
 
-  echo 'Install File Manager';
-  set +e;
-  timeout 60 adb shell pm;
-  set -e;
   unlockDevice;
+  echo 'Install File Manager';
   if [ "${androidApiDevice}" -gt 31 ]; then
     echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApiDevice}";
   elif [ "${androidApiDevice}" -gt 30 ]; then
