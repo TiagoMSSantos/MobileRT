@@ -232,7 +232,7 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           channel: stable
-          emulator-options: -no-metrics -no-window -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          emulator-options: -no-metrics -no-window -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-snapshot-save
           cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
           ram-size: ${{ env.ANDROID_EMULATOR_MEM_MB }}M
           disk-size: 4096M

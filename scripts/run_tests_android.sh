@@ -152,6 +152,9 @@ catch_signal() {
 
   clear_func;
   gather_logs_func;
+  callCommandUntilSuccess 5 timeout 60 adb kill-server;
+  callCommandUntilSuccess 5 timeout 60 adb start-server;
+  unlockDevice;
 
   echo "Killing all processes from the same group process id (thus killing also descendants): '${pid}'";
   kill -TERM -"${pid}" || true;
@@ -328,8 +331,8 @@ waitForEmulator() {
     setsid nohup cpulimit --cpu 8 --limit 800 -- \
       emulator -avd "${avd_emulator}" -cores 8 -memory 4096 -cache-size 512 -partition-size 800 \
       -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
-      -no-snapstorage -no-snapshot -no-snapshot-update-time -no-snapshot-save -no-snapshot-load \
-      -no-boot-anim -camera-back none -camera-front none -netfast -wipe-data -no-sim \
+      -no-snapstorage -no-snapshot -no-snapshot-update-time -no-snapshot-save -no-snapshot-load -wipe-data \
+      -no-boot-anim -camera-back none -camera-front none -netfast -no-sim \
       -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling \
       -no-mouse-reposition -no-nested-warnings -verbose \
       -qemu -m size=4096M,slots=1,maxmem=8192M -machine type=pc,accel=kvm -accel kvm,thread=multi:tcg,thread=multi -smp cpus=8,maxcpus=8,cores=8,threads=1,sockets=1

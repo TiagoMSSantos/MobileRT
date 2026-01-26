@@ -685,7 +685,7 @@ jobs:
             disable-animations: true
             disable-spellchecker: true
             channel: stable
-            emulator-options: -no-metrics -no-window -accel on -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -cache-size 512 -partition-size ${{ env.ANDROID_EMULATOR_MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none -camera-front none -netfast -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
+            emulator-options: -no-metrics -no-window -accel on -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -cache-size 512 -partition-size ${{ env.ANDROID_EMULATOR_MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none -camera-front none -netfast -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose -no-snapshot-save
             cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
             ram-size: ${{ env.ANDROID_EMULATOR_MEM_MB }}M
             heap-size: 1024M
