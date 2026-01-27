@@ -1,6 +1,7 @@
 package puscas.mobilertapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -337,6 +338,7 @@ public abstract class AbstractTest {
      * @return {@code true} if it is still running, otherwise {@code false}.
      */
     @SuppressWarnings({"deprecation"})
+    @SuppressLint("ObsoleteSdkInt")
     private static boolean isActivityRunning(@NonNull final Activity activity) {
         // Note that 'Activity#isDestroyed' only exists on Android API 17+.
         // More info: https://developer.android.com/reference/android/app/Activity#isDestroyed()
@@ -358,6 +360,7 @@ public abstract class AbstractTest {
      * Grant permissions for the {@link MainActivity} to be able to load files from an external
      * storage.
      */
+    @SuppressLint("ObsoleteSdkInt")
     private static void grantPermissions() {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         Espresso.onIdle();
@@ -485,6 +488,7 @@ public abstract class AbstractTest {
      * whether the expected mocked {@link Intent} used by this method was really received by the
      * tested application. This is done to avoid duplicated code.
      */
+    @SuppressLint("ObsoleteSdkInt")
     protected void mockFileManagerReply(final boolean externalSdcard, @NonNull final String... filesPath) {
         logger.info(ConstantsAndroid.MOCK_FILE_MANAGER_REPLY);
         final Intent expectedIntent = MainActivity.createIntentToLoadFiles();

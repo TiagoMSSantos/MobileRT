@@ -9,6 +9,7 @@ import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
 
+import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -115,6 +116,7 @@ public final class UtilsContext {
      *     {@link Environment#getExternalStorageDirectory()} in order to be
      *     compatible with Android 4.1.
      */
+    @SuppressLint("ObsoleteSdkInt")
     public static File getSdCardFilePath(@NonNull final Context context) {
         return Optional.ofNullable(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 ? context.getExternalFilesDirs(null) : null)
             .map(dirs -> dirs.length > 1 ? dirs[1] : dirs[0])
@@ -214,6 +216,7 @@ public final class UtilsContext {
      * @param context The {@link Context} of the Android system.
      * @return The number of CPU cores.
      */
+    @SuppressLint("ObsoleteSdkInt")
     public static int getNumOfCores(@NonNull final Context context) {
         logger.info("getNumOfCores started");
         final int cores = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN)
@@ -256,6 +259,7 @@ public final class UtilsContext {
      *
      * @param activity The {@link Activity} of MobileRT.
      */
+    @SuppressLint("ObsoleteSdkInt")
     public static void checksStoragePermission(@NonNull final Activity activity) {
         logger.info("checksStoragePermission");
         final String[] permissions;

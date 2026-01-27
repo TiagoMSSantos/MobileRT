@@ -14,8 +14,7 @@
         android:layout_height="60dp"
         android:layout_alignBaseline="@+id/pickerShader"
         android:layout_alignBottom="@+id/pickerShader"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentStart="true" />
 
     <puscas.mobilertapp.constants.CustomNumberPicker
         android:id="@+id/pickerShader"
@@ -30,8 +29,7 @@
         android:layout_height="60dp"
         android:layout_alignBaseline="@+id/pickerShader"
         android:layout_alignBottom="@+id/pickerShader"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:id="@+id/timeText"
@@ -58,16 +56,14 @@
         android:layout_width="40dp"
         android:layout_height="60dp"
         android:layout_alignBottom="@+id/renderButton"
-        android:layout_toEndOf="@+id/pickerShader"
-        android:layout_toRightOf="@+id/pickerShader" />
+        android:layout_toEndOf="@+id/pickerShader" />
 
     <puscas.mobilertapp.constants.CustomNumberPicker
         android:id="@+id/pickerSamplesLight"
         android:layout_width="30dp"
         android:layout_height="60dp"
         android:layout_above="@+id/drawLayout"
-        android:layout_toStartOf="@+id/pickerSize"
-        android:layout_toLeftOf="@+id/pickerSize" />
+        android:layout_toStartOf="@+id/pickerSize" />
 
     <puscas.mobilertapp.constants.CustomNumberPicker
         android:id="@+id/pickerAccelerator"
@@ -75,19 +71,15 @@
         android:layout_height="60dp"
         android:layout_alignBottom="@+id/renderButton"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_toStartOf="@+id/pickerSamplesPixel"
-        android:layout_toLeftOf="@+id/pickerSamplesPixel" />
+        android:layout_toStartOf="@+id/pickerSamplesPixel" />
 
     <puscas.mobilertapp.constants.CustomNumberPicker
         android:id="@+id/pickerSize"
         android:layout_width="80dp"
         android:layout_height="60dp"
         android:layout_above="@+id/drawLayout"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentEnd="true" />
 
     <puscas.mobilertapp.DrawView
         android:id="@+id/drawLayout"
@@ -96,7 +88,6 @@
         android:layout_above="@+id/timeText"
         android:layout_below="@+id/pickerSamplesPixel"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:orientation="vertical" />
 
     <CheckBox

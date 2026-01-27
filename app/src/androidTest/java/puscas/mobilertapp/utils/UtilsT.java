@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.widget.Button;
 import android.os.Build;
 
+import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.espresso.Espresso;
@@ -237,6 +238,7 @@ public final class UtilsT {
     *
     * @param name The name of the screenshot.
     */
+    @SuppressLint("ObsoleteSdkInt")
     public static void captureScreenshot(final String name) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
             final Bitmap bitmap;

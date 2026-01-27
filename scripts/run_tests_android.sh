@@ -733,10 +733,10 @@ _restartAdbProcesses() {
 # E.g.: Android API 33 can take more than 1 minute to boot.
 _waitForEmulatorToBoot() {
   # Make sure ADB daemon started properly.
+  # adb shell needs ' instead of ", so 'getprop' works properly.
   callCommandUntilSuccess 70 timeout 60 adb shell 'ps > /dev/null';
   callCommandUntilSuccess 70 timeout 60 adb shell 'getprop ro.build.version.sdk';
-  # adb shell needs ' instead of ", so 'getprop' works properly.
-  callAdbShellCommandUntilSuccess 'getprop ro.build.version.sdk';
+  callCommandUntilSuccess 70 timeout 60 adb shell 'input keyevent 82';
   printf "sys.boot_completed: %s\n" "$(timeout 60 adb shell 'getprop sys.boot_completed')";
   printf "dev.bootcomplete: %s\n" "$(timeout 60 adb shell 'getprop dev.bootcomplete')";
   printf "service.bootanim.exit: %s\n" "$(timeout 60 adb shell 'getprop service.bootanim.exit')";

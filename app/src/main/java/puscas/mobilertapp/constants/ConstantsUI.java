@@ -1,5 +1,6 @@
 package puscas.mobilertapp.constants;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -95,6 +96,7 @@ public final class ConstantsUI {
      *
      * @implNote Needs to be above 12.5F in order to be compatible with Android API < 16.
      */
+    @SuppressLint("ObsoleteSdkInt")
     static final float TEXT_SIZE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN ? 15.0F : 12.5F;
 
     /**

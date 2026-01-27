@@ -24,6 +24,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -228,6 +229,7 @@ public final class MainActivity extends Activity {
      * @param defaultValue The default value to put in the {@link NumberPicker}.
      * @param names        The values to be displayed in the {@link NumberPicker}.
      */
+    @SuppressLint("ObsoleteSdkInt")
     private static void initializePicker(final NumberPicker numberPicker,
                                          final int defaultValue,
                                          final String[] names) {
@@ -431,6 +433,7 @@ public final class MainActivity extends Activity {
      *
      * @return The {@link Intent} to load files.
      */
+    @SuppressLint("ObsoleteSdkInt")
     public static Intent createIntentToLoadFiles() {
         final String message = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
             ? "Requesting Intent to load a file for 'MobileRT' (has shared/external file access: " + Environment.isExternalStorageManager() + ")"
@@ -447,6 +450,7 @@ public final class MainActivity extends Activity {
         return intent;
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     @Override
     protected void onActivityResult(final int requestCode,
                                     final int resultCode,
@@ -543,6 +547,7 @@ public final class MainActivity extends Activity {
      *
      * @param file The {@link File} to validate.
      */
+    @SuppressLint("ObsoleteSdkInt")
     private void validatePath(@NonNull final File file) {
         validatePathIsAccessible(file);
         try {
@@ -967,6 +972,7 @@ public final class MainActivity extends Activity {
      * @param pickerSizes The default value to put in the
      *                    {@link #pickerResolutions} field.
      */
+    @SuppressLint("ObsoleteSdkInt")
     private void initializePickerResolutions(final int pickerSizes) {
         logger.info("initializePickerResolutions start");
         final int maxSizes = 9;
@@ -1009,6 +1015,7 @@ public final class MainActivity extends Activity {
      * @param pickerThreads The default value to put in the
      *                      {@link #pickerThreads} field.
      */
+    @SuppressLint("ObsoleteSdkInt")
     private void initializePickerThreads(final int pickerThreads) {
         final int maxCores = UtilsContext.getNumOfCores(this);
         this.pickerThreads.setMinValue(1);

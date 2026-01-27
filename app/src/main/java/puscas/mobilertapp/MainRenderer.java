@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.annotation.VisibleForTesting;
@@ -558,6 +559,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
      * @return {@code True} if the device doesn't have enough memory to be
      *     allocated, otherwise {@code false}.
      */
+    @SuppressLint("ObsoleteSdkInt")
     private boolean isLowMemory(final int memoryNeeded) {
         Preconditions.checkArgument(memoryNeeded > 0,
             "The requested memory must be a positive value");
