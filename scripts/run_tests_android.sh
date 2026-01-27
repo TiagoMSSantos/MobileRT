@@ -152,9 +152,9 @@ catch_signal() {
 
   clear_func;
   gather_logs_func;
-  callCommandUntilSuccess 5 timeout 60 adb kill-server;
-  callCommandUntilSuccess 5 timeout 60 adb start-server;
-  unlockDevice;
+  callCommandUntilSuccess 5 timeout 60 adb kill-server > /dev/null 2>&1;
+  callCommandUntilSuccess 5 timeout 60 adb start-server > /dev/null 2>&1;
+  unlockDevice > /dev/null 2>&1;
 
   echo "Killing all processes from the same group process id (thus killing also descendants): '${pid}'";
   kill -TERM -"${pid}" || true;
