@@ -91,7 +91,7 @@ buildscript {
             gradle_versions_plugin_version = '0.51.0'
         }
         if (project.properties["kotlin_gradle_plugin_version"] == null) {
-            kotlin_gradle_plugin_version = '2.1.21'
+            kotlin_gradle_plugin_version = '2.3.0'
         }
 
         final def gradleVersionArray = gradle_version.split("\\.")
