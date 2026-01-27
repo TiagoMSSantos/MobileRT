@@ -741,8 +741,8 @@
       "matchDepNames": [
         "org.jetbrains.kotlin:kotlin-gradle-plugin"
       ],
-      "matchCurrentVersion": "/^2\\.2\\.21$/",
-      "matchCurrentValue": "/^2\\.2\\.21$/"
+      "matchCurrentVersion": "/^2\\.1\\.21$/",
+      "matchCurrentValue": "/^2\\.1\\.21$/"
     },
     {
       "groupName": "Do not update Gradle versions plugin for Android API <= 15",
