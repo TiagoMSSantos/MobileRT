@@ -15,6 +15,7 @@ on:
     - '!scripts/helper_functions.sh'
     - '!scripts/compile_native.sh'
     - '!scripts/test/**'
+    - '!app/src/**/*.xml'
     - '!app/third_party/conan/Native/**'
     - '!app/third_party/conan/Android/**'
     - '!**/CMakeLists*'

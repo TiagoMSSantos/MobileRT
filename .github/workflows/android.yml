@@ -10,6 +10,7 @@ on:
     - '!.github/workflows/android-matrix.json'
     - '!.github/workflows/reusable-android.yml'
     - '!codecov.yml'
+    - '!app/src/**/*.xml'
     - '!app/third_party/conan/Android/**'
     - '!scripts/compile_android.sh'
     - '!scripts/run_tests.sh'
