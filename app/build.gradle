@@ -278,6 +278,7 @@ android {
     kotlin {
         compilerOptions {
             setJvmTarget(JvmTarget.JVM_21)
+            allWarningsAsErrors = true
         }
     }
 
@@ -380,6 +381,8 @@ android {
     lint {
         enable 'WrongThreadInterprocedural', 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
         lintConfig = file('lint.xml')
+        warningsAsErrors = true
+        abortOnError = true
     }
 
     project.gradle.taskGraph.whenReady {
