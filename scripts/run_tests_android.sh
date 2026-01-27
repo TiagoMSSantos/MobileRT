@@ -775,12 +775,7 @@ runInstrumentationTests;
 ###############################################################################
 # Exit code
 ###############################################################################
-if [ "${androidApiDevice}" = '15' ]; then
-  # TODO: Fix the native unit tests in Android API 15. Ignore the result for now.
-  printCommandExitCode '0' "Unit tests (result: ${resUnitTests})";
-else
-  printCommandExitCode "${resUnitTests}" 'Unit tests';
-fi
+printCommandExitCode "${resUnitTests}" 'Unit tests';
 printCommandExitCode "${resInstrumentationTests}" 'Instrumentation tests';
 ###############################################################################
 ###############################################################################
