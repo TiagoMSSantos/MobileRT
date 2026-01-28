@@ -544,14 +544,14 @@ testCheckPathExists() {
 
   # Validate the exit code is 0 if path DOES exist.
   expectedExitCode='0';
-  pathToValidate='app';
+  pathToValidate='scripts/test';
   eval '${_functionName} "${pathToValidate}" > /dev/null';
   returnValue="$?";
   assertEqual "${expectedExitCode}" "${returnValue}" "${_testName} path DOES exist";
 
   # Validate the exit code is 1 if path exists but the file does NOT.
   expectedExitCode='1';
-  pathToValidate='app';
+  pathToValidate='scripts/test';
   fileToValidate='fileThatDoesNotExist';
   eval '${_functionName} "${pathToValidate}" "${fileToValidate}" > /dev/null 2>&1';
   returnValue="$?";
@@ -559,7 +559,7 @@ testCheckPathExists() {
 
   # Validate the exit code is 1 if path & file exist but the file is EMPTY.
   expectedExitCode='1';
-  pathToValidate='app';
+  pathToValidate='scripts/test';
   fileToValidate='emptyFile.log';
   rm -f "${pathToValidate}/${fileToValidate}";
   touch "${pathToValidate}/${fileToValidate}";
@@ -569,7 +569,7 @@ testCheckPathExists() {
 
   # Validate the exit code is 1 if path & file exist but the file has less than 110 words in it.
   expectedExitCode='1';
-  pathToValidate='app';
+  pathToValidate='scripts/test';
   fileToValidate='fileWithLessThan110words.log';
   rm -f "${pathToValidate}/${fileToValidate}";
   touch "${pathToValidate}/${fileToValidate}";
@@ -582,7 +582,7 @@ testCheckPathExists() {
 
   # Validate the exit code is 0 if path & file exist and the file has more or equal than 110 words in it.
   expectedExitCode='0';
-  pathToValidate='app';
+  pathToValidate='scripts/test';
   fileToValidate='fileWith110words.log';
   rm -f "${pathToValidate}/${fileToValidate}";
   touch "${pathToValidate}/${fileToValidate}";
@@ -601,7 +601,7 @@ testCallAdbShellCommandUntilSuccess() {
 
   # Setup mocks:
   # shellcheck disable=SC2317
-  timeout() { echo '::0::'; } # Emulate adb command passed.
+  timeout() { echo '::1::::2::::0::'; } # Emulate adb command passed.
   # shellcheck disable=SC2317
   sleep() { return 0; } # Mock sleep command.
 
