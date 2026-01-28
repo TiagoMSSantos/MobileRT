@@ -613,7 +613,7 @@ testCallAdbShellCommandUntilSuccess() {
 
   # Setup mocks:
   # shellcheck disable=SC2317
-  timeout() { echo '::1::'; } # Emulate adb command failed.
+  timeout() { echo '::0::::1::'; } # Emulate adb command failed.
 
   # Validate the exit code is 1 if command was NOT executed properly.
   expectedExitCode='1';
