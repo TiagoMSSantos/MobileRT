@@ -220,7 +220,7 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
-      "description": "Update Gradle",
+      "description": "Update Android Gradle Plugin",
       "managerFilePatterns": [
         "/.*build.gradle/"
       ],
@@ -232,6 +232,7 @@
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",
+      "ignoreUnstable": false,
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
@@ -654,7 +655,7 @@
       "allowedVersions": "!/^(cci\\.[0-9]+)|([0-9]+\\.[0-9]+\\.[0-9]+-rc[0-9]+)$/"
     },
     {
-      "groupName": "Only update patches of Android Gradle version for Android API >= 16",
+      "groupName": "Only update patches of Android Gradle Plugin version for Android API >= 16",
       "enabled": true,
       "matchDepNames": [
         "com.android.tools.build:gradle"
