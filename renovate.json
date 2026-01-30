@@ -656,10 +656,6 @@
     {
       "groupName": "Only update patches of Android Gradle version for Android API >= 16",
       "enabled": true,
-      "matchUpdateTypes": [
-        "major",
-        "minor"
-      ],
       "matchDepNames": [
         "com.android.tools.build:gradle"
       ],
