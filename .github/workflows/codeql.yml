@@ -11,6 +11,7 @@ on:
     - '!.github/codeql/codeql-config.yml'
     - '!codecov.yml'
     - '!Gemfile'
+    - '!renovate.json'
     - '!scripts/install_dependencies.sh'
     - '!scripts/helper_functions.sh'
     - '!scripts/compile_native.sh'
@@ -99,6 +100,12 @@ jobs:
       with:
         # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
         lfs: true
+
+    - name: Validate Renovate configurations
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'ruby'
+      run: |
+        npx --package renovate@latest -- renovate-config-validator renovate.json;
 
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

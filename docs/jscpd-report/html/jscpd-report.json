@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-01-28T09:32:47.801Z",
+    "detectionDate": "2026-01-30T09:05:11.183Z",
     "formats": {
       "java": {
         "sources": {
@@ -2045,14 +2045,14 @@
             "newClones": 0
           },
           ".github/workflows/codeql.yml": {
-            "lines": 352,
-            "tokens": 2152,
+            "lines": 359,
+            "tokens": 2204,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 226,
-            "percentage": 11.93,
-            "percentageTokens": 10.5,
+            "percentage": 11.7,
+            "percentageTokens": 10.25,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2166,14 +2166,14 @@
           }
         },
         "total": {
-          "lines": 2684,
-          "tokens": 15881,
+          "lines": 2691,
+          "tokens": 15933,
           "sources": 23,
           "clones": 4,
           "duplicatedLines": 155,
           "duplicatedTokens": 831,
-          "percentage": 5.77,
-          "percentageTokens": 5.23,
+          "percentage": 5.76,
+          "percentageTokens": 5.22,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 30044,
-      "tokens": 233105,
+      "lines": 30051,
+      "tokens": 233157,
       "sources": 259,
       "clones": 116,
       "duplicatedLines": 1403,
@@ -7144,17 +7144,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/codeql.yml",
-        "start": 31,
-        "end": 73,
+        "start": 32,
+        "end": 74,
         "startLoc": {
-          "line": 31,
+          "line": 32,
           "column": 1,
-          "position": 139
+          "position": 144
         },
         "endLoc": {
-          "line": 73,
+          "line": 74,
           "column": 55,
-          "position": 365
+          "position": 370
         }
       },
       "secondFile": {
