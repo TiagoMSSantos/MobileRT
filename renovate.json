@@ -232,7 +232,6 @@
       "datasourceTemplate": "maven",
       "versioningTemplate": "gradle",
       "customType": "regex",
-      "ignoreUnstable": false,
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
@@ -667,6 +666,16 @@
       "matchCurrentVersion": "/^8\\.2\\..+$/",
       "matchCurrentValue": "/^8\\.2\\..+$/",
       "allowedVersions": "/^8\\.2\\..+$/"
+    },
+    {
+      "groupName": "Allow Android Gradle Plugin prereleases for API >= 16",
+      "matchDepNames": [
+        "com.android.tools.build:gradle"
+      ],
+      "matchDatasources": [
+        "maven"
+      ],
+      "ignoreUnstable": false
     },
     {
       "groupName": "Do not update Gradle Wrapper for Android API <= 15",
