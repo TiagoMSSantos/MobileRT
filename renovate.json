@@ -674,10 +674,6 @@
     {
       "groupName": "Do not update Gradle Wrapper for Android API <= 15",
       "enabled": true,
-      "matchUpdateTypes": [
-        "major",
-        "minor"
-      ],
       "matchDepNames": [
         "gradle"
       ],
