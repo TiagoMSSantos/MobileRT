@@ -655,7 +655,7 @@
     },
     {
       "groupName": "Only update patches of Android Gradle version for Android API >= 16",
-      "enabled": false,
+      "enabled": true,
       "matchUpdateTypes": [
         "major",
         "minor"
@@ -668,7 +668,25 @@
         "gradle"
       ],
       "matchCurrentVersion": "/^8\\.2\\..+$/",
-      "matchCurrentValue": "/^8\\.2\\..+$/"
+      "matchCurrentValue": "/^8\\.2\\..+$/",
+      "allowedVersions": "/^8\\.2\\..+$/"
+    },
+    {
+      "groupName": "Do not update Gradle Wrapper for Android API <= 15",
+      "enabled": true,
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
+      "matchDepNames": [
+        "gradle"
+      ],
+      "matchDatasources": [
+        "gradle-version"
+      ],
+      "matchCurrentVersion": "/^8\\.7$/",
+      "matchCurrentValue": "/^8\\.7$/",
+      "allowedVersions": "/^8\\.7(\\.\\d+)?$/"
     },
     {
       "groupName": "Only update patches of Android appcompat version for Android API >= 21",
@@ -715,25 +733,6 @@
         "gradle"
       ],
       "allowedVersions": "/-android$/"
-    },
-    {
-      "groupName": "Do not update Gradle for Android API <= 15",
-      "enabled": false,
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "matchDepNames": [
-        "gradle"
-      ],
-      "matchPackageNames": [
-        "gradle"
-      ],
-      "matchDatasources": [
-        "gradle-version"
-      ],
-      "matchCurrentVersion": "/^8\\.7$/",
-      "matchCurrentValue": "/^8\\.7$/"
     },
     {
       "groupName": "Do not update kotlin-gradle-plugin versions for Android API <= 15",
