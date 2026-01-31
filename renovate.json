@@ -295,6 +295,21 @@
       "registryUrlTemplate": "https://repo1.maven.org/maven2/"
     },
     {
+      "description": "Update gradle-versions-plugin Android 15",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "if \\(project.properties\\[\\\"gradle_versions_plugin_version\\\"\\] == null\\) \\{[\\s\\S]*?gradle_versions_plugin_version = ['\"](?<currentValue>[^'\"]+)['\"]"
+      ],
+      "depNameTemplate": "com.github.ben-manes:gradle-versions-plugin-android-15",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://repo1.maven.org/maven2/"
+    },
+    {
       "description": "Update bouncycastle",
       "managerFilePatterns": [
         "/.*build.gradle/"
@@ -310,7 +325,7 @@
       "registryUrlTemplate": "https://repo1.maven.org/maven2/"
     },
     {
-      "description": "Update Gradle Service",
+      "description": "Update Gradle Wrapper",
       "managerFilePatterns": [
         "/.*build.gradle/"
       ],
@@ -756,14 +771,19 @@
     {
       "groupName": "Do not update Gradle versions plugin for Android API <= 15",
       "enabled": false,
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "matchDepNames": [
-        "com.github.ben-manes:gradle-versions-plugin"
+        "com.github.ben-manes:gradle-versions-plugin-android-15"
       ],
       "matchManagers": [
-        "custom.regex"
+        "custom.regex",
+        "gradle"
       ],
-      "matchCurrentVersion": "/^0\\.51\\.0$/",
-      "matchCurrentValue": "/^0\\.51\\.0$/"
+      "matchCurrentVersion": "/^0\\.51\\.\\d+$/",
+      "matchCurrentValue": "/^0\\.51\\.\\d+$/"
     },
     {
       "groupName": "Boost C++ Libraries",
