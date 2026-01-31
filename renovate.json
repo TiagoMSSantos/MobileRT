@@ -280,6 +280,16 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
+      "description": "Only update gradle-versions-plugin via regex custom manager",
+      "enabled": false,
+      "matchDepNames": [
+        "com.github.ben-manes:gradle-versions-plugin"
+      ],
+      "matchManagers": [
+        "gradle"
+      ]
+    },
+    {
       "description": "Update gradle-versions-plugin",
       "managerFilePatterns": [
         "/.*build.gradle/"
