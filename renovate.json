@@ -755,17 +755,15 @@
     },
     {
       "groupName": "Do not update Gradle versions plugin for Android API <= 15",
-      "enabled": true,
+      "enabled": false,
       "matchDepNames": [
         "com.github.ben-manes:gradle-versions-plugin"
       ],
       "matchManagers": [
-        "custom.regex",
-        "gradle"
+        "custom.regex"
       ],
       "matchCurrentVersion": "/^0\\.51\\.0$/",
-      "matchCurrentValue": "/^0\\.51\\.0$/",
-      "allowedVersions": "/^0\\.51(\\.\\d+)?$/"
+      "matchCurrentValue": "/^0\\.51\\.0$/"
     },
     {
       "groupName": "Boost C++ Libraries",
