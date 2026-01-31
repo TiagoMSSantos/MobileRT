@@ -638,23 +638,6 @@
       "matchCurrentValue": "/^(3\\.5\\.1)|(3\\.6\\.1)$/"
     },
     {
-      "groupName": "Only update patches of androidx.emoji2:emoji2 for Android API >= 19",
-      "enabled": false,
-      "matchUpdateTypes": [
-        "major",
-        "minor"
-      ],
-      "matchDepNames": [
-        "androidx.emoji2:emoji2"
-      ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle"
-      ],
-      "matchCurrentVersion": "/^1\\.2\\..+/",
-      "matchCurrentValue": "/^1\\.2\\..+/"
-    },
-    {
       "groupName": "Ubuntu to LTS versions",
       "enabled": true,
       "matchDepNames": [
