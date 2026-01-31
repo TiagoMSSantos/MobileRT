@@ -759,6 +759,9 @@
       "matchDepNames": [
         "com.github.ben-manes:gradle-versions-plugin"
       ],
+      "matchManagers": [
+        "custom.regex"
+      ],
       "matchCurrentVersion": "/^0\\.51\\.0$/",
       "matchCurrentValue": "/^0\\.51\\.0$/"
     },
