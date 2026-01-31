@@ -280,16 +280,6 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
-      "description": "Only update gradle-versions-plugin via regex custom manager",
-      "enabled": false,
-      "matchDepNames": [
-        "com.github.ben-manes:gradle-versions-plugin"
-      ],
-      "matchManagers": [
-        "gradle"
-      ]
-    },
-    {
       "description": "Update gradle-versions-plugin",
       "managerFilePatterns": [
         "/.*build.gradle/"
@@ -778,6 +768,16 @@
       ],
       "matchCurrentVersion": "/^2\\.0\\.21$/",
       "matchCurrentValue": "/^2\\.0\\.21$/"
+    },
+    {
+      "description": "Only update gradle-versions-plugin via regex custom manager",
+      "enabled": false,
+      "matchDepNames": [
+        "com.github.ben-manes:gradle-versions-plugin"
+      ],
+      "matchManagers": [
+        "gradle"
+      ]
     },
     {
       "groupName": "Do not update Gradle versions plugin for Android API <= 15",
