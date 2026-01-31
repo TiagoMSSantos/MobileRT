@@ -484,7 +484,7 @@ dependencies {
     implementation "androidx.core:core-ktx:${androidX_core_version}"
 
     println('Adding Java dependencies for MobileRT.')
-    implementation 'com.google.guava:guava:33.4.8-android'
+    implementation 'com.google.guava:guava:33.5.0-android'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.4'
 
 
