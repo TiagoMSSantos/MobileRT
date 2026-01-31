@@ -286,7 +286,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "if \\(androidApiVersionValue >= \\d+\\) \\{[\\s\\S]*?gradle_versions_plugin_version = ['\"](?<currentValue>[^'\"]+)['\"]"
+        "if \\(androidApiVersionValue >= \\d+\\) \\{[^}]*?gradle_versions_plugin_version = ['\"](?<currentValue>[^'\"]+)['\"]"
       ],
       "depNameTemplate": "com.github.ben-manes:gradle-versions-plugin",
       "datasourceTemplate": "maven",
@@ -301,7 +301,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "if \\(project.properties\\[\\\"gradle_versions_plugin_version\\\"\\] == null\\) \\{[\\s\\S]*?gradle_versions_plugin_version = ['\"](?<currentValue>[^'\"]+)['\"]"
+        "if \\(project.properties\\[\\\"gradle_versions_plugin_version\\\"\\] == null\\) \\{[^}]*?gradle_versions_plugin_version = ['\"](?<currentValue>[^'\"]+)['\"]"
       ],
       "depNameTemplate": "com.github.ben-manes:gradle-versions-plugin-android-15",
       "packageNameTemplate": "com.github.ben-manes:gradle-versions-plugin",
