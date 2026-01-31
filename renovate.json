@@ -524,6 +524,14 @@
       "pinDigests": false
     },
     {
+      "groupName": "Update Guava",
+      "enabled": true,
+      "matchDepNames": [
+        "com.google.guava:guava"
+      ],
+      "versioning": "maven"
+    },
+    {
       "groupName": "Only update patches of androidx.core:core for Android API >= 19",
       "enabled": false,
       "matchUpdateTypes": [
