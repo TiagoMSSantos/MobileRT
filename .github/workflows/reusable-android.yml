@@ -172,7 +172,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 30 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -629,7 +629,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 30 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -1022,7 +1022,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 30 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -1340,7 +1340,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 30 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
