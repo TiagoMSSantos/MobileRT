@@ -75,3 +75,23 @@ AI agents should make sure the Github Actions workflows were executed and all te
   - If C++ native code was modified
 
 All checks must pass and never approve or merge the opened pull requests, even if all the tests passed. AGENTS.md helps ensure AI agent follows these requirements.
+
+## Release notes Conventions for AI agents
+
+AI agents should focus only on commits that change MobileRT source code, including C++ ray tracing engine, C++ components that use MobileRT, and the interface layer like Qt, JNI and Android code.
+All the commits that only update CI pipelines can be aggregated into a single sentence mentioning that CI was improved.
+The title of the release notes can be: ## Release Notes
+And for each module, like MobileRT, Components, Android and Qt can have the changelog inside each subtitles.
+E.g.:
+### MobileRT
+### Components
+### Android
+### Qt
+### Others
+The others subtitle can have the release notes related to other things besides MobileRT, like:
+#### Web Server
+#### CI
+#### Testing
+#### Documentation
+etc.
+

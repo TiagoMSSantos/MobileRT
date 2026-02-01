@@ -1,0 +1,8 @@
+{
+  "include":
+  [
+    { "host_os": "ubuntu-24.04", "android_api": "15", "android_api_emulator": "15", "type": "release" },
+    { "host_os": "ubuntu-24.04", "android_api": "15", "android_api_emulator": "21", "type": "release" },
+    { "host_os": "ubuntu-24.04", "android_api": "15", "android_api_emulator": "36", "type": "release" }
+  ]
+}
