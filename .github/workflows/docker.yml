@@ -3,6 +3,8 @@ name: Docker
 on:
   workflow_dispatch:
   push:
+    tags:
+    - '!**'
     paths-ignore:
     - '*'
     - '**/**'

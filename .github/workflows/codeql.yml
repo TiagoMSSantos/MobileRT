@@ -3,6 +3,8 @@ name: Code Analysis
 on:
   workflow_dispatch:
   push:
+    tags:
+    - '!**'
     paths-ignore:
     - '*'
     - '**/**'

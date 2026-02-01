@@ -3,6 +3,8 @@ name: Android
 on:
   workflow_dispatch:
   push:
+    tags:
+    - '!**'
     paths-ignore:
     - '*'
     - '**/**'
