@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-01T17:41:55.367Z",
+    "detectionDate": "2026-02-01T18:03:48.756Z",
     "formats": {
       "java": {
         "sources": {
@@ -2545,8 +2545,8 @@
             "newClones": 0
           },
           "AGENTS.md": {
-            "lines": 74,
-            "tokens": 901,
+            "lines": 93,
+            "tokens": 1107,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2558,8 +2558,8 @@
           }
         },
         "total": {
-          "lines": 2458,
-          "tokens": 24694,
+          "lines": 2477,
+          "tokens": 24900,
           "sources": 17,
           "clones": 1,
           "duplicatedLines": 15,
@@ -3272,8 +3272,8 @@
       }
     },
     "total": {
-      "lines": 30076,
-      "tokens": 233278,
+      "lines": 30095,
+      "tokens": 233484,
       "sources": 259,
       "clones": 116,
       "duplicatedLines": 1403,

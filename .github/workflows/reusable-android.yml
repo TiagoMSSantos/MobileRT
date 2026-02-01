@@ -293,7 +293,7 @@ jobs:
         uses: actions/cache/save@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           upload-chunk-size: 536870912
           enableCrossOsArchive: false
           path: |
@@ -308,8 +308,8 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           enableCrossOsArchive: false
           fail-on-cache-miss: false
           lookup-only: true
@@ -324,7 +324,7 @@ jobs:
         uses: actions/cache/save@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           upload-chunk-size: 536870912
           enableCrossOsArchive: false
           path: |
@@ -338,8 +338,8 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           enableCrossOsArchive: false
           fail-on-cache-miss: true
           lookup-only: true
@@ -579,8 +579,8 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           enableCrossOsArchive: false
           fail-on-cache-miss: true
           lookup-only: false
@@ -740,7 +740,7 @@ jobs:
           annotate_only: false
           check_annotations: true
           update_check: false # Possible bug: https://github.com/mikepenz/action-junit-report/issues/927
-          check_name: 'Android Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})'
+          check_name: 'Android Test Report - API ${{ inputs.android_api }} d${{ inputs.android_api_device }} ${{ inputs.type }} (${{ inputs.host_os }})'
           fail_on_failure: true
           fail_on_parse_error: true
           require_tests: true
@@ -793,7 +793,7 @@ jobs:
         uses: actions/cache/save@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           upload-chunk-size: 536870912
           enableCrossOsArchive: false
           path: |
@@ -826,7 +826,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: MobileRT_${{ inputs.type }}_android_api-${{ inputs.android_api }}_exp-apk
+          name: MobileRT_${{ inputs.type }}_android_api-${{ inputs.android_api }}-apk
           path: ${{ steps.sign-apk.outputs.signedFile }}
           if-no-files-found: error
           retention-days: 90
@@ -839,7 +839,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: MobileRT_${{ inputs.type }}_android_api-${{ inputs.android_api }}_test_screenshots
+          name: MobileRT_${{ inputs.type }}_android_api-a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_test_screenshots
           path: screenshots
           if-no-files-found: warn
           retention-days: 90
@@ -980,8 +980,8 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           enableCrossOsArchive: false
           fail-on-cache-miss: true
           lookup-only: false
@@ -1265,8 +1265,8 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           enableCrossOsArchive: false
           fail-on-cache-miss: true
           lookup-only: false
@@ -1310,8 +1310,8 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           enableCrossOsArchive: false
           fail-on-cache-miss: true
           lookup-only: false
@@ -1415,7 +1415,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: reports_${{ inputs.android_api }}_${{ inputs.type }}_${{ inputs.host_os }}
+          name: reports_${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           path: app/build/reports
           if-no-files-found: error
           retention-days: 90
