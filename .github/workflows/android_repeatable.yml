@@ -1,4 +1,4 @@
-name: R
+name: Repeatable
 
 on:
   workflow_dispatch:

@@ -8,8 +8,10 @@ on:
         required: false
         description: Code coverage only
   push:
-    tags:
-    - '!**'
+    branches:
+    - '**'
+    tags-ignore:
+    - '**'
     paths-ignore:
       - '*'
       - '**/**'

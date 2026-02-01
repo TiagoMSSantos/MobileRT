@@ -9,8 +9,10 @@ name: Deploy Jekyll site to Pages
 on:
   # Runs on pushes targeting any branch
   push:
-    tags:
-    - '!**'
+    branches:
+    - '**'
+    tags-ignore:
+    - '**'
     paths-ignore:
     - '*'
     - '**/**'
