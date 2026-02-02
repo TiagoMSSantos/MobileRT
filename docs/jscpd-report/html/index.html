@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-02-02T07:39:09.475Z",
+    "detectionDate": "2026-02-02T19:59:09.685Z",
     "formats": {
       "java": {
         "sources": {
@@ -1999,8 +1999,8 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 412,
-            "tokens": 2162,
+            "lines": 443,
+            "tokens": 2288,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2011,14 +2011,14 @@
             "newClones": 0
           },
           ".github/workflows/release.yml": {
-            "lines": 260,
-            "tokens": 1335,
+            "lines": 519,
+            "tokens": 2155,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 51,
-            "duplicatedTokens": 252,
-            "percentage": 19.62,
-            "percentageTokens": 18.88,
+            "clones": 3,
+            "duplicatedLines": 63,
+            "duplicatedTokens": 338,
+            "percentage": 12.14,
+            "percentageTokens": 15.68,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2026,11 +2026,11 @@
             "lines": 102,
             "tokens": 564,
             "sources": 1,
-            "clones": 4,
-            "duplicatedLines": 155,
-            "duplicatedTokens": 831,
-            "percentage": 151.96,
-            "percentageTokens": 147.34,
+            "clones": 5,
+            "duplicatedLines": 169,
+            "duplicatedTokens": 933,
+            "percentage": 165.69,
+            "percentageTokens": 165.43,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2087,10 +2087,10 @@
             "tokens": 682,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 51,
-            "duplicatedTokens": 252,
-            "percentage": 36.69,
-            "percentageTokens": 36.95,
+            "duplicatedLines": 49,
+            "duplicatedTokens": 236,
+            "percentage": 35.25,
+            "percentageTokens": 34.6,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2180,14 +2180,14 @@
           }
         },
         "total": {
-          "lines": 2976,
-          "tokens": 17389,
+          "lines": 3266,
+          "tokens": 18335,
           "sources": 24,
-          "clones": 6,
-          "duplicatedLines": 206,
-          "duplicatedTokens": 1083,
-          "percentage": 6.92,
-          "percentageTokens": 6.23,
+          "clones": 7,
+          "duplicatedLines": 218,
+          "duplicatedTokens": 1169,
+          "percentage": 6.67,
+          "percentageTokens": 6.38,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2559,8 +2559,8 @@
             "newClones": 0
           },
           "AGENTS.md": {
-            "lines": 116,
-            "tokens": 1353,
+            "lines": 117,
+            "tokens": 1415,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2572,8 +2572,8 @@
           }
         },
         "total": {
-          "lines": 2500,
-          "tokens": 25146,
+          "lines": 2501,
+          "tokens": 25208,
           "sources": 17,
           "clones": 1,
           "duplicatedLines": 15,
@@ -3286,14 +3286,14 @@
       }
     },
     "total": {
-      "lines": 30378,
-      "tokens": 235065,
+      "lines": 30669,
+      "tokens": 236073,
       "sources": 260,
-      "clones": 118,
-      "duplicatedLines": 1454,
-      "duplicatedTokens": 13863,
-      "percentage": 4.79,
-      "percentageTokens": 5.9,
+      "clones": 119,
+      "duplicatedLines": 1466,
+      "duplicatedTokens": 13949,
+      "percentage": 4.78,
+      "percentageTokens": 5.91,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7081,6 +7081,42 @@
     },
     {
       "format": "yaml",
+      "lines": 15,
+      "fragment": "}}\n    uses: ./.github/workflows/reusable-native.yml\n\n    # Sets permissions of the GITHUB_TOKEN to allow delete cache\n    permissions:\n      actions: write\n\n    with:\n      host_os: ${{ matrix.host_os }}\n      type: ${{ matrix.type }}\n      compiler: ${{ matrix.compiler }}\n      qt_version: ${{ matrix.qt_version }}\n      qt_arch: ${{ matrix.qt_arch }}\n    # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation\n    secrets: inherit",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/native.yml",
+        "start": 89,
+        "end": 103,
+        "startLoc": {
+          "line": 89,
+          "column": 2,
+          "position": 462
+        },
+        "endLoc": {
+          "line": 103,
+          "column": 8,
+          "position": 564
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 92,
+        "end": 106,
+        "startLoc": {
+          "line": 92,
+          "column": 2,
+          "position": 546
+        },
+        "endLoc": {
+          "line": 106,
+          "column": 8,
+          "position": 648
+        }
+      }
+    },
+    {
+      "format": "yaml",
       "lines": 23,
       "fragment": "-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/jekyll-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
@@ -7225,37 +7261,37 @@
     },
     {
       "format": "yaml",
-      "lines": 29,
-      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    name: Set Matrix\n    runs-on: ubuntu-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    # Sets permissions of the GITHUB_TOKEN to allow trigger another jobs",
+      "lines": 27,
+      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'\n\n    name: Set Matrix\n    runs-on: ubuntu-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
         "start": 32,
-        "end": 60,
+        "end": 58,
         "startLoc": {
           "line": 32,
           "column": 1,
           "position": 140
         },
         "endLoc": {
-          "line": 60,
-          "column": 69,
-          "position": 294
+          "line": 58,
+          "column": 7,
+          "position": 278
         }
       },
       "secondFile": {
         "name": ".github/workflows/release.yml",
         "start": 7,
-        "end": 34,
+        "end": 33,
         "startLoc": {
           "line": 7,
           "column": 1,
           "position": 22
         },
         "endLoc": {
-          "line": 34,
-          "column": 12,
-          "position": 175
+          "line": 33,
+          "column": 15,
+          "position": 160
         }
       }
     },
@@ -7281,17 +7317,17 @@
       },
       "secondFile": {
         "name": ".github/workflows/release.yml",
-        "start": 36,
-        "end": 58,
+        "start": 37,
+        "end": 62,
         "startLoc": {
-          "line": 36,
+          "line": 37,
           "column": 5,
-          "position": 191
+          "position": 206
         },
         "endLoc": {
-          "line": 58,
-          "column": 65,
-          "position": 289
+          "line": 62,
+          "column": 69,
+          "position": 304
         }
       }
     },

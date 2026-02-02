@@ -301,53 +301,6 @@ jobs:
             app/.cxx
             app/third_party
 
-      - name: Check generated binaries from cache
-        id: check_cache
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/cache/restore@v5
-        with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
-          fail-on-cache-miss: false
-          lookup-only: true
-          path: |
-            app/build
-            app/.cxx
-            app/third_party
-
-      - name: Upload generated binaries to cache - retry
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && steps.check_cache.outputs.cache-hit == false
-        uses: actions/cache/save@v5
-        with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          upload-chunk-size: 536870912
-          enableCrossOsArchive: false
-          path: |
-            app/build
-            app/.cxx
-            app/third_party
-
-      - name: Check generated binaries from cache
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/cache/restore@v5
-        with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
-          fail-on-cache-miss: true
-          lookup-only: true
-          path: |
-            app/build
-            app/.cxx
-            app/third_party
-
       - name: Zip Gradle packages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')

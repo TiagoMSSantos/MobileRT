@@ -1,6 +1,9 @@
 {
   "include":
   [
-    { "host_os": "ubuntu-24.04", "android_api": "15", "android_api_device": "21", "type": "release" }
+    { "host_os": "ubuntu-24.04", "android_api": "15", "android_api_device": "21", "type": "release" },
+    { "host_os": "ubuntu-24.04", "type": "release", "compiler": "g++" },
+    { "host_os": "macos-15", "type": "release", "compiler": "g++" },
+    { "host_os": "windows-11-arm", "type": "release", "compiler": "cl", "qt_version": "6.9.1", "qt_arch": "win64_msvc2022_arm64_cross_compiled" }
   ]
 }

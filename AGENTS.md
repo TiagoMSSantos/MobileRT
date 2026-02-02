@@ -115,5 +115,6 @@ The others section can have the release notes related to other things besides Mo
 - Updated something
 - Added something
 
-And again, for CI just write at most 1 small sentence to mention improvements / changes.
-And for the modules that don't have any changes, don't write any bullet and even don't write the section for it.
+And again, for CI just write at most 1 small sentence/bullet to mention improvements / changes.
+And for the modules that don't have any changes, don't write any bullet and even don't write the section for it, which means the modules without changes should not appear in the release notes.
+Leave a small disclaimer at the end of the release notes stating that those were written by AI.

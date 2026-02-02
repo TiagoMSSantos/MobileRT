@@ -199,6 +199,25 @@ jobs:
         if: success()
         run: |
           sh scripts/compile_native.sh -t ${{ inputs.type }} -c ${{ inputs.compiler }};
+          if [ "${{ inputs.type }}" = 'release' ]; then
+            echo 'Deleting unnecessary build files to reduce artifact size.';
+            rm -rf build_${{ inputs.type }}/*.txt;
+            rm -rf build_${{ inputs.type }}/Makefile*;
+            rm -rf build_${{ inputs.type }}/*.cmake;
+            rm -rf build_${{ inputs.type }}/*.vcxproj;
+            rm -rf build_${{ inputs.type }}/*.vcxproj.filters;
+            rm -rf build_${{ inputs.type }}/*.sln;
+            rm -rf build_${{ inputs.type }}/CMakeFiles;
+            rm -rf build_${{ inputs.type }}/.qt;
+            rm -rf build_${{ inputs.type }}/MobileRT;
+            rm -rf build_${{ inputs.type }}/Components;
+            rm -rf build_${{ inputs.type }}/System_dependent;
+            rm -rf build_${{ inputs.type }}/third_party;
+            rm -rf build_${{ inputs.type }}/Unit_Testing;
+            rm -rf build_${{ inputs.type }}/AppMobileRT_autogen;
+            rm -rf build_${{ inputs.type }}/AppMobileRT.dir;
+            rm -rf build_${{ inputs.type }}/ARM64;
+          fi
 
       - name: Generate code coverage base
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -332,6 +351,18 @@ jobs:
             code_coverage_test.info
             code_coverage_filtered.info
 
+      - name: Upload binaries as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && inputs.type == 'release'
+        uses: actions/upload-artifact@v6
+        with:
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: MobileRT_${{ inputs.type }}_os-${{ inputs.host_os }}_build-${{ inputs.compiler }}
+          path: build_${{ inputs.type }}
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: true
+          include-hidden-files: true
 
   Sonar:
     needs: [ Build ]
