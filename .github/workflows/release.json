@@ -1,0 +1,6 @@
+{
+  "include":
+  [
+    { "host_os": "ubuntu-24.04", "android_api": "15", "android_api_device": "21", "type": "release" }
+  ]
+}

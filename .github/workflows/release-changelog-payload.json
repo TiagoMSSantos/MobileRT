@@ -1,0 +1,21 @@
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Summarize commit messages into a concise release notes changelog."
+    },
+    {
+      "role": "system",
+      "content": "Use the following context from AGENTS.md:"
+    },
+    {
+      "role": "system",
+      "content": __AGENTS__
+    },
+    {
+      "role": "user",
+      "content": __COMMITS__
+    }
+  ]
+}

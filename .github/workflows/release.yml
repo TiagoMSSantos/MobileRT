@@ -1,0 +1,261 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]*.[0-9]*.[0-9]*"
+permissions: {}
+
+defaults:
+  run:
+    shell: sh
+    working-directory: .
+
+concurrency:
+  group: ${{ github.workflow }} ${{ github.ref }}
+  cancel-in-progress: true
+
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 4
+  GITHUB_STEP_TIMEOUT_MEDIUM: 10
+  GITHUB_STEP_TIMEOUT_LONG: 20
+
+jobs:
+  Matrix:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    name: Set Matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      release_api: ${{ steps.set-matrix.outputs.release_api }}
+
+    steps:
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/checkout@v6
+        with:
+          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
+          lfs: true
+
+      - name: Set Matrix
+        id: set-matrix
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        shell: bash
+        run: |
+          # Android usage: https://apilevels.com
+          MATRIX=$(echo $(cat .github/workflows/release.json) | sed 's/ //g');
+          echo "Matrix: ${MATRIX}";
+          echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
+          RELEASE_API=$(jq -c '.include | map(.android_api |= tonumber | .android_api_device |= tonumber) | sort_by(.android_api, .android_api_device) | .[0] | .android_api = (.android_api|tostring) | .android_api_device = (.android_api_device|tostring)' .github/workflows/release.json);
+          RELEASE_API="$(echo {\"include\":[${RELEASE_API}])}";
+          echo "RELEASE_API: ${RELEASE_API}";
+          echo "release_api=${RELEASE_API}" >> ${GITHUB_OUTPUT};
+
+  Android:
+    needs: [Matrix]
+    name: Android ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})
+    strategy:
+      fail-fast: true
+      matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
+    uses: ./.github/workflows/reusable-android.yml
+
+    # Sets permissions of the GITHUB_TOKEN to allow delete cache and publish test results
+    permissions:
+      actions: write
+      checks: write
+      pull-requests: write # only required if `comment: true` was enabled
+
+    with:
+      host_os: ${{ matrix.host_os }}
+      android_api: ${{ matrix.android_api }}
+      android_api_device: ${{ matrix.android_api_device }}
+      type: ${{ matrix.type }}
+    # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation
+    secrets: inherit
+
+  Changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: true
+
+    permissions:
+      models: read
+
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+
+    steps:
+    - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/checkout@v6
+      with:
+        # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
+        fetch-depth: 0
+        fetch-tags: true
+        lfs: false
+
+    - name: Generate changelog with AI Model
+      id: changelog
+      shell: bash
+      run: |
+        # Load AGENTS.md safely as JSON string
+        AGENTS=$(jq -R -s '.' < AGENTS.md);
+        echo "AGENTS: ${AGENTS}";
+
+        # Get previous tag
+        ALL_TAGS=$(git for-each-ref --sort=-creatordate --format '%(refname:short)' refs/tags);
+        echo "All tags: ${ALL_TAGS}";
+
+        PREVIOUS_TAG=$(echo "${ALL_TAGS}" | sed -n '2p');
+        echo "Previous tag: ${PREVIOUS_TAG}";
+
+        # Get commits since previous tag
+        COMMITS=$(git log "${PREVIOUS_TAG}.." --stat=180 --pretty=format:"%s" | jq -R -s '.');
+        echo "Commits: ${COMMITS}";
+
+        JSON_PAYLOAD=$(cat .github/workflows/release-changelog-payload.json);
+        echo "JSON_PAYLOAD 1: ${JSON_PAYLOAD}";
+        JSON_PAYLOAD=${JSON_PAYLOAD/__AGENTS__/$AGENTS};
+        echo "JSON_PAYLOAD 2: ${JSON_PAYLOAD}";
+        JSON_PAYLOAD=${JSON_PAYLOAD/__COMMITS__/$COMMITS};
+        echo "JSON_PAYLOAD 3: ${JSON_PAYLOAD}";
+
+        RESPONSE=$(curl --fail-with-body -s \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -d "$JSON_PAYLOAD" \
+          "https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-02-15-preview"
+        )
+        echo "Response: ${RESPONSE}";
+
+        CHANGELOG=$(echo "${RESPONSE}" | jq -r '.choices[0].message.content');
+        echo "CHANGELOG: ${CHANGELOG}";
+        {
+          echo "changelog<<EOF";
+          echo "$CHANGELOG";
+          echo "EOF";
+        } >> "$GITHUB_OUTPUT";
+
+
+  Release:
+    needs: [Matrix, Changelog, Android]
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+
+    strategy:
+      fail-fast: true
+      matrix: ${{ fromJSON(needs.Matrix.outputs.release_api) }}
+    steps:
+    - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/checkout@v6
+      with:
+        # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
+        fetch-depth: 1
+        fetch-tags: false
+        lfs: false
+
+    # Download generated APK artifact
+    # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
+    - name: Download Android packages artifact
+      id: download-android-artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && !startsWith(inputs.host_os, 'windows')
+      uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
+      with:
+        # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+        action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
+        pre_retry_command: 'echo "Retrying Download Android packages artifact step..."'
+        attempt_limit: 3
+        attempt_delay: 30000
+        with: |
+          # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
+          # Required, if the artifact is from a different repo
+          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional, workflow file name or ID
+          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
+          workflow: release.yml
+          # Optional, the status or conclusion of a completed workflow to search for
+          # Can be one of a workflow conclusion:
+          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+          # Or a workflow status:
+          #   "completed", "in_progress", "queued"
+          workflow_conclusion: ''
+          # Optional, will get head commit SHA
+          pr: ${{ github.event.pull_request.number }}
+          # Optional, no need to specify if PR is
+          commit: ${{ github.event.pull_request.head.sha }}
+          # Optional, will use the branch
+          # branch: master
+          # Optional, defaults to all types
+          # event: push
+          # Optional, will use specified workflow run
+          # run_id: 1122334455
+          # Optional, run number from the workflow
+          # run_number: 34
+          # Optional, uploaded artifact name,
+          # will download all artifacts if not specified
+          # and extract them into respective subdirectories
+          # https://github.com/actions/download-artifact#download-all-artifacts
+          name: MobileRT_${{ matrix.type }}_android_api-${{ matrix.android_api }}-apk
+          # Optional, a directory where to extract artifact(s), defaults to the current directory
+          path: .
+          # Optional, defaults to current repo
+          repo: ${{ github.repository }}
+          allow_forks: true
+          # Optional, check the workflow run to whether it has an artifact
+          # then will get the last available artifact from the previous workflow
+          # default false, just try to download from the last one
+          check_artifacts:  true
+          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
+          # default false
+          search_artifacts: true
+          # Optional, choose to skip unpacking the downloaded artifact(s)
+          # default false
+          skip_unpack: true
+          # Optional, choose how to exit the action if no artifact is found
+          # can be one of:
+          #  "fail", "warn", "ignore"
+          # default fail
+          if_no_artifact_found: fail
+
+    - name: Validate release artifacts
+      run: |
+        ls -lahp .;
+        ls -lahp MobileRT_release_android_api-15-apk.zip;
+        . scripts/helper_functions.sh && extractFilesFromArtifact .;
+        echo "Release notes: ${{ needs.Changelog.outputs.changelog }}";
+        ls -lahp app-release-signed.apk;
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: github.ref_type == 'tag'
+      with:
+        # Check available parameters in: https://github.com/softprops/action-gh-release/blob/master/action.yml
+        body: ${{ needs.Changelog.outputs.changelog }}
+        draft: true
+        prerelease: true
+        preserve_order: true
+        files: |
+          app-release-signed.apk
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        append_body: true
+        make_latest: true

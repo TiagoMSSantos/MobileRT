@@ -53,7 +53,7 @@ When AI agent help create a pull request, please ensure it:
 4. Includes screenshots for UI changes implemented with AI agent
 5. Keeps pull requests focused on a single concern as specified in AGENTS.md
 6. Commit messages should follow the pattern:
-  - Title format: <type>(<scope>): <title>
+  - Title format: {type}({scope}): {title}
     - Possible types: ci/build/chore/fix/feat/refactor/docs/style/perf/test
     - Scopes should be the module updated, or the file name if it makes sense
     - Titles should always start with an upper case and do not finish with terminal punctuation marks
@@ -80,18 +80,40 @@ All checks must pass and never approve or merge the opened pull requests, even i
 
 AI agents should focus only on commits that change MobileRT source code, including C++ ray tracing engine, C++ components that use MobileRT, and the interface layer like Qt, JNI and Android code.
 All the commits that only update CI pipelines can be aggregated into a single sentence mentioning that CI was improved.
+Again, only 1 short sentence should be written to summarize all improvements made on CI.
 The title of the release notes can be: ## Release Notes
-And for each module, like MobileRT, Components, Android and Qt can have the changelog inside each subtitles.
+And for each module, like MobileRT, Components, Android and Qt can have the changelog inside each section.
 E.g.:
 ### MobileRT
+- Improved something
+- Updated something
+- Added something
 ### Components
+- Improved something
+- Updated something
+- Added something
 ### Android
+- Improved something
+- Updated something
+- Added something
 ### Qt
+- Improved something
+- Updated something
+- Added something
 ### Others
-The others subtitle can have the release notes related to other things besides MobileRT, like:
+The others section can have the release notes related to other things besides MobileRT, like:
 #### Web Server
+- Improved something
+- Updated something
+- Added something
 #### CI
+- Improved/updated/added something (just 1 bullet should be written regarding CI. Don't write more than 1 bullet at most.)
 #### Testing
+- Improved/updated/added something
 #### Documentation
-etc.
+- Improved something
+- Updated something
+- Added something
 
+And again, for CI just write at most 1 small sentence to mention improvements / changes.
+And for the modules that don't have any changes, don't write any bullet and even don't write the section for it.
