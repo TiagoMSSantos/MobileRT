@@ -507,7 +507,7 @@ jobs:
 
     - name: Upload APK to Google Play
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      uses: r0adkll/upload-google-play@v1
+      uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # v1
       if: github.ref_type == 'tag' && false # TODO: Enable when ready to publish
       with:
         # Check available parameters in: https://github.com/r0adkll/upload-google-play/blob/master/action.yml
