@@ -63,7 +63,10 @@ user=TiagoMSSantos repo=MobileRT; gh api repos/${user}/${repo}/actions/runs --pa
 Here are the commands to delete the git local branches that are not on the remote server.
 
 ```shell
+git fetch --all --tags;
 git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D;
+git tag -l | xargs -I {} git tag -d {};
+git fetch --all --tags;
 ```
 
 ## Remove all docker containers and volumes

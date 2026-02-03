@@ -752,13 +752,6 @@ jobs:
           path: |
             app/build/reports
 
-      - name: Add base64 key & Android Build Tools version to environment variables in order to sign APK
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        run: |
-          echo "BASE64_KEY=$(openssl base64 < app/MobileRT.jks | tr -d '[:space:]')" >> "${GITHUB_ENV}";
-          echo 'ANDROID_BUILD_TOOLS_VERSION=34.0.0' >> "${GITHUB_ENV}";
-
       - name: Sign APK
         id: sign-apk
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -767,11 +760,10 @@ jobs:
         with:
           # Check available parameters in: https://github.com/ilharp/sign-android-release/blob/master/action.yml
           releaseDir: app/build/outputs/apk/${{ inputs.type }}
-          signingKey: ${{ env.BASE64_KEY }}
+          signingKey: ${{ secrets.SIGNING_KEY_BASE64 }}
           keyAlias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_KEY }}
           keyPassword: ${{ secrets.SIGNING_KEY }}
-          buildToolsVersion: ${{ env.ANDROID_BUILD_TOOLS_VERSION }}
 
       - name: Upload APK as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -779,7 +771,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: MobileRT_${{ inputs.type }}_android_api-${{ inputs.android_api }}-apk
+          name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
           path: ${{ steps.sign-apk.outputs.signedFile }}
           if-no-files-found: error
           retention-days: 90

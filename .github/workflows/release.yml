@@ -239,7 +239,7 @@ jobs:
           # will download all artifacts if not specified
           # and extract them into respective subdirectories
           # https://github.com/actions/download-artifact#download-all-artifacts
-          name: MobileRT_${{ matrix.type }}_android_api-${{ matrix.android_api }}-apk
+          name: MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}-apk
           # Optional, a directory where to extract artifact(s), defaults to the current directory
           path: .
           # Optional, defaults to current repo
@@ -468,10 +468,11 @@ jobs:
         mkdir -p release/macos;
         mkdir -p release/windows;
 
-        mv MobileRT_release_android_api-15-apk.zip release/android;
-        ls -lahp release/android/MobileRT_release_android_api-15-apk.zip;
+        mv MobileRT_release_min_android_api-15-apk.zip release/android;
+        ls -lahp release/android/MobileRT_min_release_android_api-15-apk.zip;
         . scripts/helper_functions.sh && extractFilesFromArtifact release/android;
-        ls -lahp release/android/app-release-signed.apk;
+        mv release/android/app-release-signed.apk release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
+        ls -lahp release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
 
         mv MobileRT_release_os-ubuntu-24.04_build-g++.zip release/linux;
         ls -lahp release/linux/MobileRT_release_os-ubuntu-24.04_build-g++.zip;
