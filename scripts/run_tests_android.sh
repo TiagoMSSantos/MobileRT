@@ -611,7 +611,8 @@ runInstrumentationTests() {
   set -eu;
 
   timeout 60 adb shell df;
-  echo 'Searching for APK to install in Android emulator.';
+  echo 'Searching for APK '"${type}"' to install in Android emulator.';
+  find . -iname "*.apk";
   apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}");
   echo "Will install the following APKs: ${apksPath}";
   for apkPath in ${apksPath}; do
