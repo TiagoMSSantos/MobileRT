@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-02-03T09:57:54.705Z",
+    "detectionDate": "2026-02-03T16:35:28.611Z",
     "formats": {
       "java": {
         "sources": {
@@ -2062,23 +2062,23 @@
             "lines": 371,
             "tokens": 2300,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 42,
-            "duplicatedTokens": 226,
-            "percentage": 11.32,
-            "percentageTokens": 9.83,
+            "clones": 2,
+            "duplicatedLines": 49,
+            "duplicatedTokens": 308,
+            "percentage": 13.21,
+            "percentageTokens": 13.39,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
-            "lines": 271,
-            "tokens": 1298,
+            "lines": 277,
+            "tokens": 1376,
             "sources": 1,
-            "clones": 1,
-            "duplicatedLines": 42,
-            "duplicatedTokens": 226,
-            "percentage": 15.5,
-            "percentageTokens": 17.41,
+            "clones": 2,
+            "duplicatedLines": 49,
+            "duplicatedTokens": 308,
+            "percentage": 17.69,
+            "percentageTokens": 22.38,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2180,14 +2180,14 @@
           }
         },
         "total": {
-          "lines": 3285,
-          "tokens": 18540,
+          "lines": 3291,
+          "tokens": 18618,
           "sources": 24,
-          "clones": 7,
-          "duplicatedLines": 218,
-          "duplicatedTokens": 1169,
-          "percentage": 6.64,
-          "percentageTokens": 6.31,
+          "clones": 8,
+          "duplicatedLines": 225,
+          "duplicatedTokens": 1251,
+          "percentage": 6.84,
+          "percentageTokens": 6.72,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2243,8 +2243,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 780,
-            "tokens": 5918,
+            "lines": 781,
+            "tokens": 5932,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2352,8 +2352,8 @@
           }
         },
         "total": {
-          "lines": 4579,
-          "tokens": 31339,
+          "lines": 4580,
+          "tokens": 31353,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 242,
@@ -3286,14 +3286,14 @@
       }
     },
     "total": {
-      "lines": 30691,
-      "tokens": 236316,
+      "lines": 30698,
+      "tokens": 236408,
       "sources": 260,
-      "clones": 119,
-      "duplicatedLines": 1466,
-      "duplicatedTokens": 13949,
-      "percentage": 4.78,
-      "percentageTokens": 5.9,
+      "clones": 120,
+      "duplicatedLines": 1473,
+      "duplicatedTokens": 14031,
+      "percentage": 4.8,
+      "percentageTokens": 5.94,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7256,6 +7256,42 @@
           "line": 82,
           "column": 55,
           "position": 393
+        }
+      }
+    },
+    {
+      "format": "yaml",
+      "lines": 8,
+      "fragment": "ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}\n        ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}\n        ANDROID_KEY_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEY_PASSWORD_DEBUG }}\n        ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}\n        ANDROID_KEY_ALIAS_DEBUG: ${{ secrets.ANDROID_KEY_ALIAS_DEBUG }}\n        ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}\n      with:\n        # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/android_repeatable.yml",
+        "start": 232,
+        "end": 239,
+        "startLoc": {
+          "line": 232,
+          "column": 9,
+          "position": 1147
+        },
+        "endLoc": {
+          "line": 239,
+          "column": 98,
+          "position": 1229
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/codeql.yml",
+        "start": 239,
+        "end": 246,
+        "startLoc": {
+          "line": 239,
+          "column": 9,
+          "position": 1462
+        },
+        "endLoc": {
+          "line": 246,
+          "column": 104,
+          "position": 1544
         }
       }
     },

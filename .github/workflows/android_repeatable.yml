@@ -229,6 +229,12 @@ jobs:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
         ANDROID_EMULATOR_MEM_MB: 3072
         ANDROID_EMULATOR_CPU_CORES: 2
+        ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}
+        ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        ANDROID_KEY_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEY_PASSWORD_DEBUG }}
+        ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        ANDROID_KEY_ALIAS_DEBUG: ${{ secrets.ANDROID_KEY_ALIAS_DEBUG }}
+        ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       with:
         # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
         action: ReactiveCircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2
