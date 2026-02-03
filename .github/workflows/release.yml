@@ -152,7 +152,7 @@ jobs:
           --rawfile commits commits.raw \
           '
           def inject(name; value):
-            sub(name; (value | @json | fromjson));
+            gsub(name; (value | @json | fromjson));
 
           walk(
             if type == "string" then
