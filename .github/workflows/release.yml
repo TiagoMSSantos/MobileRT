@@ -145,38 +145,36 @@ jobs:
         PREVIOUS_TAG=$(echo "${ALL_TAGS}" | sed -n '2p');
         echo "Previous tag: ${PREVIOUS_TAG}";
 
-        COMMITS=$(git log "${PREVIOUS_TAG}.." --stat=180 --pretty=format:"%s" | jq -R -s '.');
+        COMMITS=$(git log "${PREVIOUS_TAG}.." --stat=180 --pretty=format:"%s");
         echo "Commits since previous release: ${COMMITS}";
 
         JSON_PAYLOAD=$(cat .github/workflows/release-notes-payload.json);
-        echo "JSON_PAYLOAD 1: ${JSON_PAYLOAD}";
-        printf "%s" "$COMMITS" | jq -R -s '.' > commits.json;
-        printf "%s" "$AGENTS" | jq -R -s '.' > agents.json;
-        JSON_PAYLOAD=$(
-          jq \
-            --slurpfile agents agents.json \
-            --slurpfile commits commits.json \
-            '
-            walk(
-              if type == "string" then
-                .
-                | gsub("__AGENTS__"; $agents[0])
-                | gsub("__COMMITS__"; $commits[0])
-              else
-                .
-              end
-            )
-            ' \
-            < .github/workflows/release-notes-payload.json
-        );
-        echo "JSON_PAYLOAD 2: ${JSON_PAYLOAD}";
+        echo "JSON_PAYLOAD template: ${JSON_PAYLOAD}";
+        printf "%s" "$COMMITS" > commits.raw;
+        printf "%s" "$AGENTS" > agents.raw;
+        jq \
+          --rawfile agents agents.raw \
+          --rawfile commits commits.raw \
+          '
+          walk(
+            if type == "string" then
+              .
+              | gsub("__AGENTS__"; $agents)
+              | gsub("__COMMITS__"; $commits)
+            else
+              .
+            end
+          )
+          ' \
+          < .github/workflows/release-notes-payload.json \
+          > payload.json;
+        echo "JSON_PAYLOAD: $(cat payload.json)";
 
         RESPONSE=$(
-          printf "%s" "$JSON_PAYLOAD" |
           curl --fail-with-body -s \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -d @- \
+            -d @payload.json \
             "https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions"
         );
         echo "Response: ${RESPONSE}";

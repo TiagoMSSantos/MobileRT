@@ -103,6 +103,7 @@
 **/git-hooks
 **/managed_context/**
 **/test_suite_analysis/**
+**/*.raw
 
 # Secrets files
 **/*.jks
