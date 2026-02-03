@@ -308,7 +308,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        rm app/MobileRT.jks;
+        rm -f app/MobileRT.jks;
         ls -lahp ./codeql-results;
         if [ "${{ matrix.language }}" = 'c-cpp' ]; then
           LANGUAGE='cpp';
