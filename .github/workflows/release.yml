@@ -135,10 +135,6 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       shell: bash
       run: |
-        # Load AGENTS.md safely as JSON string
-        AGENTS=$(jq -R -s '.' < AGENTS.md);
-        echo "AGENTS: ${AGENTS}";
-
         ALL_TAGS=$(git for-each-ref --sort=-creatordate --format '%(refname:short)' refs/tags);
         echo "All tags: ${ALL_TAGS}";
 
@@ -151,16 +147,18 @@ jobs:
         JSON_PAYLOAD=$(cat .github/workflows/release-notes-payload.json);
         echo "JSON_PAYLOAD template: ${JSON_PAYLOAD}";
         printf "%s" "$COMMITS" > commits.raw;
-        printf "%s" "$AGENTS" > agents.raw;
         jq \
-          --rawfile agents agents.raw \
+          --rawfile agents AGENTS.md \
           --rawfile commits commits.raw \
           '
+          def inject(name; value):
+            sub(name; (value | @json | fromjson));
+
           walk(
             if type == "string" then
               .
-              | gsub("__AGENTS__"; $agents)
-              | gsub("__COMMITS__"; $commits)
+              | inject("__AGENTS__"; $agents)
+              | inject("__COMMITS__"; $commits)
             else
               .
             end
