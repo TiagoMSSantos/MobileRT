@@ -150,12 +150,12 @@ jobs:
 
         JSON_PAYLOAD=$(cat .github/workflows/release-notes-payload.json);
         echo "JSON_PAYLOAD 1: ${JSON_PAYLOAD}";
-        echo "$AGENTS" > agents.log;
-        echo "$COMMITS" > commits.log;
+        printf "%s" "$COMMITS" | jq -R -s '.' > commits.json;
+        printf "%s" "$AGENTS" | jq -R -s '.' > agents.json;
         JSON_PAYLOAD=$(
           jq \
-            --slurpfile agents agents.log \
-            --slurpfile commits commits.log \
+            --slurpfile agents agents.json \
+            --slurpfile commits commits.json \
             '
             walk(
               if type == "string" then
