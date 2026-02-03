@@ -194,7 +194,9 @@ jobs:
       timeout-minutes: 20
       if: success()
       run: |
+        echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
         sh scripts/compile_android.sh -t ${{ matrix.type }} -a ${{ matrix.android_api }} -r yes -f ${{ env.android_arch }};
+        rm app/MobileRT.jks;
 
     - name: Enable KVM group permissions
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

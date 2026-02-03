@@ -227,6 +227,7 @@ jobs:
         android_api_version=15;
         echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
         . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew --parallel wrapper -DandroidApiVersion="${android_api_version}";
+        echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
 
     - name: Autobuild
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -301,6 +302,7 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
+        rm app/MobileRT.jks;
         ls -lahp ./codeql-results;
         if [ "${{ matrix.language }}" = 'c-cpp' ]; then
           LANGUAGE='cpp';

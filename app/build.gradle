@@ -232,7 +232,13 @@ android {
 
     // Setup signing configurations
     signingConfigs {
-        Puscas {
+        debug {
+            setStoreFile file('MobileRT.jks')
+            setStorePassword System.getenv("ANDROID_KEYSTORE_PASSWORD_DEBUG") ?: localProps["ANDROID_KEYSTORE_PASSWORD_DEBUG"]
+            setKeyPassword System.getenv("ANDROID_KEY_PASSWORD_DEBUG") ?: localProps["ANDROID_KEY_PASSWORD_DEBUG"]
+            setKeyAlias System.getenv("ANDROID_KEY_ALIAS_DEBUG") ?: localProps["ANDROID_KEY_ALIAS_DEBUG"]
+        }
+        release {
             setStoreFile file('MobileRT.jks')
             setStorePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: localProps["ANDROID_KEYSTORE_PASSWORD"]
             setKeyPassword System.getenv("ANDROID_KEY_PASSWORD") ?: localProps["ANDROID_KEY_PASSWORD"]
@@ -304,7 +310,7 @@ android {
             setVersionNameSuffix 'd'
             setRenderscriptOptimLevel 0
             setMinifyEnabled false
-            setSigningConfig signingConfigs.Puscas
+            setSigningConfig signingConfigs.debug
             setShrinkResources false
             ndk {
             }
@@ -316,7 +322,7 @@ android {
             setVersionNameSuffix 'r'
             setRenderscriptOptimLevel 3
             setMinifyEnabled false
-            setSigningConfig signingConfigs.Puscas
+            setSigningConfig signingConfigs.release
             setShrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ndk {
