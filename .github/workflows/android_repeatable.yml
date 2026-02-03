@@ -254,6 +254,7 @@ jobs:
           force-avd-creation: false
           emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
           script: |
+            echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
             sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -a ${{ matrix.android_api }} -k false -f ${{ env.android_arch }};
             echo "Run Android tests finished: ${?}";
 
