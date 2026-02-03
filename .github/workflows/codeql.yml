@@ -236,6 +236,12 @@ jobs:
       env:
         MAKEFLAGS: "-j$(($(nproc --all) * 2 - 1))"
         GRADLE_OPTS: '-Xms8G -Xmx8G -XX:ActiveProcessorCount=5'
+        ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}
+        ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        ANDROID_KEY_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEY_PASSWORD_DEBUG }}
+        ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        ANDROID_KEY_ALIAS_DEBUG: ${{ secrets.ANDROID_KEY_ALIAS_DEBUG }}
+        ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       with:
         # Check available parameters in: https://github.com/github/codeql-action/blob/main/autobuild/action.yml
         token: ${{ github.token }}
