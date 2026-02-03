@@ -171,12 +171,14 @@ jobs:
         );
         echo "JSON_PAYLOAD 2: ${JSON_PAYLOAD}";
 
-        RESPONSE=$(curl --fail-with-body -s \
-          -H "Content-Type: application/json" \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          -d "$JSON_PAYLOAD" \
-          "https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions"
-        )
+        RESPONSE=$(
+          printf "%s" "$JSON_PAYLOAD" |
+          curl --fail-with-body -s \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -d @- \
+            "https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions"
+        );
         echo "Response: ${RESPONSE}";
 
         RELEASE_NOTES=$(echo "${RESPONSE}" | jq -r '.choices[0].message.content');
