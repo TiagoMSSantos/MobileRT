@@ -94,7 +94,7 @@ jobs:
           BRANCH=${GITHUB_REF#refs/heads/};
           echo "BRANCH: ${BRANCH}";
           echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}";
-          responses_triggered=$(curl --fail-with-body -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+          responses_triggered=$(curl --fail-with-body -s -S -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/runs?branch=${BRANCH}&head_sha=${GITHUB_SHA}");
           echo "response obtained";
@@ -111,7 +111,7 @@ jobs:
           BRANCH=${GITHUB_REF#refs/heads/};
           echo "BRANCH: ${BRANCH}";
           echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}";
-          curl --fail-with-body -X POST \
+          curl --fail-with-body -S -X POST \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/dispatches \

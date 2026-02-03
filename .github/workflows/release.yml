@@ -169,7 +169,7 @@ jobs:
         echo "JSON_PAYLOAD: $(cat payload.json)";
 
         RESPONSE=$(
-          curl --fail-with-body -s \
+          curl --fail-with-body -s -S \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -d @payload.json \
