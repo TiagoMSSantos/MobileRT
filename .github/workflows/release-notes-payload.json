@@ -11,11 +11,11 @@
     },
     {
       "role": "system",
-      "content": __AGENTS__
+      "content": "__AGENTS__"
     },
     {
       "role": "user",
-      "content": __COMMITS__
+      "content": "__COMMITS__"
     }
   ]
 }
