@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-02-03T16:35:28.611Z",
+    "detectionDate": "2026-02-05T16:53:45.203Z",
     "formats": {
       "java": {
         "sources": {
@@ -2011,14 +2011,14 @@
             "newClones": 0
           },
           ".github/workflows/release.yml": {
-            "lines": 520,
-            "tokens": 2200,
+            "lines": 697,
+            "tokens": 3551,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 63,
-            "duplicatedTokens": 338,
-            "percentage": 12.12,
-            "percentageTokens": 15.36,
+            "clones": 9,
+            "duplicatedLines": 181,
+            "duplicatedTokens": 1280,
+            "percentage": 25.97,
+            "percentageTokens": 36.05,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2180,14 +2180,14 @@
           }
         },
         "total": {
-          "lines": 3291,
-          "tokens": 18618,
+          "lines": 3468,
+          "tokens": 19969,
           "sources": 24,
-          "clones": 8,
-          "duplicatedLines": 225,
-          "duplicatedTokens": 1251,
-          "percentage": 6.84,
-          "percentageTokens": 6.72,
+          "clones": 11,
+          "duplicatedLines": 284,
+          "duplicatedTokens": 1722,
+          "percentage": 8.19,
+          "percentageTokens": 8.62,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2304,7 +2304,7 @@
           },
           "scripts/docker.sh": {
             "lines": 315,
-            "tokens": 2055,
+            "tokens": 2057,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2353,7 +2353,7 @@
         },
         "total": {
           "lines": 4580,
-          "tokens": 31353,
+          "tokens": 31355,
           "sources": 13,
           "clones": 11,
           "duplicatedLines": 242,
@@ -2559,8 +2559,8 @@
             "newClones": 0
           },
           "AGENTS.md": {
-            "lines": 117,
-            "tokens": 1415,
+            "lines": 134,
+            "tokens": 1677,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2572,8 +2572,8 @@
           }
         },
         "total": {
-          "lines": 2504,
-          "tokens": 25246,
+          "lines": 2521,
+          "tokens": 25508,
           "sources": 17,
           "clones": 1,
           "duplicatedLines": 15,
@@ -3286,14 +3286,14 @@
       }
     },
     "total": {
-      "lines": 30698,
-      "tokens": 236408,
+      "lines": 30892,
+      "tokens": 238023,
       "sources": 260,
-      "clones": 120,
-      "duplicatedLines": 1473,
-      "duplicatedTokens": 14031,
-      "percentage": 4.8,
-      "percentageTokens": 5.94,
+      "clones": 123,
+      "duplicatedLines": 1532,
+      "duplicatedTokens": 14502,
+      "percentage": 4.96,
+      "percentageTokens": 6.09,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7076,6 +7076,114 @@
           "line": 84,
           "column": 6,
           "position": 529
+        }
+      }
+    },
+    {
+      "format": "yaml",
+      "lines": 21,
+      "fragment": "git show --stat=180 --pretty=format:\"%s\" \"${SHAS[@]}\" > commits.raw;\n              jq \\\n                --rawfile agents AGENTS.md \\\n                --rawfile commits commits.raw \\\n                '\n                def inject(name; value):\n                  gsub(name; (value | @json));\n\n                walk(\n                  if type == \"string\" then\n                    .\n                    | inject(\"__AGENTS__\"; $agents)\n                    | inject(\"__COMMITS__\"; $commits)\n                  else\n                    .\n                  end\n                )\n                ' \\\n                < .github/workflows/release-notes-payload.json \\\n                > payload.json;\n              SIZE=$(wc",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 205,
+        "end": 225,
+        "startLoc": {
+          "line": 205,
+          "column": 15,
+          "position": 1339
+        },
+        "endLoc": {
+          "line": 225,
+          "column": 10,
+          "position": 1479
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 172,
+        "end": 193,
+        "startLoc": {
+          "line": 172,
+          "column": 13,
+          "position": 1097
+        },
+        "endLoc": {
+          "line": 193,
+          "column": 3,
+          "position": 1238
+        }
+      }
+    },
+    {
+      "format": "yaml",
+      "lines": 9,
+      "fragment": "sleep ${SLEEP_SECONDS};\n\n          RESPONSE=$(\n            curl --fail-with-body -s -S \\\n              -H \"Content-Type: application/json\" \\\n              -H \"Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}\" \\\n              -d @payload.json \\\n              \"https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions\"\n          );",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 291,
+        "end": 299,
+        "startLoc": {
+          "line": 291,
+          "column": 11,
+          "position": 2007
+        },
+        "endLoc": {
+          "line": 299,
+          "column": 3,
+          "position": 2090
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 233,
+        "end": 241,
+        "startLoc": {
+          "line": 233,
+          "column": 11,
+          "position": 1521
+        },
+        "endLoc": {
+          "line": 241,
+          "column": 2,
+          "position": 1604
+        }
+      }
+    },
+    {
+      "format": "yaml",
+      "lines": 32,
+      "fragment": "\\\n          '\n          def inject(name; value):\n            gsub(name; (value | @json));\n\n          walk(\n            if type == \"string\" then\n              .\n              | inject(\"__AGENTS__\"; $agents)\n              | inject(\"__RELEASE_NOTES__\"; $release_notes)\n            else\n              .\n            end\n          )\n          ' \\\n          < .github/workflows/release-notes-merge.json \\\n          > payload.json;\n        echo \"JSON_PAYLOAD: $(cat payload.json)\";\n        jq . payload.json > /dev/null; # validate JSON\n\n        SIZE=$(wc -c < payload.json);\n        echo \"Sleeping for ${SLEEP_SECONDS} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.\";\n        sleep ${SLEEP_SECONDS};\n\n        RESPONSE=$(\n          curl --fail-with-body -s -S \\\n            -H \"Content-Type: application/json\" \\\n            -H \"Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}\" \\\n            -d @payload.json \\\n            \"https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions\"\n        );\n        RELEASE_NOTES=$(echo",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 311,
+        "end": 342,
+        "startLoc": {
+          "line": 311,
+          "column": 2,
+          "position": 2191
+        },
+        "endLoc": {
+          "line": 342,
+          "column": 21,
+          "position": 2439
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 269,
+        "end": 300,
+        "startLoc": {
+          "line": 269,
+          "column": 2,
+          "position": 1845
+        },
+        "endLoc": {
+          "line": 300,
+          "column": 16,
+          "position": 2093
         }
       }
     },

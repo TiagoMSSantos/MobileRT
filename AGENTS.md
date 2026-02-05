@@ -15,6 +15,8 @@ This AGENTS.md file provides comprehensive guidance for AI agents working with t
   - `/main`: The production code
   - `/androidTest`: Android instrumentation tests
   - `/test`: Android unit tests
+- `/scripts`: Shell scripts used by CI
+- `/scripts/test`: Unit tests for shell scripts used by CI
 - `/.github`: Github Actions
 - `/.github/workflows`: Github Actions workflows
 - `/.github/codeql`: CodeQL configurations
@@ -79,8 +81,12 @@ All checks must pass and never approve or merge the opened pull requests, even i
 ## Release notes Conventions for AI agents
 
 AI agents should focus only on commits that change MobileRT source code, including C++ ray tracing engine, C++ components that use MobileRT, and the interface layer like Qt, JNI and Android code.
-All the commits that only update CI pipelines can be aggregated into a single sentence mentioning that CI was improved.
-Again, only 1 short sentence should be written to summarize all improvements made on CI.
+All the commits that only update CI pipelines can be aggregated into a single sentence / bullet mentioning that CI was improved.
+Again, only 1 short sentence / bullet should be written to summarize all improvements made on CI.
+Do not write duplicated lines / bullets, ever.
+Also, if duplicated sentences/bullets exist, then merge them into a single sentence / bullet.
+And, if multiple bullets mention update of the same dependency, then merge them together into a single bullet mentioning only the latest version that was updated.
+
 The title of the release notes can be: ## Release Notes
 And for each module, like MobileRT, Components, Android and Qt can have the changelog inside each section.
 E.g.:
@@ -88,26 +94,37 @@ E.g.:
 - Improved something
 - Updated something
 - Added something
+- Can only contain C/C++ dependencies
 ### Components
 - Improved something
 - Updated something
 - Added something
+- Components do not contain any dependencies
 ### Android
 - Improved something
 - Updated something
 - Added something
+- Can only contain Java/Android dependencies
 ### Qt
+- Improved something
+- Updated something
+- Added something
+- Can only contain C++ Qt dependency
+### Docker
 - Improved something
 - Updated something
 - Added something
 ### Others
 The others section can have the release notes related to other things besides MobileRT, like:
+- Dependencies of conanfiles should be here
 #### Web Server
 - Improved something
 - Updated something
 - Added something
 #### CI
 - Improved/updated/added something (just 1 bullet should be written regarding CI. Don't write more than 1 bullet at most.)
+- Shell script updates should only appear in this CI section
+- Can only contain Github actions dependencies
 #### Testing
 - Improved/updated/added something
 #### Documentation

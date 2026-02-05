@@ -108,7 +108,7 @@ jobs:
   ReleaseNotes:
     name: Generate Release Notes
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 360
 
     strategy:
       fail-fast: true
@@ -132,41 +132,205 @@ jobs:
 
     - name: Generate Release Notes with AI Model
       id: release_notes
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      timeout-minutes: 360
       shell: bash
       run: |
+        # Configurations
+        SLEEP_SECONDS=57; # To avoid HTTP 429 "Too Many Requests" - 56sec fails, but 60sec seems to work fine
+        MAX_PAYLOAD_BYTES=32120; # To avoid HTTP 413 "Content Too Large" - 32KB is max payload size, 32130 bytes fails, but 32075 bytes seems to work fine
+
+        jq . .github/workflows/release-notes-payload.json  > /dev/null; # validate JSON
+        jq . .github/workflows/release-notes-merge.json  > /dev/null; # validate JSON
+
         ALL_TAGS=$(git for-each-ref --sort=-creatordate --format '%(refname:short)' refs/tags);
         echo "All tags: ${ALL_TAGS}";
 
         PREVIOUS_TAG=$(echo "${ALL_TAGS}" | sed -n '2p');
         echo "Previous tag: ${PREVIOUS_TAG}";
 
-        COMMITS=$(git log "${PREVIOUS_TAG}.." --stat=180 --pretty=format:"%s");
-        echo "Commits since previous release: ${COMMITS}";
+        git log "${PREVIOUS_TAG}.." --pretty=format:"%H" > shas.log;
 
-        JSON_PAYLOAD=$(cat .github/workflows/release-notes-payload.json);
-        echo "JSON_PAYLOAD template: ${JSON_PAYLOAD}";
-        printf "%s" "$COMMITS" > commits.raw;
+        OFFSET=0;
+        BATCH_INDEX=1;
+        touch release_notes.log;
+        echo "Sleeping between batches to avoid HTTP 429 Too Many Requests. SLEEP_SECONDS: ${SLEEP_SECONDS}.";
+        while true; do
+          mapfile -t ALL_SHAS < shas.log;
+          TOTAL=${#ALL_SHAS[@]};
+
+          [[ $OFFSET -ge $TOTAL ]] && {
+            echo "Stopping since no more commits to process.";
+            break
+          }
+
+          SHAS=();
+          LAST_GOOD_SIZE=0;
+
+          for ((i=OFFSET; i<TOTAL; i++)); do
+            SHAS+=("${ALL_SHAS[$i]}")
+
+            git show --stat=180 --pretty=format:"%s" "${SHAS[@]}" > commits.raw;
+
+            jq \
+              --rawfile agents AGENTS.md \
+              --rawfile commits commits.raw \
+              '
+              def inject(name; value):
+                gsub(name; (value | @json));
+
+              walk(
+                if type == "string" then
+                  .
+                  | inject("__AGENTS__"; $agents)
+                  | inject("__COMMITS__"; $commits)
+                else
+                  .
+                end
+              )
+              ' \
+              < .github/workflows/release-notes-payload.json \
+              > payload.json;
+            jq . payload.json > /dev/null; # validate JSON
+            SIZE=$(wc -c < payload.json);
+
+            if (( SIZE > MAX_PAYLOAD_BYTES )); then
+              unset 'SHAS[-1]';
+
+              if (( ${#SHAS[@]} == 0 )); then
+                echo "Single commit too large for payload limit."
+                echo "Offending commit: ${ALL_SHAS[$i]}"
+                exit 1
+              fi
+
+              git show --stat=180 --pretty=format:"%s" "${SHAS[@]}" > commits.raw;
+              jq \
+                --rawfile agents AGENTS.md \
+                --rawfile commits commits.raw \
+                '
+                def inject(name; value):
+                  gsub(name; (value | @json));
+
+                walk(
+                  if type == "string" then
+                    .
+                    | inject("__AGENTS__"; $agents)
+                    | inject("__COMMITS__"; $commits)
+                  else
+                    .
+                  end
+                )
+                ' \
+                < .github/workflows/release-notes-payload.json \
+                > payload.json;
+              SIZE=$(wc -c < payload.json);
+              break
+            fi
+
+            LAST_GOOD_SIZE=$SIZE
+          done
+
+          echo "Processing batch ${BATCH_INDEX} with ${#SHAS[@]} commits (offset ${OFFSET} - $(wc -c release_notes.log) - payload size: ${SIZE} bytes) [$(wc -l commits.raw)]: $(cat commits.raw | head -1)";
+          sleep ${SLEEP_SECONDS};
+
+          RESPONSE=$(
+            curl --fail-with-body -s -S \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -d @payload.json \
+              "https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions"
+          )
+
+          RELEASE_NOTES=$(echo "${RESPONSE}" | jq -r '.choices[0].message.content')
+          echo "${RELEASE_NOTES}" >> release_notes.log
+
+          awk '$0 ~ /^#/ || !seen[$0]++' release_notes.log > tmp && mv tmp release_notes.log; # Remove duplicate lines
+
+          OFFSET=$((OFFSET + ${#SHAS[@]}))
+          BATCH_INDEX=$((BATCH_INDEX + 1))
+        done
+
+        cat release_notes.log;
+        wc -c release_notes.log;
+        ls -lahp release_notes.log;
+
+        echo 'Merging all release notes';
+        TOTAL_LINES=$(wc -l < release_notes.log);
+        MIDPOINT=$((TOTAL_LINES / 2));
+        CUT_LINE=$(awk -v mid="$MIDPOINT" 'NR >= mid && /^## / {print NR; exit}' release_notes.log);
+        # Fallback if no section header exists after midpoint
+        if [[ -z "$CUT_LINE" ]]; then
+          CUT_LINE=$((MIDPOINT + 1));
+        fi
+        head -n $((CUT_LINE-1)) release_notes.log > release_notes_part1.log;
+        tail -n +$CUT_LINE release_notes.log > release_notes_part2.log;
+        for ((part=1; part<=2; part++)); do
+          jq \
+            --rawfile agents AGENTS.md \
+            --rawfile release_notes release_notes_part${part}.log \
+            '
+            def inject(name; value):
+              gsub(name; (value | @json));
+
+            walk(
+              if type == "string" then
+                .
+                | inject("__AGENTS__"; $agents)
+                | inject("__RELEASE_NOTES__"; $release_notes)
+              else
+                .
+              end
+            )
+            ' \
+            < .github/workflows/release-notes-merge.json \
+            > payload.json;
+          echo "JSON_PAYLOAD: $(cat payload.json)";
+          jq . payload.json > /dev/null; # validate JSON
+
+          SIZE=$(wc -c < payload.json);
+          echo "Sleeping for ${SLEEP_SECONDS} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.";
+          sleep ${SLEEP_SECONDS};
+
+          RESPONSE=$(
+            curl --fail-with-body -s -S \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -d @payload.json \
+              "https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions"
+          );
+          RESPONSE=$(echo "${RESPONSE}" | jq -r '.choices[0].message.content');
+          echo "Response: ${RESPONSE}";
+          echo "${RESPONSE}" >> merged_release_notes.log;
+        done
+
+        cat merged_release_notes.log;
+        wc -c merged_release_notes.log;
+        ls -lahp merged_release_notes.log;
+
         jq \
           --rawfile agents AGENTS.md \
-          --rawfile commits commits.raw \
+          --rawfile release_notes merged_release_notes.log \
           '
           def inject(name; value):
-            gsub(name; (value | @json | fromjson));
+            gsub(name; (value | @json));
 
           walk(
             if type == "string" then
               .
               | inject("__AGENTS__"; $agents)
-              | inject("__COMMITS__"; $commits)
+              | inject("__RELEASE_NOTES__"; $release_notes)
             else
               .
             end
           )
           ' \
-          < .github/workflows/release-notes-payload.json \
+          < .github/workflows/release-notes-merge.json \
           > payload.json;
         echo "JSON_PAYLOAD: $(cat payload.json)";
+        jq . payload.json > /dev/null; # validate JSON
+
+        SIZE=$(wc -c < payload.json);
+        echo "Sleeping for ${SLEEP_SECONDS} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.";
+        sleep ${SLEEP_SECONDS};
 
         RESPONSE=$(
           curl --fail-with-body -s -S \
@@ -175,13 +339,12 @@ jobs:
             -d @payload.json \
             "https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions"
         );
-        echo "Response: ${RESPONSE}";
-
         RELEASE_NOTES=$(echo "${RESPONSE}" | jq -r '.choices[0].message.content');
-        echo "RELEASE_NOTES: ${RELEASE_NOTES}";
+        echo "Release notes: ${RELEASE_NOTES}";
+
         {
           echo "release_notes<<EOF";
-          echo "$RELEASE_NOTES";
+          echo "${RELEASE_NOTES}";
           echo "EOF";
         } >> "$GITHUB_OUTPUT";
 
@@ -483,7 +646,7 @@ jobs:
         mkdir -p release/windows;
 
         mv MobileRT_release_min_android_api-15-apk.zip release/android;
-        ls -lahp release/android/MobileRT_min_release_android_api-15-apk.zip;
+        ls -lahp release/android/MobileRT_release_min_android_api-15-apk.zip;
         . scripts/helper_functions.sh && extractFilesFromArtifact release/android;
         mv release/android/app-release-signed.apk release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
         ls -lahp release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
@@ -511,7 +674,7 @@ jobs:
         prerelease: false
         preserve_order: true
         files: |
-          release/android/app-release-signed.apk
+          release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk
           release/linux/MobileRT_release_os-ubuntu-24.04_build-g++.zip
           release/macos/MobileRT_release_os-macos-15_build-g++.zip
           release/windows/MobileRT_release_os-windows-11-arm_build-cl.zip
@@ -528,7 +691,7 @@ jobs:
         # Check available parameters in: https://github.com/r0adkll/upload-google-play/blob/master/action.yml
         serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         packageName: puscas.mobilertapp
-        releaseFiles: release/android/app-release-signed.apk
+        releaseFiles: release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk
         track: internal # TODO: change to 'production' when ready to publish
         inAppUpdatePriority: 0 # TODO: change to 5 when ready to publish
         status: draft # TODO: change to 'completed' when ready to publish
