@@ -71,7 +71,7 @@ buildscript {
         if (androidApiVersionValue >= 16) {
             gradle_version = '9.1.0-alpha07'
             gradle_versions_plugin_version = '0.53.0'
-            kotlin_gradle_plugin_version = '2.3.0'
+            kotlin_gradle_plugin_version = '2.3.10'
         }
 
         // Default dependencies versions which are used on all Android APIs supported >= 14
