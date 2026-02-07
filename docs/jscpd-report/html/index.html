@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-02-05T16:53:45.203Z",
+    "detectionDate": "2026-02-07T16:16:46.451Z",
     "formats": {
       "java": {
         "sources": {
@@ -2011,14 +2011,14 @@
             "newClones": 0
           },
           ".github/workflows/release.yml": {
-            "lines": 697,
-            "tokens": 3551,
+            "lines": 494,
+            "tokens": 1889,
             "sources": 1,
-            "clones": 9,
-            "duplicatedLines": 181,
-            "duplicatedTokens": 1280,
-            "percentage": 25.97,
-            "percentageTokens": 36.05,
+            "clones": 3,
+            "duplicatedLines": 63,
+            "duplicatedTokens": 338,
+            "percentage": 12.75,
+            "percentageTokens": 17.89,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2180,14 +2180,14 @@
           }
         },
         "total": {
-          "lines": 3468,
-          "tokens": 19969,
+          "lines": 3265,
+          "tokens": 18307,
           "sources": 24,
-          "clones": 11,
-          "duplicatedLines": 284,
-          "duplicatedTokens": 1722,
-          "percentage": 8.19,
-          "percentageTokens": 8.62,
+          "clones": 8,
+          "duplicatedLines": 225,
+          "duplicatedTokens": 1251,
+          "percentage": 6.89,
+          "percentageTokens": 6.83,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2258,11 +2258,23 @@
             "lines": 121,
             "tokens": 528,
             "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 175,
+            "duplicatedTokens": 497,
+            "percentage": 144.63,
+            "percentageTokens": 94.13,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "scripts/release_notes.sh": {
+            "lines": 322,
+            "tokens": 1517,
+            "sources": 1,
             "clones": 3,
-            "duplicatedLines": 131,
-            "duplicatedTokens": 373,
-            "percentage": 108.26,
-            "percentageTokens": 70.64,
+            "duplicatedLines": 74,
+            "duplicatedTokens": 320,
+            "percentage": 22.98,
+            "percentageTokens": 21.09,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2352,14 +2364,14 @@
           }
         },
         "total": {
-          "lines": 4580,
-          "tokens": 31355,
-          "sources": 13,
-          "clones": 11,
-          "duplicatedLines": 242,
-          "duplicatedTokens": 1200,
-          "percentage": 5.28,
-          "percentageTokens": 3.83,
+          "lines": 4902,
+          "tokens": 32872,
+          "sources": 14,
+          "clones": 13,
+          "duplicatedLines": 301,
+          "duplicatedTokens": 1422,
+          "percentage": 6.14,
+          "percentageTokens": 4.33,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2559,8 +2571,8 @@
             "newClones": 0
           },
           "AGENTS.md": {
-            "lines": 134,
-            "tokens": 1677,
+            "lines": 119,
+            "tokens": 1662,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2572,8 +2584,8 @@
           }
         },
         "total": {
-          "lines": 2521,
-          "tokens": 25508,
+          "lines": 2506,
+          "tokens": 25493,
           "sources": 17,
           "clones": 1,
           "duplicatedLines": 15,
@@ -3286,14 +3298,14 @@
       }
     },
     "total": {
-      "lines": 30892,
-      "tokens": 238023,
-      "sources": 260,
-      "clones": 123,
+      "lines": 30996,
+      "tokens": 237863,
+      "sources": 261,
+      "clones": 122,
       "duplicatedLines": 1532,
-      "duplicatedTokens": 14502,
-      "percentage": 4.96,
-      "percentageTokens": 6.09,
+      "duplicatedTokens": 14253,
+      "percentage": 4.94,
+      "percentageTokens": 5.99,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7081,114 +7093,6 @@
     },
     {
       "format": "yaml",
-      "lines": 21,
-      "fragment": "git show --stat=180 --pretty=format:\"%s\" \"${SHAS[@]}\" > commits.raw;\n              jq \\\n                --rawfile agents AGENTS.md \\\n                --rawfile commits commits.raw \\\n                '\n                def inject(name; value):\n                  gsub(name; (value | @json));\n\n                walk(\n                  if type == \"string\" then\n                    .\n                    | inject(\"__AGENTS__\"; $agents)\n                    | inject(\"__COMMITS__\"; $commits)\n                  else\n                    .\n                  end\n                )\n                ' \\\n                < .github/workflows/release-notes-payload.json \\\n                > payload.json;\n              SIZE=$(wc",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/release.yml",
-        "start": 205,
-        "end": 225,
-        "startLoc": {
-          "line": 205,
-          "column": 15,
-          "position": 1339
-        },
-        "endLoc": {
-          "line": 225,
-          "column": 10,
-          "position": 1479
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/release.yml",
-        "start": 172,
-        "end": 193,
-        "startLoc": {
-          "line": 172,
-          "column": 13,
-          "position": 1097
-        },
-        "endLoc": {
-          "line": 193,
-          "column": 3,
-          "position": 1238
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 9,
-      "fragment": "sleep ${SLEEP_SECONDS};\n\n          RESPONSE=$(\n            curl --fail-with-body -s -S \\\n              -H \"Content-Type: application/json\" \\\n              -H \"Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}\" \\\n              -d @payload.json \\\n              \"https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions\"\n          );",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/release.yml",
-        "start": 291,
-        "end": 299,
-        "startLoc": {
-          "line": 291,
-          "column": 11,
-          "position": 2007
-        },
-        "endLoc": {
-          "line": 299,
-          "column": 3,
-          "position": 2090
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/release.yml",
-        "start": 233,
-        "end": 241,
-        "startLoc": {
-          "line": 233,
-          "column": 11,
-          "position": 1521
-        },
-        "endLoc": {
-          "line": 241,
-          "column": 2,
-          "position": 1604
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 32,
-      "fragment": "\\\n          '\n          def inject(name; value):\n            gsub(name; (value | @json));\n\n          walk(\n            if type == \"string\" then\n              .\n              | inject(\"__AGENTS__\"; $agents)\n              | inject(\"__RELEASE_NOTES__\"; $release_notes)\n            else\n              .\n            end\n          )\n          ' \\\n          < .github/workflows/release-notes-merge.json \\\n          > payload.json;\n        echo \"JSON_PAYLOAD: $(cat payload.json)\";\n        jq . payload.json > /dev/null; # validate JSON\n\n        SIZE=$(wc -c < payload.json);\n        echo \"Sleeping for ${SLEEP_SECONDS} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.\";\n        sleep ${SLEEP_SECONDS};\n\n        RESPONSE=$(\n          curl --fail-with-body -s -S \\\n            -H \"Content-Type: application/json\" \\\n            -H \"Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}\" \\\n            -d @payload.json \\\n            \"https://models.inference.ai.azure.com/openai/deployments/gpt-4o-mini/chat/completions\"\n        );\n        RELEASE_NOTES=$(echo",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/release.yml",
-        "start": 311,
-        "end": 342,
-        "startLoc": {
-          "line": 311,
-          "column": 2,
-          "position": 2191
-        },
-        "endLoc": {
-          "line": 342,
-          "column": 21,
-          "position": 2439
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/release.yml",
-        "start": 269,
-        "end": 300,
-        "startLoc": {
-          "line": 269,
-          "column": 2,
-          "position": 1845
-        },
-        "endLoc": {
-          "line": 300,
-          "column": 16,
-          "position": 2093
-        }
-      }
-    },
-    {
-      "format": "yaml",
       "lines": 15,
       "fragment": "}}\n    uses: ./.github/workflows/reusable-native.yml\n\n    # Sets permissions of the GITHUB_TOKEN to allow delete cache\n    permissions:\n      actions: write\n\n    with:\n      host_os: ${{ matrix.host_os }}\n      type: ${{ matrix.type }}\n      compiler: ${{ matrix.compiler }}\n      qt_version: ${{ matrix.qt_version }}\n      qt_arch: ${{ matrix.qt_arch }}\n    # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation\n    secrets: inherit",
       "tokens": 0,
@@ -7472,6 +7376,78 @@
           "line": 62,
           "column": 69,
           "position": 304
+        }
+      }
+    },
+    {
+      "format": "bash",
+      "lines": 45,
+      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\nif [ $# -ge 1 ]; then\n  cd \"$(dirname \"${0}\")/..\" || return 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif [ $# -ge 1 ] && command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || return 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\n# AI Model from Github to use. Check available in: https://models.inference.ai.azure.com/models",
+      "tokens": 0,
+      "firstFile": {
+        "name": "scripts/release_notes.sh",
+        "start": 14,
+        "end": 58,
+        "startLoc": {
+          "line": 14,
+          "column": 1,
+          "position": 25
+        },
+        "endLoc": {
+          "line": 58,
+          "column": 96,
+          "position": 149
+        }
+      },
+      "secondFile": {
+        "name": "scripts/run_tests.sh",
+        "start": 7,
+        "end": 51,
+        "startLoc": {
+          "line": 7,
+          "column": 1,
+          "position": 11
+        },
+        "endLoc": {
+          "line": 51,
+          "column": 5,
+          "position": 135
+        }
+      }
+    },
+    {
+      "format": "bash",
+      "lines": 16,
+      "fragment": "\\\n  < .github/workflows/release-notes-merge.json \\\n  > payload.json.log;\nSIZE=$(wc -c < payload.json.log);\n\nendTs=$(date +%s);\nelapsed=$(( endTs - startTs ));\nwaitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));\necho \"Payload: $(cat payload.json.log)\";\necho \"Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.\";\nif [ ${waitSeconds} -gt 0 ]; then\n  sleep ${waitSeconds};\nfi\n\nRESPONSE=$(\n  ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "scripts/release_notes.sh",
+        "start": 300,
+        "end": 315,
+        "startLoc": {
+          "line": 300,
+          "column": 2,
+          "position": 1370
+        },
+        "endLoc": {
+          "line": 315,
+          "column": 3,
+          "position": 1468
+        }
+      },
+      "secondFile": {
+        "name": "scripts/release_notes.sh",
+        "start": 250,
+        "end": 265,
+        "startLoc": {
+          "line": 250,
+          "column": 2,
+          "position": 1136
+        },
+        "endLoc": {
+          "line": 265,
+          "column": 5,
+          "position": 1243
         }
       }
     },
