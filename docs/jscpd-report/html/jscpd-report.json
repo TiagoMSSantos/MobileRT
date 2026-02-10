@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-07T16:16:46.451Z",
+    "detectionDate": "2026-02-10T13:51:44.708Z",
     "formats": {
       "java": {
         "sources": {
@@ -2265,14 +2265,14 @@
             "newClones": 0
           },
           "scripts/release_notes.sh": {
-            "lines": 322,
-            "tokens": 1517,
+            "lines": 383,
+            "tokens": 2005,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 74,
-            "duplicatedTokens": 320,
-            "percentage": 22.98,
-            "percentageTokens": 21.09,
+            "clones": 7,
+            "duplicatedLines": 144,
+            "duplicatedTokens": 806,
+            "percentage": 37.6,
+            "percentageTokens": 40.2,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2362,14 +2362,14 @@
           }
         },
         "total": {
-          "lines": 4902,
-          "tokens": 32872,
+          "lines": 4963,
+          "tokens": 33360,
           "sources": 14,
-          "clones": 13,
-          "duplicatedLines": 301,
-          "duplicatedTokens": 1422,
-          "percentage": 6.14,
-          "percentageTokens": 4.33,
+          "clones": 15,
+          "duplicatedLines": 336,
+          "duplicatedTokens": 1665,
+          "percentage": 6.77,
+          "percentageTokens": 4.99,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3296,14 +3296,14 @@
       }
     },
     "total": {
-      "lines": 30996,
-      "tokens": 237863,
+      "lines": 31057,
+      "tokens": 238351,
       "sources": 261,
-      "clones": 122,
-      "duplicatedLines": 1532,
-      "duplicatedTokens": 14253,
-      "percentage": 4.94,
-      "percentageTokens": 5.99,
+      "clones": 124,
+      "duplicatedLines": 1567,
+      "duplicatedTokens": 14496,
+      "percentage": 5.05,
+      "percentageTokens": 6.08,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7415,37 +7415,109 @@
     },
     {
       "format": "bash",
-      "lines": 16,
-      "fragment": "\\\n  < .github/workflows/release-notes-merge.json \\\n  > payload.json.log;\nSIZE=$(wc -c < payload.json.log);\n\nendTs=$(date +%s);\nelapsed=$(( endTs - startTs ));\nwaitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));\necho \"Payload: $(cat payload.json.log)\";\necho \"Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.\";\nif [ ${waitSeconds} -gt 0 ]; then\n  sleep ${waitSeconds};\nfi\n\nRESPONSE=$(\n  ",
+      "lines": 25,
+      "fragment": ";\n  if [ ${waitSeconds} -gt 0 ]; then\n    sleep ${waitSeconds};\n  fi\n\n  RESPONSE=$(\n    curl -w \"%{http_code}\" -o response.json.log -s -S \\\n      --retry 3 --retry-delay ${sleepBetweenRequestsSeconds} --retry-all-errors --retry-max-time 120 --connect-timeout 20 --max-time 180 \\\n      -H \"Content-Type: application/json\" \\\n      -H \"Authorization: Bearer ${GITHUB_TOKEN}\" \\\n      -d @payload.json.log \\\n      \"https://models.inference.ai.azure.com/openai/deployments/${aiModel}/chat/completions\"\n  );\n  CURL_EXIT=$?;\n  startTs=$(date +%s);\n  if [[ \"${RESPONSE}\" -lt 100 || \"${RESPONSE}\" -ge 400 || \"${CURL_EXIT}\" -ne 0 ]]; then\n    echo 'Payload:';\n    cat payload.json.log;\n    echo 'Response:';\n    cat response.json.log;\n    echo \"HTTP error: ${RESPONSE}. Curl exit code: ${CURL_EXIT}\";\n    exit 1;\n  fi\n\n  RESPONSE",
       "tokens": 0,
       "firstFile": {
         "name": "scripts/release_notes.sh",
-        "start": 300,
-        "end": 315,
+        "start": 299,
+        "end": 323,
         "startLoc": {
-          "line": 300,
-          "column": 2,
-          "position": 1370
+          "line": 299,
+          "column": 9,
+          "position": 1529
         },
         "endLoc": {
-          "line": 315,
-          "column": 3,
-          "position": 1468
+          "line": 323,
+          "column": 9,
+          "position": 1683
         }
       },
       "secondFile": {
         "name": "scripts/release_notes.sh",
-        "start": 250,
-        "end": 265,
+        "start": 216,
+        "end": 240,
         "startLoc": {
-          "line": 250,
+          "line": 216,
           "column": 2,
-          "position": 1136
+          "position": 974
         },
         "endLoc": {
-          "line": 265,
+          "line": 240,
+          "column": 14,
+          "position": 1128
+        }
+      }
+    },
+    {
+      "format": "bash",
+      "lines": 16,
+      "fragment": "\\\n  < .github/workflows/release-notes-merge.json \\\n  > payload.json.log;\nSIZE=$(wc -c < payload.json.log);\n\nendTs=$(date +%s);\nelapsed=$(( endTs - startTs ));\nwaitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));\n# echo \"Payload: $(cat payload.json.log)\";\necho \"Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.\";\nif [ ${waitSeconds} -gt 0 ]; then\n  sleep ${waitSeconds};\nfi\n\nRESPONSE=$(\n  ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "scripts/release_notes.sh",
+        "start": 350,
+        "end": 365,
+        "startLoc": {
+          "line": 350,
+          "column": 2,
+          "position": 1779
+        },
+        "endLoc": {
+          "line": 365,
+          "column": 3,
+          "position": 1869
+        }
+      },
+      "secondFile": {
+        "name": "scripts/release_notes.sh",
+        "start": 290,
+        "end": 305,
+        "startLoc": {
+          "line": 290,
+          "column": 2,
+          "position": 1462
+        },
+        "endLoc": {
+          "line": 305,
           "column": 5,
-          "position": 1243
+          "position": 1561
+        }
+      }
+    },
+    {
+      "format": "bash",
+      "lines": 12,
+      "fragment": ";\nif [[ \"${RESPONSE}\" -lt 100 || \"${RESPONSE}\" -ge 400 || \"${CURL_EXIT}\" -ne 0 ]]; then\n  echo 'Payload:';\n  cat payload.json.log;\n  echo 'Response:';\n  cat response.json.log;\n  echo \"HTTP error: ${RESPONSE}. Curl exit code: ${CURL_EXIT}\";\n  exit 1;\nfi\n\nRELEASE_NOTES=$(cat response.json.log | jq -r '.choices[0].message.content');\necho \"Release notes: ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "scripts/release_notes.sh",
+        "start": 372,
+        "end": 383,
+        "startLoc": {
+          "line": 372,
+          "column": 3,
+          "position": 1894
+        },
+        "endLoc": {
+          "line": 383,
+          "column": 17,
+          "position": 1991
+        }
+      },
+      "secondFile": {
+        "name": "scripts/release_notes.sh",
+        "start": 230,
+        "end": 241,
+        "startLoc": {
+          "line": 230,
+          "column": 2,
+          "position": 1041
+        },
+        "endLoc": {
+          "line": 241,
+          "column": 2,
+          "position": 1142
         }
       }
     },
