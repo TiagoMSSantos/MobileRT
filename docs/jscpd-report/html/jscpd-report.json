@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-10T13:51:44.708Z",
+    "detectionDate": "2026-02-10T17:57:31.302Z",
     "formats": {
       "java": {
         "sources": {
@@ -2265,14 +2265,14 @@
             "newClones": 0
           },
           "scripts/release_notes.sh": {
-            "lines": 383,
-            "tokens": 2005,
+            "lines": 389,
+            "tokens": 2069,
             "sources": 1,
             "clones": 7,
-            "duplicatedLines": 144,
-            "duplicatedTokens": 806,
-            "percentage": 37.6,
-            "percentageTokens": 40.2,
+            "duplicatedLines": 146,
+            "duplicatedTokens": 830,
+            "percentage": 37.53,
+            "percentageTokens": 40.12,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2362,14 +2362,14 @@
           }
         },
         "total": {
-          "lines": 4963,
-          "tokens": 33360,
+          "lines": 4969,
+          "tokens": 33424,
           "sources": 14,
           "clones": 15,
-          "duplicatedLines": 336,
-          "duplicatedTokens": 1665,
-          "percentage": 6.77,
-          "percentageTokens": 4.99,
+          "duplicatedLines": 337,
+          "duplicatedTokens": 1677,
+          "percentage": 6.78,
+          "percentageTokens": 5.02,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3296,14 +3296,14 @@
       }
     },
     "total": {
-      "lines": 31057,
-      "tokens": 238351,
+      "lines": 31063,
+      "tokens": 238415,
       "sources": 261,
       "clones": 124,
-      "duplicatedLines": 1567,
-      "duplicatedTokens": 14496,
+      "duplicatedLines": 1568,
+      "duplicatedTokens": 14508,
       "percentage": 5.05,
-      "percentageTokens": 6.08,
+      "percentageTokens": 6.09,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7420,68 +7420,68 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/release_notes.sh",
-        "start": 299,
-        "end": 323,
+        "start": 304,
+        "end": 328,
         "startLoc": {
-          "line": 299,
+          "line": 304,
           "column": 9,
-          "position": 1529
+          "position": 1581
         },
         "endLoc": {
-          "line": 323,
+          "line": 328,
           "column": 9,
-          "position": 1683
+          "position": 1735
         }
       },
       "secondFile": {
         "name": "scripts/release_notes.sh",
-        "start": 216,
-        "end": 240,
+        "start": 220,
+        "end": 244,
         "startLoc": {
-          "line": 216,
+          "line": 220,
           "column": 2,
-          "position": 974
+          "position": 1013
         },
         "endLoc": {
-          "line": 240,
+          "line": 244,
           "column": 14,
-          "position": 1128
+          "position": 1167
         }
       }
     },
     {
       "format": "bash",
-      "lines": 16,
-      "fragment": "\\\n  < .github/workflows/release-notes-merge.json \\\n  > payload.json.log;\nSIZE=$(wc -c < payload.json.log);\n\nendTs=$(date +%s);\nelapsed=$(( endTs - startTs ));\nwaitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));\n# echo \"Payload: $(cat payload.json.log)\";\necho \"Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.\";\nif [ ${waitSeconds} -gt 0 ]; then\n  sleep ${waitSeconds};\nfi\n\nRESPONSE=$(\n  ",
+      "lines": 17,
+      "fragment": "\\\n  < .github/workflows/release-notes-merge.json \\\n  > payload.json.log;\nSIZE=$(wc -c < payload.json.log);\nWORDS=$(wc -w < payload.json.log);\n\nendTs=$(date +%s);\nelapsed=$(( endTs - startTs ));\nwaitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));\n# echo \"Payload: $(cat payload.json.log)\";\necho \"Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes | ${WORDS} words.\";\nif [ ${waitSeconds} -gt 0 ]; then\n  sleep ${waitSeconds};\nfi\n\nRESPONSE=$(\n  ",
       "tokens": 0,
       "firstFile": {
         "name": "scripts/release_notes.sh",
-        "start": 350,
-        "end": 365,
+        "start": 355,
+        "end": 371,
         "startLoc": {
-          "line": 350,
+          "line": 355,
           "column": 2,
-          "position": 1779
+          "position": 1831
         },
         "endLoc": {
-          "line": 365,
+          "line": 371,
           "column": 3,
-          "position": 1869
+          "position": 1933
         }
       },
       "secondFile": {
         "name": "scripts/release_notes.sh",
-        "start": 290,
-        "end": 305,
+        "start": 294,
+        "end": 310,
         "startLoc": {
-          "line": 290,
+          "line": 294,
           "column": 2,
-          "position": 1462
+          "position": 1501
         },
         "endLoc": {
-          "line": 305,
+          "line": 310,
           "column": 5,
-          "position": 1561
+          "position": 1613
         }
       }
     },
@@ -7492,32 +7492,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "scripts/release_notes.sh",
-        "start": 372,
-        "end": 383,
+        "start": 378,
+        "end": 389,
         "startLoc": {
-          "line": 372,
+          "line": 378,
           "column": 3,
-          "position": 1894
+          "position": 1958
         },
         "endLoc": {
-          "line": 383,
+          "line": 389,
           "column": 17,
-          "position": 1991
+          "position": 2055
         }
       },
       "secondFile": {
         "name": "scripts/release_notes.sh",
-        "start": 230,
-        "end": 241,
+        "start": 234,
+        "end": 245,
         "startLoc": {
-          "line": 230,
+          "line": 234,
           "column": 2,
-          "position": 1041
+          "position": 1080
         },
         "endLoc": {
-          "line": 241,
+          "line": 245,
           "column": 2,
-          "position": 1142
+          "position": 1181
         }
       }
     },

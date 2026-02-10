@@ -61,6 +61,7 @@ aiModel='gpt-4o-mini';
 # UserByModelByDay: Rate limit of 150 per 86400s
 sleepBetweenRequestsSeconds='0';
 # To avoid HTTP 413 "Content Too Large" - 32KB is max payload size, 32007 bytes fails, but 32001 bytes seems to work fine
+# gpt-4o-mini model - Max size: 8000 tokens
 maxPayloadSizeBytes='32006';
 
 printEnvironment() {
@@ -191,18 +192,21 @@ while true; do
 
     producePayload "${SHAS[@]}" false;
     SIZE=$(wc -c < payload.json.log);
+    WORDS=$(wc -w < payload.json.log);
 
     if (( SIZE > maxPayloadSizeBytes )); then
       if (( ${#SHAS[@]} == 1 )); then
-        echo "Single commit too large for payload limit. Payload size: ${SIZE} bytes. Offending commit: ${ALL_SHAS[$i]}. Commits: $(wc commits.raw). Payload: $(cat payload.json.log)";
+        echo "Single commit too large for payload limit. Payload size: ${SIZE} bytes | ${WORDS} words. Offending commit: ${ALL_SHAS[$i]}. Commits: $(wc commits.raw). Payload: $(cat payload.json.log)";
         producePayload "${ALL_SHAS[$i]}" true;
         SIZE=$(wc -c < payload.json.log);
+        WORDS=$(wc -w < payload.json.log);
         break
       fi
 
       unset 'SHAS[-1]'; # Remove last commit to avoid surpassing 32k payload limit
       mv payload_previous.json.log payload.json.log; # restore previous valid payload
       SIZE=$(wc -c < payload.json.log);
+      WORDS=$(wc -w < payload.json.log);
       break
     fi
 
@@ -213,7 +217,7 @@ while true; do
   elapsed=$(( endTs - startTs ));
   waitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));
   # echo "Payload: $(cat payload.json.log)";
-  echo "Processing batch ${BATCH_INDEX} with ${#SHAS[@]} commits (offset ${OFFSET}/${TOTAL} - $(wc -c release_notes.log) - payload size: ${SIZE} bytes - sleep: ${waitSeconds}sec) [$(wc -c commits.raw)]: $(head -1 commits.raw)";
+  echo "Processing batch ${BATCH_INDEX} with ${#SHAS[@]} commits (offset ${OFFSET}/${TOTAL} - $(wc -c release_notes.log) - Payload size: ${SIZE} bytes | ${WORDS} words - sleep: ${waitSeconds}sec) [$(wc -c commits.raw)]: $(head -1 commits.raw)";
   if [ ${waitSeconds} -gt 0 ]; then
     sleep ${waitSeconds};
   fi
@@ -291,12 +295,13 @@ for ((part=1; part<=PARTS; part++)); do
     < .github/workflows/release-notes-merge.json \
     > payload.json.log;
   SIZE=$(wc -c < payload.json.log);
+  WORDS=$(wc -w < payload.json.log);
 
   endTs=$(date +%s);
   elapsed=$(( endTs - startTs ));
   waitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));
   # echo "Payload: $(cat payload.json.log)";
-  echo "Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.";
+  echo "Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes | ${WORDS} words.";
   if [ ${waitSeconds} -gt 0 ]; then
     sleep ${waitSeconds};
   fi
@@ -351,12 +356,13 @@ jq -c \
   < .github/workflows/release-notes-merge.json \
   > payload.json.log;
 SIZE=$(wc -c < payload.json.log);
+WORDS=$(wc -w < payload.json.log);
 
 endTs=$(date +%s);
 elapsed=$(( endTs - startTs ));
 waitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));
 # echo "Payload: $(cat payload.json.log)";
-echo "Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes.";
+echo "Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes | ${WORDS} words.";
 if [ ${waitSeconds} -gt 0 ]; then
   sleep ${waitSeconds};
 fi
