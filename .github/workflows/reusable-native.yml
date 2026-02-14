@@ -311,7 +311,7 @@ jobs:
       # TODO: Investigate how to use 'perf record' in github actions machines.
       - name: Profile MobileRT ${{ inputs.type }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'release' && startsWith(inputs.host_os, 'ubuntu')
+        if: success() && inputs.type == 'release' && startsWith(inputs.host_os, 'ubuntu-22.04')
         run: |
           sudo sysctl kernel.yama.ptrace_scope=0;
           sudo sysctl kernel.yama.ptrace_scope;

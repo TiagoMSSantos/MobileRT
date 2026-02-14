@@ -18,7 +18,9 @@
 ###############################################################################
 # Exit immediately if a command exits with a non-zero status.
 ###############################################################################
-set -eu;
+set -Eeuo pipefail;
+shopt -s failglob;
+shopt -s inherit_errexit;
 ###############################################################################
 ###############################################################################
 
@@ -99,7 +101,7 @@ producePayload() {
 
   # echo "SHAs of commits: ${shas[@]}";
   # echo "Limit: ${limit}";
-  PAGER= LESS= git --no-pager show -w -U0 --no-renames --name-only \
+  PAGER= LESS= git --no-pager show -w -U0 --no-renames \
     --no-color --no-color-moved --no-ext-diff --no-textconv --ws-error-highlight=none \
     --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --ignore-space-at-eol --ignore-space-change \
     --pretty=format:"%B" "${shas[@]}" -- . \
@@ -115,7 +117,9 @@ producePayload() {
     ':(exclude)*.mtl' \
     ':(exclude)*.cam' \
     ':(exclude)*.apk' \
-    | awk 'NF' | awk '
+    | tr -d '\000-\010\013\014\016-\037\177' \
+    | awk '
+      NF == 0 { next }
       /^diff --git/ {
           file=$4
           sub(/^b\//, "", file)
@@ -127,10 +131,11 @@ producePayload() {
       /^--- / { next }
       /^\+\+\+ / { next }
       { print }
-    ' | tr -d '\000-\010\013\014\016-\037\177' | sed -r 's/\[[0-9;]*[A-Za-z]//g' | sed -r 's/[[:space:]]+/ /g' > commits.raw;
+    ' \
+    | sed -r 's/\\\\\\/\\/g; s/\[[0-9;]*[A-Za-z]//g; s/[[:space:]]+/ /g; /^@@ /d; /[[:alnum:]]/!d; /^Test plan:/d; /^\* Pipeline passes/d; /^\* N\/A/d; /^[+-]Subproject commit [0-9a-zAZ]+$/d;' > commits.raw;
 
   if [ ${limit} = true ]; then
-    head -c 22000 commits.raw > commits_limited.raw;
+    head -c 23000 commits.raw > commits_limited.raw;
     mv commits_limited.raw commits.raw;
     wc commits.raw;
   fi
@@ -155,7 +160,65 @@ producePayload() {
     )
     ' \
     < .github/workflows/release-notes-payload.json \
-    > payload.json.log;
+    | sed -r 's/\\\\\\/\\/g; s/\[[0-9;]*[A-Za-z]//g; s/[[:space:]]+/ /g' > payload.json.log;
+}
+
+# Requests AI Model to write some release notes based on commits information. Output is written to file response.json.log.
+# Output environment variables:
+# * RESPONSE - response HTTP code from AI Model
+# * CURL_EXIT - curl exit code
+# Parameters:
+# * startTs - timestamp (seconds) when last request was made
+# * sleepBetweenRequestsSeconds - time (seconds) to sleep between requests
+# * BATCH_INDEX - index of current batch
+# * SHAS - shas of commits which will be sent to Ai Model
+# * OFFSET - current offset
+# * TOTAL - total number of commits which will be sent to Ai Model
+# * file release_notes.log - file which contain all release notes already written by AI Model
+# * SIZE - payload size in bytes
+# * WORDS - number of words in payload
+# * file commits.raw - file which contains data from commits which will be sent to AI Model
+requestAiModel() {
+  _retry=0;
+  endTs=$(date +%s);
+  elapsed=$(( endTs - startTs ));
+  waitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));
+  # echo "Payload: $(cat payload.json.log)";
+  echo "Processing batch ${BATCH_INDEX} with ${#SHAS[@]} commits (offset ${OFFSET}/${TOTAL} - $(wc -c release_notes.log) - Payload size: ${SIZE} bytes | ${WORDS} words - sleep: ${waitSeconds}sec) [$(wc -c commits.raw)]: $(head -1 commits.raw)";
+  if [ ${waitSeconds} -gt 0 ]; then
+    sleep ${waitSeconds};
+  fi
+
+  while true; do
+    RESPONSE=$(
+      curl -w "%{http_code}" -o response.json.log -s -S \
+        --retry 3 --retry-delay ${sleepBetweenRequestsSeconds} --retry-all-errors --retry-max-time 120 --connect-timeout 20 --max-time 180 \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+        -d @payload.json.log \
+        "https://models.inference.ai.azure.com/openai/deployments/${aiModel}/chat/completions"
+    );
+    CURL_EXIT=$?;
+    startTs=$(date +%s);
+
+    if (( CURL_EXIT == 0 && RESPONSE == 429 )); then
+      # _retry=$((_retry + 1));
+      # echo "HTTP ${RESPONSE} - Too Many Requests - surpassed rate limit threshold. Response: $(cat response.json.log). Retrying '${_retry}' batch '${BATCH_INDEX}' in 5 min ...";
+      # sleep 300;
+      break
+    fi
+
+    break
+  done
+
+  if [[ "${RESPONSE}" -lt 100 || "${RESPONSE}" -ge 400 || "${CURL_EXIT}" -ne 0 ]]; then
+    printf 'Payload: ';
+    cat payload.json.log;
+    printf 'Response: ';
+    cat response.json.log;
+    echo "HTTP error: ${RESPONSE}. Curl exit code: ${CURL_EXIT}";
+    exit 1;
+  fi
 }
 ###############################################################################
 
@@ -177,8 +240,10 @@ BATCH_INDEX=1;
 touch release_notes.log;
 echo "Processing $(wc -l < shas.log) commits.";
 while true; do
-  mapfile -t ALL_SHAS < <(grep -v '^$' shas.log)
+  mapfile -t ALL_SHAS < <(grep -v '^$' shas.log);
   TOTAL=${#ALL_SHAS[@]};
+  PARTS=$(( (TOTAL + 499) / 500 ));
+  echo "Will split all release notes in '${PARTS}' parts at the end";
 
   [[ ${OFFSET} -ge ${TOTAL} ]] && {
     echo "Stopping since no more commits to process. OFFSET: ${OFFSET}. TOTAL: ${TOTAL}.";
@@ -213,37 +278,9 @@ while true; do
     cp payload.json.log payload_previous.json.log; # save previous valid payload
   done
 
-  endTs=$(date +%s);
-  elapsed=$(( endTs - startTs ));
-  waitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));
-  # echo "Payload: $(cat payload.json.log)";
-  echo "Processing batch ${BATCH_INDEX} with ${#SHAS[@]} commits (offset ${OFFSET}/${TOTAL} - $(wc -c release_notes.log) - Payload size: ${SIZE} bytes | ${WORDS} words - sleep: ${waitSeconds}sec) [$(wc -c commits.raw)]: $(head -1 commits.raw)";
-  if [ ${waitSeconds} -gt 0 ]; then
-    sleep ${waitSeconds};
-  fi
-
-  RESPONSE=$(
-    curl -w "%{http_code}" -o response.json.log -s -S \
-      --retry 3 --retry-delay ${sleepBetweenRequestsSeconds} --retry-all-errors --retry-max-time 120 --connect-timeout 20 --max-time 180 \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-      -d @payload.json.log \
-      "https://models.inference.ai.azure.com/openai/deployments/${aiModel}/chat/completions"
-  );
-  CURL_EXIT=$?;
-  startTs=$(date +%s);
-  if [[ "${RESPONSE}" -lt 100 || "${RESPONSE}" -ge 400 || "${CURL_EXIT}" -ne 0 ]]; then
-    echo 'Payload:';
-    cat payload.json.log;
-    echo 'Response:';
-    cat response.json.log;
-    echo "HTTP error: ${RESPONSE}. Curl exit code: ${CURL_EXIT}";
-    exit 1;
-  fi
-
+  requestAiModel;
   RELEASE_NOTES=$(cat response.json.log | jq -r '.choices[0].message.content');
   echo "${RELEASE_NOTES}" >> release_notes.log;
-
   awk '$0 ~ /^#/ || !seen[$0]++' release_notes.log > tmp && mv tmp release_notes.log; # Remove duplicate lines
 
   OFFSET=$((OFFSET + ${#SHAS[@]}));
@@ -254,25 +291,47 @@ cat release_notes.log;
 wc -c release_notes.log;
 ls -lahp release_notes.log;
 
-echo 'Merging all release notes';
-PARTS=3;
-TOTAL_LINES=$(wc -l < release_notes.log);
-MIDPOINT=$((TOTAL_LINES / PARTS));
+PARTS=$(( (TOTAL + 499) / 500 ));
+echo "Splitting all release notes in '${PARTS}' parts";
+FILE="release_notes.log";
 
-# First cut: first "## " after 1/3 of the file
-CUT1=$(awk -v mid="$MIDPOINT" 'NR >= mid && /^## / {print NR; exit}' release_notes.log);
-[[ -z "$CUT1" ]] && CUT1=$((MIDPOINT + 1));
+TOTAL_LINES=$(wc -l < "${FILE}");
+CHUNK=$((TOTAL_LINES / PARTS));
 
-# Second cut: first "## " after CUT1
-CUT2=$(awk -v start="$CUT1" 'NR > start && /^## / {print NR; exit}' release_notes.log);
-[[ -z "$CUT2" ]] && CUT2=$((CUT1 + 1));
+# Array to store cut points
+CUTS=();
 
-# Create the three parts
-head -n $((CUT1 - 1)) release_notes.log > release_notes_part1.log;
-sed -n "${CUT1},$((CUT2 - 1))p" release_notes.log > release_notes_part2.log;
-tail -n +$CUT2 release_notes.log > release_notes_part3.log;
+# Generate cut points dynamically
+for ((i=1; i<PARTS; i++)); do
+  POS=$((CHUNK * i));
 
+  CUT=$(awk -v pos="${POS}" 'NR >= pos && /^## / {print NR; exit}' "${FILE}");
+
+  # Fallback if no header found after POS
+  if [[ -z "$CUT" ]]; then
+      CUT=$((POS + 1));
+  fi
+
+  CUTS+=("${CUT}");
+done
+
+# Add final cut (end of file)
+CUTS+=($((TOTAL_LINES + 1)));
+
+# Create output parts
+START=1;
+for ((i=0; i<PARTS; i++)); do
+  END=$((CUTS[i] - 1));
+  OUT="release_notes_part$((i+1)).log";
+
+  sed -n "${START},${END}p" "${FILE}" > "${OUT}";
+
+  START=${CUTS[i]};
+done
+
+echo "Merging release notes of all '${PARTS}' parts";
 for ((part=1; part<=PARTS; part++)); do
+  echo "Merging release notes of part '${part}'";
   jq -c \
     --arg aiModel ${aiModel} \
     --rawfile agents AGENTS.md \
@@ -297,43 +356,17 @@ for ((part=1; part<=PARTS; part++)); do
   SIZE=$(wc -c < payload.json.log);
   WORDS=$(wc -w < payload.json.log);
 
-  endTs=$(date +%s);
-  elapsed=$(( endTs - startTs ));
-  waitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));
-  # echo "Payload: $(cat payload.json.log)";
-  echo "Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes | ${WORDS} words.";
-  if [ ${waitSeconds} -gt 0 ]; then
-    sleep ${waitSeconds};
-  fi
-
-  RESPONSE=$(
-    curl -w "%{http_code}" -o response.json.log -s -S \
-      --retry 3 --retry-delay ${sleepBetweenRequestsSeconds} --retry-all-errors --retry-max-time 120 --connect-timeout 20 --max-time 180 \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-      -d @payload.json.log \
-      "https://models.inference.ai.azure.com/openai/deployments/${aiModel}/chat/completions"
-  );
-  CURL_EXIT=$?;
-  startTs=$(date +%s);
-  if [[ "${RESPONSE}" -lt 100 || "${RESPONSE}" -ge 400 || "${CURL_EXIT}" -ne 0 ]]; then
-    echo 'Payload:';
-    cat payload.json.log;
-    echo 'Response:';
-    cat response.json.log;
-    echo "HTTP error: ${RESPONSE}. Curl exit code: ${CURL_EXIT}";
-    exit 1;
-  fi
-
-  RESPONSE=$(cat response.json.log | jq -r '.choices[0].message.content');
-  echo "Response: ${RESPONSE}";
-  echo "${RESPONSE}" >> merged_release_notes.log;
+  requestAiModel;
+  RELEASE_NOTES=$(cat response.json.log | jq -r '.choices[0].message.content');
+  echo "Response: ${RELEASE_NOTES}";
+  echo "${RELEASE_NOTES}" >> merged_release_notes.log;
 done
 
 cat merged_release_notes.log;
 wc -c merged_release_notes.log;
 ls -lahp merged_release_notes.log;
 
+echo "Final merge of release notes of all '${PARTS}' parts";
 jq -c \
   --arg aiModel ${aiModel} \
   --rawfile agents AGENTS.md \
@@ -358,33 +391,7 @@ jq -c \
 SIZE=$(wc -c < payload.json.log);
 WORDS=$(wc -w < payload.json.log);
 
-endTs=$(date +%s);
-elapsed=$(( endTs - startTs ));
-waitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));
-# echo "Payload: $(cat payload.json.log)";
-echo "Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes | ${WORDS} words.";
-if [ ${waitSeconds} -gt 0 ]; then
-  sleep ${waitSeconds};
-fi
-
-RESPONSE=$(
-  curl -w "%{http_code}" -o response.json.log -s -S \
-    --retry 3 --retry-delay ${sleepBetweenRequestsSeconds} --retry-all-errors --retry-max-time 120 --connect-timeout 20 --max-time 180 \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-    -d @payload.json.log \
-    "https://models.inference.ai.azure.com/openai/deployments/${aiModel}/chat/completions"
-);
-CURL_EXIT=$?;
-if [[ "${RESPONSE}" -lt 100 || "${RESPONSE}" -ge 400 || "${CURL_EXIT}" -ne 0 ]]; then
-  echo 'Payload:';
-  cat payload.json.log;
-  echo 'Response:';
-  cat response.json.log;
-  echo "HTTP error: ${RESPONSE}. Curl exit code: ${CURL_EXIT}";
-  exit 1;
-fi
-
+requestAiModel;
 RELEASE_NOTES=$(cat response.json.log | jq -r '.choices[0].message.content');
 echo "Release notes: ${RELEASE_NOTES}";
 echo "${RELEASE_NOTES}" > release_notes.log;

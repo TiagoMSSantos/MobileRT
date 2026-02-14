@@ -137,7 +137,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        bash scripts/release_notes.sh;
+        set -Eeuo pipefail;
+        shopt -s failglob;
+        shopt -s inherit_errexit;
+        # Force line-buffered output for everything inside the script
+        export PYTHONUNBUFFERED=1;
+        export NODE_DISABLE_COLORS=1;
+        stdbuf -oL -eL bash scripts/release_notes.sh;
         echo "Release notes: $(cat release_notes.log)";
         {
           echo "release_notes<<EOF";
@@ -279,7 +285,7 @@ jobs:
           # will download all artifacts if not specified
           # and extract them into respective subdirectories
           # https://github.com/actions/download-artifact#download-all-artifacts
-          name: MobileRT_release_os-ubuntu-24.04_build-g++
+          name: MobileRT_release_os-ubuntu-22.04_build-g++
           # Optional, a directory where to extract artifact(s), defaults to the current directory
           path: .
           # Optional, defaults to current repo
@@ -448,8 +454,8 @@ jobs:
         mv release/android/app-release-signed.apk release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
         ls -lahp release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
 
-        mv MobileRT_release_os-ubuntu-24.04_build-g++.zip release/linux;
-        ls -lahp release/linux/MobileRT_release_os-ubuntu-24.04_build-g++.zip;
+        mv MobileRT_release_os-ubuntu-22.04_build-g++.zip release/linux;
+        ls -lahp release/linux/MobileRT_release_os-ubuntu-22.04_build-g++.zip;
 
         mv MobileRT_release_os-macos-15_build-g++.zip release/macos;
         ls -lahp release/macos/MobileRT_release_os-macos-15_build-g++.zip;
@@ -472,7 +478,7 @@ jobs:
         preserve_order: true
         files: |
           release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk
-          release/linux/MobileRT_release_os-ubuntu-24.04_build-g++.zip
+          release/linux/MobileRT_release_os-ubuntu-22.04_build-g++.zip
           release/macos/MobileRT_release_os-macos-15_build-g++.zip
           release/windows/MobileRT_release_os-windows-11-arm_build-cl.zip
         fail_on_unmatched_files: true

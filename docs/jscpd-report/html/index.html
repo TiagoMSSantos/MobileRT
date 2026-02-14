@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-02-10T17:57:31.302Z",
+    "detectionDate": "2026-02-14T13:49:59.026Z",
     "formats": {
       "java": {
         "sources": {
@@ -2000,7 +2000,7 @@
           },
           ".github/workflows/reusable-native.yml": {
             "lines": 443,
-            "tokens": 2288,
+            "tokens": 2290,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2011,13 +2011,13 @@
             "newClones": 0
           },
           ".github/workflows/release.yml": {
-            "lines": 494,
+            "lines": 500,
             "tokens": 1889,
             "sources": 1,
             "clones": 3,
             "duplicatedLines": 63,
             "duplicatedTokens": 338,
-            "percentage": 12.75,
+            "percentage": 12.6,
             "percentageTokens": 17.89,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -2180,13 +2180,13 @@
           }
         },
         "total": {
-          "lines": 3265,
-          "tokens": 18307,
+          "lines": 3271,
+          "tokens": 18309,
           "sources": 24,
           "clones": 8,
           "duplicatedLines": 225,
           "duplicatedTokens": 1251,
-          "percentage": 6.89,
+          "percentage": 6.88,
           "percentageTokens": 6.83,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -2259,22 +2259,22 @@
             "tokens": 528,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 175,
-            "duplicatedTokens": 497,
-            "percentage": 144.63,
-            "percentageTokens": 94.13,
+            "duplicatedLines": 168,
+            "duplicatedTokens": 482,
+            "percentage": 138.84,
+            "percentageTokens": 91.29,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           "scripts/release_notes.sh": {
-            "lines": 389,
-            "tokens": 2069,
+            "lines": 396,
+            "tokens": 1955,
             "sources": 1,
-            "clones": 7,
-            "duplicatedLines": 146,
-            "duplicatedTokens": 830,
-            "percentage": 37.53,
-            "percentageTokens": 40.12,
+            "clones": 1,
+            "duplicatedLines": 37,
+            "duplicatedTokens": 109,
+            "percentage": 9.34,
+            "percentageTokens": 5.58,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2364,14 +2364,14 @@
           }
         },
         "total": {
-          "lines": 4969,
-          "tokens": 33424,
+          "lines": 4976,
+          "tokens": 33310,
           "sources": 14,
-          "clones": 15,
-          "duplicatedLines": 337,
-          "duplicatedTokens": 1677,
-          "percentage": 6.78,
-          "percentageTokens": 5.02,
+          "clones": 12,
+          "duplicatedLines": 279,
+          "duplicatedTokens": 1309,
+          "percentage": 5.61,
+          "percentageTokens": 3.93,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3298,14 +3298,14 @@
       }
     },
     "total": {
-      "lines": 31063,
-      "tokens": 238415,
+      "lines": 31076,
+      "tokens": 238303,
       "sources": 261,
-      "clones": 124,
-      "duplicatedLines": 1568,
-      "duplicatedTokens": 14508,
-      "percentage": 5.05,
-      "percentageTokens": 6.09,
+      "clones": 121,
+      "duplicatedLines": 1510,
+      "duplicatedTokens": 14140,
+      "percentage": 4.86,
+      "percentageTokens": 5.93,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7381,145 +7381,37 @@
     },
     {
       "format": "bash",
-      "lines": 45,
-      "fragment": "###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Exit immediately if a command exits with a non-zero status.\n###############################################################################\nset -eu;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\nif [ $# -ge 1 ]; then\n  cd \"$(dirname \"${0}\")/..\" || return 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif [ $# -ge 1 ] && command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || return 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\n# AI Model from Github to use. Check available in: https://models.inference.ai.azure.com/models",
+      "lines": 38,
+      "fragment": ";\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Change directory to MobileRT root.\n###############################################################################\nif [ $# -ge 1 ]; then\n  cd \"$(dirname \"${0}\")/..\" || return 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Get helper functions.\n###############################################################################\n# shellcheck disable=SC1091\n. scripts/helper_functions.sh;\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Execute Shellcheck on this script.\n###############################################################################\nif [ $# -ge 1 ] && command -v shellcheck > /dev/null; then\n  shellcheck \"${0}\" || return 1;\nfi\n###############################################################################\n###############################################################################\n\n\n###############################################################################\n# Set default arguments.\n###############################################################################\n# AI Model from Github to use. Check available in: https://models.inference.ai.azure.com/models",
       "tokens": 0,
       "firstFile": {
         "name": "scripts/release_notes.sh",
-        "start": 14,
-        "end": 58,
+        "start": 23,
+        "end": 60,
         "startLoc": {
-          "line": 14,
-          "column": 1,
-          "position": 25
+          "line": 23,
+          "column": 16,
+          "position": 56
         },
         "endLoc": {
-          "line": 58,
+          "line": 60,
           "column": 96,
-          "position": 149
+          "position": 165
         }
       },
       "secondFile": {
         "name": "scripts/run_tests.sh",
-        "start": 7,
+        "start": 14,
         "end": 51,
         "startLoc": {
-          "line": 7,
-          "column": 1,
-          "position": 11
+          "line": 14,
+          "column": 4,
+          "position": 26
         },
         "endLoc": {
           "line": 51,
           "column": 5,
           "position": 135
-        }
-      }
-    },
-    {
-      "format": "bash",
-      "lines": 25,
-      "fragment": ";\n  if [ ${waitSeconds} -gt 0 ]; then\n    sleep ${waitSeconds};\n  fi\n\n  RESPONSE=$(\n    curl -w \"%{http_code}\" -o response.json.log -s -S \\\n      --retry 3 --retry-delay ${sleepBetweenRequestsSeconds} --retry-all-errors --retry-max-time 120 --connect-timeout 20 --max-time 180 \\\n      -H \"Content-Type: application/json\" \\\n      -H \"Authorization: Bearer ${GITHUB_TOKEN}\" \\\n      -d @payload.json.log \\\n      \"https://models.inference.ai.azure.com/openai/deployments/${aiModel}/chat/completions\"\n  );\n  CURL_EXIT=$?;\n  startTs=$(date +%s);\n  if [[ \"${RESPONSE}\" -lt 100 || \"${RESPONSE}\" -ge 400 || \"${CURL_EXIT}\" -ne 0 ]]; then\n    echo 'Payload:';\n    cat payload.json.log;\n    echo 'Response:';\n    cat response.json.log;\n    echo \"HTTP error: ${RESPONSE}. Curl exit code: ${CURL_EXIT}\";\n    exit 1;\n  fi\n\n  RESPONSE",
-      "tokens": 0,
-      "firstFile": {
-        "name": "scripts/release_notes.sh",
-        "start": 304,
-        "end": 328,
-        "startLoc": {
-          "line": 304,
-          "column": 9,
-          "position": 1581
-        },
-        "endLoc": {
-          "line": 328,
-          "column": 9,
-          "position": 1735
-        }
-      },
-      "secondFile": {
-        "name": "scripts/release_notes.sh",
-        "start": 220,
-        "end": 244,
-        "startLoc": {
-          "line": 220,
-          "column": 2,
-          "position": 1013
-        },
-        "endLoc": {
-          "line": 244,
-          "column": 14,
-          "position": 1167
-        }
-      }
-    },
-    {
-      "format": "bash",
-      "lines": 17,
-      "fragment": "\\\n  < .github/workflows/release-notes-merge.json \\\n  > payload.json.log;\nSIZE=$(wc -c < payload.json.log);\nWORDS=$(wc -w < payload.json.log);\n\nendTs=$(date +%s);\nelapsed=$(( endTs - startTs ));\nwaitSeconds=$(( sleepBetweenRequestsSeconds - elapsed ));\n# echo \"Payload: $(cat payload.json.log)\";\necho \"Sleeping for ${waitSeconds} seconds to avoid HTTP 429 Too Many Requests. Payload size: ${SIZE} bytes | ${WORDS} words.\";\nif [ ${waitSeconds} -gt 0 ]; then\n  sleep ${waitSeconds};\nfi\n\nRESPONSE=$(\n  ",
-      "tokens": 0,
-      "firstFile": {
-        "name": "scripts/release_notes.sh",
-        "start": 355,
-        "end": 371,
-        "startLoc": {
-          "line": 355,
-          "column": 2,
-          "position": 1831
-        },
-        "endLoc": {
-          "line": 371,
-          "column": 3,
-          "position": 1933
-        }
-      },
-      "secondFile": {
-        "name": "scripts/release_notes.sh",
-        "start": 294,
-        "end": 310,
-        "startLoc": {
-          "line": 294,
-          "column": 2,
-          "position": 1501
-        },
-        "endLoc": {
-          "line": 310,
-          "column": 5,
-          "position": 1613
-        }
-      }
-    },
-    {
-      "format": "bash",
-      "lines": 12,
-      "fragment": ";\nif [[ \"${RESPONSE}\" -lt 100 || \"${RESPONSE}\" -ge 400 || \"${CURL_EXIT}\" -ne 0 ]]; then\n  echo 'Payload:';\n  cat payload.json.log;\n  echo 'Response:';\n  cat response.json.log;\n  echo \"HTTP error: ${RESPONSE}. Curl exit code: ${CURL_EXIT}\";\n  exit 1;\nfi\n\nRELEASE_NOTES=$(cat response.json.log | jq -r '.choices[0].message.content');\necho \"Release notes: ",
-      "tokens": 0,
-      "firstFile": {
-        "name": "scripts/release_notes.sh",
-        "start": 378,
-        "end": 389,
-        "startLoc": {
-          "line": 378,
-          "column": 3,
-          "position": 1958
-        },
-        "endLoc": {
-          "line": 389,
-          "column": 17,
-          "position": 2055
-        }
-      },
-      "secondFile": {
-        "name": "scripts/release_notes.sh",
-        "start": 234,
-        "end": 245,
-        "startLoc": {
-          "line": 234,
-          "column": 2,
-          "position": 1080
-        },
-        "endLoc": {
-          "line": 245,
-          "column": 2,
-          "position": 1181
         }
       }
     },
