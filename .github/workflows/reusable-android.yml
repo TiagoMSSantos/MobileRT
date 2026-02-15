@@ -173,14 +173,11 @@ jobs:
           set -e;
           if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api_device }}" -gt 20 ]; then
+            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
               echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
             fi
           fi
           set -u;
@@ -244,7 +241,6 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
           echo "android_arch: ${{ env.android_arch }}";
-          echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
           sh scripts/compile_android.sh -t ${{ inputs.type }} -r yes -a ${{ inputs.android_api }} -f ${{ env.android_arch }};
           rm app/MobileRT.jks;
 
@@ -304,7 +300,7 @@ jobs:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           upload-chunk-size: 536870912
-          enableCrossOsArchive: false
+          enableCrossOsArchive: true
           path: |
             app/build
             app/.cxx
@@ -379,6 +375,32 @@ jobs:
           overwrite: true
           include-hidden-files: true
 
+      - name: Sign APK
+        id: sign-apk
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: ilharp/sign-android-release@13dd52242698526f951aa8bb8696204f6fea702a # v2
+        with:
+          # Check available parameters in: https://github.com/ilharp/sign-android-release/blob/master/action.yml
+          releaseDir: app/build/outputs/apk/${{ inputs.type }}
+          signingKey: ${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}
+          keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Upload APK as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/upload-artifact@v6
+        with:
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
+          path: ${{ steps.sign-apk.outputs.signedFile }}
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: true
+          include-hidden-files: true
+
 
   AndroidTests:
     needs: [Build]
@@ -445,7 +467,6 @@ jobs:
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
       - name: Download Gradle packages artifact
-        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
@@ -508,13 +529,39 @@ jobs:
             # default fail
             if_no_artifact_found: fail
 
-      - name: Extract and check files from gradle artifact
+      - name: Download generated Android APK artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
+        with:
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
+          pre_retry_command: 'echo "Retrying Download generated Android APK artifact step..."'
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+            workflow_conclusion: ''
+            commit: ${{ github.event.pull_request.head.sha }}
+            name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
+            allow_forks: true
+            check_artifacts:  true
+            search_artifacts: true
+            skip_unpack: true
+
+      - name: Extract and check files from artifacts
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         run: |
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
+          echo 'Extracting Android APK release';
+          mkdir -p release/android;
+          mv MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk.zip release/android;
+          ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk.zip;
+          . scripts/helper_functions.sh && extractFilesFromArtifact release/android;
+          mv release/android/app-${{ inputs.type }}-signed.apk release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
+          ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
 
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -542,8 +589,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
+          enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
           path: |
@@ -594,7 +640,7 @@ jobs:
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api_device }}" -gt 20 ]; then
+            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
@@ -669,6 +715,7 @@ jobs:
             emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
             script: |
               echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
+              ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
               sh scripts/run_tests_android.sh -t ${{ inputs.type }} -r all -a ${{ inputs.android_api }} -k false -f ${{ env.android_arch }};
               echo "Run Android tests finished: ${?}";
 
@@ -764,35 +811,9 @@ jobs:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
           upload-chunk-size: 536870912
-          enableCrossOsArchive: false
+          enableCrossOsArchive: true
           path: |
             app/build/reports
-
-      - name: Sign APK
-        id: sign-apk
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        uses: ilharp/sign-android-release@13dd52242698526f951aa8bb8696204f6fea702a # v2
-        with:
-          # Check available parameters in: https://github.com/ilharp/sign-android-release/blob/master/action.yml
-          releaseDir: app/build/outputs/apk/${{ inputs.type }}
-          signingKey: ${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}
-          keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
-      - name: Upload APK as artifact
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'release'
-        uses: actions/upload-artifact@v6
-        with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
-          path: ${{ steps.sign-apk.outputs.signedFile }}
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
 
       - name: Upload test screenshots as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -845,7 +866,6 @@ jobs:
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
       - name: Download Gradle packages artifact
-        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
@@ -942,8 +962,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
+          enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
           path: |
@@ -985,7 +1004,7 @@ jobs:
           if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 20 ]; then
+            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
             else
               echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
@@ -1123,7 +1142,6 @@ jobs:
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
       - name: Download Gradle packages artifact
-        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && !startsWith(inputs.host_os, 'windows')
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
@@ -1227,8 +1245,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
+          enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
           path: |
@@ -1272,8 +1289,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
-          enableCrossOsArchive: false
+          enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
           path: |
@@ -1299,7 +1315,7 @@ jobs:
           if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
               echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
           else
-            if [ "${{ inputs.android_api }}" -gt 20 ]; then
+            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
             else
               echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";

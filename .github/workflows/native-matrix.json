@@ -1,13 +1,14 @@
 {
   "include":
   [
-    { "host_os": "ubuntu-22.04", "type": "debug", "compiler": "g++" },
-    { "host_os": "ubuntu-24.04-arm", "type": "release", "compiler": "clang++" },
-    { "host_os": "ubuntu-24.04", "type": "release", "compiler": "icpx" },
-    { "host_os": "macos-15", "type": "release", "compiler": "g++" },
-    { "host_os": "macos-14", "type": "release", "compiler": "clang++" },
-    { "host_os": "windows-2025", "type": "release", "compiler": "cl", "qt_version": "6.7.3", "qt_arch": "win64_msvc2019_64" },
-    { "host_os": "windows-2022", "type": "release", "compiler": "g++", "qt_version": "5.15.2", "qt_arch": "win64_mingw81" },
-    { "host_os": "windows-11-arm", "type": "release", "compiler": "cl", "qt_version": "6.9.1", "qt_arch": "win64_msvc2022_arm64_cross_compiled" }
+    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-22.04", "type": "debug", "compiler": "g++" },
+    { "build_os": "ubuntu-22.04-arm", "target_os": "ubuntu-24.04-arm", "type": "release", "compiler": "clang++" },
+    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-24.04", "type": "release", "compiler": "icpx" },
+    { "build_os": "macos-15-intel", "target_os": "macos-15-intel", "type": "release", "compiler": "clang++" },
+    { "build_os": "macos-15", "target_os": "macos-14", "type": "release", "compiler": "g++" },
+    { "build_os": "macos-14", "target_os": "macos-26", "type": "release", "compiler": "clang++" },
+    { "build_os": "windows-2025", "target_os": "windows-2022", "type": "release", "compiler": "cl", "qt_version": "6.7.3", "qt_arch": "win64_msvc2019_64" },
+    { "build_os": "windows-2022", "target_os": "windows-2025-vs2026", "type": "release", "compiler": "g++", "qt_version": "5.15.2", "qt_arch": "win64_mingw81" },
+    { "build_os": "windows-11-arm", "target_os": "windows-11-arm", "type": "release", "compiler": "cl", "qt_version": "6.9.1", "qt_arch": "win64_msvc2022_arm64_cross_compiled" }
   ]
 }

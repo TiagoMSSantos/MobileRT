@@ -1,9 +1,12 @@
 {
   "include":
   [
-    { "host_os": "ubuntu-24.04", "android_api": "15", "android_api_device": "21", "type": "release" },
-    { "host_os": "ubuntu-22.04", "type": "release", "compiler": "g++" },
-    { "host_os": "macos-15", "type": "release", "compiler": "g++" },
-    { "host_os": "windows-11-arm", "type": "release", "compiler": "cl", "qt_version": "6.9.1", "qt_arch": "win64_msvc2022_arm64_cross_compiled" }
+    { "host_os": "ubuntu-24.04", "type": "release", "android_api": "14", "android_api_device": "36" },
+    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-24.04", "type": "release", "compiler": "g++" },
+    { "build_os": "ubuntu-22.04-arm", "target_os": "ubuntu-24.04-arm", "type": "release", "compiler": "g++" },
+    { "build_os": "macos-15-intel", "target_os": "macos-15-intel", "type": "release", "compiler": "g++" },
+    { "build_os": "macos-15", "target_os": "macos-14", "type": "release", "compiler": "g++" },
+    { "build_os": "windows-2025", "target_os": "windows-2022", "type": "release", "compiler": "cl", "qt_version": "6.7.3", "qt_arch": "win64_msvc2019_64" },
+    { "build_os": "windows-11-arm", "target_os": "windows-11-arm", "type": "release", "compiler": "cl", "qt_version": "6.9.1", "qt_arch": "win64_msvc2022_arm64_cross_compiled" }
   ]
 }

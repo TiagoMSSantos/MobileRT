@@ -86,7 +86,7 @@ jobs:
 
   Native:
     needs: [Matrix]
-    name: Native ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.host_os }})
+    name: Native ${{ matrix.type }} ${{ matrix.compiler }} ${{ matrix.build_os }} (${{ matrix.target_os }})
     strategy:
       fail-fast: true
       matrix: ${{ fromJSON(needs.Matrix.outputs.native_matrix) }}
@@ -97,7 +97,8 @@ jobs:
       actions: write
 
     with:
-      host_os: ${{ matrix.host_os }}
+      build_os: ${{ matrix.build_os }}
+      target_os: ${{ matrix.target_os }}
       type: ${{ matrix.type }}
       compiler: ${{ matrix.compiler }}
       qt_version: ${{ matrix.qt_version }}
@@ -175,269 +176,124 @@ jobs:
         fetch-tags: false
         lfs: false
 
-    # Download generated APK artifact
-    # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
-    - name: Download Android packages artifact
-      id: download-android-artifact
+    - name: Download generated Android APK artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
       with:
         # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
         action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
-        pre_retry_command: 'echo "Retrying Download Android packages artifact step..."'
-        attempt_limit: 3
-        attempt_delay: 30000
+        pre_retry_command: 'echo "Retrying Download generated Android APK artifact step..."'
         with: |
           # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
-          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-          # Required, if the artifact is from a different repo
-          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Optional, workflow file name or ID
-          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-          workflow: release.yml
-          # Optional, the status or conclusion of a completed workflow to search for
-          # Can be one of a workflow conclusion:
-          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-          # Or a workflow status:
-          #   "completed", "in_progress", "queued"
           workflow_conclusion: ''
-          # Optional, will get head commit SHA
-          pr: ${{ github.event.pull_request.number }}
-          # Optional, no need to specify if PR is
           commit: ${{ github.event.pull_request.head.sha }}
-          # Optional, will use the branch
-          # branch: master
-          # Optional, defaults to all types
-          # event: push
-          # Optional, will use specified workflow run
-          # run_id: 1122334455
-          # Optional, run number from the workflow
-          # run_number: 34
-          # Optional, uploaded artifact name,
-          # will download all artifacts if not specified
-          # and extract them into respective subdirectories
-          # https://github.com/actions/download-artifact#download-all-artifacts
           name: MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}-apk
-          # Optional, a directory where to extract artifact(s), defaults to the current directory
-          path: .
-          # Optional, defaults to current repo
-          repo: ${{ github.repository }}
           allow_forks: true
-          # Optional, check the workflow run to whether it has an artifact
-          # then will get the last available artifact from the previous workflow
-          # default false, just try to download from the last one
           check_artifacts:  true
-          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-          # default false
           search_artifacts: true
-          # Optional, choose to skip unpacking the downloaded artifact(s)
-          # default false
           skip_unpack: true
-          # Optional, choose how to exit the action if no artifact is found
-          # can be one of:
-          #  "fail", "warn", "ignore"
-          # default fail
-          if_no_artifact_found: fail
 
-    # Download generated Linux artifact
-    # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
-    - name: Download Linux packages artifact
-      id: download-linux-artifact
+    - name: Download generated Linux x86 artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
       with:
         # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
         action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
-        pre_retry_command: 'echo "Retrying Download Linux packages artifact step..."'
-        attempt_limit: 3
-        attempt_delay: 30000
+        pre_retry_command: 'echo "Retrying Download generated Linux x86 artifact step..."'
         with: |
           # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
-          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-          # Required, if the artifact is from a different repo
-          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Optional, workflow file name or ID
-          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-          workflow: release.yml
-          # Optional, the status or conclusion of a completed workflow to search for
-          # Can be one of a workflow conclusion:
-          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-          # Or a workflow status:
-          #   "completed", "in_progress", "queued"
           workflow_conclusion: ''
-          # Optional, will get head commit SHA
-          pr: ${{ github.event.pull_request.number }}
-          # Optional, no need to specify if PR is
           commit: ${{ github.event.pull_request.head.sha }}
-          # Optional, will use the branch
-          # branch: master
-          # Optional, defaults to all types
-          # event: push
-          # Optional, will use specified workflow run
-          # run_id: 1122334455
-          # Optional, run number from the workflow
-          # run_number: 34
-          # Optional, uploaded artifact name,
-          # will download all artifacts if not specified
-          # and extract them into respective subdirectories
-          # https://github.com/actions/download-artifact#download-all-artifacts
-          name: MobileRT_release_os-ubuntu-22.04_build-g++
-          # Optional, a directory where to extract artifact(s), defaults to the current directory
-          path: .
-          # Optional, defaults to current repo
-          repo: ${{ github.repository }}
+          name: MobileRT_${{ matrix.type }}_os-ubuntu-22.04_build-g++
           allow_forks: true
-          # Optional, check the workflow run to whether it has an artifact
-          # then will get the last available artifact from the previous workflow
-          # default false, just try to download from the last one
           check_artifacts:  true
-          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-          # default false
           search_artifacts: true
-          # Optional, choose to skip unpacking the downloaded artifact(s)
-          # default false
           skip_unpack: true
-          # Optional, choose how to exit the action if no artifact is found
-          # can be one of:
-          #  "fail", "warn", "ignore"
-          # default fail
-          if_no_artifact_found: fail
 
-    # Download generated MacOS artifact
-    # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
-    - name: Download MacOS packages artifact
-      id: download-macos-artifact
+    - name: Download generated Linux arm artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
       with:
         # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
         action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
-        pre_retry_command: 'echo "Retrying Download MacOS packages artifact step..."'
-        attempt_limit: 3
-        attempt_delay: 30000
+        pre_retry_command: 'echo "Retrying Download generated Linux arm artifact step..."'
         with: |
           # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
-          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-          # Required, if the artifact is from a different repo
-          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Optional, workflow file name or ID
-          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-          workflow: release.yml
-          # Optional, the status or conclusion of a completed workflow to search for
-          # Can be one of a workflow conclusion:
-          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-          # Or a workflow status:
-          #   "completed", "in_progress", "queued"
           workflow_conclusion: ''
-          # Optional, will get head commit SHA
-          pr: ${{ github.event.pull_request.number }}
-          # Optional, no need to specify if PR is
           commit: ${{ github.event.pull_request.head.sha }}
-          # Optional, will use the branch
-          # branch: master
-          # Optional, defaults to all types
-          # event: push
-          # Optional, will use specified workflow run
-          # run_id: 1122334455
-          # Optional, run number from the workflow
-          # run_number: 34
-          # Optional, uploaded artifact name,
-          # will download all artifacts if not specified
-          # and extract them into respective subdirectories
-          # https://github.com/actions/download-artifact#download-all-artifacts
-          name: MobileRT_release_os-macos-15_build-g++
-          # Optional, a directory where to extract artifact(s), defaults to the current directory
-          path: .
-          # Optional, defaults to current repo
-          repo: ${{ github.repository }}
+          name: MobileRT_${{ matrix.type }}_os-ubuntu-22.04-arm_build-g++
           allow_forks: true
-          # Optional, check the workflow run to whether it has an artifact
-          # then will get the last available artifact from the previous workflow
-          # default false, just try to download from the last one
           check_artifacts:  true
-          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-          # default false
           search_artifacts: true
-          # Optional, choose to skip unpacking the downloaded artifact(s)
-          # default false
           skip_unpack: true
-          # Optional, choose how to exit the action if no artifact is found
-          # can be one of:
-          #  "fail", "warn", "ignore"
-          # default fail
-          if_no_artifact_found: fail
 
-    # Download generated Windows artifact
-    # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
-    - name: Download Windows packages artifact
-      id: download-windows-artifact
+    - name: Download generated MacOS x86 artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success()
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
       with:
         # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
         action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
-        pre_retry_command: 'echo "Retrying Download Windows packages artifact step..."'
-        attempt_limit: 3
-        attempt_delay: 30000
+        pre_retry_command: 'echo "Retrying Download generated MacOS x86 artifact step..."'
         with: |
           # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
-          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-          # Required, if the artifact is from a different repo
-          # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Optional, workflow file name or ID
-          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-          workflow: release.yml
-          # Optional, the status or conclusion of a completed workflow to search for
-          # Can be one of a workflow conclusion:
-          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-          # Or a workflow status:
-          #   "completed", "in_progress", "queued"
           workflow_conclusion: ''
-          # Optional, will get head commit SHA
-          pr: ${{ github.event.pull_request.number }}
-          # Optional, no need to specify if PR is
           commit: ${{ github.event.pull_request.head.sha }}
-          # Optional, will use the branch
-          # branch: master
-          # Optional, defaults to all types
-          # event: push
-          # Optional, will use specified workflow run
-          # run_id: 1122334455
-          # Optional, run number from the workflow
-          # run_number: 34
-          # Optional, uploaded artifact name,
-          # will download all artifacts if not specified
-          # and extract them into respective subdirectories
-          # https://github.com/actions/download-artifact#download-all-artifacts
-          name: MobileRT_release_os-windows-11-arm_build-cl
-          # Optional, a directory where to extract artifact(s), defaults to the current directory
-          path: .
-          # Optional, defaults to current repo
-          repo: ${{ github.repository }}
+          name: MobileRT_${{ matrix.type }}_os-macos-15-intel_build-g++
           allow_forks: true
-          # Optional, check the workflow run to whether it has an artifact
-          # then will get the last available artifact from the previous workflow
-          # default false, just try to download from the last one
           check_artifacts:  true
-          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-          # default false
           search_artifacts: true
-          # Optional, choose to skip unpacking the downloaded artifact(s)
-          # default false
           skip_unpack: true
-          # Optional, choose how to exit the action if no artifact is found
-          # can be one of:
-          #  "fail", "warn", "ignore"
-          # default fail
-          if_no_artifact_found: fail
+
+    - name: Download generated MacOS arm artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
+      with:
+        # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+        action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
+        pre_retry_command: 'echo "Retrying Download generated MacOS arm artifact step..."'
+        with: |
+          # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+          workflow_conclusion: ''
+          commit: ${{ github.event.pull_request.head.sha }}
+          name: MobileRT_${{ matrix.type }}_os-macos-15_build-g++
+          allow_forks: true
+          check_artifacts:  true
+          search_artifacts: true
+          skip_unpack: true
+
+    - name: Download generated Windows x86 artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
+      with:
+        # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+        action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
+        pre_retry_command: 'echo "Retrying Download generated Windows x86 artifact step..."'
+        with: |
+          # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+          workflow_conclusion: ''
+          commit: ${{ github.event.pull_request.head.sha }}
+          name: MobileRT_${{ matrix.type }}_os-windows-2025_build-cl
+          allow_forks: true
+          check_artifacts:  true
+          search_artifacts: true
+          skip_unpack: true
+
+    - name: Download generated Windows arm artifact
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
+      with:
+        # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+        action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
+        pre_retry_command: 'echo "Retrying Download generated Windows arm artifact step..."'
+        with: |
+          # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+          workflow_conclusion: ''
+          commit: ${{ github.event.pull_request.head.sha }}
+          name: MobileRT_${{ matrix.type }}_os-windows-11-arm_build-cl
+          allow_forks: true
+          check_artifacts:  true
+          search_artifacts: true
+          skip_unpack: true
 
     - name: Extract & validate release artifacts
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -448,20 +304,30 @@ jobs:
         mkdir -p release/macos;
         mkdir -p release/windows;
 
-        mv MobileRT_release_min_android_api-15-apk.zip release/android;
-        ls -lahp release/android/MobileRT_release_min_android_api-15-apk.zip;
+        echo 'Extracting Android APK release';
+        mv MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}-apk.zip release/android;
+        ls -lahp release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}-apk.zip;
         . scripts/helper_functions.sh && extractFilesFromArtifact release/android;
-        mv release/android/app-release-signed.apk release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
+        mv release/android/app-${{ matrix.type }}-signed.apk release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
         ls -lahp release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk;
 
-        mv MobileRT_release_os-ubuntu-22.04_build-g++.zip release/linux;
-        ls -lahp release/linux/MobileRT_release_os-ubuntu-22.04_build-g++.zip;
+        echo 'Extracting Linux release';
+        mv MobileRT_${{ matrix.type }}_os-ubuntu-22.04_build-g++.zip release/linux;
+        ls -lahp release/linux/MobileRT_${{ matrix.type }}_os-ubuntu-22.04_build-g++.zip;
+        mv MobileRT_${{ matrix.type }}_os-ubuntu-22.04-arm_build-g++.zip release/linux;
+        ls -lahp release/linux/MobileRT_${{ matrix.type }}_os-ubuntu-22.04-arm_build-g++.zip;
 
-        mv MobileRT_release_os-macos-15_build-g++.zip release/macos;
-        ls -lahp release/macos/MobileRT_release_os-macos-15_build-g++.zip;
+        echo 'Extracting MacOS release';
+        mv MobileRT_${{ matrix.type }}_os-macos-15-intel_build-g++.zip release/macos;
+        ls -lahp release/macos/MobileRT_${{ matrix.type }}_os-macos-15-intel_build-g++.zip;
+        mv MobileRT_${{ matrix.type }}_os-macos-15_build-g++.zip release/macos;
+        ls -lahp release/macos/MobileRT_${{ matrix.type }}_os-macos-15_build-g++.zip;
 
-        mv MobileRT_release_os-windows-11-arm_build-cl.zip release/windows;
-        ls -lahp release/windows/MobileRT_release_os-windows-11-arm_build-cl.zip;
+        echo 'Extracting Windows release';
+        mv MobileRT_${{ matrix.type }}_os-windows-2025_build-cl.zip release/windows;
+        ls -lahp release/windows/MobileRT_${{ matrix.type }}_os-windows-2025_build-cl.zip;
+        mv MobileRT_${{ matrix.type }}_os-windows-11-arm_build-cl.zip release/windows;
+        ls -lahp release/windows/MobileRT_${{ matrix.type }}_os-windows-11-arm_build-cl.zip;
 
         ls -lahp release;
         echo "Release notes: ${{ needs.ReleaseNotes.outputs.release_notes }}";
@@ -478,9 +344,12 @@ jobs:
         preserve_order: true
         files: |
           release/android/MobileRT_${{ matrix.type }}_min_android_api-${{ matrix.android_api }}.apk
-          release/linux/MobileRT_release_os-ubuntu-22.04_build-g++.zip
-          release/macos/MobileRT_release_os-macos-15_build-g++.zip
-          release/windows/MobileRT_release_os-windows-11-arm_build-cl.zip
+          release/linux/MobileRT_${{ matrix.type }}_os-ubuntu-22.04_build-g++.zip
+          release/linux/MobileRT_${{ matrix.type }}_os-ubuntu-22.04-arm_build-g++.zip
+          release/macos/MobileRT_${{ matrix.type }}_os-macos-15-intel_build-g++.zip
+          release/macos/MobileRT_${{ matrix.type }}_os-macos-15_build-g++.zip
+          release/windows/MobileRT_${{ matrix.type }}_os-windows-2025_build-cl.zip
+          release/windows/MobileRT_${{ matrix.type }}_os-windows-11-arm_build-cl.zip
         fail_on_unmatched_files: true
         generate_release_notes: false
         append_body: false

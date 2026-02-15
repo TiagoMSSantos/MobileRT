@@ -3,7 +3,10 @@ name: Reusable Native workflow
 on:
   workflow_call:
     inputs:
-      host_os:
+      build_os:
+        type: string
+        required: true
+      target_os:
         type: string
         required: true
       type:
@@ -36,9 +39,9 @@ jobs:
   Build:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
-    name: ${{ inputs.compiler }} ${{ inputs.host_os }} (${{ inputs.type }})
-    runs-on: ${{ inputs.host_os }}
-    timeout-minutes: 360
+    name: Build ${{ inputs.compiler }} ${{ inputs.build_os }} (${{ inputs.target_os }}) [${{ inputs.type }}]
+    runs-on: ${{ inputs.build_os }}
+    timeout-minutes: 10
 
     # Sets permissions of the GITHUB_TOKEN to allow delete cache
     permissions:
@@ -61,7 +64,7 @@ jobs:
 
       - name: Check MacOS Xcode versions
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'macos')
+        if: success() && startsWith(inputs.build_os, 'macos')
         run: |
           ls -lahp /System/Volumes/Data/Applications;
 
@@ -83,7 +86,7 @@ jobs:
 
       - name: Install MacPorts (MacOS 11)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && startsWith(inputs.host_os, 'macos-11')
+        if: success() && startsWith(inputs.build_os, 'macos-11')
         uses: melusina-org/setup-macports@2bb4cd9d9c1fbc6737c6ab04d436047a2d303079 # v1.1.4
         with:
           # Check available parameters in: https://github.com/melusina-org/setup-macports/blob/main/action.yaml
@@ -91,7 +94,7 @@ jobs:
 
       - name: Delete Qt path
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && (startsWith(inputs.host_os, 'windows') || startsWith(inputs.host_os, 'macos-12'))
+        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))
         run: |
           # This step is to avoid the following error during the step "Install Qt (Windows & MacOS)":
           # Cannot create output directory : Cannot create a file when that file already exists. : D:\a\MobileRT\MobileRT\Qt\6.9.0\msvc2022_64
@@ -99,11 +102,11 @@ jobs:
 
       - name: Set Qt CPU Architecture (Windows & MacOS)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && (startsWith(inputs.host_os, 'windows') || startsWith(inputs.host_os, 'macos-12'))
+        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))
         run: |
-          if [ ${{ startsWith(inputs.host_os, 'windows') }} = true ]; then
+          if [ ${{ startsWith(inputs.build_os, 'windows') }} = true ]; then
             echo 'qt_host=windows' >> "${GITHUB_ENV}";
-          elif [ ${{ startsWith(inputs.host_os, 'macos') }} = true ]; then
+          elif [ ${{ startsWith(inputs.build_os, 'macos') }} = true ]; then
             echo 'qt_host=mac' >> "${GITHUB_ENV}";
           else
             exit 1;
@@ -111,7 +114,7 @@ jobs:
 
       - name: Install Qt (Windows & MacOS)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && (startsWith(inputs.host_os, 'windows') || startsWith(inputs.host_os, 'macos-12'))
+        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))
         uses: jurplel/install-qt-action@d325aaf2a8baeeda41ad0b5d39f84a6af9bcf005 # v4.3.0
         # Download Qt from: https://download.qt.io/online/qtsdkrepository
         with:
@@ -139,7 +142,7 @@ jobs:
 
       - name: Check Qt path installation MacOS
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'macos')
+        if: success() && startsWith(inputs.build_os, 'macos')
         run: |
           set +e;
           test -d /opt/homebrew/Cellar/qt@5;
@@ -219,6 +222,134 @@ jobs:
             rm -rf build_${{ inputs.type }}/ARM64;
           fi
 
+      - name: Upload binaries as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/upload-artifact@v6
+        with:
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: MobileRT_${{ inputs.type }}_os-${{ inputs.build_os }}_build-${{ inputs.compiler }}
+          path: build_${{ inputs.type }}
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: true
+          include-hidden-files: false
+
+
+  Tests:
+    needs: [ Build ]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    name: Test ${{ inputs.compiler }} ${{ inputs.build_os }} (${{ inputs.target_os }}) [${{ inputs.type }}]
+    runs-on: ${{ inputs.target_os }}
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/checkout@v6
+        with:
+          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
+          lfs: true
+          submodules: true
+
+      - name: Download generated binaries artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
+        with:
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
+          pre_retry_command: 'echo "Retrying Download generated binaries artifact step..."'
+          with: |
+            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+            workflow_conclusion: ''
+            commit: ${{ github.event.pull_request.head.sha }}
+            name: MobileRT_${{ inputs.type }}_os-${{ inputs.build_os }}_build-${{ inputs.compiler }}
+            allow_forks: true
+            check_artifacts:  true
+            search_artifacts: true
+            skip_unpack: true
+
+      - name: Extract and check files from binaries artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          mkdir build_${{ inputs.type }};
+          mv MobileRT_${{ inputs.type }}_os-${{ inputs.build_os }}_build-${{ inputs.compiler }}.zip build_${{ inputs.type }};
+          ls -lahp build_${{ inputs.type }}/MobileRT_${{ inputs.type }}_os-${{ inputs.build_os }}_build-${{ inputs.compiler }}.zip;
+          # shellcheck disable=SC1091
+          . scripts/helper_functions.sh && extractFilesFromArtifact build_${{ inputs.type }};
+
+      - name: Delete Qt path
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))
+        run: |
+          # This step is to avoid the following error during the step "Install Qt (Windows & MacOS)":
+          # Cannot create output directory : Cannot create a file when that file already exists. : D:\a\MobileRT\MobileRT\Qt\6.9.0\msvc2022_64
+          rm -rf Qt;
+
+      - name: Set Qt CPU Architecture (Windows & MacOS)
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))
+        run: |
+          if [ ${{ startsWith(inputs.build_os, 'windows') }} = true ]; then
+            echo 'qt_host=windows' >> "${GITHUB_ENV}";
+          elif [ ${{ startsWith(inputs.build_os, 'macos') }} = true ]; then
+            echo 'qt_host=mac' >> "${GITHUB_ENV}";
+          else
+            exit 1;
+          fi
+
+      - name: Install Qt (Windows & MacOS)
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))
+        uses: jurplel/install-qt-action@d325aaf2a8baeeda41ad0b5d39f84a6af9bcf005 # v4.3.0
+        # Download Qt from: https://download.qt.io/online/qtsdkrepository
+        with:
+          # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
+          version: '${{ inputs.qt_version }}' # Also update: app/CMakeLists.txt
+          host: '${{ env.qt_host }}'
+          target: 'desktop'
+          arch: '${{ inputs.qt_arch }}'
+          dir: '${{ github.workspace }}'
+          install-deps: 'false'
+          modules: ''
+          cache: 'false'
+          cache-key-prefix: '${{ env.qt_host }}-${{ inputs.qt_arch }}'
+          setup-python: 'true'
+          set-env: 'true'
+          py7zrversion: '>=1.0.0'
+
+      - name: Install dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success()
+        run: |
+          sh scripts/install_dependencies.sh;
+          echo 'Adding path to lcov (windows only) in PATH environment variable.';
+          echo "/c/ProgramData/chocolatey/lib/lcov/tools/bin" >> ${GITHUB_PATH};
+
+      - name: Install Intel C++ Compiler
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && startsWith(inputs.compiler, 'icpx')
+        run: |
+          gpgKey='GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB';
+          wget https://apt.repos.intel.com/intel-gpg-keys/"${gpgKey}";
+          sudo apt-key add "${gpgKey}";
+          rm "${gpgKey}";
+          echo 'deb https://apt.repos.intel.com/oneapi all main' | sudo tee /etc/apt/sources.list.d/oneAPI.list;
+          sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
+          sudo apt-get update;
+          sudo apt-get install intel-oneapi-compiler-dpcpp-cpp;
+          . /opt/intel/oneapi/setvars.sh;
+          env;
+          which icpx;
+          which icx;
+          echo 'Storing LD_LIBRARY_PATH & PATH in workflow environment variables.';
+          echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}" >> "${GITHUB_ENV}";
+          echo "PATH=${PATH}" >> "${GITHUB_ENV}";
+
       - name: Generate code coverage base
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
@@ -236,7 +367,7 @@ jobs:
 
       - name: Set sanitizer configs for Ubuntu
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu')
+        if: success() && startsWith(inputs.build_os, 'ubuntu')
         run: |
           ls -lahp scripts/sanitizer_ignore.suppr;
           export ASAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1:detect_leaks=1:detect_container_overflow=1';
@@ -246,7 +377,7 @@ jobs:
 
       - name: Set sanitizer configs for MacOS
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'macos')
+        if: success() && startsWith(inputs.build_os, 'macos')
         run: |
           ls -lahp scripts/sanitizer_ignore.suppr;
           export ASAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=0:detect_odr_violation=1:detect_container_overflow=1';
@@ -268,9 +399,13 @@ jobs:
         timeout-minutes: 50
         if: success()
         run: |
-          ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
-          ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
-          ls -la ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
+          ls -lahp ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
+          ls -lahp ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
+          ls -lahp ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
+          ls -lahp ./app/src/androidTest/resources/teapot/teapot.obj;
+          ls -lahp ./app/src/androidTest/resources/teapot/teapot.mtl;
+          ls -lahp ./app/src/androidTest/resources/teapot/teapot.cam;
+          ls -lahp ./app/src/androidTest/resources/teapot/default.png;
           unitTestsExe=$(find build_${{ inputs.type }} -type f -name "UnitTests*" | head -1);
           echo "Unit tests executable: ${unitTestsExe}";
           gtestPath=$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname);
@@ -279,7 +414,7 @@ jobs:
 
       - name: Create symbolic links for Qt in MacOS
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'macos')
+        if: success() && startsWith(inputs.target_os, 'macos')
         run: |
           otool -L ${PWD}/build_${{ inputs.type }}/bin/AppMobileRT*;
           sudo ln -s ${Qt5_DIR}/lib/QtCore.framework /Library/Frameworks;
@@ -291,6 +426,9 @@ jobs:
         if: success()
         run: |
           ls -lahp scripts/sanitizer_ignore.suppr;
+          ls -lahp ./WavefrontOBJs/conference/conference.obj;
+          ls -lahp ./WavefrontOBJs/conference/conference.mtl;
+          ls -lahp ./WavefrontOBJs/conference/conference.cam;
           export ASAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:halt_on_error=1:detect_odr_violation=1:detect_leaks=1:detect_container_overflow=1:max_uar_stack_size_log=128';
           export LSAN_OPTIONS='suppressions=scripts/sanitizer_ignore.suppr:verbosity=1:strict_string_checks=1';
           set +e;
@@ -311,7 +449,7 @@ jobs:
       # TODO: Investigate how to use 'perf record' in github actions machines.
       - name: Profile MobileRT ${{ inputs.type }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'release' && startsWith(inputs.host_os, 'ubuntu-22.04')
+        if: success() && inputs.type == 'release' && startsWith(inputs.target_os, 'ubuntu-22.04')
         run: |
           sudo sysctl kernel.yama.ptrace_scope=0;
           sudo sysctl kernel.yama.ptrace_scope;
@@ -342,9 +480,9 @@ jobs:
         uses: actions/cache/save@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
+          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.target_os }}_${{ inputs.type }}_${{ inputs.compiler }}
           upload-chunk-size: 536870912
-          enableCrossOsArchive: false
+          enableCrossOsArchive: true
           path: |
             code_coverage_base.info
             code_coverage.info
@@ -357,19 +495,21 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: MobileRT_${{ inputs.type }}_os-${{ inputs.host_os }}_build-${{ inputs.compiler }}
+          name: MobileRT_${{ inputs.type }}_os-${{ inputs.target_os }}_build-${{ inputs.compiler }}
           path: build_${{ inputs.type }}
           if-no-files-found: error
           retention-days: 90
           overwrite: true
           include-hidden-files: true
 
+
   Sonar:
-    needs: [ Build ]
+    needs: [ Tests ]
     if: inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
-    name: Code Coverage ${{ inputs.type }} (${{ inputs.host_os }})
-    runs-on: ${{ inputs.host_os }}
-    timeout-minutes: 360
+
+    name: Code Coverage ${{ inputs.type }} ${{ inputs.build_os }} (${{ inputs.target_os }})
+    runs-on: ${{ inputs.build_os }}
+    timeout-minutes: 3
 
     steps:
       - name: Checkout
@@ -386,9 +526,8 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
-          restore-keys: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
-          enableCrossOsArchive: false
+          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.target_os }}_${{ inputs.type }}_${{ inputs.compiler }}
+          enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
           path: |

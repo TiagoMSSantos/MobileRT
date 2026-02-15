@@ -133,7 +133,7 @@ jobs:
             echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
         else
-          if [ "${{ matrix.android_api }}" -gt 20 ]; then
+          if [ "${{ matrix.android_api }}" -gt 20 ] && [ "${{ matrix.android_api }}" -ne 27 ]; then
             echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
           else

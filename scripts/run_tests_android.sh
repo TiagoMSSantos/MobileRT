@@ -613,23 +613,48 @@ runInstrumentationTests() {
   timeout 60 adb shell df;
   echo 'Searching for APK '"${type}"' to install in Android emulator.';
   find . -iname "*.apk";
-  apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}");
+  apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}" | grep -i "androidTest");
   echo "Will install the following APKs: ${apksPath}";
   for apkPath in ${apksPath}; do
     echo "Will install APK: ${apkPath}";
     ls -lahp "${apkPath}";
     callCommandUntilSuccess 5 timeout 60 adb push -p "${apkPath}" "${internal_storage_path}";
   done;
+
+  set +e;
+  test -d release;  
+  # shellcheck disable=SC2319
+  apkSignedFound="$?";
+  set -e;
+  if [ "${apkSignedFound}" = '0' ]; then
+    echo 'Searching for signed APK';
+    apksPath=$(find release/ -iname "*.apk");
+  else
+    echo 'Searching for APK';
+    apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}" | grep -v "androidTest");
+  fi
+  echo "Will install the following APKs: ${apksPath}";
+  for apkPath in ${apksPath}; do
+    echo "Will install APK: ${apkPath}";
+    ls -lahp "${apkPath}";
+    callCommandUntilSuccess 5 timeout 60 adb push -p "${apkPath}" "${internal_storage_path}";
+  done;
+
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}";
   unlockDevice;
   echo 'Installing both APKs for tests and app.';
   set +e;
   timeout 60 adb shell "pm uninstall ${internal_storage_path}/app-${type}-androidTest.apk;";
   timeout 60 adb shell "pm uninstall ${internal_storage_path}/app-${type}.apk;";
+  timeout 60 adb shell "pm uninstall ${internal_storage_path}/MobileRT_${type}_min_android_api-${android_api_version}.apk;";
   timeout 60 adb shell rm -r /data/app/puscas.mobilertapp*;
   timeout 60 adb shell ls -la /data/app;
   set -e;
-  callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'.apk';
+  if [ "${apkSignedFound}" = '0' ]; then
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/MobileRT_'"${type}"'_min_android_api-'"${android_api_version}"'.apk';
+  else
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'.apk';
+  fi
   callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'-androidTest.apk';
   if { [ "${androidApiDevice}" -gt 22 ] && [ "${androidApiDevice}" -lt 28 ]; }; then
     echo 'Granting read external SD Card to MobileRT.';

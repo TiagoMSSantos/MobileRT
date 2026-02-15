@@ -82,7 +82,7 @@ jobs:
           while [ "${randomAndroidApi}" = '19' ] || [ "${randomAndroidApi}" = '20' ] || [ "${randomAndroidApi}" = '21' ]; do
             randomAndroidApi=$(shuf -i17-35 -n1);
           done
-          MATRIX=${MATRIX/XY/$randomAndroidApi};
+          MATRIX=${MATRIX//XY/$randomAndroidApi};
           echo "Matrix: ${MATRIX}";
           echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
 
@@ -134,7 +134,7 @@ jobs:
     with:
       host_os: ${{ matrix.host_os }}
       android_api: ${{ matrix.android_api }}
-      android_api_device: ${{ matrix.android_api }}
+      android_api_device: ${{ matrix.android_api_device }}
       type: ${{ matrix.type }}
     # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation
     secrets: inherit
