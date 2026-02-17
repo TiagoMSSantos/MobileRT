@@ -109,7 +109,8 @@
         "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-runners",
-      "customType": "regex"
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
     },
     {
       "description": "Update Docker images",
