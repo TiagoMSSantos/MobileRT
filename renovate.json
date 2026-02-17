@@ -130,6 +130,18 @@
       "customType": "regex"
     },
     {
+      "description": "Update Github Actions",
+      "managerFilePatterns": [
+        "/\\.github\\/workflows\\/.+\\.ya?ml/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "action: (?<depName>.*?)@(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "github-digest",
+      "customType": "regex"
+    },
+    {
       "description": "Update PowerMock",
       "managerFilePatterns": [
         "/.*build.gradle/"
