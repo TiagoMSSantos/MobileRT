@@ -109,8 +109,7 @@
         "runs-on: (?<depName>.*?)-(?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-runners",
-      "customType": "regex",
-      "registryUrlTemplate": "https://github.com"
+      "customType": "regex"
     },
     {
       "description": "Update Docker images",
@@ -140,7 +139,8 @@
         "action: (?<depName>.*?)@(?<currentValue>[a-f0-9]{40})"
       ],
       "datasourceTemplate": "github-digest",
-      "customType": "regex"
+      "customType": "regex",
+      "registryUrlTemplate": "https://github.com"
     },
     {
       "description": "Update PowerMock",
