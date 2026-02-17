@@ -136,7 +136,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "action: (?<depName>.*?)@(?<currentValue>.*)"
+        "action: (?<depName>.*?)@(?<currentValue>[a-f0-9]{40})"
       ],
       "datasourceTemplate": "github-digest",
       "customType": "regex"
