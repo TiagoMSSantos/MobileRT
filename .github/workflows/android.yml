@@ -82,7 +82,7 @@ jobs:
           while [ "${randomAndroidApi}" = '19' ] || [ "${randomAndroidApi}" = '20' ] || [ "${randomAndroidApi}" = '21' ]; do
             randomAndroidApi=$(shuf -i17-35 -n1);
           done
-          MATRIX=${MATRIX/XY/$randomAndroidApi};
+          MATRIX=${MATRIX//XY/$randomAndroidApi};
           echo "Matrix: ${MATRIX}";
           echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
 
