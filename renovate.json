@@ -71,7 +71,7 @@
   "digest": {
     "description": "Allow dependencies to update to new digest versions (e.g.: commit hash)",
     "enabled": true,
-    "automerge": false,
+    "automerge": true,
     "groupName": "all digest updates"
   },
   "git-submodules": {
@@ -499,13 +499,9 @@
       "matchDepTypes": [
         "action"
       ],
-      "matchDepNames": [
-        "!/actions/",
-        "!/github/",
-        "!/advanced-security/"
-      ],
       "enabled": true,
-      "pinDigests": true
+      "pinDigests": true,
+      "automerge": true
     },
     {
       "description": "Allow automerge of any dependency update, except digest",
