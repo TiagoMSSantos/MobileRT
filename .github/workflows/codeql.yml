@@ -15,7 +15,6 @@ on:
     - '!.github/codeql/codeql-config.yml'
     - '!codecov.yml'
     - '!Gemfile'
-    - '!renovate.json'
     - '!scripts/install_dependencies.sh'
     - '!scripts/helper_functions.sh'
     - '!scripts/compile_native.sh'
