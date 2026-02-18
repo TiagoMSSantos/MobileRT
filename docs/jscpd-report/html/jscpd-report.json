@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-14T13:49:59.026Z",
+    "detectionDate": "2026-02-18T08:50:51.855Z",
     "formats": {
       "java": {
         "sources": {
@@ -1998,7 +1998,19 @@
           },
           ".github/workflows/reusable-native.yml": {
             "lines": 443,
-            "tokens": 2290,
+            "tokens": 2300,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          ".github/workflows/renovate.yml": {
+            "lines": 55,
+            "tokens": 316,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2010,85 +2022,85 @@
           },
           ".github/workflows/release.yml": {
             "lines": 500,
-            "tokens": 1889,
+            "tokens": 1895,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 63,
-            "duplicatedTokens": 338,
-            "percentage": 12.6,
-            "percentageTokens": 17.89,
+            "clones": 4,
+            "duplicatedLines": 78,
+            "duplicatedTokens": 435,
+            "percentage": 15.6,
+            "percentageTokens": 22.96,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/native.yml": {
             "lines": 102,
-            "tokens": 564,
+            "tokens": 566,
             "sources": 1,
-            "clones": 5,
-            "duplicatedLines": 169,
-            "duplicatedTokens": 933,
-            "percentage": 165.69,
-            "percentageTokens": 165.43,
+            "clones": 6,
+            "duplicatedLines": 184,
+            "duplicatedTokens": 1036,
+            "percentage": 180.39,
+            "percentageTokens": 183.04,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/jekyll.yml": {
             "lines": 204,
-            "tokens": 1200,
+            "tokens": 1210,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 22,
-            "duplicatedTokens": 123,
+            "duplicatedTokens": 125,
             "percentage": 10.78,
-            "percentageTokens": 10.25,
+            "percentageTokens": 10.33,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
             "lines": 419,
-            "tokens": 2824,
+            "tokens": 2828,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 49,
-            "duplicatedTokens": 256,
+            "duplicatedTokens": 258,
             "percentage": 11.69,
-            "percentageTokens": 9.07,
+            "percentageTokens": 9.12,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/codeql.yml": {
-            "lines": 371,
-            "tokens": 2300,
+            "lines": 364,
+            "tokens": 2266,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 49,
-            "duplicatedTokens": 308,
-            "percentage": 13.21,
-            "percentageTokens": 13.39,
+            "duplicatedTokens": 310,
+            "percentage": 13.46,
+            "percentageTokens": 13.68,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/android_repeatable.yml": {
             "lines": 277,
-            "tokens": 1376,
+            "tokens": 1384,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 49,
-            "duplicatedTokens": 308,
+            "duplicatedTokens": 310,
             "percentage": 17.69,
-            "percentageTokens": 22.38,
+            "percentageTokens": 22.4,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/android.yml": {
             "lines": 139,
-            "tokens": 682,
+            "tokens": 684,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 49,
-            "duplicatedTokens": 236,
+            "duplicatedTokens": 238,
             "percentage": 35.25,
-            "percentageTokens": 34.6,
+            "percentageTokens": 34.8,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2178,14 +2190,14 @@
           }
         },
         "total": {
-          "lines": 3271,
-          "tokens": 18309,
-          "sources": 24,
-          "clones": 8,
-          "duplicatedLines": 225,
-          "duplicatedTokens": 1251,
-          "percentage": 6.88,
-          "percentageTokens": 6.83,
+          "lines": 3319,
+          "tokens": 18633,
+          "sources": 25,
+          "clones": 9,
+          "duplicatedLines": 240,
+          "duplicatedTokens": 1356,
+          "percentage": 7.23,
+          "percentageTokens": 7.28,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2265,14 +2277,14 @@
             "newClones": 0
           },
           "scripts/release_notes.sh": {
-            "lines": 396,
-            "tokens": 1955,
+            "lines": 397,
+            "tokens": 1960,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 37,
             "duplicatedTokens": 109,
-            "percentage": 9.34,
-            "percentageTokens": 5.58,
+            "percentage": 9.32,
+            "percentageTokens": 5.56,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2362,8 +2374,8 @@
           }
         },
         "total": {
-          "lines": 4976,
-          "tokens": 33310,
+          "lines": 4977,
+          "tokens": 33315,
           "sources": 14,
           "clones": 12,
           "duplicatedLines": 279,
@@ -2457,6 +2469,30 @@
             "duplicatedTokens": 81,
             "percentage": 27.27,
             "percentageTokens": 24.62,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          ".github/ISSUE_TEMPLATE/feature_request.md": {
+            "lines": 19,
+            "tokens": 157,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          ".github/ISSUE_TEMPLATE/bug_report.md": {
+            "lines": 37,
+            "tokens": 259,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2582,14 +2618,14 @@
           }
         },
         "total": {
-          "lines": 2506,
-          "tokens": 25493,
-          "sources": 17,
+          "lines": 2562,
+          "tokens": 25909,
+          "sources": 19,
           "clones": 1,
           "duplicatedLines": 15,
           "duplicatedTokens": 81,
-          "percentage": 0.6,
-          "percentageTokens": 0.32,
+          "percentage": 0.59,
+          "percentageTokens": 0.31,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3296,14 +3332,14 @@
       }
     },
     "total": {
-      "lines": 31076,
-      "tokens": 238303,
-      "sources": 261,
-      "clones": 121,
-      "duplicatedLines": 1510,
-      "duplicatedTokens": 14140,
-      "percentage": 4.86,
-      "percentageTokens": 5.93,
+      "lines": 31181,
+      "tokens": 239048,
+      "sources": 264,
+      "clones": 122,
+      "duplicatedLines": 1525,
+      "duplicatedTokens": 14245,
+      "percentage": 4.89,
+      "percentageTokens": 5.96,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7091,6 +7127,42 @@
     },
     {
       "format": "yaml",
+      "lines": 16,
+      "fragment": "}}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/native.yml",
+        "start": 60,
+        "end": 75,
+        "startLoc": {
+          "line": 60,
+          "column": 2,
+          "position": 296
+        },
+        "endLoc": {
+          "line": 75,
+          "column": 4,
+          "position": 391
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 35,
+        "end": 50,
+        "startLoc": {
+          "line": 35,
+          "column": 2,
+          "position": 201
+        },
+        "endLoc": {
+          "line": 50,
+          "column": 6,
+          "position": 296
+        }
+      }
+    },
+    {
+      "format": "yaml",
       "lines": 15,
       "fragment": "}}\n    uses: ./.github/workflows/reusable-native.yml\n\n    # Sets permissions of the GITHUB_TOKEN to allow delete cache\n    permissions:\n      actions: write\n\n    with:\n      host_os: ${{ matrix.host_os }}\n      type: ${{ matrix.type }}\n      compiler: ${{ matrix.compiler }}\n      qt_version: ${{ matrix.qt_version }}\n      qt_arch: ${{ matrix.qt_arch }}\n    # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation\n    secrets: inherit",
       "tokens": 0,
@@ -7101,12 +7173,12 @@
         "startLoc": {
           "line": 89,
           "column": 2,
-          "position": 462
+          "position": 464
         },
         "endLoc": {
           "line": 103,
           "column": 8,
-          "position": 564
+          "position": 566
         }
       },
       "secondFile": {
@@ -7116,19 +7188,19 @@
         "startLoc": {
           "line": 92,
           "column": 2,
-          "position": 546
+          "position": 548
         },
         "endLoc": {
           "line": 106,
           "column": 8,
-          "position": 648
+          "position": 650
         }
       }
     },
     {
       "format": "yaml",
       "lines": 23,
-      "fragment": "-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/jekyll-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/jekyll-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/jekyll.yml",
@@ -7142,7 +7214,7 @@
         "endLoc": {
           "line": 69,
           "column": 55,
-          "position": 298
+          "position": 300
         }
       },
       "secondFile": {
@@ -7157,14 +7229,14 @@
         "endLoc": {
           "line": 82,
           "column": 55,
-          "position": 393
+          "position": 395
         }
       }
     },
     {
       "format": "yaml",
       "lines": 50,
-      "fragment": "- '!**/CMakeLists*'\n    - '!**/AndroidTest/resources/**'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!**/*.ui*'\n\npermissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/docker-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "- '!**/CMakeLists*'\n    - '!**/AndroidTest/resources/**'\n    - '!**/*.c*'\n    - '!**/*.h'\n    - '!**/*.hpp'\n    - '!**/*.ui*'\n\npermissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/docker-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/docker.yml",
@@ -7178,7 +7250,7 @@
         "endLoc": {
           "line": 73,
           "column": 55,
-          "position": 361
+          "position": 363
         }
       },
       "secondFile": {
@@ -7193,28 +7265,28 @@
         "endLoc": {
           "line": 82,
           "column": 55,
-          "position": 393
+          "position": 395
         }
       }
     },
     {
       "format": "yaml",
       "lines": 43,
-      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/codeql-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/codeql-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/codeql.yml",
-        "start": 36,
-        "end": 78,
+        "start": 35,
+        "end": 77,
         "startLoc": {
-          "line": 36,
+          "line": 35,
           "column": 1,
-          "position": 162
+          "position": 157
         },
         "endLoc": {
-          "line": 78,
+          "line": 77,
           "column": 55,
-          "position": 388
+          "position": 385
         }
       },
       "secondFile": {
@@ -7229,14 +7301,14 @@
         "endLoc": {
           "line": 82,
           "column": 55,
-          "position": 393
+          "position": 395
         }
       }
     },
     {
       "format": "yaml",
       "lines": 43,
-      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/android_repeatable-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "permissions: {}\n\ndefaults:\n  run:\n    shell: sh\n    working-directory: .\n\nconcurrency:\n  group: ${{ github.workflow }} ${{ github.ref }}\n  cancel-in-progress: true\n\n# Default environment variables.\nenv:\n  GITHUB_STEP_TIMEOUT_SMALL: 4\n  GITHUB_STEP_TIMEOUT_MEDIUM: 10\n  GITHUB_STEP_TIMEOUT_LONG: 20\n\njobs:\n  Matrix:\n    name: Set Matrix\n    runs-on: macos-latest\n    timeout-minutes: 2\n\n    outputs:\n      matrix: ${{ steps.set-matrix.outputs.matrix }}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run: |\n          MATRIX=$(echo $(cat .github/workflows/android_repeatable-matrix.json) | sed 's/ //g');\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android_repeatable.yml",
@@ -7250,7 +7322,7 @@
         "endLoc": {
           "line": 58,
           "column": 55,
-          "position": 286
+          "position": 288
         }
       },
       "secondFile": {
@@ -7265,7 +7337,7 @@
         "endLoc": {
           "line": 82,
           "column": 55,
-          "position": 393
+          "position": 395
         }
       }
     },
@@ -7281,27 +7353,27 @@
         "startLoc": {
           "line": 232,
           "column": 9,
-          "position": 1147
+          "position": 1153
         },
         "endLoc": {
           "line": 239,
           "column": 98,
-          "position": 1229
+          "position": 1235
         }
       },
       "secondFile": {
         "name": ".github/workflows/codeql.yml",
-        "start": 239,
-        "end": 246,
+        "start": 232,
+        "end": 239,
         "startLoc": {
-          "line": 239,
+          "line": 232,
           "column": 9,
-          "position": 1462
+          "position": 1420
         },
         "endLoc": {
-          "line": 246,
+          "line": 239,
           "column": 104,
-          "position": 1544
+          "position": 1502
         }
       }
     },
@@ -7344,7 +7416,7 @@
     {
       "format": "yaml",
       "lines": 24,
-      "fragment": "steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        shell: bash\n        run: |\n          # Android usage: https://apilevels.com\n          MATRIX=$(echo $(cat .github/workflows/android-matrix.json) | sed 's/ //g');\n          randomAndroidApi=$(shuf -i17-35 -n1);\n          while [ \"${randomAndroidApi}\" = '19' ] || [ \"${randomAndroidApi}\" = '20' ] || [ \"${randomAndroidApi}\" = '21' ]; do\n            randomAndroidApi=$(shuf -i17-35 -n1);\n          done\n          MATRIX=${MATRIX/XY/$randomAndroidApi};\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        shell: bash\n        run: |\n          # Android usage: https://apilevels.com\n          MATRIX=$(echo $(cat .github/workflows/android-matrix.json) | sed 's/ //g');\n          randomAndroidApi=$(shuf -i17-35 -n1);\n          while [ \"${randomAndroidApi}\" = '19' ] || [ \"${randomAndroidApi}\" = '20' ] || [ \"${randomAndroidApi}\" = '21' ]; do\n            randomAndroidApi=$(shuf -i17-35 -n1);\n          done\n          MATRIX=${MATRIX/XY/$randomAndroidApi};\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
@@ -7358,7 +7430,7 @@
         "endLoc": {
           "line": 87,
           "column": 55,
-          "position": 406
+          "position": 408
         }
       },
       "secondFile": {
@@ -7373,7 +7445,7 @@
         "endLoc": {
           "line": 62,
           "column": 69,
-          "position": 304
+          "position": 306
         }
       }
     },
