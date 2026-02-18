@@ -1,0 +1,54 @@
+name: Renovate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"  # every 6 hours
+  push:
+    tags-ignore:
+    - '**'
+    paths-ignore:
+    - '*'
+    - '**/**'
+    - '!.github/workflows/renovate.yml'
+    - '!renovate.json'
+
+permissions: {}
+
+defaults:
+  run:
+    shell: sh
+    working-directory: .
+
+concurrency:
+  group: ${{ github.workflow }} ${{ github.ref }}
+  cancel-in-progress: true
+
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 4
+  GITHUB_STEP_TIMEOUT_MEDIUM: 10
+  GITHUB_STEP_TIMEOUT_LONG: 20
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/checkout@v6
+
+      - name: Validate Renovate configurations
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          npx --package renovate@latest -- renovate-config-validator renovate.json;
+
+      - name: Run Renovate
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        uses: renovatebot/github-action@v46
+        if: success()
+        with:
+          # Check available parameters in: https://github.com/renovatebot/github-action/blob/master/action.yml
+          token: ${{ secrets.RENOVATE_TOKEN }}

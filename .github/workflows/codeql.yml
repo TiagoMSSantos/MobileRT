@@ -105,12 +105,6 @@ jobs:
         # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
         lfs: true
 
-    - name: Validate Renovate configurations
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'ruby'
-      run: |
-        npx --package renovate@latest -- renovate-config-validator renovate.json;
-
     - name: Set up JDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java-kotlin'

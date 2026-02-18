@@ -117,6 +117,7 @@ producePayload() {
     ':(exclude)*.mtl' \
     ':(exclude)*.cam' \
     ':(exclude)*.apk' \
+    ':(exclude)*renovate.json' \
     | tr -d '\000-\010\013\014\016-\037\177' \
     | awk '
       NF == 0 { next }
