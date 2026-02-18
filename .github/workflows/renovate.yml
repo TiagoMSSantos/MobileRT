@@ -53,7 +53,9 @@ jobs:
         if: success()
         env:
           LOG_LEVEL: debug
+          RENOVATE_AUTODISCOVER: true
         with:
           # Check available parameters in: https://github.com/renovatebot/github-action/blob/master/action.yml
           configurationFile: renovate.json
           token: ${{ secrets.RENOVATE_TOKEN }}
+          docker-user: root
