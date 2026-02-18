@@ -165,7 +165,7 @@ jobs:
     - name: Login to DockerHub Registry
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+      uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
       with:
         # Check available parameters in: https://github.com/docker/login-action/blob/master/action.yml
         username: ${{ secrets.DOCKERHUB_USERNAME }}
