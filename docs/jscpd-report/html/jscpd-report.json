@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-18T21:21:13.878Z",
+    "detectionDate": "2026-02-18T21:39:29.914Z",
     "formats": {
       "java": {
         "sources": {
@@ -2349,14 +2349,14 @@
             "newClones": 0
           },
           "scripts/compile_android.sh": {
-            "lines": 174,
-            "tokens": 955,
+            "lines": 170,
+            "tokens": 903,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 65,
             "duplicatedTokens": 209,
-            "percentage": 37.36,
-            "percentageTokens": 21.88,
+            "percentage": 38.24,
+            "percentageTokens": 23.15,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2374,14 +2374,14 @@
           }
         },
         "total": {
-          "lines": 5012,
-          "tokens": 33674,
+          "lines": 5008,
+          "tokens": 33622,
           "sources": 14,
           "clones": 13,
           "duplicatedLines": 299,
           "duplicatedTokens": 1401,
           "percentage": 5.97,
-          "percentageTokens": 4.16,
+          "percentageTokens": 4.17,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3332,8 +3332,8 @@
       }
     },
     "total": {
-      "lines": 31222,
-      "tokens": 239433,
+      "lines": 31218,
+      "tokens": 239381,
       "sources": 264,
       "clones": 123,
       "duplicatedLines": 1545,

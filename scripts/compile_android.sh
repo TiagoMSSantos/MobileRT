@@ -122,10 +122,6 @@ build() {
     -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
     --console plain --info --warning-mode all --stacktrace;
   resCompile=${?};
-  echo 'Compiling APK to execute Android instrumentation tests.';
-  callCommandUntilSuccess 2 sh gradlew createDebugAndroidTestApkListingFileRedirect \
-    -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]" \
-    --profile --parallel --console plain --info --warning-mode fail --stacktrace;
   echo 'Android application compiled.';
 }
 ###############################################################################
