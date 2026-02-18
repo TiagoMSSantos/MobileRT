@@ -295,7 +295,9 @@ jobs:
             . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
             # . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
           else
-            . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+            if [ "${{ inputs.type }}" = 'debug' ]; then
+              . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+            fi
           fi
 
       - name: Upload generated binaries to cache
@@ -573,7 +575,9 @@ jobs:
             . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
             # . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
           else
-            . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+            if [ "${{ inputs.type }}" = 'debug' ]; then
+              . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+            fi
           fi
 
       - name: Enable KVM group permissions
@@ -975,7 +979,9 @@ jobs:
             . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
             # . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
           else
-            . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+            if [ "${{ inputs.type }}" = 'debug' ]; then
+              . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+            fi
           fi
 
       - name: Set Android CPU Architecture
@@ -1264,7 +1270,9 @@ jobs:
             . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/${{ inputs.type }}/compile${typeWithCapitalLetter}JavaWithJavac/classes;
             # . scripts/helper_functions.sh && checkPathExists app/build/intermediates/built_in_kotlinc/${{ inputs.type }}/compile${typeWithCapitalLetter}Kotlin/classes;
           else
-            . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+            if [ "${{ inputs.type }}" = 'debug' ]; then
+              . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
+            fi
           fi
 
       - name: Create report's folders

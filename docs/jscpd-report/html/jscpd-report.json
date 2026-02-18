@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-18T21:39:29.914Z",
+    "detectionDate": "2026-02-18T22:13:53.736Z",
     "formats": {
       "java": {
         "sources": {
@@ -7416,7 +7416,7 @@
     {
       "format": "yaml",
       "lines": 24,
-      "fragment": "steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        shell: bash\n        run: |\n          # Android usage: https://apilevels.com\n          MATRIX=$(echo $(cat .github/workflows/android-matrix.json) | sed 's/ //g');\n          randomAndroidApi=$(shuf -i17-35 -n1);\n          while [ \"${randomAndroidApi}\" = '19' ] || [ \"${randomAndroidApi}\" = '20' ] || [ \"${randomAndroidApi}\" = '21' ]; do\n            randomAndroidApi=$(shuf -i17-35 -n1);\n          done\n          MATRIX=${MATRIX/XY/$randomAndroidApi};\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
+      "fragment": "steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        shell: bash\n        run: |\n          # Android usage: https://apilevels.com\n          MATRIX=$(echo $(cat .github/workflows/android-matrix.json) | sed 's/ //g');\n          randomAndroidApi=$(shuf -i17-35 -n1);\n          while [ \"${randomAndroidApi}\" = '19' ] || [ \"${randomAndroidApi}\" = '20' ] || [ \"${randomAndroidApi}\" = '21' ]; do\n            randomAndroidApi=$(shuf -i17-35 -n1);\n          done\n          MATRIX=${MATRIX//XY/$randomAndroidApi};\n          echo \"Matrix: ${MATRIX}\";\n          echo \"matrix=${MATRIX}\" >> ${GITHUB_OUTPUT};",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/android.yml",
