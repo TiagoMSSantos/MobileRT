@@ -459,7 +459,7 @@
       "matchPackageNames": [
         "*"
       ],
-      "versioning": "regex:^r?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
+      "versioning": "regex:^r?v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
       "rangeStrategy": "replace",
       "enabled": true,
       "pinDigests": false
