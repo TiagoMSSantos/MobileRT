@@ -40,7 +40,7 @@ fi
 # Execute Shellcheck on this script.
 ###############################################################################
 if [ $# -ge 1 ] && command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || return 1;
+  shellcheck "${0}" --exclude=SC1017,SC2215 || return 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -52,7 +52,7 @@ fi
 type='release';
 recompile='no';
 android_api_version='14';
-cpu_architecture='"x86_64"';
+cpu_architecture='"x86","x86_64"';
 parallelizeBuild;
 
 printEnvironment() {

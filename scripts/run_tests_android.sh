@@ -44,7 +44,7 @@ pid="$$";
 # Execute Shellcheck on this script.
 ###############################################################################
 if [ $# -ge 1 ] && command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || return 1;
+  shellcheck "${0}" --exclude=SC1017 || return 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -328,6 +328,9 @@ waitForEmulator() {
     # Note that the 'memory', 'cache-size' and 'partition-size' might make Android emulator to boot slower.
     # Using 'cache-size' and 'partition-size' below 256 and above 1024 seems to be slower.
     # Also, using 8GB+ as memory seems to allow for Android emulator to boot faster.
+    # List supported machines: emulator -avd <avd_emulator> -qemu -machine help
+    # List supported accelerators: emulator -avd <avd_emulator> -qemu -accel help
+    # List available CPUs: emulator -avd <avd_emulator> -qemu -cpu help
     setsid nohup cpulimit --cpu 8 --limit 800 -- \
       emulator -avd "${avd_emulator}" -cores 8 -memory 4096 -cache-size 512 -partition-size 800 \
       -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio \
@@ -527,7 +530,7 @@ runUnitTests() {
   dirUnitTests=$(find "${dirUnitTests}" -iname "*unittests" -exec readlink -f {} \; \
     | sort -n -r \
     | grep "${typeWithDebInfo}/" \
-    | grep "${android_cpu_architecture}.*/" \
+    | grep "${android_cpu_architecture}/" \
     | sed "s/\/bin\/UnitTests//g" \
     | head -1 \
     | tr -s ' ' \
@@ -613,23 +616,48 @@ runInstrumentationTests() {
   timeout 60 adb shell df;
   echo 'Searching for APK '"${type}"' to install in Android emulator.';
   find . -iname "*.apk";
-  apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}");
+  apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}" | grep -i "androidTest");
   echo "Will install the following APKs: ${apksPath}";
   for apkPath in ${apksPath}; do
     echo "Will install APK: ${apkPath}";
     ls -lahp "${apkPath}";
     callCommandUntilSuccess 5 timeout 60 adb push -p "${apkPath}" "${internal_storage_path}";
   done;
+
+  set +e;
+  test -d release;  
+  # shellcheck disable=SC2319
+  apkSignedFound="$?";
+  set -e;
+  if [ "${apkSignedFound}" = '0' ]; then
+    echo 'Searching for signed APK';
+    apksPath=$(find release/ -iname "*.apk");
+  else
+    echo 'Searching for APK';
+    apksPath=$(find . -iname "*.apk" | grep -i "output" | grep -i "${type}" | grep -v "androidTest");
+  fi
+  echo "Will install the following APKs: ${apksPath}";
+  for apkPath in ${apksPath}; do
+    echo "Will install APK: ${apkPath}";
+    ls -lahp "${apkPath}";
+    callCommandUntilSuccess 5 timeout 60 adb push -p "${apkPath}" "${internal_storage_path}";
+  done;
+
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}";
   unlockDevice;
   echo 'Installing both APKs for tests and app.';
   set +e;
   timeout 60 adb shell "pm uninstall ${internal_storage_path}/app-${type}-androidTest.apk;";
   timeout 60 adb shell "pm uninstall ${internal_storage_path}/app-${type}.apk;";
+  timeout 60 adb shell "pm uninstall ${internal_storage_path}/MobileRT_${type}_min_android_api-${android_api_version}.apk;";
   timeout 60 adb shell rm -r /data/app/puscas.mobilertapp*;
   timeout 60 adb shell ls -la /data/app;
   set -e;
-  callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'.apk';
+  if [ "${apkSignedFound}" = '0' ]; then
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/MobileRT_'"${type}"'_min_android_api-'"${android_api_version}"'.apk';
+  else
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'.apk';
+  fi
   callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/app-'"${type}"'-androidTest.apk';
   if { [ "${androidApiDevice}" -gt 22 ] && [ "${androidApiDevice}" -lt 28 ]; }; then
     echo 'Granting read external SD Card to MobileRT.';

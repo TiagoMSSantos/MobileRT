@@ -72,10 +72,12 @@ buildDockerImage() {
     exit 1;
   fi
 
-  imageId=$(docker images | awk '{print $3}' | awk 'NR==2');
+  docker images -a --digests;
+  docker images -a --digests | awk '{print $4}';
+  imageId=$(docker images -a --digests | awk '{print $4}' | awk 'NR==2');
   echo "MobileRT imageId: ${imageId}";
   docker tag "${imageId}" ptpuscas/mobile_rt:"${3}";
-  docker images;
+  docker images -a --digests;
 }
 
 # Helper command to pull the MobileRT docker image.

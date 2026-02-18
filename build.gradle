@@ -27,8 +27,8 @@ buildscript {
     // This block encapsulates custom properties and makes them available to all
     // modules in the project.
     ext {
-        systemTestType = System.getProperty('testType', 'debug')
-        final def customAbiFilters = System.getProperty('abiFilters', '["x86","x86_64"]')
+        systemTestType = System.getProperty('testType', 'release')
+        final def customAbiFilters = System.getProperty('abiFilters', '["x86_64","x86","arm64-v8a","armeabi-v7a"]')
         systemAbiFilters = new JsonSlurper().parseText(customAbiFilters) as String[]
 
         // The default minimum Android API version possible is 14 due to compatibility with Appcompat dependency.

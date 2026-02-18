@@ -107,13 +107,13 @@ First, install all the necessary dependencies:
 
 ```shell
 sh scripts/install_dependencies.sh;
-sh gradlew build -DandroidApiVersion='<android_api>' -DabiFilters='["<cpu_architecture>"]' --dry-run -Dorg.gradle.configuration-cache=true --parallel --info --warning-mode all --stacktrace;
+sh gradlew build -DandroidApiVersion='{android_api}' -DabiFilters='["{cpu_architecture}"]' --dry-run -Dorg.gradle.configuration-cache=true --parallel --info --warning-mode all --stacktrace;
 ```
 
 Then, to finally compile this code for Android, execute the following command:
 
 ```shell
-sh scripts/compile_android.sh -c g++ -t release -r yes -a <android_api> -f \"<cpu_architecture>\";
+sh scripts/compile_android.sh -c g++ -t release -r yes -a {android_api} -f \"{cpu_architecture}\";
 ```
 
 ## Models Wavefront OBJ

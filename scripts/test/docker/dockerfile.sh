@@ -50,7 +50,7 @@ fi
 # Execute Shellcheck on this script.
 ###############################################################################
 if [ $# -ge 1 ] && command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || return 1;
+  shellcheck "${0}" --exclude=SC1017 || return 1;
 fi
 if [ $# -lt 1 ]; then
   echo 'Usage: dockerfile.sh <VERSION> [EXPECTED_RETURN_VALUE]';

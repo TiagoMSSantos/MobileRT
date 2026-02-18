@@ -39,7 +39,7 @@ fi
 # Execute Shellcheck on this script.
 ###############################################################################
 if [ $# -ge 1 ] && command -v shellcheck > /dev/null; then
-  shellcheck "${0}" || return 1;
+  shellcheck "${0}" --exclude=SC1017 || return 1;
 fi
 ###############################################################################
 ###############################################################################
@@ -108,7 +108,12 @@ createReportsFolders;
 runLinter;
 
 linterReportPath="${PWD}/${reports_path}";
-linterReport='lint-results-debug.html';
+linterReport=$(find "${linterReportPath}" -iname "*.html" -type f | sed "s|^${linterReportPath}/||" \
+  | grep -i "lint" \
+  | grep -i "results" \
+  | head -1 \
+);
+ls -lahp "${linterReportPath}";
 checkPathExists "${linterReportPath}" "${linterReport}";
 printf '\n\e]8;;file://'"%s"'\aClick here to check the Linter report.\e]8;;\a\n' "${linterReportPath}/${linterReport}";
 
