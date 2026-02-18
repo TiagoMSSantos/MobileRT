@@ -284,7 +284,9 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+          if [ "${{ inputs.type }}" = 'debug' ]; then
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+          fi
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
@@ -560,7 +562,9 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+          if [ "${{ inputs.type }}" = 'debug' ]; then
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+          fi
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
@@ -960,7 +964,9 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+          if [ "${{ inputs.type }}" = 'debug' ]; then
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+          fi
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
@@ -1245,9 +1251,11 @@ jobs:
           . scripts/helper_functions.sh && checkPathExists app/build;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates;
           . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;
-          . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;
+          if [ "${{ inputs.type }}" = 'debug' ]; then
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debug;
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugUnitTest;
+            . scripts/helper_functions.sh && checkPathExists app/build/intermediates/javac/debugAndroidTest;
+          fi
           . scripts/helper_functions.sh && checkPathExists app/.cxx;
           . scripts/helper_functions.sh && checkPathExists app/third_party;
           . scripts/helper_functions.sh && checkPathExists ${{ env.GRADLE_PATH }};
