@@ -43,7 +43,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -145,7 +145,7 @@ jobs:
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
@@ -263,7 +263,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -299,7 +299,7 @@ jobs:
       - name: Upload generated binaries to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -368,7 +368,7 @@ jobs:
         timeout-minutes: 20
         if: success() && strategy.job-index == 0 && !startsWith(inputs.host_os, 'windows')
         continue-on-error: true
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: gradle-packages
@@ -396,7 +396,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -519,7 +519,7 @@ jobs:
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
@@ -538,7 +538,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -687,7 +687,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -759,7 +759,7 @@ jobs:
       - name: Upload reports to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'debug'
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -784,7 +784,7 @@ jobs:
       - name: Upload APK as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'release'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
@@ -797,7 +797,7 @@ jobs:
       - name: Upload test screenshots as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: MobileRT_${{ inputs.type }}_android_api-a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_test_screenshots
@@ -823,7 +823,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -919,7 +919,7 @@ jobs:
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
@@ -938,7 +938,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -1023,7 +1023,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -1101,7 +1101,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -1203,7 +1203,7 @@ jobs:
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
@@ -1223,7 +1223,7 @@ jobs:
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -1268,7 +1268,7 @@ jobs:
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
@@ -1343,7 +1343,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -1373,7 +1373,7 @@ jobs:
       - name: Upload reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: reports_${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}

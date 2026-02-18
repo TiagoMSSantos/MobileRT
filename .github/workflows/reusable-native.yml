@@ -48,7 +48,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -339,7 +339,7 @@ jobs:
       - name: Upload code coverage to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'debug' && startsWith(inputs.compiler, 'g++')
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
@@ -354,7 +354,7 @@ jobs:
       - name: Upload binaries as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && inputs.type == 'release'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: MobileRT_${{ inputs.type }}_os-${{ inputs.host_os }}_build-${{ inputs.compiler }}
@@ -375,7 +375,7 @@ jobs:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
@@ -383,7 +383,7 @@ jobs:
       - name: Download reports from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
           key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_${{ inputs.host_os }}_${{ inputs.type }}_${{ inputs.compiler }}
