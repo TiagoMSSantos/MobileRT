@@ -52,9 +52,9 @@ jobs:
         uses: renovatebot/github-action@d65ef9e20512193cc070238b49c3873a361cd50c # v46.1.1
         if: success()
         env:
-          LOG_LEVEL: "debug"
-          RENOVATE_AUTODISCOVER: "false"
-          RENOVATE_REPOSITORIES: "[${{ github.repository }}]"
+          LOG_LEVEL: 'debug'
+          RENOVATE_AUTODISCOVER: 'false'
+          RENOVATE_REPOSITORIES: '["${{ github.repository }}"]'
         with:
           # Check available parameters in: https://github.com/renovatebot/github-action/blob/master/action.yml
           configurationFile: renovate.json
