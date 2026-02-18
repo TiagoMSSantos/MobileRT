@@ -137,7 +137,7 @@ jobs:
       - name: Doxygen build
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && runner.os == 'Linux'
-        uses: mattnotmitt/doxygen-action@b84fe17600245bb5db3d6c247cc274ea98c15a3b # v1
+        uses: mattnotmitt/doxygen-action@b84fe17600245bb5db3d6c247cc274ea98c15a3b # v1.12
         with:
           # Check available parameters in: https://github.com/mattnotmitt/doxygen-action/blob/master/action.yml
           doxyfile-path: ".codedocs" # Path to Doxyfile (default is ./Doxyfile)
