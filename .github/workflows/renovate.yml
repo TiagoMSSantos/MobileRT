@@ -51,6 +51,9 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         uses: renovatebot/github-action@d65ef9e20512193cc070238b49c3873a361cd50c # v46.1.1
         if: success()
+        env:
+          LOG_LEVEL: debug
         with:
           # Check available parameters in: https://github.com/renovatebot/github-action/blob/master/action.yml
+          configurationFile: renovate.json
           token: ${{ secrets.RENOVATE_TOKEN }}
