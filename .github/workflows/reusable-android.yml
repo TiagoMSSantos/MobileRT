@@ -735,7 +735,7 @@ jobs:
 
       - name: Upload Android Test results to Codecov
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/test-results-action@5c441a7bcc06f8706cde90192857d337c5dab8a6 # v1.0.4
+        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
         with:
           # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -1077,7 +1077,7 @@ jobs:
 
       - name: Upload Unit Test results to Codecov
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/test-results-action@5c441a7bcc06f8706cde90192857d337c5dab8a6 # v1.0.4
+        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
         with:
           # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
           token: ${{ secrets.CODECOV_TOKEN }}
