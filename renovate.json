@@ -136,8 +136,8 @@
       ],
       "matchStringsStrategy": "combination",
       "matchStrings": [
-        "uses:\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[a-f0-9]{40})",
-        "action:\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[a-f0-9]{40})"
+        "uses:\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)",
+        "action:\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)"
       ],
       "datasourceTemplate": "github-digest",
       "customType": "regex",
