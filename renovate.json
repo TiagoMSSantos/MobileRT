@@ -711,7 +711,8 @@
       ],
       "matchManagers": [
         "custom.regex",
-        "gradle"
+        "gradle",
+        "maven"
       ],
       "matchCurrentVersion": "/^1\\.6\\..+$/",
       "matchCurrentValue": "/^1\\.6\\..+$/"
