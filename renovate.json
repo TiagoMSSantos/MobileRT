@@ -453,19 +453,6 @@
   ],
   "packageRules": [
     {
-      "description": "Enable all by default",
-      "matchDatasources": [
-        "!/github-digest/"
-      ],
-      "matchPackageNames": [
-        "*"
-      ],
-      "versioning": "regex:^r?v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
-      "rangeStrategy": "replace",
-      "enabled": true,
-      "pinDigests": false
-    },
-    {
       "groupName": "Github releases",
       "enabled": true,
       "pinDigests": false,
@@ -849,6 +836,19 @@
       "versioning": "loose",
       "matchCurrentVersion": "!/^(24\\.04)|(15)|(2025)$/",
       "matchCurrentValue": "!/^(24\\.04)|(15)|(2025)$/"
+    },
+    {
+      "description": "Enable all by default",
+      "matchDatasources": [
+        "!/github-digest/"
+      ],
+      "matchPackageNames": [
+        "*"
+      ],
+      "versioning": "regex:^r?v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
+      "rangeStrategy": "replace",
+      "enabled": true,
+      "pinDigests": false
     }
   ]
 }
