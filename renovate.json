@@ -455,7 +455,7 @@
     {
       "description": "Enable all by default",
       "matchDatasources": [
-        "*"
+        "!/github-digest/"
       ],
       "matchPackageNames": [
         "*"
