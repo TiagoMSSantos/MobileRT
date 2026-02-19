@@ -520,14 +520,6 @@
       "automerge": false
     },
     {
-      "groupName": "Github Runners",
-      "enabled": true,
-      "matchDatasources": [
-        "github-runners"
-      ],
-      "versioning": "loose"
-    },
-    {
       "groupName": "Docker images",
       "enabled": true,
       "matchManagers": [
@@ -824,11 +816,6 @@
       "matchDatasources": [
         "github-runners"
       ],
-      "matchPackageNames": [
-        "ubuntu",
-        "macos",
-        "windows"
-      ],
       "matchDepNames": [
         "ubuntu",
         "macos",
@@ -837,6 +824,14 @@
       "versioning": "loose",
       "matchCurrentVersion": "!/^((24\\.04)|(15)|(2025))(-arm)?$/",
       "matchCurrentValue": "!/^((24\\.04)|(15)|(2025))(-arm)?$/"
+    },
+    {
+      "groupName": "Github Runners",
+      "enabled": true,
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "versioning": "loose"
     },
     {
       "description": "Enable all by default",
