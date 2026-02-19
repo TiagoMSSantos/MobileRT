@@ -23,7 +23,7 @@
   "dependencyDashboardOSVVulnerabilitySummary": "all",
   "configMigration": true,
   "timezone": "UTC",
-  "branchPrefix": "up-renovate-",
+  "branchPrefix": "renovate-",
   "fetchChangeLogs": "pr",
   "separateMajorMinor": true,
   "separateMinorPatch": true,
@@ -139,7 +139,7 @@
         "uses:\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)",
         "action:\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)"
       ],
-      "datasourceTemplate": "github-digest",
+      "datasourceTemplate": "github-tags",
       "customType": "regex",
       "registryUrlTemplate": "https://github.com"
     },
@@ -463,7 +463,7 @@
       "versioning": "regex:^r?v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
       "rangeStrategy": "replace",
       "enabled": true,
-      "pinDigests": true
+      "pinDigests": false
     },
     {
       "groupName": "Github releases",
@@ -497,8 +497,8 @@
     },
     {
       "description": "Update Github Actions to specific commit SHA versions, since its more secure: https://docs.github.com/en/actions/how-tos/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-third-party-actions",
-      "matchDepTypes": [
-        "action"
+      "matchManagers": [
+        "github-actions"
       ],
       "enabled": true,
       "pinDigests": true,
