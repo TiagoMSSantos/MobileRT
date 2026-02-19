@@ -138,7 +138,7 @@
       "matchStrings": [
         "(?:uses|action):\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[a-f0-9]{40})"
       ],
-      "datasourceTemplate": "github-tags",
+      "datasourceTemplate": "github-digest",
       "customType": "regex",
       "registryUrlTemplate": "https://github.com"
     },
