@@ -489,7 +489,7 @@
     },
     {
       "description": "Update Docker, but not to specific digest versions",
-      "matchCategories": [
+      "matchDatasources": [
         "docker"
       ],
       "enabled": true,
