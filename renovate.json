@@ -817,13 +817,25 @@
         "github-runners"
       ],
       "matchDepNames": [
-        "ubuntu",
         "macos",
         "windows"
       ],
       "versioning": "loose",
-      "matchCurrentVersion": "!/^((24\\.04)|(15)|(2025))(-arm)?$/",
-      "matchCurrentValue": "!/^((24\\.04)|(15)|(2025))(-arm)?$/"
+      "matchCurrentVersion": "!/^((15)|(2025))(-arm)?$/",
+      "matchCurrentValue": "!/^((15)|(2025))(-arm)?$/"
+    },
+    {
+      "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
+      "enabled": false,
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "matchDepNames": [
+        "ubuntu"
+      ],
+      "versioning": "ubuntu",
+      "matchCurrentVersion": "!/^(24\\.04)(-arm)?$/",
+      "matchCurrentValue": "!/^(24\\.04)(-arm)?$/"
     },
     {
       "groupName": "Github Runners",
@@ -831,7 +843,22 @@
       "matchDatasources": [
         "github-runners"
       ],
+      "matchDepNames": [
+        "macos",
+        "windows"
+      ],
       "versioning": "loose"
+    },
+    {
+      "groupName": "Github Runners Ubuntu",
+      "enabled": true,
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "matchDepNames": [
+        "ubuntu"
+      ],
+      "versioning": "ubuntu"
     },
     {
       "description": "Enable all by default",
