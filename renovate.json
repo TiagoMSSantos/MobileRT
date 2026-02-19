@@ -835,8 +835,8 @@
         "windows"
       ],
       "versioning": "loose",
-      "matchCurrentVersion": "!/^(24\\.04)|(15)|(2025)$/",
-      "matchCurrentValue": "!/^(24\\.04)|(15)|(2025)$/"
+      "matchCurrentVersion": "!/^((24\\.04)|(15)|(2025))(-arm)?$/",
+      "matchCurrentValue": "!/^((24\\.04)|(15)|(2025))(-arm)?$/"
     },
     {
       "description": "Enable all by default",
