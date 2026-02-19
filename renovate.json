@@ -701,9 +701,7 @@
       "matchDepNames": [
         "androidx.appcompat:appcompat"
       ],
-      "matchManagers": [
-        "custom.regex",
-        "gradle",
+      "matchDatasources": [
         "maven"
       ],
       "matchCurrentVersion": "/^1\\.6\\..+$/",
