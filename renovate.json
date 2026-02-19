@@ -497,19 +497,14 @@
     },
     {
       "description": "Update Github Actions to specific commit SHA versions, since its more secure: https://docs.github.com/en/actions/how-tos/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-third-party-actions",
-      "matchDatasources": [
-        "!/docker/"
-      ],
-      "matchCategories": [
-        "!/docker/"
-      ],
       "matchManagers": [
         "custom.regex",
         "github-actions"
       ],
       "enabled": true,
       "pinDigests": true,
-      "automerge": true
+      "automerge": true,
+      "allowedVersions": "/^[a-f0-9]{40}$/"
     },
     {
       "description": "Allow automerge of any dependency update, except digest",
