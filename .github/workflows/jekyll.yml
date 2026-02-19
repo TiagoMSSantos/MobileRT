@@ -92,7 +92,7 @@ jobs:
       - name: Lint documentation files
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && runner.os == 'Linux'
-        uses: docker://avtodev/markdown-lint:v1.5
+        uses: docker://avtodev/markdown-lint:v1.5@sha256:c32ca9764ba4480cd1456236cd6c61113b3c306198ff733fc24bf2a223ca0ff6
         with:
           # Check available parameters in: https://github.com/avto-dev/markdown-lint/blob/master/action.yml
           config: 'docs/.markdownlint.json'
