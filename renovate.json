@@ -827,7 +827,7 @@
         "windows"
       ],
       "versioning": "loose",
-      "matchCurrentValue": "!/^((14)|(15))|(2022)|(2025))(-arm)?$/"
+      "matchCurrentValue": "!/^(((14)|(15))|(2022)|(2025))(-arm)?$/"
     },
     {
       "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
