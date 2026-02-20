@@ -124,7 +124,7 @@ jobs:
         cache-dependency-path: '**/build.gradle'
 
     - name: Add project root path
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
         if [ ${{ matrix.language }} = 'rust' ]; then
@@ -134,14 +134,16 @@ jobs:
         fi
 
     - name: Check available Android versions
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success() && matrix.language == 'java-kotlin'
       run: |
-        echo 'Available Android versions:';
-        du -h -d 1 ${ANDROID_HOME}/ndk;
-        du -h -d 1 ${ANDROID_HOME}/cmake || true;
-        du -h -d 1 ${ANDROID_HOME}/build-tools;
-        ls -lahp ${ANDROID_HOME}/platforms;
+        if [ -n "${ANDROID_HOME}" ]; then
+          echo 'Available Android versions:';
+          du -h -d 1 ${ANDROID_HOME}/ndk;
+          du -h -d 1 ${ANDROID_HOME}/cmake || true;
+          du -h -d 1 ${ANDROID_HOME}/build-tools;
+          ls -lahp ${ANDROID_HOME}/platforms;
+        fi
         ls -lahp ${HOME};
 
     - name: Initialize CodeQL tools for scanning
