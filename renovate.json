@@ -758,6 +758,9 @@
       "matchDepNames": [
         "org.jetbrains.kotlin:kotlin-gradle-plugin"
       ],
+      "registryUrls": [
+        "https://repo1.maven.org/maven2/"
+      ],
       "matchCurrentValue": "/^2\\.0\\.\\d+$/",
       "allowedVersions": "/^2\\.0\\.\\d+$/"
 
@@ -768,6 +771,9 @@
       "matchDepNames": [
         "com.github.ben-manes:gradle-versions-plugin",
         "com.github.ben-manes:gradle-versions-plugin-android-15"
+      ],
+      "registryUrls": [
+        "https://plugins.gradle.org/m2/"
       ],
       "matchCurrentValue": "/^0\\.51\\.\\d+$/",
       "allowedVersions": "/^0\\.51\\.\\d+$/"
