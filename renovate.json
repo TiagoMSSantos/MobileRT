@@ -697,6 +697,9 @@
       "matchDepNames": [
         "androidx.appcompat:appcompat"
       ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
       "matchCurrentVersion": "/^1\\.6\\..+$/",
       "allowedVersions": "/^1\\.6\\..+$/"
     },
