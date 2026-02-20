@@ -827,8 +827,8 @@
         "windows"
       ],
       "versioning": "loose",
-      "matchCurrentValue": "!/^((14)|(2022))(-arm)?$/",
-      "allowedVersions": "!/^((14)|(2022))(-arm)?$/"
+      "matchCurrentValue": "/^((14)|(2022))$/",
+      "allowedVersions": "/^((14)|(2022))$/"
     },
     {
       "groupName": "Ignore specific versions of Github runners already being used",
@@ -841,21 +841,8 @@
         "windows"
       ],
       "versioning": "loose",
-      "matchCurrentValue": "!/^((15)|(2025))(-arm)?$/",
-      "allowedVersions": "!/^((15)|(2025))(-arm)?$/"
-    },
-    {
-      "groupName": "Ignore specific versions of Github runners already being used",
-      "enabled": true,
-      "matchDatasources": [
-        "github-runners"
-      ],
-      "matchDepNames": [
-        "macos",
-        "windows"
-      ],
-      "versioning": "loose",
-      "matchCurrentValue": "!/^(((14)|(15))|(2022)|(2025))(-arm)?$/"
+      "matchCurrentValue": "/^((15)|(2025))$/",
+      "allowedVersions": "/^((15)|(2025))$/"
     },
     {
       "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
@@ -882,34 +869,6 @@
       "versioning": "ubuntu",
       "matchCurrentValue": "!/^24\\.\\d+(-arm)?$/",
       "allowedVersions": "!/^24\\.\\d+(-arm)?$/"
-    },
-    {
-      "groupName": "Github Runners",
-      "enabled": true,
-      "matchDatasources": [
-        "github-runners"
-      ],
-      "matchDepNames": [
-        "macos",
-        "windows"
-      ],
-      "matchCurrentValue": "!/-arm$/",
-      "allowedVersions": "!/-arm$/",
-      "versioning": "loose"
-    },
-    {
-      "groupName": "Github Runners arm",
-      "enabled": true,
-      "matchDatasources": [
-        "github-runners"
-      ],
-      "matchDepNames": [
-        "macos",
-        "windows"
-      ],
-      "matchCurrentValue": "/-arm$/",
-      "allowedVersions": "/-arm$/",
-      "versioning": "loose"
     },
     {
       "groupName": "Github Runners Ubuntu",
