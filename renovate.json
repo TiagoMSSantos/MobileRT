@@ -667,6 +667,7 @@
         "docker-compose"
       ],
       "versioning": "ubuntu",
+      "respectLatest": true,
       "allowedVersions": "/^[0-9]*[02468]\\.04$/"
     },
     {
