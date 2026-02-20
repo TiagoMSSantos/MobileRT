@@ -551,7 +551,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^1\\.12\\.\\d+/",
+      "matchCurrentValue": "/^1\\.12\\.\\d+/",
       "allowedVersions": "/^1\\.12\\.\\d+/"
     },
     {
@@ -564,7 +564,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^1\\.13\\.\\d+/",
+      "matchCurrentValue": "/^1\\.13\\.\\d+/",
       "allowedVersions": "/^1\\.13\\.\\d+/"
     },
     {
@@ -577,7 +577,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^1\\.5\\.\\d+",
+      "matchCurrentValue": "/^1\\.5\\.\\d+",
       "allowedVersions": "/^1\\.5\\.\\d+"
     },
     {
@@ -590,7 +590,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^1\\.6\\.\\d+$/",
+      "matchCurrentValue": "/^1\\.6\\.\\d+$/",
       "allowedVersions": "/^1\\.6\\.\\d+$/"
     },
     {
@@ -603,7 +603,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^1\\.1\\.\\d+$/",
+      "matchCurrentValue": "/^1\\.1\\.\\d+$/",
       "allowedVersions": "/^1\\.1\\.\\d+$/"
     },
     {
@@ -616,7 +616,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^1\\.2\\.\\d+$/",
+      "matchCurrentValue": "/^1\\.2\\.\\d+$/",
       "allowedVersions": "/^1\\.2\\.\\d+$/"
     },
     {
@@ -634,7 +634,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^3\\.5\\.\\d+$/",
+      "matchCurrentValue": "/^3\\.5\\.\\d+$/",
       "allowedVersions": "/^3\\.5\\.\\d+$/"
     },
     {
@@ -652,7 +652,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^3\\.6\\.\\d+$/",
+      "matchCurrentValue": "/^3\\.6\\.\\d+$/",
       "allowedVersions": "/^3\\.6\\.\\d+$/"
     },
     {
@@ -687,7 +687,6 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^8\\.2\\.\\d+$/",
       "matchCurrentValue": "/^8\\.2\\.\\d+$/",
       "allowedVersions": "/^8\\.2\\.\\d+$/"
     },
@@ -713,7 +712,6 @@
       "matchDatasources": [
         "gradle-version"
       ],
-      "matchCurrentVersion": "/^8\\.7$/",
       "matchCurrentValue": "/^8\\.7$/",
       "allowedVersions": "/^8\\.7(\\.\\d+)?$/"
     },
@@ -726,7 +724,7 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^1\\.6\\.\\d+$/",
+      "matchCurrentValue": "/^1\\.6\\.\\d+$/",
       "allowedVersions": "/^1\\.6\\.\\d+$/"
     },
     {
@@ -743,7 +741,6 @@
         "github-tags"
       ],
       "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
-      "matchCurrentVersion": "/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/",
       "matchCurrentValue": "/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/"
     },
     {
@@ -760,7 +757,6 @@
       "matchDepNames": [
         "org.jetbrains.kotlin:kotlin-gradle-plugin"
       ],
-      "matchCurrentVersion": "/^2\\.0\\.21$/",
       "matchCurrentValue": "/^2\\.0\\.21$/"
     },
     {
@@ -783,7 +779,6 @@
       "matchDepNames": [
         "com.github.ben-manes:gradle-versions-plugin-android-15"
       ],
-      "matchCurrentVersion": "/^0\\.51\\.\\d+$/",
       "matchCurrentValue": "/^0\\.51\\.\\d+$/"
     },
     {
@@ -833,7 +828,6 @@
         "windows"
       ],
       "versioning": "loose",
-      "matchCurrentVersion": "!/^((15)|(2025))(-arm)?$/",
       "matchCurrentValue": "!/^((15)|(2025))(-arm)?$/"
     },
     {
@@ -846,7 +840,6 @@
         "ubuntu"
       ],
       "versioning": "ubuntu",
-      "matchCurrentVersion": "!/^(24\\.04)(-arm)?$/",
       "matchCurrentValue": "!/^(24\\.04)(-arm)?$/"
     },
     {
