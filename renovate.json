@@ -682,7 +682,7 @@
         "https://maven.google.com"
       ],
       "matchCurrentVersion": "/^1\\.6\\.\\d+$/",
-      "allowedVersions": "/^1\\.6\\.\\d++$/"
+      "allowedVersions": "/^1\\.6\\.\\d+$/"
     },
     {
       "groupName": "Do not update older NDK versions",
