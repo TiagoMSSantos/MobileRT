@@ -82,7 +82,7 @@ buildscript {
             ndk_version = '23.2.8568313'
         }
         if (project.properties["androidX_core_version"] == null) {
-            androidX_core_version = '1.12.0'
+            androidX_core_version = '1.17.0'
         }
         if (project.properties["gradle_version"] == null) {
             gradle_version = '8.2.2'
