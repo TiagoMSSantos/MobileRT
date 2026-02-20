@@ -763,19 +763,10 @@
 
     },
     {
-      "description": "Only update gradle-versions-plugin via regex custom manager",
-      "enabled": true,
-      "matchDepNames": [
-        "com.github.ben-manes:gradle-versions-plugin"
-      ],
-      "matchManagers": [
-        "gradle"
-      ]
-    },
-    {
       "groupName": "Only update patch Gradle versions plugin for Android API < 16",
       "enabled": true,
       "matchDepNames": [
+        "com.github.ben-manes:gradle-versions-plugin",
         "com.github.ben-manes:gradle-versions-plugin-android-15"
       ],
       "matchCurrentValue": "/^0\\.51\\.\\d+$/",
