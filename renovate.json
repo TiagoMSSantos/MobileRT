@@ -854,8 +854,8 @@
         "ubuntu"
       ],
       "versioning": "ubuntu",
-      "matchCurrentValue": "/^22\\.\\d+(-arm)?$/",
-      "allowedVersions": "/^22\\.\\d+(-arm)?$/"
+      "matchCurrentValue": "/^22\\.\\d+$/",
+      "allowedVersions": "/^22\\.\\d+$/"
     },
     {
       "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
@@ -867,11 +867,11 @@
         "ubuntu"
       ],
       "versioning": "ubuntu",
-      "matchCurrentValue": "/^24\\.\\d+(-arm)?$/",
-      "allowedVersions": "/^24\\.\\d+(-arm)?$/"
+      "matchCurrentValue": "/^22\\.\\d+-arm$/",
+      "allowedVersions": "/^22\\.\\d+-arm$/"
     },
     {
-      "groupName": "Github Runners Ubuntu",
+      "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
@@ -879,12 +879,12 @@
       "matchDepNames": [
         "ubuntu"
       ],
-      "matchCurrentValue": "!/-arm$/",
-      "allowedVersions": "!/-arm$/",
-      "versioning": "ubuntu"
+      "versioning": "ubuntu",
+      "matchCurrentValue": "/^24\\.\\d+$/",
+      "allowedVersions": "/^24\\.\\d+$/"
     },
     {
-      "groupName": "Github Runners Ubuntu arm",
+      "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
@@ -892,9 +892,9 @@
       "matchDepNames": [
         "ubuntu"
       ],
-      "matchCurrentValue": "/-arm$/",
-      "allowedVersions": "/-arm$/",
-      "versioning": "ubuntu"
+      "versioning": "ubuntu",
+      "matchCurrentValue": "/^24\\.\\d+-arm$/",
+      "allowedVersions": "/^24\\.\\d+-arm$/"
     },
     {
       "description": "Enable all by default",
