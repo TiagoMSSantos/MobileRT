@@ -88,7 +88,7 @@ buildscript {
             gradle_version = '8.2.2'
         }
         if (project.properties["gradle_versions_plugin_version"] == null) {
-            gradle_versions_plugin_version = '0.51.0'
+            gradle_versions_plugin_version = '0.53.0'
         }
         if (project.properties["kotlin_gradle_plugin_version"] == null) {
             kotlin_gradle_plugin_version = '2.0.21'
