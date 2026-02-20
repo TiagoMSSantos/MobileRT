@@ -76,7 +76,7 @@ buildscript {
 
         // Default dependencies versions which are used on all Android APIs supported >= 14
         if (project.properties["androidX_appcompat_version"] == null) {
-            androidX_appcompat_version = '1.6.1'
+            androidX_appcompat_version = '1.7.1'
         }
         if (project.properties["ndk_version"] == null) {
             ndk_version = '23.2.8568313'
