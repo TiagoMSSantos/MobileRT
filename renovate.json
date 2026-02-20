@@ -827,7 +827,7 @@
         "windows"
       ],
       "versioning": "loose",
-      "matchCurrentValue": "!/^((15)|(2025))(-arm)?$/"
+      "matchCurrentValue": "!/^((14)|(15))|(2022)|(2025))(-arm)?$/"
     },
     {
       "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
@@ -839,7 +839,7 @@
         "ubuntu"
       ],
       "versioning": "ubuntu",
-      "matchCurrentValue": "!/^(24\\.04)(-arm)?$/"
+      "matchCurrentValue": "!/^(((22)|(24))\\.04)(-arm)?$/"
     },
     {
       "groupName": "Github Runners",
