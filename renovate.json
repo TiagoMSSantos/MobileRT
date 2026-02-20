@@ -542,7 +542,7 @@
       "versioning": "maven"
     },
     {
-      "groupName": "Only update patches of androidx.core:core for Android API >= 19",
+      "groupName": "Only update patches of androidx.core:core for Android API < 19",
       "enabled": true,
       "matchDepNames": [
         "androidx.core:core-ktx",
@@ -551,8 +551,21 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^(1\\.12\\.\\d+)|(1\\.13\\.\\d+)/",
-      "allowedVersions": "/^(1\\.12\\.\\d+)|(1\\.13\\.\\d+)/"
+      "matchCurrentVersion": "/^1\\.12\\.\\d+/",
+      "allowedVersions": "/^1\\.12\\.\\d+/"
+    },
+    {
+      "groupName": "Only update patches of androidx.core:core for Android API < 21",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.core:core-ktx",
+        "androidx.core:core"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentVersion": "/^1\\.13\\.\\d+/",
+      "allowedVersions": "/^1\\.13\\.\\d+/"
     },
     {
       "groupName": "Only update patches of androidx.test:monitor for Android API >= 19",
@@ -567,7 +580,7 @@
       "allowedVersions": "/^1\\.6\\.\\d+/"
     },
     {
-      "groupName": "Only update androidx.test:core for Android API >= 21",
+      "groupName": "Only update patches of androidx.test:core for Android API < 19",
       "enabled": true,
       "matchDepNames": [
         "androidx.test:core",
@@ -576,8 +589,47 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^(1\\.5\\.\\d+)|(1\\.6\\.\\d+)$/",
-      "allowedVersions": "/^(1\\.5\\.\\d+)|(1\\.6\\.\\d+)$/"
+      "matchCurrentVersion": "/^1\\.5\\.\\d+",
+      "allowedVersions": "/^1\\.5\\.\\d+"
+    },
+    {
+      "groupName": "Only update patches of androidx.test:core for Android API < 21",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.test:core",
+        "androidx.test:core-ktx"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentVersion": "/^1\\.6\\.\\d+$/",
+      "allowedVersions": "/^1\\.6\\.\\d+$/"
+    },
+    {
+      "groupName": "Only update patches of androidx.test.ext:junit for Android API < 19",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.test.ext:junit",
+        "androidx.test.ext:junit-ktx"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentVersion": "/^1\\.1\\.\\d+$/",
+      "allowedVersions": "/^1\\.1\\.\\d+$/"
+    },
+    {
+      "groupName": "Only update patches of androidx.test.ext:junit for Android API < 21",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.test.ext:junit",
+        "androidx.test.ext:junit-ktx"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentVersion": "/^1\\.2\\.\\d+$/",
+      "allowedVersions": "/^1\\.2\\.\\d+$/"
     },
     {
       "groupName": "Only update patches of androidx.test.ext:junit for Android API >= 21",
