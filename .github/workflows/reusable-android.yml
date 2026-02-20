@@ -52,15 +52,18 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
         run: |
-          echo 'Available Android versions:';
-          du -h -d 1 ${ANDROID_HOME}/ndk;
-          du -h -d 1 ${ANDROID_HOME}/cmake || true;
-          du -h -d 1 ${ANDROID_HOME}/build-tools;
-          du -h -d 1 ${ANDROID_HOME}/platforms;
-          du -h -d 1 ${ANDROID_HOME}/extras;
-          du -h -d 1 ${ANDROID_HOME};
-          du -h -d 1 ${HOME};
-          echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
+          if [ -n "${ANDROID_HOME}" ]; then
+            echo 'Available Android versions:';
+            du -h -d 1 ${ANDROID_HOME}/ndk;
+            du -h -d 1 ${ANDROID_HOME}/cmake || true;
+            du -h -d 1 ${ANDROID_HOME}/build-tools;
+            du -h -d 1 ${ANDROID_HOME}/platforms;
+            du -h -d 1 ${ANDROID_HOME}/extras;
+            du -h -d 1 ${ANDROID_HOME};
+          fi
+          GRADLE_PATH="${HOME}/.gradle";
+          echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";
+          mkdir -p "${GRADLE_PATH}";
           df -Pk -h ${HOME};
           env;
 
@@ -69,7 +72,7 @@ jobs:
       - name: Download Gradle packages artifact
         id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success()
         uses: dawidd6/action-download-artifact@fe9d59ce33ce92db8a6ac90b2c8be6b6d90417c8 # v15
         continue-on-error: true
         with:
@@ -129,6 +132,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && steps.download-gradle-artifact.outputs.found_artifact == 'true'
         run: |
+          ls -lahp ${{ env.GRADLE_PATH }};
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -161,29 +165,17 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
 
+      - name: Install dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        run: |
+          sh scripts/install_dependencies.sh;
+
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
-          set +eu;
-          MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
-          if [ "${MAJOR_MAC_VERSION}" != '' ]; then
-            echo "MacOS '${MAJOR_MAC_VERSION}' detected";
-          fi
-          set -e;
-          if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
-              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
-          else
-            if [ "${{ inputs.android_api_device }}" -gt 20 ]; then
-              echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-              echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
-            fi
-          fi
-          set -u;
+          echo 'android_arch=\"armeabi-v7a\",\"arm64-v8a\",\"x86\",\"x86_64\"' >> "${GITHUB_ENV}";
 
       - name: Download Android CMake
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -244,7 +236,6 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
           echo "android_arch: ${{ env.android_arch }}";
-          echo "android_emulator_arch: ${{ env.android_emulator_arch }}";
           sh scripts/compile_android.sh -t ${{ inputs.type }} -r yes -a ${{ inputs.android_api }} -f ${{ env.android_arch }};
           rm app/MobileRT.jks;
 
@@ -316,7 +307,7 @@ jobs:
 
       - name: Zip Gradle packages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success()
         run: |
           set +e;
           du -h -d 1 ${{ env.GRADLE_PATH }};
@@ -370,7 +361,7 @@ jobs:
 
       - name: Upload Gradle packages as artifact
         timeout-minutes: 20
-        if: success() && strategy.job-index == 0 && !startsWith(inputs.host_os, 'windows')
+        if: success() && strategy.job-index == 0
         continue-on-error: true
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
@@ -380,6 +371,32 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           compression-level: 9
+          overwrite: true
+          include-hidden-files: true
+
+      - name: Sign APK
+        id: sign-apk
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: ilharp/sign-android-release@13dd52242698526f951aa8bb8696204f6fea702a # v2
+        with:
+          # Check available parameters in: https://github.com/ilharp/sign-android-release/blob/master/action.yml
+          releaseDir: app/build/outputs/apk/${{ inputs.type }}
+          signingKey: ${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}
+          keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Upload APK as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
+          path: ${{ steps.sign-apk.outputs.signedFile }}
+          if-no-files-found: error
+          retention-days: 90
           overwrite: true
           include-hidden-files: true
 
@@ -409,49 +426,55 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
         run: |
-          echo 'Available Android versions:';
-          du -h -d 1 ${ANDROID_HOME};
-          rm -rf ${ANDROID_HOME}/ndk;
-          rm -rf ${ANDROID_HOME}/extras;
-          rm -rf ${ANDROID_HOME}/cmake;
-          mkdir -p ${ANDROID_HOME}/ndk;
-          mkdir -p ${ANDROID_HOME}/extras;
-          mkdir -p ${ANDROID_HOME}/cmake;
-          du -h -d 1 ${ANDROID_HOME}/ndk;
-          du -h -d 1 ${ANDROID_HOME}/cmake;
-          du -h -d 1 ${ANDROID_HOME}/build-tools;
-          du -h -d 1 ${ANDROID_HOME}/platforms;
-          du -h -d 1 ${ANDROID_HOME}/extras;
-          du -h -d 1 ${HOME};
-          echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
+          if [ -n "${ANDROID_HOME}" ]; then
+            echo 'Available Android versions:';
+            du -h -d 1 ${ANDROID_HOME};
+            rm -rf ${ANDROID_HOME}/ndk;
+            rm -rf ${ANDROID_HOME}/extras;
+            rm -rf ${ANDROID_HOME}/cmake;
+            mkdir -p ${ANDROID_HOME}/ndk;
+            mkdir -p ${ANDROID_HOME}/extras;
+            mkdir -p ${ANDROID_HOME}/cmake;
+            du -h -d 1 ${ANDROID_HOME}/ndk;
+            du -h -d 1 ${ANDROID_HOME}/cmake;
+            du -h -d 1 ${ANDROID_HOME}/build-tools;
+            du -h -d 1 ${ANDROID_HOME}/platforms;
+            du -h -d 1 ${ANDROID_HOME}/extras;
+          fi
+          GRADLE_PATH="${HOME}/.gradle";
+          echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";
+          mkdir -p "${GRADLE_PATH}";
           df -Pk -h ${HOME};
           env;
-          sudo rm -rf /usr/lib/jvm;
-          sudo rm -rf /usr/share/dotnet;
-          sudo rm -rf /usr/share/swift;
-          sudo rm -rf /usr/local/.ghcup;
-          sudo rm -rf /usr/local/julia*;
-          sudo rm -rf /usr/local/share/chromium;
-          sudo rm -rf /opt/microsoft;
-          sudo rm -rf /opt/google;
-          sudo rm -rf /opt/az;
-          sudo rm -rf /usr/local/share/powershell;
-          sudo rm -rf /opt/hostedtoolcache;
-          docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')" || true;
-          docker system prune --volumes --force;
-          docker network prune --force;
-          docker volume prune --force;
-          docker system prune --all --force;
-          docker builder prune --all --force;
-          docker system df;
+          if command -v sudo > /dev/null; then
+            sudo rm -rf /usr/lib/jvm;
+            sudo rm -rf /usr/share/dotnet;
+            sudo rm -rf /usr/share/swift;
+            sudo rm -rf /usr/local/.ghcup;
+            sudo rm -rf /usr/local/julia*;
+            sudo rm -rf /usr/local/share/chromium;
+            sudo rm -rf /opt/microsoft;
+            sudo rm -rf /opt/google;
+            sudo rm -rf /opt/az;
+            sudo rm -rf /usr/local/share/powershell;
+            sudo rm -rf /opt/hostedtoolcache;
+          fi
+          if command -v docker > /dev/null; then
+            docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')" || true;
+            docker system prune --volumes --force;
+            docker network prune --force;
+            docker volume prune --force;
+            docker system prune --all --force;
+            docker builder prune --all --force;
+            docker system df;
+          fi
           df -h;
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
       - name: Download Gradle packages artifact
-        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success()
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
@@ -512,13 +535,40 @@ jobs:
             # default fail
             if_no_artifact_found: fail
 
-      - name: Extract and check files from gradle artifact
+      - name: Download generated Android APK artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
+        with:
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          action: dawidd6/action-download-artifact@0bd50d53a6d7fb5cb921e607957e9cc12b4ce392 # v12
+          pre_retry_command: 'echo "Retrying Download generated Android APK artifact step..."'
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+            workflow_conclusion: ''
+            commit: ${{ github.event.pull_request.head.sha }}
+            name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
+            allow_forks: true
+            check_artifacts:  true
+            search_artifacts: true
+            skip_unpack: true
+
+      - name: Extract and check files from artifacts
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success()
         run: |
+          ls -lahp ${{ env.GRADLE_PATH }};
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
+          echo 'Extracting Android APK release';
+          mkdir -p release/android;
+          mv MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk.zip release/android;
+          ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk.zip;
+          . scripts/helper_functions.sh && extractFilesFromArtifact release/android;
+          mv release/android/app-${{ inputs.type }}-signed.apk release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
+          ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
 
       - name: Set up JDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -538,6 +588,12 @@ jobs:
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
+
+      - name: Install dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        run: |
+          sh scripts/install_dependencies.sh;
 
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -592,21 +648,23 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
+          echo 'android_arch=\"armeabi-v7a\",\"arm64-v8a\",\"x86\",\"x86_64\"' >> "${GITHUB_ENV}";
           set +eu;
           MAJOR_MAC_VERSION=$(sw_vers | grep ProductVersion | cut -d ':' -f2 | cut -d '.' -f1 | tr -d '[:space:]');
           if [ "${MAJOR_MAC_VERSION}" != '' ]; then
             echo "MacOS '${MAJOR_MAC_VERSION}' detected";
           fi
           set -e;
-          if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
-              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
+          if [ ${{ endsWith(inputs.host_os, '-arm') }} = true ] || [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
+            if [ "${{ inputs.android_api }}" -gt 20 ]; then
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+            else
+              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+            fi
           else
-            if [ "${{ inputs.android_api_device }}" -gt 20 ]; then
-              echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
+            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
-              echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
               echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
             fi
           fi
@@ -677,6 +735,7 @@ jobs:
             emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
             script: |
               echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
+              ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
               sh scripts/run_tests_android.sh -t ${{ inputs.type }} -r all -a ${{ inputs.android_api }} -k false -f ${{ env.android_arch }};
               echo "Run Android tests finished: ${?}";
 
@@ -776,32 +835,6 @@ jobs:
           path: |
             app/build/reports
 
-      - name: Sign APK
-        id: sign-apk
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        uses: ilharp/sign-android-release@13dd52242698526f951aa8bb8696204f6fea702a # v2
-        with:
-          # Check available parameters in: https://github.com/ilharp/sign-android-release/blob/master/action.yml
-          releaseDir: app/build/outputs/apk/${{ inputs.type }}
-          signingKey: ${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}
-          keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
-      - name: Upload APK as artifact
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'release'
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
-        with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
-          path: ${{ steps.sign-apk.outputs.signedFile }}
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
-
       - name: Upload test screenshots as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
@@ -840,22 +873,24 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
         run: |
-          echo 'Available Android versions:';
-          du -h -d 1 ${ANDROID_HOME}/ndk;
-          du -h -d 1 ${ANDROID_HOME}/cmake || true;
-          du -h -d 1 ${ANDROID_HOME}/build-tools;
-          du -h -d 1 ${ANDROID_HOME}/platforms;
-          du -h -d 1 ${ANDROID_HOME}/extras;
-          du -h -d 1 ${ANDROID_HOME};
-          du -h -d 1 ${HOME};
-          echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
+          if [ -n "${ANDROID_HOME}" ]; then
+            echo 'Available Android versions:';
+            du -h -d 1 ${ANDROID_HOME}/ndk;
+            du -h -d 1 ${ANDROID_HOME}/cmake || true;
+            du -h -d 1 ${ANDROID_HOME}/build-tools;
+            du -h -d 1 ${ANDROID_HOME}/platforms;
+            du -h -d 1 ${ANDROID_HOME}/extras;
+            du -h -d 1 ${ANDROID_HOME};
+          fi
+          GRADLE_PATH="${HOME}/.gradle";
+          echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";
+          mkdir -p "${GRADLE_PATH}";
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
       - name: Download Gradle packages artifact
-        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success()
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
@@ -918,8 +953,9 @@ jobs:
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success()
         run: |
+          ls -lahp ${{ env.GRADLE_PATH }};
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -942,6 +978,12 @@ jobs:
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
+
+      - name: Install dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        run: |
+          sh scripts/install_dependencies.sh;
 
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -994,10 +1036,14 @@ jobs:
             echo "MacOS '${MAJOR_MAC_VERSION}' detected";
           fi
           set -e;
-          if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
-              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
-          else
+          if [ ${{ endsWith(inputs.host_os, '-arm') }} = true ] || [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
             if [ "${{ inputs.android_api }}" -gt 20 ]; then
+              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
+            else
+              echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            fi
+          else
+            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
             else
               echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
@@ -1122,22 +1168,24 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
         run: |
-          echo 'Available Android versions:';
-          du -h -d 1 ${ANDROID_HOME}/ndk;
-          du -h -d 1 ${ANDROID_HOME}/cmake || true;
-          du -h -d 1 ${ANDROID_HOME}/build-tools;
-          du -h -d 1 ${ANDROID_HOME}/platforms;
-          du -h -d 1 ${ANDROID_HOME}/extras;
-          du -h -d 1 ${ANDROID_HOME};
-          du -h -d 1 ${HOME};
-          echo "GRADLE_PATH=${HOME}/.gradle" >> "${GITHUB_ENV}";
+          if [ -n "${ANDROID_HOME}" ]; then
+            echo 'Available Android versions:';
+            du -h -d 1 ${ANDROID_HOME}/ndk;
+            du -h -d 1 ${ANDROID_HOME}/cmake || true;
+            du -h -d 1 ${ANDROID_HOME}/build-tools;
+            du -h -d 1 ${ANDROID_HOME}/platforms;
+            du -h -d 1 ${ANDROID_HOME}/extras;
+            du -h -d 1 ${ANDROID_HOME};
+          fi
+          GRADLE_PATH="${HOME}/.gradle";
+          echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";
+          mkdir -p "${GRADLE_PATH}";
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
       - name: Download Gradle packages artifact
-        id: download-gradle-artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success()
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
@@ -1200,8 +1248,9 @@ jobs:
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success()
         run: |
+          ls -lahp ${{ env.GRADLE_PATH }};
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -1231,6 +1280,12 @@ jobs:
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
+
+      - name: Install dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        run: |
+          sh scripts/install_dependencies.sh;
 
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -1312,10 +1367,14 @@ jobs:
             echo "MacOS '${MAJOR_MAC_VERSION}' detected";
           fi
           set -e;
-          if ${{ endsWith(inputs.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
-              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
-          else
+          if [ ${{ endsWith(inputs.host_os, '-arm') }} = true ] || [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
             if [ "${{ inputs.android_api }}" -gt 20 ]; then
+              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
+            else
+              echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            fi
+          else
+            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
             else
               echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
