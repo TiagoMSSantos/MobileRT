@@ -568,18 +568,6 @@
       "allowedVersions": "/^1\\.13\\.\\d+/"
     },
     {
-      "groupName": "Only update patches of androidx.test:monitor for Android API >= 19",
-      "enabled": true,
-      "matchDepNames": [
-        "androidx.test:monitor"
-      ],
-      "registryUrls": [
-        "https://maven.google.com"
-      ],
-      "matchCurrentVersion": "/^1\\.6\\.\\d+/",
-      "allowedVersions": "/^1\\.6\\.\\d+/"
-    },
-    {
       "groupName": "Only update patches of androidx.test:core for Android API < 19",
       "enabled": true,
       "matchDepNames": [
@@ -632,20 +620,7 @@
       "allowedVersions": "/^1\\.2\\.\\d+$/"
     },
     {
-      "groupName": "Only update patches of androidx.test.ext:junit for Android API >= 21",
-      "enabled": true,
-      "matchDepNames": [
-        "androidx.test.ext:junit",
-        "androidx.test.ext:junit-ktx"
-      ],
-      "registryUrls": [
-        "https://maven.google.com"
-      ],
-      "matchCurrentVersion": "/^(1\\.1\\.\\d+)|(1\\.2\\.\\d+)$/",
-      "allowedVersions": "/^(1\\.1\\.\\d+)|(1\\.2\\.\\d+)$/"
-    },
-    {
-      "groupName": "Only update patches of androidx.test.espresso for Android API >= 21",
+      "groupName": "Only update patches of androidx.test.espresso for Android API < 19",
       "enabled": true,
       "matchDepNames": [
         "androidx.test.espresso:espresso-accessibility",
@@ -659,8 +634,26 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentVersion": "/^(3\\.5\\.\\d+)|(3\\.6\\.\\d+)$/",
-      "allowedVersions": "/^(3\\.5\\.\\d+)|(3\\.6\\.\\d+)$/"
+      "matchCurrentVersion": "/^3\\.5\\.\\d+$/",
+      "allowedVersions": "/^3\\.5\\.\\d+$/"
+    },
+    {
+      "groupName": "Only update patches of androidx.test.espresso for Android API < 21",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.test.espresso:espresso-accessibility",
+        "androidx.test.espresso:espresso-contrib",
+        "androidx.test.espresso:espresso-idling-resource",
+        "androidx.test.espresso:espresso-intents",
+        "androidx.test.espresso:espresso-web",
+        "androidx.test.espresso.idling:idling-concurrent",
+        "androidx.test.espresso:espresso-core"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentVersion": "/^3\\.6\\.\\d+$/",
+      "allowedVersions": "/^3\\.6\\.\\d+$/"
     },
     {
       "groupName": "Ubuntu to LTS versions",
