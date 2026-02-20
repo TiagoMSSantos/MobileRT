@@ -98,24 +98,31 @@ jobs:
         gpg-passphrase: GPG_PASSPHRASE
         cache-dependency-path: '**/build.gradle'
 
-    - name: Delete unnecessary Android SDK components
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+    - name: Install dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
       if: success()
       run: |
-        echo 'Available Android versions:';
-        du -h -d 1 ${ANDROID_HOME};
-        rm -rf ${ANDROID_HOME}/ndk;
-        rm -rf ${ANDROID_HOME}/extras;
-        rm -rf ${ANDROID_HOME}/cmake;
-        mkdir -p ${ANDROID_HOME}/ndk;
-        mkdir -p ${ANDROID_HOME}/extras;
-        mkdir -p ${ANDROID_HOME}/cmake;
-        du -h -d 1 ${ANDROID_HOME}/ndk;
-        du -h -d 1 ${ANDROID_HOME}/cmake;
-        du -h -d 1 ${ANDROID_HOME}/build-tools;
-        du -h -d 1 ${ANDROID_HOME}/platforms;
-        du -h -d 1 ${ANDROID_HOME}/extras;
-        du -h -d 1 ${HOME};
+        sh scripts/install_dependencies.sh;
+
+    - name: Delete unnecessary Android SDK components
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success()
+      run: |
+        if [ -n "${ANDROID_HOME}" ]; then
+          echo 'Available Android versions:';
+          du -h -d 1 ${ANDROID_HOME};
+          rm -rf ${ANDROID_HOME}/ndk;
+          rm -rf ${ANDROID_HOME}/extras;
+          rm -rf ${ANDROID_HOME}/cmake;
+          mkdir -p ${ANDROID_HOME}/ndk;
+          mkdir -p ${ANDROID_HOME}/extras;
+          mkdir -p ${ANDROID_HOME}/cmake;
+          du -h -d 1 ${ANDROID_HOME}/ndk;
+          du -h -d 1 ${ANDROID_HOME}/cmake;
+          du -h -d 1 ${ANDROID_HOME}/build-tools;
+          du -h -d 1 ${ANDROID_HOME}/platforms;
+          du -h -d 1 ${ANDROID_HOME}/extras;
+        fi
         df -Pk -h ${HOME};
         env;
 
@@ -129,11 +136,16 @@ jobs:
           echo "MacOS '${MAJOR_MAC_VERSION}' detected";
         fi
         set -e;
-        if ${{ endsWith(matrix.host_os, '-arm') }} = true || "${MAJOR_MAC_VERSION}" -gt 13; then
+        if [ ${{ endsWith(matrix.host_os, '-arm') }} = true ] || [ "${MAJOR_MAC_VERSION}" -gt 13 ]; then
+          if [ "${{ matrix.android_api }}" -gt 20 ]; then
             echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          else
+            echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
+            echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+          fi
         else
-          if [ "${{ matrix.android_api }}" -gt 20 ]; then
+          if [ "${{ matrix.android_api }}" -gt 20 ] && [ "${{ matrix.android_api }}" -ne 27 ]; then
             echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
             echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
           else
