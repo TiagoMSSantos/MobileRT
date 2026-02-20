@@ -577,8 +577,8 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentValue": "/^1\\.5\\.\\d+",
-      "allowedVersions": "/^1\\.5\\.\\d+"
+      "matchCurrentValue": "/^1\\.5\\.\\d+$/",
+      "allowedVersions": "/^1\\.5\\.\\d+$/"
     },
     {
       "groupName": "Only update patches of androidx.test:core for Android API < 21",
@@ -752,16 +752,18 @@
       "allowedVersions": "/-android$/"
     },
     {
-      "groupName": "Do not update kotlin-gradle-plugin versions for Android API <= 15",
-      "enabled": false,
+      "groupName": "Only update patches of kotlin-gradle-plugin versions for Android API < 16",
+      "enabled": true,
       "matchDepNames": [
         "org.jetbrains.kotlin:kotlin-gradle-plugin"
       ],
-      "matchCurrentValue": "/^2\\.0\\.21$/"
+      "matchCurrentValue": "/^2\\.0\\.\\d+$/",
+      "allowedVersions": "/^2\\.0\\.\\d+$/"
+
     },
     {
       "description": "Only update gradle-versions-plugin via regex custom manager",
-      "enabled": false,
+      "enabled": true,
       "matchDepNames": [
         "com.github.ben-manes:gradle-versions-plugin"
       ],
@@ -770,16 +772,13 @@
       ]
     },
     {
-      "groupName": "Do not update Gradle versions plugin for Android API <= 15",
-      "enabled": false,
-      "matchUpdateTypes": [
-        "major",
-        "minor"
-      ],
+      "groupName": "Only update patch Gradle versions plugin for Android API < 16",
+      "enabled": true,
       "matchDepNames": [
         "com.github.ben-manes:gradle-versions-plugin-android-15"
       ],
-      "matchCurrentValue": "/^0\\.51\\.\\d+$/"
+      "matchCurrentValue": "/^0\\.51\\.\\d+$/",
+      "allowedVersions": "/^0\\.51\\.\\d+$/"
     },
     {
       "groupName": "Boost C++ Libraries",
