@@ -903,13 +903,20 @@
       "matchDatasources": [
         "!/github-digest/"
       ],
-      "matchPackageNames": [
-        "*"
-      ],
       "versioning": "regex:^r?v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
       "rangeStrategy": "replace",
       "enabled": true,
       "pinDigests": false
+    },
+    {
+      "description": "Enable GitHub digest updates",
+      "matchDatasources": [
+        "/github-digest/"
+      ],
+      "versioning": "regex:^r?v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
+      "rangeStrategy": "replace",
+      "enabled": true,
+      "pinDigests": true
     }
   ]
 }
