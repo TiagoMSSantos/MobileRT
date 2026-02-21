@@ -98,7 +98,7 @@
   },
   "customManagers": [
     {
-      "description": "Update Github runners",
+      "description": "Update GitHub runners",
       "managerFilePatterns": [
         "/\\.github\\/workflows\\/.+\\.ya?ml/",
         "/\\.github\\/workflows\\/.+-matrix\\.json/"
@@ -130,14 +130,13 @@
       "customType": "regex"
     },
     {
-      "description": "Update Github Actions",
+      "description": "Update GitHub Actions",
       "managerFilePatterns": [
         "/\\.github\\/workflows\\/.+\\.ya?ml/"
       ],
-      "matchStringsStrategy": "combination",
+      "matchStringsStrategy": "any",
       "matchStrings": [
-        "uses:\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)(?:\\s+#\\s*datasource=(?<datasource>\\S+))?",
-        "action:\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)(?:\\s+#\\s*datasource=(?<datasource>\\S+))?"
+        "(?:uses|action):\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)(?:\\s+#\\s*datasource=(?<datasource>\\S+))?"
       ],
       "customType": "regex",
       "registryUrlTemplate": "https://github.com"
@@ -452,7 +451,7 @@
   ],
   "packageRules": [
     {
-      "groupName": "Github releases",
+      "groupName": "GitHub releases",
       "enabled": true,
       "pinDigests": false,
       "matchDepTypes": [
@@ -482,7 +481,7 @@
       "pinDigests": false
     },
     {
-      "description": "Update Github Actions to specific commit SHA versions, since its more secure: https://docs.github.com/en/actions/how-tos/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-third-party-actions",
+      "description": "Update GitHub Actions to specific commit SHA versions, since its more secure: https://docs.github.com/en/actions/how-tos/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-third-party-actions",
       "matchDatasources": [
         "!/docker/"
       ],
@@ -814,7 +813,7 @@
       "pinDigests": false
     },
     {
-      "groupName": "Ignore specific versions of Github runners already being used",
+      "groupName": "Ignore specific versions of GitHub runners already being used",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
@@ -828,7 +827,7 @@
       "allowedVersions": "/^((14)|(2022))$/"
     },
     {
-      "groupName": "Ignore specific versions of Github runners already being used",
+      "groupName": "Ignore specific versions of GitHub runners already being used",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
@@ -842,7 +841,7 @@
       "allowedVersions": "/^((15)|(2025))$/"
     },
     {
-      "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
+      "groupName": "Ignore specific versions of Ubuntu GitHub runners already being used",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
@@ -855,7 +854,7 @@
       "allowedVersions": "/^22\\.\\d+$/"
     },
     {
-      "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
+      "groupName": "Ignore specific versions of Ubuntu GitHub runners already being used",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
@@ -868,7 +867,7 @@
       "allowedVersions": "/^22\\.\\d+-arm$/"
     },
     {
-      "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
+      "groupName": "Ignore specific versions of Ubuntu GitHub runners already being used",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
@@ -881,7 +880,7 @@
       "allowedVersions": "/^24\\.\\d+$/"
     },
     {
-      "groupName": "Ignore specific versions of Ubuntu Github runners already being used",
+      "groupName": "Ignore specific versions of Ubuntu GitHub runners already being used",
       "enabled": true,
       "matchDatasources": [
         "github-runners"
