@@ -8,8 +8,7 @@
     "ghcr.io/nordcominc/devcontainer-features/android-sdk:1": {},
     "ghcr.io/devcontainers/features/rust:1": {},
     "ghcr.io/devcontainers/features/java:1": {},
-    "ghcr.io/devcontainers/features/copilot-cli:1": {},
-    "ghcr.io/devcontainers-extra/features/kotlin-sdkman:2": {}
+    "ghcr.io/devcontainers/features/copilot-cli:1": {}
   },
   "customizations": {
     "vscode": {
