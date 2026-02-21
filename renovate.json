@@ -139,7 +139,7 @@
         "(?:uses|action):[ \\t]+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)(?:[ \\t]*#[ \\t]*datasource=(?<datasource>\\S+))?"
 
       ],
-      "datasourceTemplate": "github",
+      "datasourceTemplate": "github-digest",
       "customType": "regex",
       "registryUrlTemplate": "https://github.com"
     },
