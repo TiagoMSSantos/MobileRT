@@ -136,7 +136,8 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "(?:uses|action):\\s+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)(?:\\s+#\\s*datasource=(?<datasource>\\S+))?"
+        "(?:uses|action):[ \\t]+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)(?:[ \\t]*#[ \\t]*datasource=(?<datasource>\\S+))?"
+
       ],
       "customType": "regex",
       "registryUrlTemplate": "https://github.com"
