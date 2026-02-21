@@ -136,8 +136,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "(?:uses|action):[ \\t]+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)(?:[ \\t]*#[ \\t]*datasource=(?<datasource>\\S+))?"
-
+        "(?:uses|action):[ \\t]+(?<depName>[\\w\\-\\/]+)@(?<currentDigest>[A-Fa-f0-9]{40})(?:[ \\t]*#[ \\t]*(?<currentValue>[A-Za-z0-9\\.]+)"
       ],
       "datasourceTemplate": "github-digest",
       "customType": "regex",
