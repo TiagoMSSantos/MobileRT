@@ -139,7 +139,7 @@
         "(?:uses|action):[ \\t]+(?<depName>[\\w\\-\\/]+)@(?<currentValue>[A-Za-z0-9\\.\\-]+)(?:[ \\t]*#[ \\t]*datasource=(?<datasource>\\S+))?"
 
       ],
-      "datasourceTemplate": "github-tags",
+      "datasourceTemplate": "github-digest",
       "customType": "regex",
       "registryUrlTemplate": "https://github.com"
     },
@@ -494,7 +494,7 @@
       "enabled": true,
       "pinDigests": true,
       "automerge": true,
-      "allowedVersions": "/^[a-fA-F0-9]{40}$/"
+      "allowedVersions": "/^[a-zA-Z0-9]+$/"
     },
     {
       "description": "Allow automerge of any dependency update, except digest",
