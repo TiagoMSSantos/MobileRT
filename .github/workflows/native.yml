@@ -74,7 +74,7 @@ jobs:
         if: success()
         run: |
           if [ "${{ inputs.code-coverage-only }}" = 'true' ]; then
-            MATRIX='{"include":[{"host_os":"ubuntu-latest","type":"debug","compiler":"g++"}]}';
+            MATRIX='{"include":[{"build_os":"ubuntu-latest","target_os": "ubuntu-latest","type":"debug","compiler":"g++"}]}';
           else
             MATRIX=$(echo $(cat .github/workflows/native-matrix.json) | sed 's/ //g');
           fi
@@ -83,7 +83,7 @@ jobs:
 
   Native:
     needs: [Matrix]
-    name: Native ${{ matrix.type }} ${{ matrix.compiler }} (${{ matrix.host_os }})
+    name: Native ${{ matrix.type }} ${{ matrix.compiler }} ${{ matrix.build_os }} (${{ matrix.target_os }})
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}
@@ -94,7 +94,8 @@ jobs:
       actions: write
 
     with:
-      host_os: ${{ matrix.host_os }}
+      build_os: ${{ matrix.build_os }}
+      target_os: ${{ matrix.target_os }}
       type: ${{ matrix.type }}
       compiler: ${{ matrix.compiler }}
       qt_version: ${{ matrix.qt_version }}
