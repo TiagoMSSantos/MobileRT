@@ -364,27 +364,27 @@ install_dependencies_macos() {
 install_dependencies_windows() {
   if ! command -v git-lfs > /dev/null; then
     # Install git-lfs: https://community.chocolatey.org/packages/git-lfs
-    choco install -y git-lfs;
+    callCommandUntilSuccess 2 choco install -y git-lfs;
   fi
 
   if ! command -v cmake > /dev/null; then
     # Install cmake: https://community.chocolatey.org/packages/cmake
-    choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System';
+    callCommandUntilSuccess 2 choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System';
   fi
 
   if ! command -v make > /dev/null; then
     # Install make: https://community.chocolatey.org/packages/make
-    choco install -y make;
+    callCommandUntilSuccess 2 choco install -y make;
   fi
 
   if ! command -v shellcheck > /dev/null; then
     # Install shellcheck: https://community.chocolatey.org/packages/shellcheck
-    choco install -y shellcheck;
+    callCommandUntilSuccess 2 choco install -y shellcheck;
   fi
 
   if ! command -v lcov > /dev/null; then
     # Install lcov: https://community.chocolatey.org/packages/lcov
-    choco install -y lcov;
+    callCommandUntilSuccess 2 choco install -y lcov;
     export PATH="${PATH}:/c/ProgramData/chocolatey/lib/lcov/tools/bin:../ProgramData/chocolatey/lib/lcov/tools/bin";
   fi
 
@@ -400,7 +400,7 @@ install_dependencies_windows() {
   else
     echo 'Installing Qt via Chocolatey.';
     # Install Qt: https://community.chocolatey.org/packages/qt5-default
-    choco install -y qt5-default;
+    callCommandUntilSuccess 2 choco install -y qt5-default;
   fi
 }
 
