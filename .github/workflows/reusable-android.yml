@@ -478,7 +478,7 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: dawidd6/action-download-artifact@5c98f0b039f36ef966fdb7dfa9779262785ecb05 # v14
+          action: dawidd6/action-download-artifact@fe9d59ce33ce92db8a6ac90b2c8be6b6d90417c8 # v15
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
           attempt_delay: 30000
@@ -540,7 +540,7 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: dawidd6/action-download-artifact@5c98f0b039f36ef966fdb7dfa9779262785ecb05 # v14
+          action: dawidd6/action-download-artifact@fe9d59ce33ce92db8a6ac90b2c8be6b6d90417c8 # v15
           pre_retry_command: 'echo "Retrying Download generated Android APK artifact step..."'
           attempt_limit: 3
           attempt_delay: 30000
@@ -893,7 +893,7 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: dawidd6/action-download-artifact@5c98f0b039f36ef966fdb7dfa9779262785ecb05 # v14
+          action: dawidd6/action-download-artifact@fe9d59ce33ce92db8a6ac90b2c8be6b6d90417c8 # v15
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
           attempt_delay: 30000
@@ -1187,7 +1187,7 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: dawidd6/action-download-artifact@5c98f0b039f36ef966fdb7dfa9779262785ecb05 # v14
+          action: dawidd6/action-download-artifact@fe9d59ce33ce92db8a6ac90b2c8be6b6d90417c8 # v15
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
           attempt_delay: 30000
