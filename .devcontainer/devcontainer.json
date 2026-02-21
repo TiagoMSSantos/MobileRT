@@ -1,4 +1,35 @@
 {
+  "name": "Universal Dev Container",
   "image": "mcr.microsoft.com/devcontainers/universal:5.1.4",
-  "features": {}
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/nordcominc/devcontainer-features/android-sdk:1": {},
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/devcontainers/features/java:1": {},
+    "ghcr.io/devcontainers/features/copilot-cli:1": {},
+    "ghcr.io/devcontainers-extra/features/kotlin-sdkman:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpp-devtools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-azuretools.vscode-docker",
+        "GitHub.copilot-chat",
+        "github.vscode-github-actions",
+        "mathiasfrohlich.Kotlin",
+        "redhat.java",
+        "rust-lang.rust-analyzer"
+      ],
+      "settings": {
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "remoteUser": "vscode",
+  "updateContentCommand": "sudo apt-get update -y",
+  "postCreateCommand": "echo 'Devcontainer ready!'"
 }
