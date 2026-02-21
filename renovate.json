@@ -729,20 +729,24 @@
       "allowedVersions": "/^1\\.6\\.\\d+$/"
     },
     {
-      "groupName": "Do not update older NDK versions",
-      "enabled": false,
+      "groupName": "Only update patches of Android NDK for Android API < 19",
+      "enabled": true,
       "matchDepNames": [
         "android/ndk"
       ],
-      "matchDatasources": [
-        "git-refs",
-        "git-tags",
-        "github-release-attachments",
-        "github-releases",
-        "github-tags"
+      "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
+      "matchCurrentValue": "/^(23\\.\\d+\\.\\d+)$/",
+      "allowedVersions": "/^(23\\.\\d+\\.\\d+)$/"
+    },
+    {
+      "groupName": "Only update patches of Android NDK for Android API < 21",
+      "enabled": true,
+      "matchDepNames": [
+        "android/ndk"
       ],
       "versioning": "regex:^r?(?<major>[0-9]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
-      "matchCurrentValue": "/^(25\\.2\\.9519653)|(23\\.2\\.8568313)$/"
+      "matchCurrentValue": "/^(25\\.\\d+\\.\\d+)$/",
+      "allowedVersions": "/^(25\\.\\d+\\.\\d+)$/"
     },
     {
       "groupName": "Guava to Android version",
