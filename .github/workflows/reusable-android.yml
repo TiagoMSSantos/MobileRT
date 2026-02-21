@@ -800,19 +800,21 @@ jobs:
           skip_comment_without_tests: false
 
       - name: Upload Android Test results to Codecov
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
           codecov_yml_path: codecov.yml
+          report_type: test_results
           directory: app/build/outputs/androidTest-results
           disable_search: false
           fail_ci_if_error: true
           flags: Android-Instrumentation-Tests
           name: Android-instrumentation-test-results
-          verbose: true
           version: latest
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
           working-directory: .
 
       - name: Check report's paths
@@ -1132,19 +1134,21 @@ jobs:
           skip_comment_without_tests: false
 
       - name: Upload Unit Test results to Codecov
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # v1.2.1
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          # Check available parameters in: https://github.com/codecov/test-results-action/blob/main/action.yml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
           codecov_yml_path: codecov.yml
+          report_type: test_results
           directory: app/build/test-results
           disable_search: false
           fail_ci_if_error: true
           flags: Android-Unit-Tests
           name: Android-unit-test-results
-          verbose: true
           version: latest
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
           working-directory: .
 
   Sonar:
