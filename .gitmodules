@@ -34,6 +34,15 @@
   ignore = none
   shallow = true
 
+[submodule "third_party/pcg-cpp"]
+  path = app/third_party/pcg-cpp
+  url = https://github.com/imneme/pcg-cpp
+  update = checkout
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = none
+  shallow = true
+
 [submodule "third_party/boost"]
   path = app/third_party/boost
   url = https://github.com/boostorg/boost
@@ -43,11 +52,114 @@
   ignore = dirty
   shallow = true
 
-[submodule "third_party/pcg-cpp"]
-  path = app/third_party/pcg-cpp
-  url = https://github.com/imneme/pcg-cpp
-  update = checkout
+[submodule "third_party/boost/libs/assert"]
+  path = app/third_party/boost/libs/assert
+  url = https://github.com/boostorg/assert
   branch = master
   fetchRecurseSubmodules = false
-  ignore = none
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/config"]
+  path = app/third_party/boost/libs/config
+  url = https://github.com/boostorg/config
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/core"]
+  path = app/third_party/boost/libs/core
+  url = https://github.com/boostorg/core
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/mpl"]
+  path = app/third_party/boost/libs/mpl
+  url = https://github.com/boostorg/mpl
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/preprocessor"]
+  path = app/third_party/boost/libs/preprocessor
+  url = https://github.com/boostorg/preprocessor
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/utility"]
+  path = app/third_party/boost/libs/utility
+  url = https://github.com/boostorg/utility
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/type_traits"]
+  path = app/third_party/boost/libs/type_traits
+  url = https://github.com/boostorg/type_traits
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/static_assert"]
+  path = app/third_party/boost/libs/static_assert
+  url = https://github.com/boostorg/static_assert
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/range"]
+  path = app/third_party/boost/libs/range
+  url = https://github.com/boostorg/range
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/iterator"]
+  path = app/third_party/boost/libs/iterator
+  url = https://github.com/boostorg/iterator
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/sort"]
+  path = app/third_party/boost/libs/sort
+  url = https://github.com/boostorg/sort
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/stacktrace"]
+  path = app/third_party/boost/libs/stacktrace
+  url = https://github.com/boostorg/stacktrace
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/predef"]
+  path = app/third_party/boost/libs/predef
+  url = https://github.com/boostorg/predef
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
+  shallow = true
+
+[submodule "third_party/boost/libs/container_hash"]
+  path = app/third_party/boost/libs/container_hash
+  url = https://github.com/boostorg/container_hash
+  branch = master
+  fetchRecurseSubmodules = false
+  ignore = dirty
   shallow = true
