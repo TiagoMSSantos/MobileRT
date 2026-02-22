@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-20T19:37:23.348Z",
+    "detectionDate": "2026-02-22T08:53:25.839Z",
     "formats": {
       "java": {
         "sources": {
@@ -1997,14 +1997,14 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 442,
-            "tokens": 2247,
+            "lines": 582,
+            "tokens": 3050,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 2,
+            "duplicatedLines": 82,
+            "duplicatedTokens": 588,
+            "percentage": 14.09,
+            "percentageTokens": 19.28,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2025,22 +2025,22 @@
             "tokens": 1895,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 78,
-            "duplicatedTokens": 435,
-            "percentage": 15.6,
-            "percentageTokens": 22.96,
+            "duplicatedLines": 79,
+            "duplicatedTokens": 436,
+            "percentage": 15.8,
+            "percentageTokens": 23.01,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
           ".github/workflows/native.yml": {
-            "lines": 102,
-            "tokens": 566,
+            "lines": 103,
+            "tokens": 588,
             "sources": 1,
-            "clones": 6,
-            "duplicatedLines": 184,
-            "duplicatedTokens": 1036,
-            "percentage": 180.39,
-            "percentageTokens": 183.04,
+            "clones": 5,
+            "duplicatedLines": 170,
+            "duplicatedTokens": 934,
+            "percentage": 165.05,
+            "percentageTokens": 158.84,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2096,11 +2096,11 @@
             "lines": 139,
             "tokens": 684,
             "sources": 1,
-            "clones": 2,
-            "duplicatedLines": 49,
-            "duplicatedTokens": 238,
-            "percentage": 35.25,
-            "percentageTokens": 34.8,
+            "clones": 3,
+            "duplicatedLines": 64,
+            "duplicatedTokens": 341,
+            "percentage": 46.04,
+            "percentageTokens": 49.85,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2190,14 +2190,14 @@
           }
         },
         "total": {
-          "lines": 3338,
-          "tokens": 18651,
+          "lines": 3479,
+          "tokens": 19476,
           "sources": 25,
-          "clones": 9,
-          "duplicatedLines": 240,
-          "duplicatedTokens": 1356,
-          "percentage": 7.19,
-          "percentageTokens": 7.27,
+          "clones": 10,
+          "duplicatedLines": 282,
+          "duplicatedTokens": 1651,
+          "percentage": 8.11,
+          "percentageTokens": 8.48,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2302,13 +2302,13 @@
           },
           "scripts/install_dependencies.sh": {
             "lines": 568,
-            "tokens": 4579,
+            "tokens": 4603,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 124,
             "percentage": 7.39,
-            "percentageTokens": 2.71,
+            "percentageTokens": 2.69,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2375,13 +2375,13 @@
         },
         "total": {
           "lines": 5008,
-          "tokens": 33622,
+          "tokens": 33646,
           "sources": 14,
           "clones": 13,
           "duplicatedLines": 299,
           "duplicatedTokens": 1401,
           "percentage": 5.97,
-          "percentageTokens": 4.17,
+          "percentageTokens": 4.16,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3332,14 +3332,14 @@
       }
     },
     "total": {
-      "lines": 31231,
-      "tokens": 239365,
+      "lines": 31372,
+      "tokens": 240214,
       "sources": 264,
-      "clones": 123,
-      "duplicatedLines": 1545,
-      "duplicatedTokens": 14337,
-      "percentage": 4.95,
-      "percentageTokens": 5.99,
+      "clones": 124,
+      "duplicatedLines": 1587,
+      "duplicatedTokens": 14632,
+      "percentage": 5.06,
+      "percentageTokens": 6.09,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7127,6 +7127,42 @@
     },
     {
       "format": "yaml",
+      "lines": 42,
+      "fragment": "- name: Delete Qt path\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        run: |\n          # This step is to avoid the following error during the step \"Install Qt (Windows & MacOS)\":\n          # Cannot create output directory : Cannot create a file when that file already exists. : D:\\a\\MobileRT\\MobileRT\\Qt\\6.9.0\\msvc2022_64\n          rm -rf Qt;\n\n      - name: Set Qt CPU Architecture (Windows & MacOS)\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        run: |\n          if [ ${{ startsWith(inputs.build_os, 'windows') }} = true ]; then\n            echo 'qt_host=windows' >> \"${GITHUB_ENV}\";\n          elif [ ${{ startsWith(inputs.build_os, 'macos') }} = true ]; then\n            echo 'qt_host=mac' >> \"${GITHUB_ENV}\";\n          else\n            exit 1;\n          fi\n\n      - name: Install Qt (Windows & MacOS)\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        uses: jurplel/install-qt-action@d325aaf2a8baeeda41ad0b5d39f84a6af9bcf005 # v4.3.0\n        # Download Qt from: https://download.qt.io/online/qtsdkrepository\n        with:\n          # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml\n          version: '${{ inputs.qt_version }}' # Also update: app/CMakeLists.txt\n          host: '${{ env.qt_host }}'\n          target: 'desktop'\n          arch: '${{ inputs.qt_arch }}'\n          dir: '${{ github.workspace }}'\n          install-deps: 'false'\n          modules: ''\n          cache: 'false'\n          cache-key-prefix: '${{ env.qt_host }}-${{ inputs.qt_arch }}'\n          setup-python: 'true'\n          set-env: 'true'\n          py7zrversion: '>=1.0.0'\n\n      - name: Install dependencies\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG)",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/reusable-native.yml",
+        "start": 285,
+        "end": 326,
+        "startLoc": {
+          "line": 285,
+          "column": 7,
+          "position": 1400
+        },
+        "endLoc": {
+          "line": 326,
+          "column": 39,
+          "position": 1694
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/reusable-native.yml",
+        "start": 95,
+        "end": 136,
+        "startLoc": {
+          "line": 95,
+          "column": 7,
+          "position": 550
+        },
+        "endLoc": {
+          "line": 136,
+          "column": 41,
+          "position": 844
+        }
+      }
+    },
+    {
+      "format": "yaml",
       "lines": 16,
       "fragment": "}}\n\n    steps:\n      - name: Checkout\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2\n        with:\n          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml\n          lfs: true\n\n      - name: Set Matrix\n        id: set-matrix\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success()\n        run",
       "tokens": 0,
@@ -7158,42 +7194,6 @@
           "line": 50,
           "column": 6,
           "position": 296
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 15,
-      "fragment": "}}\n    uses: ./.github/workflows/reusable-native.yml\n\n    # Sets permissions of the GITHUB_TOKEN to allow delete cache\n    permissions:\n      actions: write\n\n    with:\n      host_os: ${{ matrix.host_os }}\n      type: ${{ matrix.type }}\n      compiler: ${{ matrix.compiler }}\n      qt_version: ${{ matrix.qt_version }}\n      qt_arch: ${{ matrix.qt_arch }}\n    # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation\n    secrets: inherit",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/native.yml",
-        "start": 89,
-        "end": 103,
-        "startLoc": {
-          "line": 89,
-          "column": 2,
-          "position": 464
-        },
-        "endLoc": {
-          "line": 103,
-          "column": 8,
-          "position": 566
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/release.yml",
-        "start": 92,
-        "end": 106,
-        "startLoc": {
-          "line": 92,
-          "column": 2,
-          "position": 548
-        },
-        "endLoc": {
-          "line": 106,
-          "column": 8,
-          "position": 650
         }
       }
     },
@@ -7446,6 +7446,42 @@
           "line": 62,
           "column": 69,
           "position": 306
+        }
+      }
+    },
+    {
+      "format": "yaml",
+      "lines": 16,
+      "fragment": "}}\n    uses: ./.github/workflows/reusable-android.yml\n\n    # Sets permissions of the GITHUB_TOKEN to allow delete cache and publish test results\n    permissions:\n      actions: write\n      checks: write\n      pull-requests: write # only required if `comment: true` was enabled\n\n    with:\n      host_os: ${{ matrix.host_os }}\n      android_api: ${{ matrix.android_api }}\n      android_api_device: ${{ matrix.android_api_device }}\n      type: ${{ matrix.type }}\n    # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation\n    secrets: inherit",
+      "tokens": 0,
+      "firstFile": {
+        "name": ".github/workflows/android.yml",
+        "start": 125,
+        "end": 140,
+        "startLoc": {
+          "line": 125,
+          "column": 2,
+          "position": 581
+        },
+        "endLoc": {
+          "line": 140,
+          "column": 8,
+          "position": 684
+        }
+      },
+      "secondFile": {
+        "name": ".github/workflows/release.yml",
+        "start": 69,
+        "end": 84,
+        "startLoc": {
+          "line": 69,
+          "column": 2,
+          "position": 375
+        },
+        "endLoc": {
+          "line": 84,
+          "column": 8,
+          "position": 478
         }
       }
     },

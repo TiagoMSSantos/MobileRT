@@ -736,7 +736,7 @@ jobs:
               echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
               ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
               sh scripts/run_tests_android.sh -t ${{ inputs.type }} -r all -a ${{ inputs.android_api }} -k false -f ${{ env.android_arch }};
-              echo "Run Android tests finished: ${?}";
+              rm app/MobileRT.jks;
 
       - name: Print error logs
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
