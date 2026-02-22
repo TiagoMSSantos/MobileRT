@@ -26,6 +26,7 @@ on:
       - '!scripts/test/utils/utils.sh'
       - '!codecov.yml'
       - '!app/third_party/conan/Native/**'
+      - "!.gitmodules"
       - '!**/CMakeLists*'
       - '!**/AndroidTest/resources/**'
       - '!**/*.c*'

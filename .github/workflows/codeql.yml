@@ -22,6 +22,7 @@ on:
     - '!app/src/**/*.xml'
     - '!app/third_party/conan/Native/**'
     - '!app/third_party/conan/Android/**'
+    - "!.gitmodules"
     - '!**/CMakeLists*'
     - '!**/*.java*'
     - '!**/*.kt*'

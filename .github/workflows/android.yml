@@ -16,6 +16,7 @@ on:
     - '!codecov.yml'
     - '!app/src/**/*.xml'
     - '!app/third_party/conan/Android/**'
+    - "!.gitmodules"
     - '!scripts/compile_android.sh'
     - '!scripts/run_tests.sh'
     - '!scripts/run_tests_android.sh'

@@ -14,6 +14,7 @@ on:
     - '!.github/workflows/docker-matrix.json'
     - '!.github/macports.yml'
     - '!app/third_party/conan/Native/**'
+    - "!.gitmodules"
     - '!deploy/Dockerfile*'
     - '!scripts/install_dependencies.sh'
     - '!scripts/compile_native.sh'
