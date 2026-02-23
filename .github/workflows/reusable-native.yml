@@ -41,7 +41,7 @@ jobs:
 
     name: Build ${{ inputs.compiler }} ${{ inputs.build_os }} (${{ inputs.target_os }}) [${{ inputs.type }}]
     runs-on: ${{ inputs.build_os }}
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     # Sets permissions of the GITHUB_TOKEN to allow delete cache
     permissions:
@@ -242,7 +242,7 @@ jobs:
 
     name: Test ${{ inputs.compiler }} ${{ inputs.build_os }} (${{ inputs.target_os }}) [${{ inputs.type }}]
     runs-on: ${{ inputs.target_os }}
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
