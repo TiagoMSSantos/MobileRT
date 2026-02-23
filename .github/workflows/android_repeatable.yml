@@ -99,7 +99,7 @@ jobs:
         cache-dependency-path: '**/build.gradle'
 
     - name: Install dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success()
       run: |
         sh scripts/install_dependencies.sh;

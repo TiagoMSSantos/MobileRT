@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-23T18:54:07.243Z",
+    "detectionDate": "2026-02-23T19:15:49.160Z",
     "formats": {
       "java": {
         "sources": {
@@ -2001,10 +2001,10 @@
             "tokens": 3050,
             "sources": 1,
             "clones": 2,
-            "duplicatedLines": 82,
-            "duplicatedTokens": 588,
-            "percentage": 14.09,
-            "percentageTokens": 19.28,
+            "duplicatedLines": 96,
+            "duplicatedTokens": 638,
+            "percentage": 16.49,
+            "percentageTokens": 20.92,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2194,10 +2194,10 @@
           "tokens": 19948,
           "sources": 25,
           "clones": 11,
-          "duplicatedLines": 297,
-          "duplicatedTokens": 1766,
-          "percentage": 8.83,
-          "percentageTokens": 8.85,
+          "duplicatedLines": 304,
+          "duplicatedTokens": 1791,
+          "percentage": 9.04,
+          "percentageTokens": 8.98,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2301,14 +2301,14 @@
             "newClones": 0
           },
           "scripts/install_dependencies.sh": {
-            "lines": 580,
-            "tokens": 4732,
+            "lines": 582,
+            "tokens": 4750,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 42,
             "duplicatedTokens": 124,
-            "percentage": 7.24,
-            "percentageTokens": 2.62,
+            "percentage": 7.22,
+            "percentageTokens": 2.61,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2374,13 +2374,13 @@
           }
         },
         "total": {
-          "lines": 5020,
-          "tokens": 33771,
+          "lines": 5022,
+          "tokens": 33789,
           "sources": 14,
           "clones": 13,
           "duplicatedLines": 299,
           "duplicatedTokens": 1401,
-          "percentage": 5.96,
+          "percentage": 5.95,
           "percentageTokens": 4.15,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3332,14 +3332,14 @@
       }
     },
     "total": {
-      "lines": 31269,
-      "tokens": 240811,
+      "lines": 31271,
+      "tokens": 240829,
       "sources": 264,
       "clones": 125,
-      "duplicatedLines": 1602,
-      "duplicatedTokens": 14747,
-      "percentage": 5.12,
-      "percentageTokens": 6.12,
+      "duplicatedLines": 1609,
+      "duplicatedTokens": 14772,
+      "percentage": 5.15,
+      "percentageTokens": 6.13,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7127,37 +7127,37 @@
     },
     {
       "format": "yaml",
-      "lines": 42,
-      "fragment": "- name: Delete Qt path\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        run: |\n          # This step is to avoid the following error during the step \"Install Qt (Windows & MacOS)\":\n          # Cannot create output directory : Cannot create a file when that file already exists. : D:\\a\\MobileRT\\MobileRT\\Qt\\6.9.0\\msvc2022_64\n          rm -rf Qt;\n\n      - name: Set Qt CPU Architecture (Windows & MacOS)\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        run: |\n          if [ ${{ startsWith(inputs.build_os, 'windows') }} = true ]; then\n            echo 'qt_host=windows' >> \"${GITHUB_ENV}\";\n          elif [ ${{ startsWith(inputs.build_os, 'macos') }} = true ]; then\n            echo 'qt_host=mac' >> \"${GITHUB_ENV}\";\n          else\n            exit 1;\n          fi\n\n      - name: Install Qt (Windows & MacOS)\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        uses: jurplel/install-qt-action@d325aaf2a8baeeda41ad0b5d39f84a6af9bcf005 # v4.3.0\n        # Download Qt from: https://download.qt.io/online/qtsdkrepository\n        with:\n          # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml\n          version: '${{ inputs.qt_version }}' # Also update: app/CMakeLists.txt\n          host: '${{ env.qt_host }}'\n          target: 'desktop'\n          arch: '${{ inputs.qt_arch }}'\n          dir: '${{ github.workspace }}'\n          install-deps: 'false'\n          modules: ''\n          cache: 'false'\n          cache-key-prefix: '${{ env.qt_host }}-${{ inputs.qt_arch }}'\n          setup-python: 'true'\n          set-env: 'true'\n          py7zrversion: '>=1.0.0'\n\n      - name: Install dependencies\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG)",
+      "lines": 49,
+      "fragment": "- name: Delete Qt path\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        run: |\n          # This step is to avoid the following error during the step \"Install Qt (Windows & MacOS)\":\n          # Cannot create output directory : Cannot create a file when that file already exists. : D:\\a\\MobileRT\\MobileRT\\Qt\\6.9.0\\msvc2022_64\n          rm -rf Qt;\n\n      - name: Set Qt CPU Architecture (Windows & MacOS)\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        run: |\n          if [ ${{ startsWith(inputs.build_os, 'windows') }} = true ]; then\n            echo 'qt_host=windows' >> \"${GITHUB_ENV}\";\n          elif [ ${{ startsWith(inputs.build_os, 'macos') }} = true ]; then\n            echo 'qt_host=mac' >> \"${GITHUB_ENV}\";\n          else\n            exit 1;\n          fi\n\n      - name: Install Qt (Windows & MacOS)\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}\n        if: success() && (startsWith(inputs.build_os, 'windows') || startsWith(inputs.build_os, 'macos-12'))\n        uses: jurplel/install-qt-action@d325aaf2a8baeeda41ad0b5d39f84a6af9bcf005 # v4.3.0\n        # Download Qt from: https://download.qt.io/online/qtsdkrepository\n        with:\n          # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml\n          version: '${{ inputs.qt_version }}' # Also update: app/CMakeLists.txt\n          host: '${{ env.qt_host }}'\n          target: 'desktop'\n          arch: '${{ inputs.qt_arch }}'\n          dir: '${{ github.workspace }}'\n          install-deps: 'false'\n          modules: ''\n          cache: 'false'\n          cache-key-prefix: '${{ env.qt_host }}-${{ inputs.qt_arch }}'\n          setup-python: 'true'\n          set-env: 'true'\n          py7zrversion: '>=1.0.0'\n\n      - name: Install dependencies\n        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}\n        if: success()\n        run: |\n          sh scripts/install_dependencies.sh;\n          echo 'Adding path to lcov (windows only) in PATH environment variable.';\n          echo \"/c/ProgramData/chocolatey/lib/lcov/tools/bin\" >> ${GITHUB_PATH};\n\n      - name: Install",
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-native.yml",
         "start": 285,
-        "end": 326,
+        "end": 333,
         "startLoc": {
           "line": 285,
           "column": 7,
           "position": 1400
         },
         "endLoc": {
-          "line": 326,
-          "column": 39,
-          "position": 1694
+          "line": 333,
+          "column": 8,
+          "position": 1719
         }
       },
       "secondFile": {
         "name": ".github/workflows/reusable-native.yml",
         "start": 95,
-        "end": 136,
+        "end": 143,
         "startLoc": {
           "line": 95,
           "column": 7,
           "position": 550
         },
         "endLoc": {
-          "line": 136,
-          "column": 41,
-          "position": 844
+          "line": 143,
+          "column": 6,
+          "position": 869
         }
       }
     },
