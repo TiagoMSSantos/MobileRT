@@ -172,6 +172,7 @@ jobs:
           sh scripts/install_dependencies.sh;
           echo 'Add binutils to PATH for readelf command in MacOS.';
           echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -598,6 +599,7 @@ jobs:
           sh scripts/install_dependencies.sh;
           echo 'Add binutils to PATH for readelf command in MacOS.';
           echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -985,6 +987,7 @@ jobs:
           sh scripts/install_dependencies.sh;
           echo 'Add binutils to PATH for readelf command in MacOS.';
           echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -1285,6 +1288,7 @@ jobs:
           sh scripts/install_dependencies.sh;
           echo 'Add binutils to PATH for readelf command in MacOS.';
           echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
       - name: Download generated binaries from cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

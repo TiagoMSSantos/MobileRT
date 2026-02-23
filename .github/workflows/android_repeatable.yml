@@ -105,6 +105,7 @@ jobs:
         sh scripts/install_dependencies.sh;
         echo 'Add binutils to PATH for readelf command in MacOS.';
         echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+        echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
     - name: Delete unnecessary Android SDK components
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

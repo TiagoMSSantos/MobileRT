@@ -328,9 +328,8 @@ install_dependencies_macos() {
   if ! command -v readelf > /dev/null; then
     echo 'Installing readelf.';
     brew list binutils > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install binutils;
-    echo 'Checking binutils installed readelf in MacOS.';
-    ls -lahp /usr/local/opt/binutils/bin | grep readelf;
     echo 'export PATH="/usr/local/opt/binutils/bin:${PATH}"' >> ~/.bash_profile;
+    echo 'export PATH="/opt/homebrew/opt/binutils/bin:${PATH}"' >> ~/.bash_profile;
     . ~/.bash_profile;
   fi
 
