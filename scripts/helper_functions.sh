@@ -212,7 +212,7 @@ callAdbShellCommandUntilSuccess() { (
 
   echo "Calling ADB shell command until success 'adb shell $*'";
   # shellcheck disable=SC2145
-  output=$(timeout 300 adb shell "false; $@; echo ::\$?::" | sed '${/^$/d}');
+  output=$(timeout 300 adb shell "false; $@; echo ::\$?::" | sed '/^$/d');
   lastResult=$(echo "${output}" | grep '::.*::' | sed 's/.*\(::-\?[0-9]\+::\).*/\1/' | sed 's/:://g'| tr -d '[:space:]');
   if echo "${output}" | grep '^='; then
     _lastResultValid=false;
@@ -224,7 +224,7 @@ callAdbShellCommandUntilSuccess() { (
   while [ "${lastResult}" -ne 0 ] && [ "${lastResult}" != '127' ] && [ "${lastResult}" != '2' ] && [ "${_lastResultValid}" = 'true' ] && [ ${_retry} -lt 3 ]; do
     _retry=$(( _retry + 1 ));
     # shellcheck disable=SC2145
-    output=$(timeout 300 adb shell "false; $@; echo ::\$?::" | sed '${/^$/d}');
+    output=$(timeout 300 adb shell "false; $@; echo ::\$?::" | sed '/^$/d');
     lastResult=$(echo "${output}" | grep '::.*::' | sed 's/.*\(::-\?[0-9]\+::\).*/\1/' | sed 's/:://g'| tr -d '[:space:]');
     if echo "${output}" | grep '^=' || echo "${output}" | grep '^/system/bin/sh: .*: not found'; then
       _lastResultValid=false;

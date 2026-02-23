@@ -67,6 +67,7 @@ install_dependencies() {
     echo 'Detected Debian based Linux';
     install_dependencies_debian;
     checkCommand lcov;
+    checkCommand readelf;
   elif uname -a | grep -iq 'linux' && command -v yum > /dev/null; then
     echo 'Detected Red Hat based Linux';
     install_dependencies_red_hat;
@@ -83,6 +84,7 @@ install_dependencies() {
     echo 'Detected MacOS';
     install_dependencies_macos;
     checkCommand lcov;
+    checkCommand readelf;
   elif uname -a | grep -iq 'msys' && command -v choco > /dev/null; then
     echo 'Detected Windows';
     # Requires running chocolatey in an elevated command shell.
@@ -124,6 +126,10 @@ install_dependencies_debian() {
   echo 'Checking Qt path.';
   find /usr/include/*-linux-gnu/qt5 /usr/lib/*-linux-gnu/cmake/Qt5 -name "Qt[0-9]Config.cmake" -o -name "QDialog*" 2> /dev/null | grep -z /;
   echo "Found Qt: ${?}";
+  if ! command -v readelf > /dev/null; then
+    echo 'Installing readelf.';
+    sudo apt-get install --no-install-recommends -y binutils;
+  fi
 }
 
 install_dependencies_red_hat() {
@@ -318,6 +324,12 @@ install_dependencies_macos() {
   if ! command -v shellcheck > /dev/null; then
     echo 'Installing shellcheck.';
     brew list shellcheck > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install shellcheck;
+  fi
+  if ! command -v readelf > /dev/null; then
+    echo 'Installing readelf.';
+    brew list binutils > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install binutils;
+    echo 'Checking binutils installed readelf in MacOS.';
+    ls -lahp /usr/local/opt/binutils/bin | grep readelf;
   fi
 
   set +e;
