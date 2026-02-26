@@ -260,7 +260,7 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: dawidd6/action-download-artifact@fe9d59ce33ce92db8a6ac90b2c8be6b6d90417c8 # v15
+          action: dawidd6/action-download-artifact@2536c51d3d126276eb39f74d6bc9c72ac6ef30d3 # v16
           pre_retry_command: 'echo "Retrying Download generated binaries artifact step..."'
           with: |
             # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
