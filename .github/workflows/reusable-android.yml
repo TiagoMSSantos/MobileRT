@@ -257,7 +257,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -366,7 +366,7 @@ jobs:
         timeout-minutes: 20
         if: success() && strategy.job-index == 0
         continue-on-error: true
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: gradle-packages
@@ -393,7 +393,7 @@ jobs:
       - name: Upload APK as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
@@ -753,7 +753,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -839,7 +839,7 @@ jobs:
       - name: Upload test screenshots as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: MobileRT_${{ inputs.type }}_android_api-a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_test_screenshots
@@ -1079,7 +1079,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -1414,7 +1414,7 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: problems-report
@@ -1444,7 +1444,7 @@ jobs:
       - name: Upload reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: reports_${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
