@@ -356,6 +356,9 @@ jobs:
         run: |
           g++ --version;
           lcov --version;
+          echo 'Checking out git submodules';
+          git submodule init;
+          git submodule update;
           ls -lahp app/third_party/boost/libs/stacktrace/include/boost/stacktrace/detail/frame_decl.hpp;
           if lcov --version | grep -iq 'version 2.'; then
             echo 'Detected LCOV version 2.';
