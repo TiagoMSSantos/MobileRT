@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-27T09:13:50.720Z",
+    "detectionDate": "2026-02-27T18:37:51.783Z",
     "formats": {
       "java": {
         "sources": {
@@ -1997,14 +1997,14 @@
             "newClones": 0
           },
           ".github/workflows/reusable-native.yml": {
-            "lines": 582,
-            "tokens": 3050,
+            "lines": 608,
+            "tokens": 3245,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 96,
             "duplicatedTokens": 638,
-            "percentage": 16.49,
-            "percentageTokens": 20.92,
+            "percentage": 15.79,
+            "percentageTokens": 19.66,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2190,14 +2190,14 @@
           }
         },
         "total": {
-          "lines": 3393,
-          "tokens": 20064,
+          "lines": 3419,
+          "tokens": 20259,
           "sources": 25,
           "clones": 10,
           "duplicatedLines": 289,
           "duplicatedTokens": 1688,
-          "percentage": 8.52,
-          "percentageTokens": 8.41,
+          "percentage": 8.45,
+          "percentageTokens": 8.33,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3332,14 +3332,14 @@
       }
     },
     "total": {
-      "lines": 31299,
-      "tokens": 240937,
+      "lines": 31325,
+      "tokens": 241132,
       "sources": 264,
       "clones": 124,
       "duplicatedLines": 1594,
       "duplicatedTokens": 14669,
       "percentage": 5.09,
-      "percentageTokens": 6.09,
+      "percentageTokens": 6.08,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7132,17 +7132,17 @@
       "tokens": 0,
       "firstFile": {
         "name": ".github/workflows/reusable-native.yml",
-        "start": 285,
-        "end": 333,
+        "start": 307,
+        "end": 355,
         "startLoc": {
-          "line": 285,
+          "line": 307,
           "column": 7,
-          "position": 1400
+          "position": 1595
         },
         "endLoc": {
-          "line": 333,
+          "line": 355,
           "column": 8,
-          "position": 1719
+          "position": 1914
         }
       },
       "secondFile": {

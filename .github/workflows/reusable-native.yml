@@ -247,21 +247,34 @@ jobs:
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && inputs.type == 'release'
+        if: success()
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
           submodules: true
 
-      - name: Checkout
+      - name: Checkout Boost submodules
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && inputs.type == 'debug'
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
-          lfs: true
-          submodules: recursive
+        run: |
+          git submodule update --init;
+          cd app/third_party/boost;
+
+          for submodule in assert config core mpl preprocessor utility type_traits static_assert range iterator sort; do
+            echo "Checking out Boost ${submodule}";
+            git submodule update --init --rebase "libs/${submodule}";
+          done
+
+          case "$(uname)" in
+            Linux)
+              # Boost modules only used in Linux
+              for submodule in stacktrace predef container_hash; do
+                echo "Checking out Boost ${submodule} for Linux";
+                git submodule update --init --rebase "libs/${submodule}";
+              done
+              ;;
+          esac
 
       - name: Download generated binaries artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
