@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-27T08:04:15.548Z",
+    "detectionDate": "2026-02-27T08:33:46.636Z",
     "formats": {
       "java": {
         "sources": {
@@ -2024,11 +2024,11 @@
             "lines": 384,
             "tokens": 2347,
             "sources": 1,
-            "clones": 5,
-            "duplicatedLines": 94,
-            "duplicatedTokens": 551,
-            "percentage": 24.48,
-            "percentageTokens": 23.48,
+            "clones": 4,
+            "duplicatedLines": 79,
+            "duplicatedTokens": 448,
+            "percentage": 20.57,
+            "percentageTokens": 19.09,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2093,14 +2093,14 @@
             "newClones": 0
           },
           ".github/workflows/android.yml": {
-            "lines": 140,
-            "tokens": 689,
+            "lines": 141,
+            "tokens": 702,
             "sources": 1,
-            "clones": 3,
-            "duplicatedLines": 64,
-            "duplicatedTokens": 341,
-            "percentage": 45.71,
-            "percentageTokens": 49.49,
+            "clones": 2,
+            "duplicatedLines": 49,
+            "duplicatedTokens": 238,
+            "percentage": 34.75,
+            "percentageTokens": 33.9,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2190,14 +2190,14 @@
           }
         },
         "total": {
-          "lines": 3392,
-          "tokens": 20031,
+          "lines": 3393,
+          "tokens": 20044,
           "sources": 25,
-          "clones": 11,
-          "duplicatedLines": 304,
-          "duplicatedTokens": 1791,
-          "percentage": 8.96,
-          "percentageTokens": 8.94,
+          "clones": 10,
+          "duplicatedLines": 289,
+          "duplicatedTokens": 1688,
+          "percentage": 8.52,
+          "percentageTokens": 8.42,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3332,14 +3332,14 @@
       }
     },
     "total": {
-      "lines": 31298,
-      "tokens": 240904,
+      "lines": 31299,
+      "tokens": 240917,
       "sources": 264,
-      "clones": 125,
-      "duplicatedLines": 1609,
-      "duplicatedTokens": 14772,
-      "percentage": 5.14,
-      "percentageTokens": 6.13,
+      "clones": 124,
+      "duplicatedLines": 1594,
+      "duplicatedTokens": 14669,
+      "percentage": 5.09,
+      "percentageTokens": 6.09,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -7482,42 +7482,6 @@
           "line": 64,
           "column": 69,
           "position": 316
-        }
-      }
-    },
-    {
-      "format": "yaml",
-      "lines": 16,
-      "fragment": "}}\n    uses: ./.github/workflows/reusable-android.yml\n\n    # Sets permissions of the GITHUB_TOKEN to allow delete cache and publish test results\n    permissions:\n      actions: write\n      checks: write\n      pull-requests: write # only required if `comment: true` was enabled\n\n    with:\n      host_os: ${{ matrix.host_os }}\n      android_api: ${{ matrix.android_api }}\n      android_api_device: ${{ matrix.android_api_device }}\n      type: ${{ matrix.type }}\n    # If you might want to use a secret in the build or test job then you would need to pass secrets, inherit disables secret isolation\n    secrets: inherit",
-      "tokens": 0,
-      "firstFile": {
-        "name": ".github/workflows/android.yml",
-        "start": 126,
-        "end": 141,
-        "startLoc": {
-          "line": 126,
-          "column": 2,
-          "position": 586
-        },
-        "endLoc": {
-          "line": 141,
-          "column": 8,
-          "position": 689
-        }
-      },
-      "secondFile": {
-        "name": ".github/workflows/release.yml",
-        "start": 71,
-        "end": 86,
-        "startLoc": {
-          "line": 71,
-          "column": 2,
-          "position": 385
-        },
-        "endLoc": {
-          "line": 86,
-          "column": 8,
-          "position": 488
         }
       }
     },

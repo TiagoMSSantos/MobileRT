@@ -133,7 +133,8 @@ jobs:
       pull-requests: write # only required if `comment: true` was enabled
 
     with:
-      host_os: ${{ matrix.host_os }}
+      build_os: ${{ matrix.build_os }}
+      target_os: ${{ matrix.target_os }}
       android_api: ${{ matrix.android_api }}
       android_api_device: ${{ matrix.android_api_device }}
       type: ${{ matrix.type }}

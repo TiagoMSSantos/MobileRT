@@ -3,7 +3,10 @@ name: Reusable Android workflow
 on:
   workflow_call:
     inputs:
-      host_os:
+      build_os:
+        type: string
+        required: true
+      target_os:
         type: string
         required: true
       android_api:
@@ -31,8 +34,8 @@ env:
 
 jobs:
   Build:
-    runs-on: ${{ inputs.host_os }}
-    name: Build ${{ inputs.android_api }} (${{ inputs.android_api_device }}) ${{ inputs.type }} (${{ inputs.host_os }})
+    runs-on: ${{ inputs.build_os }}
+    name: Build ${{ inputs.android_api }} ${{ inputs.type }} ${{ inputs.build_os }} (${{ inputs.android_api_device }} - ${{ inputs.target_os }})
     timeout-minutes: 360
 
     # Sets permissions of the GITHUB_TOKEN to allow delete cache
@@ -182,19 +185,19 @@ jobs:
 
       - name: Download Android CMake
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success() && !startsWith(inputs.build_os, 'windows')
         run: |
           . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
       - name: Download Android CMake Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'windows')
+        if: success() && startsWith(inputs.build_os, 'windows')
         run: |
           . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
       - name: Download NDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success() && !startsWith(inputs.build_os, 'windows')
         run: |
           if [ "${{ inputs.android_api }}" -ge 21 ]; then
             export NDK_VERSION='29.0.14206865';
@@ -207,7 +210,7 @@ jobs:
 
       - name: Download NDK Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'windows')
+        if: success() && startsWith(inputs.build_os, 'windows')
         run: |
           if [ "${{ inputs.android_api }}" -ge 21 ]; then
             export NDK_VERSION='29.0.14206865';
@@ -300,7 +303,7 @@ jobs:
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           upload-chunk-size: 536870912
           enableCrossOsArchive: true
           path: |
@@ -406,8 +409,8 @@ jobs:
 
   AndroidTests:
     needs: [Build]
-    name: Android tests ${{ inputs.android_api }} (${{ inputs.android_api_device }}) ${{ inputs.type }} (${{ inputs.host_os }})
-    runs-on: ${{ inputs.host_os }}
+    name: Android tests ${{ inputs.android_api }} ${{ inputs.type }} ${{ inputs.build_os }} (${{ inputs.android_api_device }} - ${{ inputs.target_os }})
+    runs-on: ${{ inputs.target_os }}
     timeout-minutes: 360
 
     # Sets permissions of the GITHUB_TOKEN to allow delete cache and publish test results
@@ -607,7 +610,7 @@ jobs:
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
@@ -620,6 +623,8 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
+          echo 'Deleting JSON files from build cache to allow execute Android tests in a different host OS';
+          find app/.cxx/ -iname "*.json" -delete;
           find app/build/ -iname "*.class";
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build;
@@ -643,7 +648,7 @@ jobs:
 
       - name: Enable KVM group permissions
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.host_os, 'ubuntu')
+        if: success() && startsWith(inputs.target_os, 'ubuntu')
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules;
           sudo udevadm control --reload-rules;
@@ -692,7 +697,7 @@ jobs:
 
       - name: Run Android tests
         timeout-minutes: 50
-        if: success() && !startsWith(inputs.host_os, 'windows')
+        if: success() && !startsWith(inputs.target_os, 'windows')
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
@@ -775,7 +780,7 @@ jobs:
           annotate_only: false
           check_annotations: true
           update_check: false # Possible bug: https://github.com/mikepenz/action-junit-report/issues/927
-          check_name: 'Android Test Report - API ${{ inputs.android_api }} d${{ inputs.android_api_device }} ${{ inputs.type }} (${{ inputs.host_os }})'
+          check_name: 'Android Test Report - API ${{ inputs.android_api }} d${{ inputs.android_api_device }} ${{ inputs.type }} (${{ inputs.build_os }}_${{ inputs.target_os }})'
           fail_on_failure: true
           fail_on_parse_error: true
           require_tests: true
@@ -830,7 +835,7 @@ jobs:
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           upload-chunk-size: 536870912
           enableCrossOsArchive: true
           path: |
@@ -852,9 +857,9 @@ jobs:
 
   UnitTests:
     needs: [Build]
-    runs-on: ${{ inputs.host_os }}
+    runs-on: ${{ inputs.target_os }}
     timeout-minutes: 360
-    name: Unit tests ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})
+    name: Unit tests ${{ inputs.android_api }} ${{ inputs.type }} ${{ inputs.build_os }} (${{ inputs.target_os }})
 
     # Sets permissions of the GITHUB_TOKEN to allow publish test results
     permissions:
@@ -995,7 +1000,7 @@ jobs:
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
@@ -1033,21 +1038,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
-          cpuArch=$(uname -m);
-          if [ "${cpuArch}" = 'arm64' ]; then
-            if [ "${{ inputs.android_api }}" -gt 20 ]; then
-              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-            fi
-          else
-            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
-              echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-            fi
-          fi
-          set -u;
+          echo 'android_arch=\"armeabi-v7a\",\"arm64-v8a\",\"x86\",\"x86_64\"' >> "${GITHUB_ENV}";
 
       - name: Download Android dependencies
         timeout-minutes: 8
@@ -1107,7 +1098,7 @@ jobs:
           annotate_only: false
           check_annotations: true
           update_check: false # Possible bug: https://github.com/mikepenz/action-junit-report/issues/927
-          check_name: 'Unit Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.host_os }})'
+          check_name: 'Unit Test Report - API ${{ inputs.android_api }} ${{ inputs.type }} (${{ inputs.build_os }}_${{ inputs.target_os }})'
           fail_on_failure: true
           fail_on_parse_error: true
           require_tests: true
@@ -1152,8 +1143,8 @@ jobs:
   Sonar:
     needs: [AndroidTests]
     if: inputs.type == 'debug'
-    name: Code Coverage & Sonar ${{ inputs.type }} (${{ inputs.host_os }})
-    runs-on: ${{ inputs.host_os }}
+    name: Code Coverage & Sonar ${{ inputs.type }} (${{ inputs.build_os }}_${{ inputs.target_os }})
+    runs-on: ${{ inputs.build_os }}
     timeout-minutes: 360
     steps:
       - name: Checkout
@@ -1296,7 +1287,7 @@ jobs:
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
@@ -1344,7 +1335,7 @@ jobs:
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           enableCrossOsArchive: true
           fail-on-cache-miss: true
           lookup-only: false
@@ -1362,21 +1353,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
-          cpuArch=$(uname -m);
-          if [ "${cpuArch}" = 'arm64' ]; then
-            if [ "${{ inputs.android_api }}" -gt 20 ]; then
-              echo 'android_arch=\"arm64-v8a\"' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"armeabi-v7a\"' >> "${GITHUB_ENV}";
-            fi
-          else
-            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
-              echo 'android_arch=\"x86_64\"' >> "${GITHUB_ENV}";
-            else
-              echo 'android_arch=\"x86\"' >> "${GITHUB_ENV}";
-            fi
-          fi
-          set -u;
+          echo 'android_arch=\"armeabi-v7a\",\"arm64-v8a\",\"x86\",\"x86_64\"' >> "${GITHUB_ENV}";
 
       - name: Download Android dependencies
         timeout-minutes: 8
@@ -1447,7 +1424,7 @@ jobs:
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: reports_${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.host_os }}
+          name: reports_${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           path: app/build/reports
           if-no-files-found: error
           retention-days: 90
