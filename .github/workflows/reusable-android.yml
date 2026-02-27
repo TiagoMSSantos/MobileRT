@@ -309,7 +309,6 @@ jobs:
           path: |
             app/build
             app/.cxx
-            app/third_party
 
       - name: Zip Gradle packages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -617,7 +616,6 @@ jobs:
           path: |
             app/build
             app/.cxx
-            app/third_party
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1007,7 +1005,6 @@ jobs:
           path: |
             app/build
             app/.cxx
-            app/third_party
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1294,7 +1291,6 @@ jobs:
           path: |
             app/build
             app/.cxx
-            app/third_party
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
