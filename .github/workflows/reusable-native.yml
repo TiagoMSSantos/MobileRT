@@ -252,7 +252,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
-          submodules: true
+          submodules: recursive
 
       - name: Download generated binaries artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -358,9 +358,13 @@ jobs:
           lcov --version;
           echo 'Checking out git submodules';
           git submodule init;
-          git submodule update --init;
+          git submodule status;
+          git submodule update --init --progress --verbose;
           ls -lahp app/third_party;
           ls -lahp app/third_party/boost/libs;
+          cd app/third_party/boost/libs;
+          git submodule update --init --rebase;
+          cd -;
           ls -lahp app/third_party/boost/libs/stacktrace;
           cd app/third_party/boost/libs/stacktrace;
           git pull --rebase;
