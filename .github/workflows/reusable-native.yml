@@ -247,7 +247,16 @@ jobs:
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
+        if: success() && inputs.type == 'release'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
+          lfs: true
+          submodules: true
+
+      - name: Checkout
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success() && inputs.type == 'debug'
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
