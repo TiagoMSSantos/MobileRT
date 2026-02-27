@@ -120,7 +120,7 @@ jobs:
 
   Android:
     needs: [Matrix]
-    name: Android ${{ matrix.android_api }} ${{ matrix.type }} (${{ matrix.host_os }})
+    name: Android ${{ matrix.android_api }} ${{ matrix.type }} ${{ matrix.build_os }} (${{ matrix.android_api_device }} - ${{ matrix.target_os }})
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.Matrix.outputs.matrix) }}

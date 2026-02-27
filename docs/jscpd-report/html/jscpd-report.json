@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-02-27T08:33:46.636Z",
+    "detectionDate": "2026-02-27T09:13:50.720Z",
     "formats": {
       "java": {
         "sources": {
@@ -2094,13 +2094,13 @@
           },
           ".github/workflows/android.yml": {
             "lines": 141,
-            "tokens": 702,
+            "tokens": 722,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 49,
             "duplicatedTokens": 238,
             "percentage": 34.75,
-            "percentageTokens": 33.9,
+            "percentageTokens": 32.96,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2191,13 +2191,13 @@
         },
         "total": {
           "lines": 3393,
-          "tokens": 20044,
+          "tokens": 20064,
           "sources": 25,
           "clones": 10,
           "duplicatedLines": 289,
           "duplicatedTokens": 1688,
           "percentage": 8.52,
-          "percentageTokens": 8.42,
+          "percentageTokens": 8.41,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3333,7 +3333,7 @@
     },
     "total": {
       "lines": 31299,
-      "tokens": 240917,
+      "tokens": 240937,
       "sources": 264,
       "clones": 124,
       "duplicatedLines": 1594,
