@@ -34,7 +34,12 @@ env:
 
 jobs:
   renovate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
+
+    # Sets permissions of the GITHUB_TOKEN to allow to delete previous jobs runs
+    permissions:
+      actions: write
+
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
