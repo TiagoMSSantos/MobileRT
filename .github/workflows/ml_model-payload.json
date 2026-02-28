@@ -7,7 +7,7 @@
     },
     {
       "role": "system",
-      "content": "Use the following context to fix/improve:"
+      "content": "Always use ::std instead of std:: for std functions. Use the following context to fix/improve:"
     },
     {
       "role": "system",
