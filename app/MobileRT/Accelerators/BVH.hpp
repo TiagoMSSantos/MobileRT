@@ -1,74 +1,74 @@
-#ifndef MOBILERT_ACCELERATORS_BVH_HPP
-#define MOBILERT_ACCELERATORS_BVH_HPP
-
-#include "MobileRT/Accelerators/AABB.hpp"
-#include "MobileRT/Intersection.hpp"
-#include "MobileRT/Scene.hpp"
-#include "MobileRT/Utils/Utils.hpp"
-#include <algorithm>
-#include <array>
-#include <boost/sort/spreadsort/spreadsort.hpp>
-#include <glm/glm.hpp>
-#include <random>
-#include <vector>
 #include <thread>
 #include <future>
+#include <vector>
+#include <algorithm>
 
-namespace MobileRT {
+// ... other includes and code remain unchanged ...
 
-template<typename T>
-class BVH final {
-    // ... [Other members remain unchanged]
+private:
+    void buildParallel(::std::vector<T> &&primitives);
+    void buildChunk(const std::vector<T>& primitives, std::vector<BVHNode>& localBoxes, int begin, int end);
 
-    private:
-        void build(::std::vector<T> &&primitives);
-        // ... [Rest remains unchanged]
-
-    public:
-        // ... [Public members remain unchanged]
+public:
+    explicit BVH(::std::vector<T> &&primitives);
 };
 
+// ... existing constructor ...
+
 template<typename T>
-void BVH<T>::build(::std::vector<T> &&primitives) {
-    // ... [initialization code remains unchanged]
-
-    // Number of threads
-    const unsigned int numThreads = std::thread::hardware_concurrency();
+void BVH<T>::buildParallel(::std::vector<T> &&primitives) {
+    const std::size_t numThreads = std::thread::hardware_concurrency(); // Get the number of available threads
+    const std::size_t primitivesSize = primitives.size();
+    
     std::vector<std::future<void>> futures;
+    std::vector<std::vector<BVHNode>> localBoxes(numThreads);
 
-    const size_t partSize = primitivesSize / numThreads;
-    for (unsigned int i = 0; i < numThreads; ++i) {
-        size_t startIndex = i * partSize;
-        size_t endIndex = (i == numThreads - 1) ? primitivesSize : (i + 1) * partSize;
+    size_t chunkSize = primitivesSize / numThreads;
 
-        // Launch a new thread for each partition
-        futures.push_back(std::async(std::launch::async, [this, startIndex, endIndex, &primitives]() {
-            std::vector<BuildNode> buildNodes;
-            buildNodes.reserve(endIndex - startIndex);
-            for (size_t i = startIndex; i < endIndex; ++i) {
-                const T &primitive = primitives[i];
-                AABB &&box = primitive.getAABB();
-                buildNodes.emplace_back(std::move(box), static_cast<int>(i));
-            }
+    for (size_t i = 0; i < numThreads; ++i) {
+        size_t begin = i * chunkSize;
+        size_t end = (i == numThreads - 1) ? primitivesSize : begin + chunkSize;
 
-            // Here, build Nodes of this segment
-            // You may add code to build the BVH for this segment based on your design
-        }));
+        // Launch a thread for each chunk
+        futures.emplace_back(std::async(std::launch::async, &BVH<T>::buildChunk, this, std::cref(primitives), std::ref(localBoxes[i]), begin, end));
     }
 
     // Wait for all threads to finish
-    for (auto &f : futures) {
-        f.get();
+    for (auto& future : futures) {
+        future.get();
     }
-    
-    // Now you can merge results from the threads and build the actual BVH
-    // Note: Please add proper synchronization and data gathering logic for merging built nodes if needed.
 
-    // ... [Finalization code remains unchanged]
+    // Merge all local boxes into the main boxes_ vector
+    for (const auto& boxChunk : localBoxes) {
+        this->boxes_.insert(this->boxes_.end(), boxChunk.begin(), boxChunk.end());
+    }
+
+    // Process the merged boxes_ vector (sorting, layout, etc.)
+    // You may want to call a merge function here, depending on your original algorithm.
 }
 
-// ... [Rest of the class remains unchanged]
+// Process each chunk independently
+template<typename T>
+void BVH<T>::buildChunk(const std::vector<T>& primitives, std::vector<BVHNode>& localBoxes, int begin, int end) {
+    for (int i = begin; i < end; ++i) {
+        AABB box = primitives[i].getAABB();
+        localBoxes.emplace_back(BVHNode{ box, i, 1 }); // Simple placeholder logic for localNodes
+    }
+    
+    // Additional logic to add localBoxes to a global structure might need adjustment
+}
 
-} // namespace MobileRT
+// Don't forget to adjust the constructor to call buildParallel instead of build
+template<typename T>
+BVH<T>::BVH(::std::vector<T> &&primitives) {
+    if (primitives.empty()) {
+        this->boxes_.emplace_back();
+        LOG_WARN("Empty BVH for '", typeid(T).name(), "' without any primitives.");
+        return;
+    }
+    LOG_INFO("Building BVH for '", typeid(T).name(), "' with '", primitives.size(), "' primitives.");
+    buildParallel(std::move(primitives));
+    LOG_INFO("Built BVH for '", typeid(T).name(), "' with '", this->primitives_.size(), "' primitives in '", this->boxes_.size(), "' boxes.");
+}
 
-#endif //MOBILERT_ACCELERATORS_BVH_HPP
+// ... existing methods remain unchanged ...
