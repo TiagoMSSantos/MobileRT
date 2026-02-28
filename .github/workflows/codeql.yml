@@ -93,8 +93,10 @@ jobs:
     timeout-minutes: 360
 
     # Sets permissions of the GITHUB_TOKEN to allow update the status of code scanning alerts
+    # Sets permissions of the GITHUB_TOKEN to allow to delete previous jobs runs
     permissions:
       security-events: write
+      actions: write
 
     steps:
     - name: Checkout
@@ -123,6 +125,28 @@ jobs:
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
         cache-dependency-path: '**/build.gradle'
+
+    - name: Delete previous CodeQL runs
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'actions'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        BRANCH=${GITHUB_REF#refs/heads/};
+        echo "BRANCH: ${BRANCH}";
+        echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}";
+        echo "GITHUB_RUN_ID: ${GITHUB_RUN_ID}";
+        responses_triggered=$(curl --fail-with-body -s -S -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/codeql.yml/runs?branch=${BRANCH}");
+        echo 'Deleting previous CodeQL runs';
+        run_ids=$(printf '%s\n' "${responses_triggered}" | jq '.workflow_runs[] | select(.id != '"${GITHUB_RUN_ID}"') | .id');
+        for run_id in ${run_ids}; do
+          echo "Deleting run: ${run_id}";
+          curl --fail-with-body -s -S -X DELETE -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}";
+        done
 
     - name: Add project root path
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
