@@ -14,7 +14,7 @@
 #include <vector>
 #include <future>
 #include <mutex>
-#include <iostream> // Include for logging
+#include <iostream>
 
 namespace MobileRT {
 
@@ -100,8 +100,6 @@ template<typename T>
 BVH<T>::~BVH() {
     this->boxes_.clear();
     this->primitives_.clear();
-    std::vector<BVHNode>().swap(this->boxes_); // Clear and release memory
-    std::vector<T>().swap(this->primitives_); // Clear and release memory
 }
 
 template<typename T>
