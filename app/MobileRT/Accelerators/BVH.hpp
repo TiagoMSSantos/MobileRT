@@ -1,4 +1,3 @@
-```cpp
 #ifndef MOBILERT_ACCELERATORS_BVH_HPP
 #define MOBILERT_ACCELERATORS_BVH_HPP
 
@@ -58,10 +57,10 @@ private:
 
     void build(::std::vector<T> &&primitives);
     Intersection intersect(Intersection intersection);
-    
+
     template<typename Iterator>
     ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
-    
+
     template<typename Iterator>
     AABB getSurroundingBox(Iterator itBegin, Iterator itEnd);
 
@@ -80,7 +79,7 @@ public:
 
 private:
     void buildNodeThreadSafe(::std::vector<BuildNode>& buildNodes, ::std::vector<T> &&primitives);
-    void buildBVHParallel(std::vector<T> &&primitives);
+    void buildBVHParallel(::std::vector<T> &&primitives);
 };
 
 template<typename T>
@@ -111,46 +110,45 @@ void BVH<T>::buildNodeThreadSafe(::std::vector<BuildNode>& buildNodes, ::std::ve
 }
 
 template<typename T>
-void BVH<T>::buildBVHParallel(std::vector<T> &&primitives) {
-    const size_t numThreads = std::thread::hardware_concurrency();
-    std::vector<std::future<void>> futures;
-    std::vector<std::vector<BuildNode>> buildNodeChunks(numThreads);
+void BVH<T>::buildBVHParallel(::std::vector<T> &&primitives) {
+    const size_t numThreads = ::std::thread::hardware_concurrency();
+    ::std::vector<::std::future<void>> futures;
+    ::std::vector<::std::vector<BuildNode>> buildNodeChunks(numThreads);
 
     const size_t chunkSize = primitives.size() / numThreads;
 
     // Create the threads to build nodes
-    for(size_t i = 0; i < numThreads; ++i) {
+    for (size_t i = 0; i < numThreads; ++i) {
         size_t begin = i * chunkSize;
         size_t end = (i == numThreads - 1) ? primitives.size() : begin + chunkSize;
 
-        futures.emplace_back(std::async(std::launch::async, [this, &buildNodeChunks, i, begin, end, &primitives]() {
-            this->buildNodeThreadSafe(buildNodeChunks[i], std::vector<T>(primitives.begin() + begin, primitives.begin() + end));
+        futures.emplace_back(::std::async(::std::launch::async, [this, &buildNodeChunks, i, begin, end, &primitives]() {
+            this->buildNodeThreadSafe(buildNodeChunks[i], ::std::vector<T>(primitives.begin() + begin, primitives.begin() + end));
         }));
     }
 
     // Wait for all threads to finish
-    for(auto &future : futures) {
+    for (auto &future : futures) {
         future.get();
     }
 
     // Combine all build nodes back into a single vector
-    std::vector<BuildNode> allBuildNodes;
+    ::std::vector<BuildNode> allBuildNodes;
     for (const auto& chunk : buildNodeChunks) {
         allBuildNodes.insert(allBuildNodes.end(), chunk.begin(), chunk.end());
     }
 
-    // Continue with sorting and the rest of the BVH construction logic here...
-    // For now, we'll just log the count of build nodes created
+    // Log the count of build nodes created
     LOG_INFO("Created '", allBuildNodes.size(), "' build nodes in parallel.");
 
     // Set the primitives_ vector after processing
-    this->primitives_ = std::move(primitives); // Ensure primitives are stored
+    this->primitives_ = ::std::move(primitives); // Ensure primitives are stored
 }
 
 template<typename T>
 void BVH<T>::build(::std::vector<T> &&primitives) {
     // Use the input primitives to build the BVH in parallel
-    buildBVHParallel(std::move(primitives));
+    buildBVHParallel(::std::move(primitives));
 }
 
 template<typename T>
@@ -195,4 +193,3 @@ const ::std::vector<T>& BVH<T>::getPrimitives() const {
 } // namespace MobileRT
 
 #endif //MOBILERT_ACCELERATORS_BVH_HPP
-```
