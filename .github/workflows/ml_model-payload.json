@@ -3,7 +3,7 @@
   "messages": [
     {
       "role": "system",
-      "content": "Analyze MobileRT codebase and provide improvements for PRs. Only provide full code response and needs to be compliant with Github API to create a new commit with the improvement."
+      "content": "Analyze MobileRT codebase and provide improvements for PRs. Only provide full working code response and needs to be compliant with Github API to create a new commit with the improvement."
     },
     {
       "role": "system",

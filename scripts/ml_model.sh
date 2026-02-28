@@ -13,6 +13,7 @@
 # * The context for AI Model
 # Output files:
 # * response.log - response from AI Model
+# * response_code.log - code response from AI Model
 ###############################################################################
 ###############################################################################
 
@@ -203,16 +204,24 @@ done
 
 requestAiModel;
 RESPONSE=$(jq -r '.choices[0].message.content' response.json.log);
-echo "${RESPONSE}" >> response.log;
+echo "${RESPONSE}" > response.log;
 
 BATCH_INDEX=$((BATCH_INDEX + 1));
 
-cat response.log;
-wc -c response.log;
-ls -lahp response.log;
+# 1. Extract the text from the JSON response
+# 2. Use sed to find the content between ```cpp and ```
+# 3. Save it to your target file
+# shellcheck disable=SC2016
+jq -r '.choices[0].message.content' response.json.log \
+  | sed -n '/```cpp/,/```/p' \
+  | sed '1d;$d' > response_code.log;
+
+echo "AI Model code response: $(cat response_code.log)";
+wc -c response_code.log;
+ls -lahp response_code.log;
 
 # 1. Encode content
-CONTENT=$(base64 -w 0 "response.log");
+CONTENT=$(base64 -w 0 "response_code.log");
 
 # 2. Escape context
 ESC_CONTEXT=$(echo "${aiModelContext}" | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}' | sed 's/\\n$//');
@@ -226,7 +235,9 @@ if [ "$HTTP_STATUS" != "200" ]; then
 fi
 
 # 4. Get SHA from GitHub only
-SHA=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}?ref=ml_model" | jq -r '.sha');
+SHA=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}?ref=ml_model" \
+  | jq -r '.sha');
 
 # 5. Build SHA string ONLY if it exists on GitHub
 if [ "${SHA}" != "null" ] && [ -n "${SHA}" ]; then
