@@ -28,7 +28,7 @@ private:
 
         explicit BuildNode() = default;
         explicit BuildNode(AABB &&box, const int32_t oldIndex)
-            : box_{std::move(box)}, centroid_{box_.getCentroid()}, oldIndex_{oldIndex} {}
+        : box_{std::move(box)}, centroid_{box_.getCentroid()}, oldIndex_{oldIndex} {}
     };
 
     struct BVHNode {
