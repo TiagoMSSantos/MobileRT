@@ -115,7 +115,7 @@ producePayload() {
       end
     )
     ' \
-    < .github/workflows/ml_model.-payload.json \
+    < .github/workflows/ml_model-payload.json \
     | sed -r 's/\\\\\\/\\/g; s/\[[0-9;]*[A-Za-z]//g; s/[[:space:]]+/ /g' > payload.json.log;
 }
 
