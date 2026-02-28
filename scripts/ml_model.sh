@@ -261,9 +261,9 @@ while true; do
       ${JSON_SHA}
       \"branch\": \"${BRANCH}\"
     }";
-  base64 -d response_code.log > "${aiModelFile}";
-
   echo 'Compiling MobileRT locally with AI Model suggestion';
+  cat response_code.log > "${aiModelFile}";
+
   set +e;
   sh scripts/compile_native.sh -t release -c g++ -r yes > compiled.log;
   RESULT="${?}";
