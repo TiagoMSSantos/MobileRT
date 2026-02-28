@@ -64,7 +64,7 @@ private:
     
     template<typename Iterator>
     int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
-    
+
     template<typename Iterator>
     AABB getSurroundingBox(Iterator itBegin, Iterator itEnd);
 
