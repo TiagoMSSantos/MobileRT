@@ -191,10 +191,10 @@ startTs=$(date +%s);
 jq . .github/workflows/ml_model-payload.json  > /dev/null; # validate JSON
 ls -lahp "${aiModelFile}";
 
-while true; do
+MAX_REQUESTS=10;
+for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
   OFFSET=0;
   TOTAL=1;
-  BATCH_INDEX=1;
   for ((i=OFFSET; i<TOTAL; i++)); do
 
     echo "BATCH_INDEX: ${BATCH_INDEX}";
@@ -275,8 +275,12 @@ while true; do
     break;
   else
     echo "Failed to compile MobileRT with AI Model response: ${RESULT}";
-    cat compiled.log;
+    echo 'compiled.log:';
     ls -lahp compiled.log;
+    echo 'tail compiled.log:';
+    tail -n 20 compiled.log;
+    echo 'error compiled.log:';
+    grep -ine 'error:' -C10 compiled.log;
     aiModelContext="$(grep -ine 'error:' -C10 compiled.log)";
     echo "Replacing context with current error: ${aiModelContext}";
   fi
