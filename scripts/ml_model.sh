@@ -261,7 +261,7 @@ while true; do
       ${JSON_SHA}
       \"branch\": \"${BRANCH}\"
     }";
-  echo "${CONTENT}" | base64 -d > "${aiModelFile}";
+  echo "$(cat response_code.log)" | base64 -d > "${aiModelFile}";
 
   echo 'Compiling MobileRT locally with AI Model suggestion';
   set +e;
@@ -275,7 +275,7 @@ while true; do
     break;
   else
     echo "Failed to compile MobileRT with AI Model response: ${RESULT}";
-    aiModelContext="$(tail -n 40 compiled.log)";
+    aiModelContext="$(grep -ine 'error:' -C10 compiled.log)";
     echo "Replacing context with current error: ${aiModelContext}";
   fi
 done
