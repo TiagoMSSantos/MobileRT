@@ -13,7 +13,7 @@
 #include <thread>
 #include <vector>
 #include <future>
-#include <mutex> // Correctly include std::mutex
+#include <mutex>
 #include <iostream> // Include for logging
 
 namespace MobileRT {
@@ -39,7 +39,8 @@ private:
 
     struct rightshift {
         int longestAxis_;
-        rightshift(const int longestAxis) noexcept : longestAxis_{longestAxis} {}
+        rightshift(int longestAxis) noexcept : longestAxis_{longestAxis} {}
+
         int operator()(const BuildNode &node, const unsigned offset) const {
             return boost::sort::spreadsort::float_mem_cast<float, int>(node.centroid_[longestAxis_]) >> offset;
         }
@@ -47,7 +48,8 @@ private:
 
     struct lessthan {
         int longestAxis_;
-        lessthan(const int longestAxis) noexcept : longestAxis_{longestAxis} {}
+        lessthan(int longestAxis) noexcept : longestAxis_{longestAxis} {}
+
         bool operator()(const BuildNode &node1, const BuildNode &node2) const {
             return node1.centroid_[longestAxis_] < node2.centroid_[longestAxis_];
         }
@@ -72,6 +74,7 @@ public:
     ~BVH();
     BVH &operator=(const BVH &bvh) = delete;
     BVH &operator=(BVH &&bvh) noexcept = default;
+
     Intersection trace(Intersection intersection);
     Intersection shadowTrace(Intersection intersection);
     const std::vector<T>& getPrimitives() const;
