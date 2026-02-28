@@ -55,7 +55,7 @@ private:
         }
     };
 
-    std::vector<BVHNode> boxes_;
+    std::vector<BVHNode> boxes_; // Correct namespace and initialization
     std::vector<T> primitives_;
     mutable std::mutex mtx_;
 
@@ -94,7 +94,7 @@ BVH<T>::BVH(std::vector<T> &&primitives) {
     this->boxes_.resize(maxNodes);
     std::cout << "Building BVH for '" << typeid(T).name() << "' with '" << numPrimitives << "' primitives." << std::endl;
     build(std::move(primitives));
-    std::cout << "Built BVH for '" << typeid(T).name() << "' with '" << this->primitives_.size() << "' primitives in '"
+    std::cout << "Built BVH for '" << typeid(T).name() << "' with '" << this->primitives_.size() << "' primitives in '" 
               << this->boxes_.size() << "' boxes." << std::endl;
 }
 
