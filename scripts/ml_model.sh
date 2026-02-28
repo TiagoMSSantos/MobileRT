@@ -211,13 +211,13 @@ wc -c response.log;
 ls -lahp response.log;
 
 # 1. Encode content (Linux syntax)
-CONTENT=$(cat "response.log" | base64 -w 0);
+CONTENT=$(base64 -w 0 "response.log");
 
 # 2. Get the SHA
-SHA=$(cat file_sha.log);
+SHA=$(git hash-object "${aiModelFile}");
 
 # 3. Escape double quotes in the commit message to prevent JSON errors
-ESC_CONTEXT=$(echo "${aiModelContext}" | sed 's/"/\\"/g');
+ESC_CONTEXT=$(echo "${aiModelContext}" | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}' | sed 's/\\n$//');
 
 echo "Creating commit with AI Model response for ${aiModelFile}";
 
