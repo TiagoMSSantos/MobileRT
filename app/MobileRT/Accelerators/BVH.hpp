@@ -61,8 +61,10 @@ private:
 
     void build(std::vector<T> &&primitives);
     Intersection intersect(Intersection intersection);
+    
     template<typename Iterator>
     int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
+    
     template<typename Iterator>
     AABB getSurroundingBox(Iterator itBegin, Iterator itEnd);
 
