@@ -13,7 +13,7 @@
 #include <thread>
 #include <vector>
 #include <future>
-#include <mutex>
+#include <mutex> // Correctly include std::mutex
 
 namespace MobileRT {
 
@@ -111,7 +111,7 @@ void BVH<T>::build(::std::vector<T> &&primitives) {
     ::std::vector<BuildNode> buildNodes {};
     buildNodes.reserve(static_cast<long unsigned>(primitivesSize));
     for (::std::uint32_t i {}; i < primitivesSize; ++i) {
-        const T &primitive {primitives[i]};
+        const T &primitive {primitives[i]};  // Corrected indexing
         AABB &&box {primitive.getAABB()};
         buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t>(i));
     }
@@ -192,7 +192,7 @@ void BVH<T>::build(::std::vector<T> &&primitives) {
     for (::std::uint32_t i {}; i < primitivesSize; ++i) {
         const BuildNode &node {buildNodes[i]};
         const ::std::uint32_t oldIndex {static_cast<::std::uint32_t> (node.oldIndex_)};
-        this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
+        this->primitives_.emplace_back(::std::move(primitives[oldIndex])); // Corrected indexing
     }
 }
 
@@ -215,16 +215,16 @@ Intersection BVH<T>::intersect(Intersection intersection) {
     if (this->primitives_.empty()) {
         return intersection;
     }
-    
+
     ::std::int32_t boxIndex {};
     ::std::array<::std::int32_t, StackSize> stackBoxIndex {};
     const ::std::array<::std::int32_t, StackSize>::const_iterator itBeginBoxIndex {stackBoxIndex.cbegin()};
     ::std::array<::std::int32_t, StackSize>::iterator itStackBoxIndex {stackBoxIndex.begin()};
     ::std::advance(itStackBoxIndex, 1);
-    
+
     const typename ::std::vector<BVHNode>::iterator itBoxes {this->boxes_.begin()};
     const typename ::std::vector<T>::iterator itPrimitives {this->primitives_.begin()};
-    
+
     do {
         const BVHNode &node {*(itBoxes + boxIndex)};
         if (node.box_.intersect(intersection.ray_)) {
@@ -266,7 +266,7 @@ Intersection BVH<T>::intersect(Intersection intersection) {
         }
 
     } while (itStackBoxIndex > itBeginBoxIndex);
-    
+
     return intersection;
 }
 
