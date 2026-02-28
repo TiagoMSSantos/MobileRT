@@ -1,3 +1,6 @@
+std::vector<BVHNode> boxes_; // Correct namespace and initialization
+```
+```cpp
 #ifndef MOBILERT_ACCELERATORS_BVH_HPP
 #define MOBILERT_ACCELERATORS_BVH_HPP
 
@@ -55,16 +58,16 @@ private:
         }
     };
 
-    std::vector<BVHNode> boxes_; // Correct namespace and initialization
+    std::vector<BVHNode> boxes_;  // Correct initialization
     std::vector<T> primitives_;
     mutable std::mutex mtx_;
 
     void build(std::vector<T> &&primitives);
     Intersection intersect(Intersection intersection);
-
+    
     template<typename Iterator>
     int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
-
+    
     template<typename Iterator>
     AABB getSurroundingBox(Iterator itBegin, Iterator itEnd);
 
@@ -94,7 +97,7 @@ BVH<T>::BVH(std::vector<T> &&primitives) {
     this->boxes_.resize(maxNodes);
     std::cout << "Building BVH for '" << typeid(T).name() << "' with '" << numPrimitives << "' primitives." << std::endl;
     build(std::move(primitives));
-    std::cout << "Built BVH for '" << typeid(T).name() << "' with '" << this->primitives_.size() << "' primitives in '" 
+    std::cout << "Built BVH for '" << typeid(T).name() << "' with '" << this->primitives_.size() << "' primitives in '"
               << this->boxes_.size() << "' boxes." << std::endl;
 }
 
