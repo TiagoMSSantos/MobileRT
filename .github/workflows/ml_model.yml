@@ -1,0 +1,57 @@
+name: ML Model
+
+on:
+  workflow_dispatch:
+permissions: {}
+
+defaults:
+  run:
+    shell: sh
+    working-directory: .
+
+concurrency:
+  group: ${{ github.workflow }} ${{ github.ref }}
+  cancel-in-progress: true
+
+# Default environment variables.
+env:
+  GITHUB_STEP_TIMEOUT_SMALL: 4
+  GITHUB_STEP_TIMEOUT_MEDIUM: 10
+  GITHUB_STEP_TIMEOUT_LONG: 20
+
+jobs:
+  ML_Model:
+    if: github.event_name == 'workflow_dispatch'
+
+    name: ML Model
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    strategy:
+      fail-fast: true
+
+    permissions:
+      models: read
+
+    steps:
+    - name: Checkout
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+    - name: AI Model
+      id: release_notes
+      timeout-minutes: 360
+      if: success()
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        set -Eeuo pipefail;
+        shopt -s failglob;
+        shopt -s inherit_errexit;
+        # Force line-buffered output for everything inside the script
+        export PYTHONUNBUFFERED=1;
+        export NODE_DISABLE_COLORS=1;
+
+        stdbuf -oL -eL bash scripts/ml_model.sh;

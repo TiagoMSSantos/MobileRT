@@ -1,0 +1,13 @@
+{
+  "model": "__AI_MODEL__",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Analyze MobileRT codebase and provide fixes/improvements for PRs. Only open 1 Pull Request to fix/improve the following request:"
+    },
+    {
+      "role": "user",
+      "content": "__CONTEXT__"
+    }
+  ]
+}
