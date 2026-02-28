@@ -21,19 +21,19 @@ template<typename T>
 class BVH final {
 private:
     struct BuildNode {
-        AABB box_ {};
-        glm::vec3 centroid_ {};
-        int32_t oldIndex_ {};
+        AABB box_;
+        glm::vec3 centroid_;
+        int32_t oldIndex_;
 
         explicit BuildNode() = default;
         explicit BuildNode(AABB &&box, const int32_t oldIndex)
-            : box_ {std::move(box)}, centroid_ {box_.getCentroid()}, oldIndex_ {oldIndex} {}
+            : box_{std::move(box)}, centroid_{box_.getCentroid()}, oldIndex_{oldIndex} {}
     };
 
     struct BVHNode {
-        AABB box_ {};
-        int32_t indexOffset_ {};
-        int32_t numPrimitives_ {};
+        AABB box_;
+        int32_t indexOffset_;
+        int32_t numPrimitives_;
     };
 
     struct rightshift {
@@ -53,8 +53,8 @@ private:
     };
 
 private:
-    std::vector<BVHNode> boxes_ {};
-    std::vector<T> primitives_ {};
+    std::vector<BVHNode> boxes_;
+    std::vector<T> primitives_;
     mutable std::mutex mtx_;
 
     void build(std::vector<T> &&primitives);
@@ -80,12 +80,12 @@ public:
 template<typename T>
 BVH<T>::BVH(std::vector<T> &&primitives) {
     if (primitives.empty()) {
-        this->boxes_.emplace_back();
+        this->boxes_.emplace_back(); // Create a default node
         LOG_WARN("Empty BVH for '", typeid(T).name(), "' without any primitives.");
         return;
     }
-    const typename std::vector<T>::size_type numPrimitives {primitives.size()};
-    const typename std::vector<T>::size_type maxNodes {numPrimitives * 2 - 1};
+    const auto numPrimitives {primitives.size()};
+    const auto maxNodes {numPrimitives * 2 - 1};
     this->boxes_.resize(maxNodes);
     LOG_INFO("Building BVH for '", typeid(T).name(), "' with '", numPrimitives, "' primitives.");
     build(std::move(primitives));
@@ -108,7 +108,7 @@ void BVH<T>::build(std::vector<T> &&primitives) {
     int32_t endBoxIndex = static_cast<int32_t>(primitivesSize);
     int32_t maxNodeIndex = 0;
 
-    std::vector<BuildNode> buildNodes {};
+    std::vector<BuildNode> buildNodes;
     buildNodes.reserve(static_cast<size_t>(primitivesSize));
     for (uint32_t i = 0; i < primitivesSize; ++i) {
         const T &primitive {primitives[i]}; // Corrected indexing
@@ -141,7 +141,7 @@ void BVH<T>::build(std::vector<T> &&primitives) {
 
     this->primitives_.reserve(static_cast<size_t>(primitivesSize));
     for (uint32_t i = 0; i < primitivesSize; ++i) {
-        const BuildNode &node {buildNodes[i]};
+        const BuildNode &node {buildNodes[i]}; // Corrected indexing
         const uint32_t oldIndex {static_cast<uint32_t>(node.oldIndex_)};
         this->primitives_.emplace_back(std::move(primitives[oldIndex])); // Corrected indexing
     }
