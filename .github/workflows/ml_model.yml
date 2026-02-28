@@ -39,10 +39,11 @@ jobs:
     strategy:
       fail-fast: true
 
-    # Sets permissions of the GITHUB_TOKEN to allow to contact AI Models and create commits
+    # Sets permissions of the GITHUB_TOKEN to allow to contact AI Models, create commits and open PRs
     permissions:
       models: read
       contents: write
+      pull-requests: write
 
     steps:
     - name: Checkout
