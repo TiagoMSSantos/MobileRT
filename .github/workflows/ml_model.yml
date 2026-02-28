@@ -1,11 +1,12 @@
 name: ML Model
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       context:
         type: string
         required: true
+        description: Context for the AI Model
 permissions: {}
 
 defaults:
