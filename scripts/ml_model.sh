@@ -8,6 +8,7 @@
 #
 # Environment variables necessary:
 # * GITHUB_TOKEN - Token to access Github API
+# * GITHUB_REPOSITORY - Repository to create Pull Request
 # Input parameters:
 # * The context for AI Model
 # Output files:
@@ -208,3 +209,28 @@ BATCH_INDEX=$((BATCH_INDEX + 1));
 cat response.log;
 wc -c response.log;
 ls -lahp response.log;
+
+# 1. Encode content (Linux syntax)
+CONTENT=$(cat "response.log" | base64 -w 0);
+
+# 2. Get the SHA
+SHA=$(cat file_sha.log);
+
+# 3. Escape double quotes in the commit message to prevent JSON errors
+ESC_CONTEXT=$(echo "${aiModelContext}" | sed 's/"/\\"/g');
+
+echo "Creating commit with AI Model response for ${aiModelFile}";
+
+# 4. Corrected URL and escaped context
+curl -L \
+  -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}" \
+  -d "{
+    \"message\": \"${ESC_CONTEXT}\",
+    \"content\": \"${CONTENT}\",
+    \"sha\": \"${SHA}\",
+    \"branch\": \"ml_model\"
+  }";
