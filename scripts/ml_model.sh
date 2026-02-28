@@ -73,6 +73,7 @@ aiModelFile="${2}";
 
 printEnvironment() {
   echo 'Selected arguments:';
+  echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}";
   echo "AI Model: ${aiModel}";
   echo "Sleep between batches: ${sleepBetweenRequestsSeconds} sec";
   echo "Max payload size: ${maxPayloadSizeBytes} bytes";
@@ -247,12 +248,14 @@ curl -L -X PUT \
   }";
 
 # 7. Check if a PR already exists for 'ml_model' to avoid 422 errors
+OWNER=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f1);
+# Ensure the variable is used within the URL string correctly
 PR_EXISTS=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
   "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?head=${OWNER}:ml_model&state=open" \
-  | jq '. | length')
+  | jq '. | length');
 
 if [ "${PR_EXISTS}" -eq "0" ]; then
-  echo "No existing PR found. Creating a new one..."
+  echo "No existing PR found. Creating a new one";
 
   # 8. Create the Pull Request
   curl -L \
@@ -265,8 +268,8 @@ if [ "${PR_EXISTS}" -eq "0" ]; then
       \"title\": \"AI Model Update: ${aiModelFile}\",
       \"body\": \"This PR contains the latest updates from the AI model context: ${ESC_CONTEXT}\",
       \"head\": \"ml_model\",
-      \"base\": \"main\"
-    }"
+      \"base\": \"master\"
+    }";
 else
-  echo "Pull Request already exists for branch ml_model. Skipping PR creation."
+  echo "Pull Request already exists for branch ml_model. Skipping PR creation.";
 fi
