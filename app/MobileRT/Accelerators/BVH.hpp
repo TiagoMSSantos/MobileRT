@@ -11,65 +11,84 @@
 #include <glm/glm.hpp>
 #include <random>
 #include <thread>
-#include <vector>
 #include <future>
-#include <mutex>
-#include <iostream>
+#include <vector>
 
 namespace MobileRT {
+
+/**
+ * A class which represents the Bounding Volume Hierarchy acceleration structure.
+ *
+ * @tparam T The type of the primitives.
+ */
 template<typename T>
 class BVH final {
 private:
+    /**
+     * An auxiliary node used for the construction of the BVH.
+     * It is used to sort all the AABBs by the position of the centroid.
+     */
     struct BuildNode {
-        AABB box_;
-        glm::vec3 centroid_;
-        int32_t oldIndex_;
+        AABB box_ {};
+        ::glm::vec3 centroid_ {};
+        ::std::int32_t oldIndex_ {};
 
+        /** The constructor. */
         explicit BuildNode() = default;
-        explicit BuildNode(AABB &&box, const int32_t oldIndex)
-            : box_{std::move(box)}, centroid_{box_.getCentroid()}, oldIndex_{oldIndex} {}
+
+        /** The constructor.
+         *
+         * @param box The box to store in the node.
+         * @param oldIndex The old index of the box in the original vector (used to put the box in the proper
+         * position.
+         */
+        explicit BuildNode(AABB &&box, const ::std::int32_t oldIndex) :
+            box_ {box},
+            centroid_ {box_.getCentroid()},
+            oldIndex_ {oldIndex} {}
     };
 
+    /** A node of the BVH vector. */
     struct BVHNode {
-        AABB box_;
-        int32_t indexOffset_;
-        int32_t numPrimitives_;
+        AABB box_ {};
+        ::std::int32_t indexOffset_ {};
+        ::std::int32_t numPrimitives_ {};
     };
 
     struct rightshift {
         int longestAxis_;
-        rightshift(int longestAxis) noexcept : longestAxis_{longestAxis} {}
+        rightshift(const int longestAxis) noexcept : longestAxis_{longestAxis} {}
 
         int operator()(const BuildNode &node, const unsigned offset) const {
-            return boost::sort::spreadsort::float_mem_cast<float, int>(node.centroid_[longestAxis_]) >> offset;
+            return ::boost::sort::spreadsort::float_mem_cast<float, int>(node.centroid_[longestAxis_]) >> offset;
         }
     };
 
     struct lessthan {
         int longestAxis_;
-        lessthan(int longestAxis) noexcept : longestAxis_{longestAxis} {}
+        lessthan(const int longestAxis) noexcept : longestAxis_{longestAxis} {}
 
         bool operator()(const BuildNode &node1, const BuildNode &node2) const {
             return node1.centroid_[longestAxis_] < node2.centroid_[longestAxis_];
         }
     };
 
-    std::vector<BVHNode> boxes_; // Correct initialization
-    std::vector<T> primitives_;
-    mutable std::mutex mtx_;
+private:
+    ::std::vector<BVHNode> boxes_ {};
+    ::std::vector<T> primitives_;
 
-    void build(std::vector<T> &&primitives);
+    void build(::std::vector<T> &&primitives);
     Intersection intersect(Intersection intersection);
-    
+
     template<typename Iterator>
-    int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
-    
+    ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
+
     template<typename Iterator>
     AABB getSurroundingBox(Iterator itBegin, Iterator itEnd);
 
 public:
     explicit BVH() = default;
-    explicit BVH(std::vector<T> &&primitives);
+    explicit BVH(::std::vector<T> &&primitives);
     BVH(const BVH &bvh) = delete;
     BVH(BVH &&bvh) noexcept = default;
     ~BVH();
@@ -78,67 +97,155 @@ public:
 
     Intersection trace(Intersection intersection);
     Intersection shadowTrace(Intersection intersection);
-    const std::vector<T>& getPrimitives() const;
+    const ::std::vector<T>& getPrimitives() const;
 };
 
+/**
+ * The constructor.
+ *
+ * @tparam T The type of the primitives.
+ * @param primitives The vector containing all the primitives to store in the BVH.
+ */
 template<typename T>
-BVH<T>::BVH(std::vector<T> &&primitives) {
+BVH<T>::BVH(::std::vector<T> &&primitives) {
     if (primitives.empty()) {
-        this->boxes_.emplace_back(); // Create a default node
-        std::cerr << "Empty BVH for '" << typeid(T).name() << "' without any primitives." << std::endl;
+        this->boxes_.emplace_back();
+        LOG_WARN("Empty BVH for '", typeid(T).name(), "' without any primitives.");
         return;
     }
-    const auto numPrimitives = primitives.size();
-    const auto maxNodes = numPrimitives * 2 - 1;
+    const typename ::std::vector<T>::size_type numPrimitives {primitives.size()};
+    const typename ::std::vector<T>::size_type maxNodes {numPrimitives * 2 - 1};
     this->boxes_.resize(maxNodes);
-    std::cout << "Building BVH for '" << typeid(T).name() << "' with '" << numPrimitives << "' primitives." << std::endl;
-    build(std::move(primitives));
-    std::cout << "Built BVH for '" << typeid(T).name() << "' with '" << this->primitives_.size() << "' primitives in '"
-              << this->boxes_.size() << "' boxes." << std::endl;
+    LOG_INFO("Building BVH for '", typeid(T).name(), "' with '", numPrimitives, "' primitives.");
+    build(::std::move(primitives));
+    LOG_INFO("Built BVH for '", typeid(T).name(), "' with '", this->primitives_.size(), "' primitives in '", this->boxes_.size(), "' boxes.");
 }
 
+/**
+ * The destructor.
+ *
+ * @tparam T The type of the primitives.
+ */
 template<typename T>
 BVH<T>::~BVH() {
     this->boxes_.clear();
     this->primitives_.clear();
+    ::std::vector<BVHNode> {}.swap(this->boxes_);
+    ::std::vector<T> {}.swap(this->primitives_);
 }
 
+/**
+ * A helper method which builds the BVH structure.
+ *
+ * @tparam T The type of the primitives.
+ * @param primitives A vector containing all the primitives to store in the BVH.
+ */
 template<typename T>
-void BVH<T>::build(std::vector<T> &&primitives) {
-    int32_t currentBoxIndex = 0;
-    int32_t beginBoxIndex = 0;
-    const auto primitivesSize = primitives.size();
-    int32_t endBoxIndex = static_cast<int32_t>(primitivesSize);
-    int32_t maxNodeIndex = 0;
+void BVH<T>::build(::std::vector<T> &&primitives) {
+    ::std::int32_t currentBoxIndex {};
+    ::std::int32_t beginBoxIndex {};
+    const long long unsigned primitivesSize {primitives.size()};
+    ::std::int32_t endBoxIndex {static_cast<::std::int32_t> (primitivesSize)};
+    ::std::int32_t maxNodeIndex {};
+    ::std::vector<BuildNode> buildNodes {};
+    buildNodes.reserve(static_cast<long unsigned> (primitivesSize));
 
-    std::vector<BuildNode> buildNodes;
-    buildNodes.reserve(static_cast<size_t>(primitivesSize));
-
-    for (uint32_t i = 0; i < primitivesSize; ++i) {
-        const T &primitive = primitives[i]; // Fixed the indexing
-        AABB box = primitive.getAABB();
-        buildNodes.emplace_back(std::move(box), i);
+    // Fill buildNodes
+    for (::std::uint32_t i {}; i < primitivesSize; ++i) {
+        const T &primitive {primitives[i]};
+        AABB &&box {primitive.getAABB()};
+        buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t>(i));
     }
 
-    const int maxThreads = std::thread::hardware_concurrency();
+    // Function to build BVH recursively
+    auto buildRecursive = [&](std::int32_t boxIndex, std::int32_t beginIndex, std::int32_t endIndex) {
+        auto itCurrentBox = this->boxes_.begin() + boxIndex;
+        const ::std::int32_t boxPrimitivesSize = endIndex - beginIndex;
+        const auto itBegin = buildNodes.begin() + beginIndex;
+        const auto itEnd = buildNodes.begin() + endIndex;
+
+        const AABB surroundingBox {getSurroundingBox(itBegin, itEnd)};
+        const ::glm::vec3 maxDist {surroundingBox.getPointMax() - surroundingBox.getPointMin()};
+        const int longestAxis = (maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]) ? 0 :
+                                (maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]) ? 1 : 2;
+
+        const int numBuckets {10};
+        const ::glm::vec3 step = maxDist / static_cast<float>(numBuckets);
+        const float stepAxis = step[longestAxis];
+        const float startBox = surroundingBox.getPointMin()[longestAxis];
+        const float bucket1MaxLimit = startBox + stepAxis;
+
+        // Using C++ partition to sort primitives by buckets
+        auto itBucket = ::std::partition(itBegin, itEnd,
+                                          [&](const BuildNode &node) {
+                                              return node.centroid_[longestAxis] < bucket1MaxLimit;
+                                          });
+
+        for (::std::int32_t bucketIndex {2}; bucketIndex < numBuckets; ++bucketIndex) {
+            const float bucketMaxLimit = startBox + stepAxis * bucketIndex;
+            itBucket = ::std::partition(itBucket, itEnd,
+                                        [&](const BuildNode &node) {
+                                            return node.centroid_[longestAxis] < bucketMaxLimit;
+                                        });
+        }
+
+        itCurrentBox->box_ = itBegin->box_;
+
+        for (::std::int32_t i {beginIndex + 1}; i < endIndex; ++i) {
+            const AABB newBox {buildNodes[static_cast<::std::uint32_t>(i)].box_};
+            itCurrentBox->box_ = ::MobileRT::surroundingBox(newBox, itCurrentBox->box_);
+        }
+
+        const int maxPrimitivesInBoxLeaf {4};
+        const bool isLeaf = boxPrimitivesSize <= maxPrimitivesInBoxLeaf;
+
+        if (isLeaf) {
+            itCurrentBox->indexOffset_ = beginIndex;
+            itCurrentBox->numPrimitives_ = boxPrimitivesSize;
+        } else {
+            const ::std::int32_t left = maxNodeIndex + 1;
+            const ::std::int32_t right = left + 1;
+            const ::std::int32_t splitIndex = getSplitIndexSah(buildNodes.begin() + beginIndex, buildNodes.begin() + endIndex);
+
+            itCurrentBox->indexOffset_ = left;
+            maxNodeIndex = ::std::max(right, maxNodeIndex);
+            buildRecursive(left, beginIndex, beginIndex + splitIndex);
+            buildRecursive(right, beginIndex + splitIndex, endIndex);
+        }
+    };
+
+    // Parallelized build
     std::vector<std::future<void>> futures;
+    std::size_t numThreads = std::thread::hardware_concurrency();
+    std::size_t primitivesPerThread = primitivesSize / numThreads;
 
-    // Parallel build logic would go here...
-
-    for (auto& future : futures) {
-        future.get(); // Wait for all threads to finish
+    for (std::size_t i = 0; i < numThreads; ++i) {
+        std::size_t beginIndex = i * primitivesPerThread;
+        std::size_t endIndex = (i == numThreads - 1) ? primitivesSize : beginIndex + primitivesPerThread;
+        if (beginIndex < endIndex) {
+            futures.emplace_back(std::async(std::launch::async, buildRecursive, currentBoxIndex++, beginIndex, endIndex));
+        }
     }
 
+    for (auto &future : futures) {
+        future.get();
+    }
+
+    LOG_INFO("maxNodeIndex = ", maxNodeIndex);
     this->boxes_.erase(this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
     this->boxes_.shrink_to_fit();
 
-    this->primitives_.reserve(static_cast<size_t>(primitivesSize));
-    for (uint32_t i = 0; i < primitivesSize; ++i) {
-        const BuildNode &node = buildNodes[i]; // Fixed the indexing
-        const uint32_t oldIndex = static_cast<uint32_t>(node.oldIndex_);
-        this->primitives_.emplace_back(std::move(primitives[oldIndex])); // Fixed the indexing
+    this->primitives_.reserve(static_cast<long unsigned>(primitivesSize));
+    for (::std::uint32_t i {}; i < primitivesSize; ++i) {
+        const BuildNode &node {buildNodes[i]};
+        const ::std::uint32_t oldIndex {static_cast<::std::uint32_t>(node.oldIndex_)};
+        this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
     }
 }
+
+/** 
+ * The other methods remain unchanged... 
+ */
 
 template<typename T>
 Intersection BVH<T>::trace(Intersection intersection) {
@@ -154,29 +261,147 @@ Intersection BVH<T>::shadowTrace(Intersection intersection) {
 
 template<typename T>
 Intersection BVH<T>::intersect(Intersection intersection) {
-    if (this->primitives_.empty()) {
-        return intersection;
-    }
+    if (this->primitives_.empty()) { return intersection; }
+    ::std::int32_t boxIndex {};
+    ::std::array<::std::int32_t, StackSize> stackBoxIndex {};
 
-    // ... existing intersection logic remains unchanged ...
+    const ::std::array<::std::int32_t, StackSize>::const_iterator itBeginBoxIndex {stackBoxIndex.cbegin()};
+    ::std::array<::std::int32_t, StackSize>::iterator itStackBoxIndex {stackBoxIndex.begin()};
+    ::std::advance(itStackBoxIndex, 1);
 
+    const typename ::std::vector<BVHNode>::iterator itBoxes {this->boxes_.begin()};
+    const typename ::std::vector<T>::iterator itPrimitives {this->primitives_.begin()};
+
+    do {
+        const BVHNode &node {*(itBoxes + boxIndex)};
+        if (node.box_.intersect(intersection.ray_)) {
+            const ::std::int32_t numberPrimitives {node.numPrimitives_};
+            if (numberPrimitives > 0) {
+                for (::std::int32_t i {}; i < numberPrimitives; ++i) {
+                    T &primitive {*(itPrimitives + node.indexOffset_ + i)};
+                    const float lastDist {intersection.length_};
+                    intersection = primitive.intersect(intersection);
+                    if (intersection.ray_.shadowTrace_ && intersection.length_ < lastDist) {
+                        return intersection;
+                    }
+                }
+                ::std::advance(itStackBoxIndex, -1); // pop
+                boxIndex = *itStackBoxIndex;
+            } else {
+                const ::std::int32_t left {node.indexOffset_};
+                const ::std::int32_t right {node.indexOffset_ + 1};
+                const BVHNode &childLeft {*(itBoxes + left)};
+                const BVHNode &childRight {*(itBoxes + right)};
+
+                const bool traverseLeft {childLeft.box_.intersect(intersection.ray_)};
+                const bool traverseRight {childRight.box_.intersect(intersection.ray_)};
+
+                if (!traverseLeft && !traverseRight) {
+                    ::std::advance(itStackBoxIndex, -1); // pop
+                    boxIndex = *itStackBoxIndex;
+                } else {
+                    boxIndex = (traverseLeft) ? left : right;
+                    if (traverseLeft && traverseRight) {
+                        *itStackBoxIndex = right;
+                        ::std::advance(itStackBoxIndex, 1); // push
+                    }
+                }
+            }
+        } else {
+            ::std::advance(itStackBoxIndex, -1); // pop
+            boxIndex = *itStackBoxIndex;
+        }
+    } while (itStackBoxIndex > itBeginBoxIndex);
     return intersection;
 }
 
+/**
+ * Gets the index to where the vector of boxes should be split.
+ * <br>
+ * The algorithm used is the Surface Area Heuristic.
+ *
+ * @tparam Iterator The type of the iterator of the AABBs.
+ * @param itBegin The iterator of the first box in the vector.
+ * @param itEnd The iterator of the last box in the vector.
+ * @return The index where the vector of boxes should be split.
+ */
 template<typename T>
 template<typename Iterator>
-int32_t BVH<T>::getSplitIndexSah(const Iterator itBegin, const Iterator itEnd) {
-    // ... (no changes in this method)
+::std::int32_t BVH<T>::getSplitIndexSah(const Iterator itBegin, const Iterator itEnd) {
+    const long numberBoxes {static_cast<long>(itEnd - itBegin)};
+    const Iterator itBoxes {itBegin};
+    const long numBoxes {numberBoxes - 1};
+    const ::std::uint32_t sizeUnsigned {static_cast<::std::uint32_t>(numBoxes)};
+
+    ::std::vector<float> leftArea (sizeUnsigned);
+    AABB leftBox {*itBoxes};
+    const ::std::vector<float>::iterator itLeftArea {leftArea.begin()};
+    *itLeftArea = leftBox.getSurfaceArea();
+
+    for (::std::int32_t i {1}; i < numBoxes; ++i) {
+        leftBox = surroundingBox(leftBox, *(itBoxes + i));
+        *(itLeftArea + i) = leftBox.getSurfaceArea();
+    }
+
+    ::std::vector<float> rightArea (sizeUnsigned);
+    AABB rightBox {*(itBoxes + numBoxes)};
+    const ::std::vector<float>::iterator itRightArea {rightArea.begin()};
+    *(itRightArea + numBoxes - 1) = rightBox.getSurfaceArea();
+
+    for (long i {numBoxes - 2}; i >= 0; --i) {
+        rightBox = surroundingBox(rightBox, *(itBoxes + i + 1));
+        *(itRightArea + i) = rightBox.getSurfaceArea();
+    }
+
+    ::std::int32_t splitIndex {1};
+    float minSah {*(itLeftArea) + numBoxes * *(itRightArea)};
+    for (::std::int32_t i {1}; i < numBoxes; ++i) {
+        const ::std::int32_t nextSplit {i + 1};
+        const long numBoxesLeft {nextSplit};
+        const long numBoxesRight {numberBoxes - numBoxesLeft};
+        const float areaLeft {*(itLeftArea + i)};
+        const float areaRight {*(itRightArea + i)};
+        const float leftSah {numBoxesLeft * areaLeft};
+        const float rightSah {numBoxesRight * areaRight};
+        const float sah {leftSah + rightSah};
+
+        if (sah < minSah) {
+            splitIndex = nextSplit;
+            minSah = sah;
+        }
+    }
+    return splitIndex;
 }
 
+/**
+ * Calculates a surrounding box of all the build nodes vector received via arguments.
+ *
+ * @tparam Iterator The type of the iterator of the BuildNodes.
+ * @param itBegin The iterator of the first node in the vector.
+ * @param itEnd The iterator of the last node in the vector.
+ * @return A box surrounding all the boxes of the nodes.
+ */
 template<typename T>
 template<typename Iterator>
 AABB BVH<T>::getSurroundingBox(const Iterator itBegin, const Iterator itEnd) {
-    // ... (no changes in this method)
+    AABB maxBox {itBegin->box_.getPointMin(), itBegin->box_.getPointMax()};
+
+    for (Iterator it {itBegin + 1}; it < itEnd; ::std::advance(it, 1)) {
+        const AABB &box {it->box_};
+        maxBox = surroundingBox(maxBox, box);
+    }
+
+    return maxBox;
 }
 
+/**
+ * Gets the primitives.
+ *
+ * @tparam T The type of the primitives.
+ * @return The primitives.
+ */
 template<typename T>
-const std::vector<T>& BVH<T>::getPrimitives() const {
+const ::std::vector<T>& BVH<T>::getPrimitives() const {
     return this->primitives_;
 }
 
