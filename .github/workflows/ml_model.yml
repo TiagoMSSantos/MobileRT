@@ -52,6 +52,34 @@ jobs:
       if: success()
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+    - name: Install Qt (Windows)
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && runner.os == 'Windows'
+      uses: jurplel/install-qt-action@d325aaf2a8baeeda41ad0b5d39f84a6af9bcf005 # v4.3.0
+      # Download Qt from: https://download.qt.io/online/qtsdkrepository
+      with:
+        # Check available parameters in: https://github.com/jurplel/install-qt-action/blob/master/action.yml
+        version: '6.9.1'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2022_arm64_cross_compiled'
+        dir: '${{ github.workspace }}'
+        install-deps: 'false'
+        modules: ''
+        cache: 'false'
+        cache-key-prefix: 'windows-win64_msvc2022_arm64_cross_compiled'
+        setup-python: 'true'
+        set-env: 'true'
+        py7zrversion: '>=1.0.0'
+
+    - name: Install dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success()
+      run: |
+        sh scripts/install_dependencies.sh;
+        echo 'Adding path to lcov (windows only) in PATH environment variable.';
+        echo "/c/ProgramData/chocolatey/lib/lcov/tools/bin" >> ${GITHUB_PATH};
+
     - name: AI Model
       timeout-minutes: 360
       if: success()

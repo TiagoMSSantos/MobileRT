@@ -261,7 +261,9 @@ while true; do
       \"branch\": \"${BRANCH}\"
     }";
 
+  set +e;
   COMPILED=$(sh scripts/compile_native.sh -t release -c g++ -r yes | tee compiled.log);
+  set -e;
   # shellcheck disable=SC2181
   if [ $? -eq 0 ]; then
     echo 'Compiled MobileRT successfully!';
