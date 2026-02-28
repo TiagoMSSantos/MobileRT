@@ -245,3 +245,28 @@ curl -L -X PUT \
     ${JSON_SHA}
     \"branch\": \"ml_model\"
   }";
+
+# 7. Check if a PR already exists for 'ml_model' to avoid 422 errors
+PR_EXISTS=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?head=${OWNER}:ml_model&state=open" \
+  | jq '. | length')
+
+if [ "${PR_EXISTS}" -eq "0" ]; then
+  echo "No existing PR found. Creating a new one..."
+
+  # 8. Create the Pull Request
+  curl -L \
+    -X POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls" \
+    -d "{
+      \"title\": \"AI Model Update: ${aiModelFile}\",
+      \"body\": \"This PR contains the latest updates from the AI model context: ${ESC_CONTEXT}\",
+      \"head\": \"ml_model\",
+      \"base\": \"main\"
+    }"
+else
+  echo "Pull Request already exists for branch ml_model. Skipping PR creation."
+fi
