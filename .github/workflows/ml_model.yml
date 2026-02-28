@@ -63,4 +63,4 @@ jobs:
         export PYTHONUNBUFFERED=1;
         export NODE_DISABLE_COLORS=1;
 
-        stdbuf -oL -eL bash scripts/ml_model.sh "${{ inputs.context }}" "${{ inputs.filename }}";
+        stdbuf -oL -eL bash scripts/ml_model.sh "${{ inputs.context }}" "${{ inputs.file }}";

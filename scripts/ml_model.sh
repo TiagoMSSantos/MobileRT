@@ -182,6 +182,7 @@ requestAiModel() {
 startTs=$(date +%s);
 
 jq . .github/workflows/ml_model-payload.json  > /dev/null; # validate JSON
+ls -lahp "${aiModelFile}";
 
 OFFSET=0;
 TOTAL=1;
