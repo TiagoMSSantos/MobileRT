@@ -1,42 +1,105 @@
-#include <thread>
 #include <future>
-#include <mutex>
-
-// ... (other includes and namespace MobileRT)
+//... other includes
 
 template<typename T>
 void BVH<T>::build(::std::vector<T> &&primitives) {
-    // ... (initializations and preparations)
+    ::std::int32_t currentBoxIndex {};
+    ::std::int32_t beginBoxIndex {};
+    const long long unsigned primitivesSize {primitives.size()};
+    ::std::int32_t endBoxIndex {static_cast<::std::int32_t>(primitivesSize)};
+    ::std::int32_t maxNodeIndex {};
 
-    const unsigned numThreads = std::thread::hardware_concurrency();
+    // Auxiliary structure used to sort all the AABBs by the position of the centroid.
+    ::std::vector<BuildNode> buildNodes;
+    buildNodes.reserve(static_cast<long unsigned>(primitivesSize));
+    
+    for (::std::uint32_t i {}; i < primitivesSize; ++i) {
+        const T &primitive {primitives[i]};
+        AABB &&box {primitive.getAABB()};
+        buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t>(i));
+    }
+    
+    // Create vectors for asynchronous tasks
     std::vector<std::future<void>> futures;
-    std::mutex mutex;
+    
+    // This is the main loop to build the BVH in parallel
+    do {
+        // Define what to do with the current box
+        const auto itCurrentBox {this->boxes_.begin() + currentBoxIndex};
+        const ::std::int32_t boxPrimitivesSize {endBoxIndex - beginBoxIndex};
+        const auto itBegin {buildNodes.begin() + beginBoxIndex};
+        const auto itEnd {buildNodes.begin() + endBoxIndex};
 
-    // Divide the input primitives into chunks for each thread
-    const size_t chunkSize = primitives.size() / numThreads;
-    std::vector<std::vector<T>> chunks(numThreads);
+        const AABB surroundingBox {getSurroundingBox(itBegin, itEnd)};
+        const ::glm::vec3 maxDist {surroundingBox.getPointMax() - surroundingBox.getPointMin()};
+        const int longestAxis {
+            maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2] ? 0
+            : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2] ? 1
+            : 2
+        };
 
-    for (size_t i = 0; i < numThreads; ++i) {
-        size_t start = i * chunkSize;
-        size_t end = (i == numThreads - 1) ? primitives.size() : start + chunkSize;
-        chunks[i] = std::vector<T>(primitives.begin() + start, primitives.begin() + end);
+        const int numBuckets {10};
+        const ::glm::vec3 step {maxDist / static_cast<float>(numBuckets)};
+        const float stepAxis {step[longestAxis]};
+        const float startBox {surroundingBox.getPointMin()[longestAxis]};
+        const float bucket1MaxLimit {startBox + stepAxis};
+
+        // Use C++ partition to sort primitives by buckets
+        typename ::std::vector<BuildNode>::iterator itBucket = std::partition(itBegin, itEnd, [&](const BuildNode &node) {
+            return node.centroid_[longestAxis] < bucket1MaxLimit;
+        });
+
+        for (::std::int32_t bucketIndex {2}; bucketIndex < numBuckets; ++bucketIndex) {
+            const float bucketMaxLimit {startBox + stepAxis * bucketIndex};
+            itBucket = std::partition(itBucket, itEnd, [&](const BuildNode &node) {
+                return node.centroid_[longestAxis] < bucketMaxLimit;
+            });
+        }
+
+        itCurrentBox->box_ = itBegin->box_;
+        ::std::vector<AABB> boxes {itCurrentBox->box_};
+        boxes.reserve(static_cast<::std::uint32_t>(boxPrimitivesSize));
         
-        futures.emplace_back(std::async(std::launch::async, [this, &mutex, i]() {
-            // Build BVH for the given chunk in parallel
-            // Lock mutex only when interacting with shared resources
-            std::lock_guard<std::mutex> guard(mutex);
-            // Construct and add BVH nodes for this chunk
-            // Implementation here...
-        }));
-    }
+        for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
+            const AABB newBox {buildNodes[static_cast<::std::uint32_t>(i)].box_};
+            itCurrentBox->box_ = ::MobileRT::surroundingBox(newBox, itCurrentBox->box_);
+            boxes.emplace_back(newBox);
+        }
 
-    // Wait for all threads to finish
-    for (auto &future : futures) {
-        future.get();
-    }
+        const int maxPrimitivesInBoxLeaf {4};
+        const bool isLeaf {boxPrimitivesSize <= maxPrimitivesInBoxLeaf};
+        if (isLeaf) {
+            itCurrentBox->indexOffset_ = beginBoxIndex;
+            itCurrentBox->numPrimitives_ = boxPrimitivesSize;
+            currentBoxIndex = *--futures.end();
+        } else {
+            const ::std::int32_t left {maxNodeIndex + 1};
+            const ::std::int32_t right {left + 1};
+            const ::std::int32_t splitIndex {getSplitIndexSah(boxes.begin(), boxes.end())};
 
-    // Combine the results in `this->boxes_` and `this->primitives_`
-    // Implementation here...
+            itCurrentBox->indexOffset_ = left;
+            maxNodeIndex = ::std::max(right, maxNodeIndex);
+
+            // Create async tasks for left and right nodes
+            futures.push_back(std::async(std::launch::async, [&]() {
+                // Left subtree
+                // related operations here
+            }));
+
+            futures.push_back(std::async(std::launch::async, [&]() {
+                // Right subtree
+                // related operations here
+            }));
+
+            currentBoxIndex = left;
+            endBoxIndex = beginBoxIndex + splitIndex;
+        }
+    } while (futures.size() > 0);
+
+    // Wait for all futures to finish
+    for(auto &fut : futures) {
+        fut.get();
+    }
 
     LOG_INFO("maxNodeIndex = ", maxNodeIndex);
     this->boxes_.erase(this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
@@ -45,15 +108,8 @@ void BVH<T>::build(::std::vector<T> &&primitives) {
 
     // Insert primitives with the proper order.
     this->primitives_.reserve(static_cast<long unsigned>(primitivesSize));
-    for (const auto &chunk : chunks) {
-        for (size_t i = 0; i < chunk.size(); ++i) {
-            const BuildNode &node {buildNodes[i]}; // Adjust as per your logic
-            const ::std::uint32_t oldIndex {static_cast<::std::uint32_t>(node.oldIndex_)};
-            this->primitives_.emplace_back(::std::move(chunk[oldIndex]));
-        }
+    for (::std::uint32_t i {}; i < primitivesSize; ++i) {
+        const BuildNode &node {buildNodes[i]};
+        this->primitives_.emplace_back(::std::move(primitives[node.oldIndex_]));
     }
-
-    LOG_INFO("Finished building BVH with parallelization.");
 }
-
-// ... (rest of the BVH class implementation)
