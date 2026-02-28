@@ -112,6 +112,7 @@ void BVH<T>::build(std::vector<T> &&primitives) {
 
     std::vector<BuildNode> buildNodes;
     buildNodes.reserve(static_cast<size_t>(primitivesSize));
+
     for (uint32_t i = 0; i < primitivesSize; ++i) {
         const T &primitive = primitives[i]; // Fixed the indexing
         AABB box = primitive.getAABB();
@@ -121,22 +122,12 @@ void BVH<T>::build(std::vector<T> &&primitives) {
     const int maxThreads = std::thread::hardware_concurrency();
     std::vector<std::future<void>> futures;
 
-    auto parallelBuild = [&](size_t start, size_t end) {
-        // Inner building logic
-    };
-
-    for (int i = 0; i < maxThreads; ++i) {
-        size_t start = i * (primitivesSize / maxThreads);
-        size_t end = (i + 1) * (primitivesSize / maxThreads);
-        end = (i == maxThreads - 1) ? primitivesSize : end;
-        futures.emplace_back(std::async(std::launch::async, parallelBuild, start, end));
-    }
+    // Parallel build logic would go here...
 
     for (auto& future : futures) {
         future.get(); // Wait for all threads to finish
     }
 
-    std::cout << "maxNodeIndex = " << maxNodeIndex << std::endl;
     this->boxes_.erase(this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
     this->boxes_.shrink_to_fit();
 
