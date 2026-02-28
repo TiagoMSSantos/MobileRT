@@ -265,7 +265,7 @@ while true; do
   cat response_code.log > "${aiModelFile}";
 
   set +e;
-  sh scripts/compile_native.sh -t release -c g++ -r yes > compiled.log;
+  sh scripts/compile_native.sh -t release -c g++ -r yes > compiled.log 2>&1;
   RESULT="${?}";
   set -e;
 
@@ -275,6 +275,8 @@ while true; do
     break;
   else
     echo "Failed to compile MobileRT with AI Model response: ${RESULT}";
+    cat compiled.log;
+    ls -lahp compiled.log;
     aiModelContext="$(grep -ine 'error:' -C10 compiled.log)";
     echo "Replacing context with current error: ${aiModelContext}";
   fi
