@@ -74,6 +74,8 @@ aiModelContext="${1}";
 aiModelFile="${2}";
 # Branch to create Pull Request
 BRANCH='ml_model';
+# Max number of requests to AI Model
+MAX_REQUESTS=20;
 
 printEnvironment() {
   echo 'Selected arguments:';
@@ -191,7 +193,6 @@ startTs=$(date +%s);
 jq . .github/workflows/ml_model-payload.json  > /dev/null; # validate JSON
 ls -lahp "${aiModelFile}";
 
-MAX_REQUESTS=10;
 for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
   OFFSET=0;
   TOTAL=1;
@@ -220,9 +221,7 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
     | sed -n '/```cpp/,/```/p' \
     | sed '1d;$d' > response_code.log;
 
-  echo "AI Model code response: $(cat response_code.log)";
-  wc -c response_code.log;
-  ls -lahp response_code.log;
+  echo "AI Model code 'chars: $(wc -c response_code.log)' 'size: $(ls -lahp response_code.log)' response: $(head -1 response_code.log)";
 
   # 2. Encode content
   CONTENT=$(base64 -w 0 "response_code.log");
@@ -250,17 +249,6 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
     JSON_SHA="";
   fi
 
-  echo 'Creating commit with AI Model response';
-  curl -L -X PUT \
-    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}" \
-    -d "{
-      \"message\": \"${ESC_CONTEXT}\",
-      \"content\": \"${CONTENT}\",
-      ${JSON_SHA}
-      \"branch\": \"${BRANCH}\"
-    }";
   echo 'Compiling MobileRT locally with AI Model suggestion';
   cat response_code.log > "${aiModelFile}";
 
@@ -285,6 +273,23 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
     echo "Replacing context with current error: ${aiModelContext}";
   fi
 done
+
+if [ "${RESULT}" -ne 0 ]; then
+  echo 'Failed to compile MobileRT';
+  exit 1;
+fi
+
+echo 'Creating commit with AI Model response';
+curl -L -X PUT \
+  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}" \
+  -d "{
+    \"message\": \"${ESC_CONTEXT}\",
+    \"content\": \"${CONTENT}\",
+    ${JSON_SHA}
+    \"branch\": \"${BRANCH}\"
+  }";
 
 # 7. Check if a PR already exists for '${BRANCH}' to avoid 422 errors
 OWNER=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f1);
