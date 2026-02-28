@@ -3,7 +3,15 @@
   "messages": [
     {
       "role": "system",
-      "content": "Analyze MobileRT codebase and provide fixes/improvements for PRs. Only open 1 Pull Request to fix/improve the following request:"
+      "content": "Analyze MobileRT codebase and provide fixes/improvements for PRs. The response needs to be compliant with Github API to create a new commit with the improvement."
+    },
+    {
+      "role": "system",
+      "content": "Use the following context to fix/improve:"
+    },
+    {
+      "role": "system",
+      "content": "__FILE__"
     },
     {
       "role": "user",

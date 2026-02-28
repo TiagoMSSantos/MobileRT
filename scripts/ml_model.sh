@@ -68,6 +68,7 @@ sleepBetweenRequestsSeconds='0';
 maxPayloadSizeBytes='32006';
 # Context for AI Model
 aiModelContext="${1}";
+aiModelFile="${2}";
 
 printEnvironment() {
   echo 'Selected arguments:';
@@ -75,6 +76,7 @@ printEnvironment() {
   echo "Sleep between batches: ${sleepBetweenRequestsSeconds} sec";
   echo "Max payload size: ${maxPayloadSizeBytes} bytes";
   echo "AI Model context: ${aiModelContext}";
+  echo "AI Model file: ${aiModelFile}";
 }
 ###############################################################################
 ###############################################################################
@@ -100,6 +102,7 @@ fi
 producePayload() {
   jq -c \
     --arg aiModel ${aiModel} \
+    --rawfile file "${aiModelFile}" \
     --arg context "${aiModelContext}" \
     '
     def inject(name; value):
@@ -109,6 +112,7 @@ producePayload() {
       if type == "string" then
         .
         | gsub("__AI_MODEL__"; $aiModel)
+        | inject("__FILE__"; $file)
         | inject("__CONTEXT__"; $context)
       else
         .
@@ -178,8 +182,6 @@ requestAiModel() {
 startTs=$(date +%s);
 
 jq . .github/workflows/ml_model-payload.json  > /dev/null; # validate JSON
-
-echo "AI Model context: ${aiModelContext}";
 
 OFFSET=0;
 TOTAL=1;
