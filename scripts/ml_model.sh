@@ -75,7 +75,7 @@ aiModelFile="${2}";
 # Branch to create Pull Request
 BRANCH='ml_model';
 # Max number of requests to AI Model
-MAX_REQUESTS=20;
+MAX_REQUESTS=100;
 
 printEnvironment() {
   echo 'Selected arguments:';
@@ -198,7 +198,6 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
   TOTAL=1;
   for ((i=OFFSET; i<TOTAL; i++)); do
 
-    echo "BATCH_INDEX: ${BATCH_INDEX}";
     producePayload;
     SIZE=$(wc -c < payload.json.log);
     WORDS=$(wc -w < payload.json.log);
@@ -213,15 +212,13 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
   RESPONSE=$(jq -r '.choices[0].message.content' response.json.log);
   echo "${RESPONSE}" > response.log;
 
-  BATCH_INDEX=$((BATCH_INDEX + 1));
-
   # 1. Extract the code text from the JSON response
   # shellcheck disable=SC2016
   jq -r '.choices[0].message.content' response.json.log \
     | sed -n '/```cpp/,/```/p' \
     | sed '1d;$d' > response_code.log;
 
-  echo "AI Model code 'chars: $(wc -c response_code.log)' 'size: $(ls -lahp response_code.log)' response: $(head -1 response_code.log)";
+  echo "AI Model code 'BATCH_INDEX: ${BATCH_INDEX}' 'chars: $(wc -c response_code.log)' 'size: $(ls -lahp response_code.log)' response: $(head -1 response_code.log)";
 
   # 2. Encode content
   CONTENT=$(base64 -w 0 "response_code.log");
@@ -257,20 +254,20 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
   RESULT="${?}";
   set -e;
 
+  BATCH_INDEX=$((BATCH_INDEX + 1));
+
   # shellcheck disable=SC2181
   if [ "${RESULT}" -eq 0 ]; then
     echo 'Compiled MobileRT successfully!';
     break;
   else
-    echo "Failed to compile MobileRT with AI Model response: ${RESULT}";
-    echo 'compiled.log:';
-    ls -lahp compiled.log;
-    echo 'tail compiled.log:';
-    tail -n 20 compiled.log;
-    echo 'error compiled.log:';
-    grep -ine 'error:' -C10 compiled.log;
+    echo "Failed to compile MobileRT with AI Model [$(ls -lahp compiled.log)] response: ${RESULT}";
+    # echo 'tail compiled.log:';
+    # tail -n 20 compiled.log;
+    # echo 'error compiled.log:';
+    # grep -ine 'error:' -C10 compiled.log;
     aiModelContext="$(grep -ine 'error:' -C10 compiled.log)";
-    echo "Replacing context with current error: ${aiModelContext}";
+    echo "Replacing context with current error: $(echo ${aiModelContext} | head -10 | tail -1)";
   fi
 done
 
