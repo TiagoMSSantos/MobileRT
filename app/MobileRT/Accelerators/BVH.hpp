@@ -27,20 +27,20 @@ private:
     struct BuildNode {
         AABB box_ {};
         glm::vec3 centroid_ {};
-        int32_t oldIndex_ {}; // Changed from std::int32_t to int32_t
-        
+        int32_t oldIndex_ {};
+
         explicit BuildNode() = default;
 
         explicit BuildNode(AABB &&box, const int32_t oldIndex) :
-            box_ {box},
+            box_ {std::move(box)},
             centroid_ {box_.getCentroid()},
             oldIndex_ {oldIndex} {}
     };
 
     struct BVHNode {
         AABB box_ {};
-        int32_t indexOffset_ {}; // Changed from std::int32_t to int32_t
-        int32_t numPrimitives_ {}; // Changed from std::int32_t to int32_t
+        int32_t indexOffset_ {};
+        int32_t numPrimitives_ {};
     };
 
     struct rightshift {
@@ -101,8 +101,8 @@ BVH<T>::BVH(std::vector<T> &&primitives) {
         LOG_WARN("Empty BVH for '", typeid(T).name(), "' without any primitives.");
         return;
     }
-    const typename std::vector<T>::size_type numPrimitives {primitives.size()};
-    const typename std::vector<T>::size_type maxNodes {numPrimitives * 2 - 1};
+    const auto numPrimitives {primitives.size()};
+    const auto maxNodes {numPrimitives * 2 - 1};
     this->boxes_.resize(maxNodes);
     LOG_INFO("Building BVH for '", typeid(T).name(), "' with '", numPrimitives, "' primitives.");
     build(std::move(primitives));
