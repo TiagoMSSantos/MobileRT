@@ -263,7 +263,7 @@ while true; do
     }";
 
   set +e;
-  COMPILED=$(sh scripts/compile_native.sh -t release -c g++ -r yes | tee compiled.log);
+  sh scripts/compile_native.sh -t release -c g++ -r yes | tee compiled.log;
   RESULT="${?}";
   set -e;
   # shellcheck disable=SC2181
