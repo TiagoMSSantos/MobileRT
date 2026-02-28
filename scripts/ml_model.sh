@@ -184,25 +184,23 @@ echo "AI Model context: ${aiModelContext}";
 OFFSET=0;
 TOTAL=1;
 BATCH_INDEX=1;
-while true; do
-  for ((i=OFFSET; i<TOTAL; i++)); do
+for ((i=OFFSET; i<TOTAL; i++)); do
 
-    producePayload;
-    SIZE=$(wc -c < payload.json.log);
-    WORDS=$(wc -w < payload.json.log);
+  producePayload;
+  SIZE=$(wc -c < payload.json.log);
+  WORDS=$(wc -w < payload.json.log);
 
-    if (( SIZE > maxPayloadSizeBytes )); then
-      echo "Context too large for payload limit. Payload size: ${SIZE} bytes | ${WORDS} words. Payload: $(cat payload.json.log)";
-      exit 1;
-    fi
-  done
-
-  requestAiModel;
-  RESPONSE=$(jq -r '.choices[0].message.content' response.json.log);
-  echo "${RESPONSE}" >> response.log;
-
-  BATCH_INDEX=$((BATCH_INDEX + 1));
+  if (( SIZE > maxPayloadSizeBytes )); then
+    echo "Context too large for payload limit. Payload size: ${SIZE} bytes | ${WORDS} words. Payload: $(cat payload.json.log)";
+    exit 1;
+  fi
 done
+
+requestAiModel;
+RESPONSE=$(jq -r '.choices[0].message.content' response.json.log);
+echo "${RESPONSE}" >> response.log;
+
+BATCH_INDEX=$((BATCH_INDEX + 1));
 
 cat response.log;
 wc -c response.log;
