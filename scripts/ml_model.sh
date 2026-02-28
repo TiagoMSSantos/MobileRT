@@ -261,7 +261,7 @@ while true; do
       ${JSON_SHA}
       \"branch\": \"${BRANCH}\"
     }";
-  echo "$(cat response_code.log)" | base64 -d > "${aiModelFile}";
+  base64 -d response_code.log > "${aiModelFile}";
 
   echo 'Compiling MobileRT locally with AI Model suggestion';
   set +e;
