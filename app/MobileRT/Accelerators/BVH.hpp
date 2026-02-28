@@ -28,7 +28,7 @@ private:
 
         explicit BuildNode() = default;
         explicit BuildNode(AABB &&box, const int32_t oldIndex)
-        : box_{std::move(box)}, centroid_{box_.getCentroid()}, oldIndex_{oldIndex} {}
+            : box_{std::move(box)}, centroid_{box_.getCentroid()}, oldIndex_{oldIndex} {}
     };
 
     struct BVHNode {
@@ -92,8 +92,7 @@ BVH<T>::BVH(std::vector<T> &&primitives) {
     this->boxes_.resize(maxNodes);
     std::cout << "Building BVH for '" << typeid(T).name() << "' with '" << numPrimitives << "' primitives." << std::endl;
     build(std::move(primitives));
-    std::cout << "Built BVH for '" << typeid(T).name() << "' with '" 
-              << this->primitives_.size() << "' primitives in '" 
+    std::cout << "Built BVH for '" << typeid(T).name() << "' with '" << this->primitives_.size() << "' primitives in '" 
               << this->boxes_.size() << "' boxes." << std::endl;
 }
 
