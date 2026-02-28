@@ -191,74 +191,87 @@ startTs=$(date +%s);
 jq . .github/workflows/ml_model-payload.json  > /dev/null; # validate JSON
 ls -lahp "${aiModelFile}";
 
-OFFSET=0;
-TOTAL=1;
-BATCH_INDEX=1;
-for ((i=OFFSET; i<TOTAL; i++)); do
+while true; do
+  OFFSET=0;
+  TOTAL=1;
+  BATCH_INDEX=1;
+  for ((i=OFFSET; i<TOTAL; i++)); do
 
-  producePayload;
-  SIZE=$(wc -c < payload.json.log);
-  WORDS=$(wc -w < payload.json.log);
+    producePayload;
+    SIZE=$(wc -c < payload.json.log);
+    WORDS=$(wc -w < payload.json.log);
 
-  if (( SIZE > maxPayloadSizeBytes )); then
-    echo "Context too large for payload limit. Payload size: ${SIZE} bytes | ${WORDS} words. Payload: $(cat payload.json.log)";
-    exit 1;
+    if (( SIZE > maxPayloadSizeBytes )); then
+      echo "Context too large for payload limit. Payload size: ${SIZE} bytes | ${WORDS} words. Payload: $(cat payload.json.log)";
+      exit 1;
+    fi
+  done
+
+  requestAiModel;
+  RESPONSE=$(jq -r '.choices[0].message.content' response.json.log);
+  echo "${RESPONSE}" > response.log;
+
+  BATCH_INDEX=$((BATCH_INDEX + 1));
+
+  # 1. Extract the code text from the JSON response
+  # shellcheck disable=SC2016
+  jq -r '.choices[0].message.content' response.json.log \
+    | sed -n '/```cpp/,/```/p' \
+    | sed '1d;$d' > response_code.log;
+
+  echo "AI Model code response: $(cat response_code.log)";
+  wc -c response_code.log;
+  ls -lahp response_code.log;
+
+  # 2. Encode content
+  CONTENT=$(base64 -w 0 "response_code.log");
+
+  # 3. Escape context
+  ESC_CONTEXT=$(echo "${aiModelContext}" | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}' | sed 's/\\n$//');
+
+  # 4. Ensure branch exists
+  HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${GITHUB_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY}/branches/${BRANCH}");
+  if [ "$HTTP_STATUS" != "200" ]; then
+    curl -L -X POST -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs" \
+    -d "{\"ref\": \"refs/heads/${BRANCH}\", \"sha\": \"${GITHUB_SHA}\"}";
+  fi
+
+  # 5. Get SHA from GitHub only
+  SHA=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}?ref=${BRANCH}" \
+    | jq -r '.sha');
+
+  # 6. Build SHA string ONLY if it exists on GitHub
+  if [ "${SHA}" != "null" ] && [ -n "${SHA}" ]; then
+    JSON_SHA="\"sha\": \"${SHA}\",";
+  else
+    JSON_SHA="";
+  fi
+
+  echo 'Creating commit with AI Model response';
+  curl -L -X PUT \
+    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}" \
+    -d "{
+      \"message\": \"${ESC_CONTEXT}\",
+      \"content\": \"${CONTENT}\",
+      ${JSON_SHA}
+      \"branch\": \"${BRANCH}\"
+    }";
+
+  COMPILED=$(sh scripts/compile_native.sh -t release -c g++ -r yes | tee compiled.log);
+  # shellcheck disable=SC2181
+  if [ $? -eq 0 ]; then
+    echo 'Compiled MobileRT successfully!';
+    break;
+  else
+    echo "Failed to compile MobileRT with AI Model response: ${COMPILED}";
+    echo 'Replacing context with current error';
+    aiModelContext="$(tail -n 40 compiled.log)";
   fi
 done
-
-requestAiModel;
-RESPONSE=$(jq -r '.choices[0].message.content' response.json.log);
-echo "${RESPONSE}" > response.log;
-
-BATCH_INDEX=$((BATCH_INDEX + 1));
-
-# 1. Extract the code text from the JSON response
-# shellcheck disable=SC2016
-jq -r '.choices[0].message.content' response.json.log \
-  | sed -n '/```cpp/,/```/p' \
-  | sed '1d;$d' > response_code.log;
-
-echo "AI Model code response: $(cat response_code.log)";
-wc -c response_code.log;
-ls -lahp response_code.log;
-
-# 2. Encode content
-CONTENT=$(base64 -w 0 "response_code.log");
-
-# 3. Escape context
-ESC_CONTEXT=$(echo "${aiModelContext}" | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}' | sed 's/\\n$//');
-
-# 4. Ensure branch exists
-HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${GITHUB_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY}/branches/${BRANCH}");
-if [ "$HTTP_STATUS" != "200" ]; then
-  curl -L -X POST -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs" \
-  -d "{\"ref\": \"refs/heads/${BRANCH}\", \"sha\": \"${GITHUB_SHA}\"}";
-fi
-
-# 5. Get SHA from GitHub only
-SHA=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}?ref=${BRANCH}" \
-  | jq -r '.sha');
-
-# 6. Build SHA string ONLY if it exists on GitHub
-if [ "${SHA}" != "null" ] && [ -n "${SHA}" ]; then
-  JSON_SHA="\"sha\": \"${SHA}\",";
-else
-  JSON_SHA="";
-fi
-
-echo 'Creating commit with AI Model response';
-curl -L -X PUT \
-  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/${aiModelFile}" \
-  -d "{
-    \"message\": \"${ESC_CONTEXT}\",
-    \"content\": \"${CONTENT}\",
-    ${JSON_SHA}
-    \"branch\": \"${BRANCH}\"
-  }";
 
 # 7. Check if a PR already exists for '${BRANCH}' to avoid 422 errors
 OWNER=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f1);
