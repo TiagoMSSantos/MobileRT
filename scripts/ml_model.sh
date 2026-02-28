@@ -254,8 +254,6 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
   RESULT="${?}";
   set -e;
 
-  BATCH_INDEX=$((BATCH_INDEX + 1));
-
   # shellcheck disable=SC2181
   if [ "${RESULT}" -eq 0 ]; then
     echo 'Compiled MobileRT successfully!';
@@ -273,7 +271,8 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
 done
 
 if [ "${RESULT}" -ne 0 ]; then
-  echo 'Failed to compile MobileRT';
+  echo "Failed to compile MobileRT. Build log: $(cat compiled.log)";
+  echo "Last response: $(cat response.log)";
   exit 1;
 fi
 
