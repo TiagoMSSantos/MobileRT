@@ -293,5 +293,5 @@ fi
 curl --fail-with-body -S -X POST \
   -H "Authorization: Bearer ${GITHUB_TOKEN}" \
   -H "Accept: application/vnd.github.v3+json" \
-  https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/dispatches \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/dispatches" \
   -d "{\"ref\":\"${BRANCH}\",\"inputs\":{\"code-coverage-only\":\"false\"}}";
