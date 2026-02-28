@@ -200,9 +200,7 @@ while true; do
   requestAiModel;
   RESPONSE=$(jq -r '.choices[0].message.content' response.json.log);
   echo "${RESPONSE}" >> response.log;
-  awk '$0 ~ /^#/ || !seen[$0]++' response.log > tmp && mv tmp response.log; # Remove duplicate lines
 
-  OFFSET=$((OFFSET + ${#SHAS[@]}));
   BATCH_INDEX=$((BATCH_INDEX + 1));
 done
 
