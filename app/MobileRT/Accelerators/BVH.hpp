@@ -1,6 +1,3 @@
-std::vector<BVHNode> boxes_; // Correct namespace and initialization
-```
-```cpp
 #ifndef MOBILERT_ACCELERATORS_BVH_HPP
 #define MOBILERT_ACCELERATORS_BVH_HPP
 
@@ -20,7 +17,6 @@ std::vector<BVHNode> boxes_; // Correct namespace and initialization
 #include <iostream>
 
 namespace MobileRT {
-
 template<typename T>
 class BVH final {
 private:
@@ -58,7 +54,7 @@ private:
         }
     };
 
-    std::vector<BVHNode> boxes_;  // Correct initialization
+    std::vector<BVHNode> boxes_; // Correct initialization
     std::vector<T> primitives_;
     mutable std::mutex mtx_;
 
