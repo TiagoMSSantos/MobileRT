@@ -25,22 +25,22 @@ template<typename T>
 class BVH final {
 private:
     struct BuildNode {
-        AABB box_ {};
-        glm::vec3 centroid_ {};
-        int32_t oldIndex_ {};
+        AABB box_;
+        glm::vec3 centroid_;
+        int32_t oldIndex_;
 
         explicit BuildNode() = default;
 
         explicit BuildNode(AABB &&box, const int32_t oldIndex) :
-            box_ {std::move(box)},
-            centroid_ {box_.getCentroid()},
-            oldIndex_ {oldIndex} {}
+            box_{std::move(box)},
+            centroid_{box_.getCentroid()},
+            oldIndex_{oldIndex} {}
     };
 
     struct BVHNode {
-        AABB box_ {};
-        int32_t indexOffset_ {};
-        int32_t numPrimitives_ {};
+        AABB box_;
+        int32_t indexOffset_;
+        int32_t numPrimitives_;
     };
 
     struct rightshift {
@@ -62,7 +62,7 @@ private:
     };
 
 private:
-    std::vector<BVHNode> boxes_ {};
+    std::vector<BVHNode> boxes_;
     std::vector<T> primitives_;
 
     void build(std::vector<T> &&primitives);
