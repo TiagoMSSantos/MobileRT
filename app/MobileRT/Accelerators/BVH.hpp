@@ -40,7 +40,7 @@ private:
          * @param oldIndex The old index of the box in the original vector (used to put the box in the proper position).
          */
         explicit BuildNode(AABB &&box, const ::std::int32_t oldIndex)
-            : box_ {box}, centroid_ {box_.getCentroid()}, oldIndex_ {oldIndex} {
+        : box_ {box}, centroid_ {box_.getCentroid()}, oldIndex_ {oldIndex} {
         }
     };
 
@@ -104,7 +104,7 @@ void BVH<T>::buildNodeThreadSafe(::std::vector<BuildNode>& buildNodes, ::std::ve
     buildNodes.reserve(static_cast<long unsigned>(primitives.size()));
     for (::std::uint32_t i {}; i < primitives.size(); ++i) {
         const T &primitive {primitives[i]}; // Correct indexing
-        AABB &&box {primitive.getAABB()};
+        AABB box {primitive.getAABB()};
         buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t>(i));
     }
 }
