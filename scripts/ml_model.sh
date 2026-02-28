@@ -197,6 +197,7 @@ while true; do
   BATCH_INDEX=1;
   for ((i=OFFSET; i<TOTAL; i++)); do
 
+    echo "BATCH_INDEX: ${BATCH_INDEX}";
     producePayload;
     SIZE=$(wc -c < payload.json.log);
     WORDS=$(wc -w < payload.json.log);
@@ -263,9 +264,10 @@ while true; do
 
   set +e;
   COMPILED=$(sh scripts/compile_native.sh -t release -c g++ -r yes | tee compiled.log);
+  RESULT="${?}";
   set -e;
   # shellcheck disable=SC2181
-  if [ $? -eq 0 ]; then
+  if [ "${RESULT}" -eq 0 ]; then
     echo 'Compiled MobileRT successfully!';
     break;
   else
