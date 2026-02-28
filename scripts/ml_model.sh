@@ -264,7 +264,7 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
     # tail -n 20 compiled.log;
     # echo 'error compiled.log:';
     # grep -ine 'error:' -C10 compiled.log;
-    aiModelContext="$(grep -ine 'error:' -C10 compiled.log)";
+    aiModelContext="Finish implementation and fix the error occurred. $(grep -ine 'error:' -C10 compiled.log)";
     # shellcheck disable=SC2086
     echo "Replacing context with current error: $(grep -ine 'error:' -C0 compiled.log)";
   fi
