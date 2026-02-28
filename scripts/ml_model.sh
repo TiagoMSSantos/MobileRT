@@ -261,19 +261,22 @@ while true; do
       ${JSON_SHA}
       \"branch\": \"${BRANCH}\"
     }";
+  echo "${CONTENT}" | base64 -d > "${aiModelFile}";
 
+  echo 'Compiling MobileRT locally with AI Model suggestion';
   set +e;
-  sh scripts/compile_native.sh -t release -c g++ -r yes | tee compiled.log;
+  sh scripts/compile_native.sh -t release -c g++ -r yes > compiled.log;
   RESULT="${?}";
   set -e;
+
   # shellcheck disable=SC2181
   if [ "${RESULT}" -eq 0 ]; then
     echo 'Compiled MobileRT successfully!';
     break;
   else
-    echo "Failed to compile MobileRT with AI Model response: ${COMPILED}";
-    echo 'Replacing context with current error';
+    echo "Failed to compile MobileRT with AI Model response: ${RESULT}";
     aiModelContext="$(tail -n 40 compiled.log)";
+    echo "Replacing context with current error: ${aiModelContext}";
   fi
 done
 
