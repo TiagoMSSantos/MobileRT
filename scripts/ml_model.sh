@@ -298,7 +298,6 @@ if [ "${PR_EXISTS}" -eq "0" ]; then
   echo 'No existing PR found. Creating a new one';
   curl -L \
     -X POST \
-    -H "Accept: application/vnd.github+json" \
     -H "Authorization: Bearer ${GITHUB_TOKEN}" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls" \
@@ -315,6 +314,5 @@ fi
 echo 'Trigger Github workflow to run tests';
 curl --fail-with-body -S -X POST \
   -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-  -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/native.yml/dispatches" \
   -d "{\"ref\":\"${BRANCH}\",\"inputs\":{\"code-coverage-only\":\"false\"}}";

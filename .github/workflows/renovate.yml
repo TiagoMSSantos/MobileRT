@@ -62,15 +62,15 @@ jobs:
           echo "BRANCH: ${BRANCH}";
           echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}";
           echo "GITHUB_RUN_ID: ${GITHUB_RUN_ID}";
-          responses_triggered=$(curl --fail-with-body -s -S -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github.v3+json" \
+          responses_triggered=$(curl --fail-with-body -s -S \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/renovate.yml/runs?branch=${BRANCH}");
           echo 'Deleting previous Renovate runs';
           run_ids=$(printf '%s\n' "${responses_triggered}" | jq '.workflow_runs[] | select(.id != '"${GITHUB_RUN_ID}"') | .id');
           for run_id in ${run_ids}; do
             echo "Deleting run: ${run_id}";
-            curl --fail-with-body -s -S -X DELETE -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github.v3+json" \
+            curl --fail-with-body -s -S -X DELETE \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
               "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}";
           done
 

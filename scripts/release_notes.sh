@@ -193,7 +193,12 @@ requestAiModel() {
   while true; do
     RESPONSE=$(
       curl -w "%{http_code}" -o response.json.log -s -S \
-        --retry 3 --retry-delay ${sleepBetweenRequestsSeconds} --retry-all-errors --retry-max-time 120 --connect-timeout 20 --max-time 180 \
+        --retry 3 \
+        --retry-delay ${sleepBetweenRequestsSeconds} \
+        --retry-all-errors \
+        --retry-max-time 120 \
+        --connect-timeout 20 \
+        --max-time 180 \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${GITHUB_TOKEN}" \
         -d @payload.json.log \
