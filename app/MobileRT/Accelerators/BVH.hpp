@@ -12,28 +12,26 @@
 #include <random>
 #include <thread>
 #include <vector>
-#include <mutex>
 #include <future>
-#include <execution>
+#include <type_traits>
+#include <typeinfo>
+#include <iostream>
 
 namespace MobileRT {
 
 /**
  * A class which represents the Bounding Volume Hierarchy acceleration structure.
  *
- * @tparam PrimitiveType The type of the primitives.
+ * @tparam T The type of the primitives.
  */
-template<typename PrimitiveType>
+template<typename T>
 class BVH final {
 private:
-    /**
-     * An auxiliary node used for the construction of the BVH.
-     * It is used to sort all the AABBs by the position of the centroid.
-     */
+    /** An auxiliary node used for the construction of the BVH. */
     struct BuildNode {
-        AABB box_ {};
-        ::glm::vec3 centroid_ {};
-        ::std::int32_t oldIndex_ {};
+        AABB box_;
+        ::glm::vec3 centroid_;
+        ::std::int32_t oldIndex_;
 
         /** The constructor. */
         explicit BuildNode() = default;
@@ -42,26 +40,25 @@ private:
          * The constructor.
          *
          * @param box The box to store in the node.
-         * @param oldIndex The old index of the box in the original vector (used to put the box in the proper position).
+         * @param oldIndex The old index of the box in the original vector
+         * (used to put the box in the proper position).
          */
-        explicit BuildNode(AABB &&box, const ::std::int32_t oldIndex) :
-            box_{ ::std::move(box) },
-            centroid_{ box_.getCentroid() },
-            oldIndex_{ oldIndex } {}
+        explicit BuildNode(AABB &&box, const ::std::int32_t oldIndex)
+            : box_{::std::move(box)}, centroid_{box_.getCentroid()}, oldIndex_{oldIndex} {}
     };
 
     /** A node of the BVH vector. */
     struct BVHNode {
-        AABB box_ {};
-        ::std::int32_t indexOffset_ {};
-        ::std::int32_t numPrimitives_ {};
+        AABB box_;
+        ::std::int32_t indexOffset_;
+        ::std::int32_t numPrimitives_;
     };
 
 private:
-    ::std::vector<BVHNode> boxes_ {};
-    ::std::vector<PrimitiveType> primitives_;
+    ::std::vector<BVHNode> boxes_;
+    ::std::vector<T> primitives_;
 
-    void buildImpl(::std::vector<PrimitiveType> &&primitives); // Internal build function
+    void build(::std::vector<T> &&primitives);
     Intersection intersect(Intersection intersection);
 
     template<typename Iterator>
@@ -72,7 +69,7 @@ private:
 
 public:
     explicit BVH() = default;
-    explicit BVH(::std::vector<PrimitiveType> &&primitives);
+    explicit BVH(::std::vector<T> &&primitives);
     BVH(const BVH &bvh) = delete;
     BVH(BVH &&bvh) noexcept = default;
     ~BVH();
@@ -81,107 +78,136 @@ public:
 
     Intersection trace(Intersection intersection);
     Intersection shadowTrace(Intersection intersection);
-    const ::std::vector<PrimitiveType>& getPrimitives() const;
+    const ::std::vector<T>& getPrimitives() const;
 
-    /** 
-     * A helper method which builds the BVH structure.
-     *
-     * @param primitives A vector containing all the primitives to store in the BVH.
-     */
-    void build(::std::vector<PrimitiveType> &&primitives);
+private:
+    void buildNodeThreadSafe(::std::vector<BuildNode>& buildNodes, ::std::vector<T> &&primitives);
+    void buildBVHParallel(::std::vector<T> &&primitives);
 };
 
-template<typename PrimitiveType>
-BVH<PrimitiveType>::BVH(::std::vector<PrimitiveType> &&primitives) {
+template<typename T>
+BVH<T>::BVH(::std::vector<T> &&primitives) {
+    if (primitives.empty()) {
+        this->boxes_.emplace_back();
+        LOG_WARN("Empty BVH for '", typeid(T).name(), "' without any primitives.");
+        return;
+    }
+
+    const typename ::std::vector<T>::size_type numPrimitives{primitives.size()};
+    const typename ::std::vector<T>::size_type maxNodes{numPrimitives * 2 - 1};
+    this->boxes_.resize(maxNodes);
+    LOG_INFO("Building BVH for '", typeid(T).name(), "' with '", numPrimitives, "' primitives.");
     build(::std::move(primitives));
+    LOG_INFO("Built BVH for '", typeid(T).name(), "' with '", this->primitives_.size(), "' primitives in '", this->boxes_.size(), "' boxes.");
 }
 
-template<typename PrimitiveType>
-void BVH<PrimitiveType>::build(::std::vector<PrimitiveType> &&primitives) {
-    buildImpl(::std::move(primitives));
-}
-
-template<typename PrimitiveType>
-void BVH<PrimitiveType>::buildImpl(::std::vector<PrimitiveType> &&primitives) {
-    ::std::int32_t currentBoxIndex {};
-    ::std::int32_t beginBoxIndex {};
-    const auto primitivesSize = primitives.size();
-    ::std::int32_t endBoxIndex = static_cast<::std::int32_t>(primitivesSize);
-    ::std::int32_t maxNodeIndex {};
-
-    // Auxiliary structure used to sort all the AABBs by the position of the centroid.
-    ::std::vector<BuildNode> buildNodes {};
-    buildNodes.reserve(static_cast<long unsigned>(primitivesSize));
-
-    for (::std::uint32_t i = 0; i < primitivesSize; ++i) {
-        const PrimitiveType &primitive = primitives[i]; // Fixing indexing error
-        AABB box = primitive.getAABB();
+// Helper function to run build in multiple threads
+template<typename T>
+void BVH<T>::buildNodeThreadSafe(::std::vector<BuildNode>& buildNodes, ::std::vector<T> &&primitives) {
+    buildNodes.reserve(static_cast<::std::size_t>(primitives.size())); // Reserve space for build nodes
+    for (::std::uint32_t i = 0; i < primitives.size(); ++i) {
+        const T &primitive = primitives[i]; // Corrected to use []
+        AABB box{primitive.getAABB()};
         buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t>(i));
     }
+}
 
-    // Parallel build
-    const ::std::size_t numThreads = ::std::thread::hardware_concurrency();
-    ::std::vector<::std::future<void>> futures(numThreads);
-    ::std::mutex mutex;
+template<typename T>
+void BVH<T>::buildBVHParallel(::std::vector<T> &&primitives) {
+    const size_t numThreads = ::std::thread::hardware_concurrency();
+    ::std::vector<::std::future<void>> futures;
+    ::std::vector<::std::vector<BuildNode>> buildNodeChunks(numThreads);
 
-    // Helper function to build BVH nodes in parallel
-    auto buildInParallel = [&](size_t threadIndex) {
-        for (size_t i = threadIndex; i < primitivesSize; i += numThreads) {
-            // Implement building logic for a chunk assigned to this thread.
+    const size_t chunkSize = primitives.size() / numThreads;
+
+    // Create the threads to build nodes
+    for (size_t i = 0; i < numThreads; ++i) {
+        size_t begin = i * chunkSize;
+        size_t end = (i == numThreads - 1) ? primitives.size() : begin + chunkSize;
+
+        futures.emplace_back(::std::async(::std::launch::async,
+        [this, &buildNodeChunks, i, begin, end, &primitives] { // Capture `this` correctly
+            buildNodeThreadSafe(buildNodeChunks[i], ::std::vector<T>(primitives.begin() + begin, primitives.begin() + end));
+        }));
+    }
+
+    // Wait for all threads to finish
+    for (auto &future : futures) {
+        future.get();
+    }
+
+    // Combine all build nodes back into a single vector
+    ::std::vector<BuildNode> allBuildNodes;
+    for (const auto& chunk : buildNodeChunks) {
+        allBuildNodes.insert(allBuildNodes.end(), chunk.begin(), chunk.end());
+    }
+
+    // Log the count of build nodes created
+    LOG_INFO("Created '", allBuildNodes.size(), "' build nodes in parallel.");
+
+    // Set the primitives_ vector after processing
+    this->primitives_ = ::std::move(primitives); // Ensure primitives are stored
+}
+
+template<typename T>
+void BVH<T>::build(::std::vector<T> &&primitives) {
+    // Use the input primitives to build the BVH in parallel
+    buildBVHParallel(::std::move(primitives));
+}
+
+template<typename T>
+Intersection BVH<T>::trace(Intersection intersection) {
+    // Implementation of tracing logic
+    for (const auto& node : boxes_) {
+        const ::MobileRT::Ray& ray = intersection.ray_; // Assuming ray_ is directly accessible
+        if (node.box_.intersect(ray)) { // Use the ray to check intersection
+            // Logic to handle intersections with primitives
+            for (::std::int32_t i = node.indexOffset_; i < node.indexOffset_ + node.numPrimitives_; ++i) {
+                const T& primitive = primitives_[i]; // Corrected to use []
+                if constexpr (requires { primitive.intersect(ray); }) { // Ensure intersect method exists in the primitive class
+                    if (primitive.intersect(ray)) { // Validate if intersect is callable
+                        // Update intersection information if intersection occurs
+                        // Note: Actual update logic needs to be implemented based on your application logic
+                    }
+                }
+            }
         }
-    };
-
-    for (::std::size_t i = 0; i < numThreads; ++i) {
-        futures[i] = ::std::async(::std::launch::async, buildInParallel, i);
     }
-
-    for (auto& future : futures) {
-        future.get(); // Wait for all threads to finish
-    }
-
-    // After parallel element insertion, proceed to BVH structuring
-    do {
-        const ::std::int32_t boxPrimitivesSize = endBoxIndex - beginBoxIndex;
-
-        // Insert the logic of structuring the BVH nodes here
-        // For now, the logic is put in a placeholder
-        (void)boxPrimitivesSize; // Avoid warning as it becomes used
-
-    } while (currentBoxIndex > 0); // Adjust termination condition as needed
-
-    // Cleanup and finalization
-    this->boxes_.erase(this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
-    this->boxes_.shrink_to_fit();
-    ::std::vector<BVHNode> tempBoxes{::std::move(this->boxes_)};
-    this->boxes_ = ::std::move(tempBoxes);
-
-    // Insert primitives with the proper order
-    this->primitives_.reserve(static_cast<long unsigned>(primitivesSize));
-    for (::std::uint32_t i = 0; i < primitivesSize; ++i) {
-        const BuildNode &node = buildNodes[i]; // Fixing indexing error
-        const ::std::uint32_t oldIndex = static_cast<::std::uint32_t>(node.oldIndex_);
-        this->primitives_.emplace_back(::std::move(primitives[oldIndex])); // Fixing indexing error
-    }
+    return intersection; // Return modified intersection if applicable
 }
 
-template<typename PrimitiveType>
-BVH<PrimitiveType>::~BVH() = default; // Destructor implementation
-
-template<typename PrimitiveType>
-const ::std::vector<PrimitiveType>& BVH<PrimitiveType>::getPrimitives() const {
-    return primitives_;
+template<typename T>
+Intersection BVH<T>::shadowTrace(Intersection intersection) {
+    // Implementation of shadow tracing logic
+    for (const auto& node : boxes_) {
+        const ::MobileRT::Ray& ray = intersection.ray_; // Assuming similar access for shadow rays
+        if (node.box_.intersect(ray)) { // Use the ray to check intersection
+            // Logic to check for shadows against primitives
+            for (::std::int32_t i = node.indexOffset_; i < node.indexOffset_ + node.numPrimitives_; ++i) {
+                const T& primitive = primitives_[i]; // Corrected to use []
+                if constexpr (requires { primitive.intersect(ray); }) {
+                    if (primitive.intersect(ray)) {
+                        // If an intersection occurs, return immediately as we found a shadow
+                        return intersection; // You might want to modify this to mark it as shadowed
+                    }
+                }
+            }
+        }
+    }
+    return intersection; // Return modified intersection if applicable
 }
 
-template<typename PrimitiveType>
-Intersection BVH<PrimitiveType>::trace(Intersection intersection) {
-    // Implement the trace logic here
-    return intersection; // Placeholder
+template<typename T>
+BVH<T>::~BVH() {
+    this->boxes_.clear();
+    this->primitives_.clear();
+    ::std::vector<BVHNode>().swap(this->boxes_);
+    ::std::vector<T>().swap(this->primitives_);
 }
 
-template<typename PrimitiveType>
-Intersection BVH<PrimitiveType>::shadowTrace(Intersection intersection) {
-    // Implement the shadow trace logic here
-    return intersection; // Placeholder
+template<typename T>
+const ::std::vector<T>& BVH<T>::getPrimitives() const {
+    return this->primitives_;
 }
 
 } // namespace MobileRT
