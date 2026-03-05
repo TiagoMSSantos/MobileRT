@@ -82,6 +82,7 @@ jobs:
           LOG_LEVEL: 'debug'
           RENOVATE_AUTODISCOVER: 'false'
           RENOVATE_REPOSITORIES: '["${{ github.repository }}"]'
+          RENOVATE_ALLOWED_UNSAFE_EXECUTIONS: '["gradleWrapper"]'
         with:
           # Check available parameters in: https://github.com/renovatebot/github-action/blob/master/action.yml
           configurationFile: renovate.json

@@ -93,7 +93,6 @@
   "gradle": {
     "enabled": true
   },
-  "allowedUnsafeExecutions": ["gradleWrapper"],
   "maven": {
     "enabled": true
   },
