@@ -3,7 +3,7 @@ name: Renovate
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/10 * * * *" # every 10 min
+    - cron: "*/5 * * * *" # every 5 min
   push:
     branches:
     - '**'
