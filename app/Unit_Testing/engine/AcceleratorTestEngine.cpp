@@ -43,7 +43,7 @@ static bool pixelEqual(const ::std::uint32_t value, const ::std::uint32_t expect
     return true;
 }
 
-static void assertVectorsEqual(const std::vector<::std::int32_t>& bitmap, const std::vector<::std::int32_t>& expected, const ::std::int32_t maxAcceptableDiff) {
+static void assertVectorsEqual(const ::std::vector<::std::int32_t>& bitmap, const ::std::vector<::std::int32_t>& expected, const ::std::int32_t maxAcceptableDiff) {
     if (bitmap.size() != expected.size()) {
         ::std::ostringstream oss {""};
         oss << "Vector sizes differ: bitmap.size()=" << bitmap.size() << ", expected.size()=" << expected.size();
@@ -67,8 +67,8 @@ static void assertVectorsEqual(const std::vector<::std::int32_t>& bitmap, const 
             oss << "Vectors differ at index " << i << ": bitmap[i]=" << pixelBitmap << ", expected[i]=" << pixelExpected;
             oss << " (red=" << red << ", green=" << green << ", blue=" << blue;
             oss << ", expectedRed=" << expectedRed << ", expectedGreen=" << expectedGreen << ", expectedBlue=" << expectedBlue << ")";
-            LOG_ERROR("bitmap: ", bitmap, bitmap.size());
-            LOG_ERROR("expected: ", expected, expected.size());
+            LOG_ERROR("bitmap: ", bitmap.data(), bitmap.size());
+            LOG_ERROR("expected: ", expected.data(), expected.size());
             throw std::runtime_error(oss.str());
         }
     }

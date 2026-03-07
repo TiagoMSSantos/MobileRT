@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-03-07T15:18:05.439Z",
+    "detectionDate": "2026-03-07T15:44:09.100Z",
     "formats": {
       "java": {
         "sources": {
@@ -1262,13 +1262,13 @@
           },
           "app/Unit_Testing/engine/AcceleratorTestEngine.cpp": {
             "lines": 128,
-            "tokens": 4801,
+            "tokens": 4811,
             "sources": 1,
             "clones": 4,
             "duplicatedLines": 57,
             "duplicatedTokens": 898,
             "percentage": 44.53,
-            "percentageTokens": 18.7,
+            "percentageTokens": 18.67,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1875,7 +1875,7 @@
         },
         "total": {
           "lines": 6230,
-          "tokens": 66198,
+          "tokens": 66208,
           "sources": 59,
           "clones": 37,
           "duplicatedLines": 369,
@@ -3357,7 +3357,7 @@
     },
     "total": {
       "lines": 31847,
-      "tokens": 247251,
+      "tokens": 247261,
       "sources": 266,
       "clones": 126,
       "duplicatedLines": 1681,
@@ -5973,12 +5973,12 @@
         "startLoc": {
           "line": 83,
           "column": 10,
-          "position": 4026
+          "position": 4036
         },
         "endLoc": {
           "line": 93,
           "column": 19,
-          "position": 4219
+          "position": 4229
         }
       },
       "secondFile": {
@@ -6009,12 +6009,12 @@
         "startLoc": {
           "line": 102,
           "column": 17,
-          "position": 4307
+          "position": 4317
         },
         "endLoc": {
           "line": 112,
           "column": 3,
-          "position": 4510
+          "position": 4520
         }
       },
       "secondFile": {
@@ -6029,7 +6029,7 @@
         "endLoc": {
           "line": 93,
           "column": 3,
-          "position": 4229
+          "position": 4239
         }
       }
     },
@@ -6045,12 +6045,12 @@
         "startLoc": {
           "line": 118,
           "column": 31,
-          "position": 4545
+          "position": 4555
         },
         "endLoc": {
           "line": 133,
           "column": 29,
-          "position": 4802
+          "position": 4812
         }
       },
       "secondFile": {
@@ -6065,7 +6065,7 @@
         "endLoc": {
           "line": 95,
           "column": 31,
-          "position": 4240
+          "position": 4250
         }
       }
     },
