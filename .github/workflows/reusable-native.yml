@@ -431,13 +431,13 @@ jobs:
         timeout-minutes: 50
         if: success()
         run: |
-          ls -lahp ./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
-          ls -lahp ./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
-          ls -lahp ./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
-          ls -lahp ./app/src/androidTest/resources/teapot/teapot.obj;
-          ls -lahp ./app/src/androidTest/resources/teapot/teapot.mtl;
-          ls -lahp ./app/src/androidTest/resources/teapot/teapot.cam;
-          ls -lahp ./app/src/androidTest/resources/teapot/default.png;
+          ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.obj;
+          ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl;
+          ls -lahp app/src/androidTest/resources/CornellBox/CornellBox-Water.cam;
+          ls -lahp app/src/androidTest/resources/teapot/teapot.obj;
+          ls -lahp app/src/androidTest/resources/teapot/teapot.mtl;
+          ls -lahp app/src/androidTest/resources/teapot/teapot.cam;
+          ls -lahp app/src/androidTest/resources/teapot/default.png;
           unitTestsExe=$(find build_${{ inputs.type }} -type f -name "UnitTests*" | head -1);
           echo "Unit tests executable: ${unitTestsExe}";
           gtestPath=$(find ~/.conan -iname 'libgtest.so' | grep -iv 'build' | xargs ls -t | head -1 | xargs dirname);

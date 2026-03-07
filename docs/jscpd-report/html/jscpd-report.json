@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-03-07T16:12:43.446Z",
+    "detectionDate": "2026-03-07T18:07:30.716Z",
     "formats": {
       "java": {
         "sources": {
@@ -1229,10 +1229,10 @@
             "tokens": 536,
             "sources": 1,
             "clones": 5,
-            "duplicatedLines": 67,
-            "duplicatedTokens": 944,
-            "percentage": 155.81,
-            "percentageTokens": 176.12,
+            "duplicatedLines": 60,
+            "duplicatedTokens": 880,
+            "percentage": 139.53,
+            "percentageTokens": 164.18,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1261,14 +1261,14 @@
             "newClones": 0
           },
           "app/Unit_Testing/engine/AcceleratorTestEngine.cpp": {
-            "lines": 128,
-            "tokens": 4811,
+            "lines": 139,
+            "tokens": 7749,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 57,
-            "duplicatedTokens": 898,
-            "percentage": 44.53,
-            "percentageTokens": 18.67,
+            "duplicatedLines": 50,
+            "duplicatedTokens": 834,
+            "percentage": 35.97,
+            "percentageTokens": 10.76,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1778,7 +1778,7 @@
           },
           "app/MobileRT/Renderer.cpp": {
             "lines": 199,
-            "tokens": 2010,
+            "tokens": 2030,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1874,14 +1874,14 @@
           }
         },
         "total": {
-          "lines": 6230,
-          "tokens": 66208,
+          "lines": 6241,
+          "tokens": 69166,
           "sources": 59,
           "clones": 37,
-          "duplicatedLines": 369,
-          "duplicatedTokens": 5552,
-          "percentage": 5.92,
-          "percentageTokens": 8.39,
+          "duplicatedLines": 362,
+          "duplicatedTokens": 5488,
+          "percentage": 5.8,
+          "percentageTokens": 7.93,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2069,13 +2069,13 @@
             "newClones": 0
           },
           ".github/workflows/docker.yml": {
-            "lines": 420,
+            "lines": 424,
             "tokens": 2833,
             "sources": 1,
             "clones": 1,
             "duplicatedLines": 49,
             "duplicatedTokens": 258,
-            "percentage": 11.67,
+            "percentage": 11.56,
             "percentageTokens": 9.11,
             "newDuplicatedLines": 0,
             "newClones": 0
@@ -2202,13 +2202,13 @@
           }
         },
         "total": {
-          "lines": 3551,
+          "lines": 3555,
           "tokens": 20887,
           "sources": 26,
           "clones": 10,
           "duplicatedLines": 289,
           "duplicatedTokens": 1688,
-          "percentage": 8.14,
+          "percentage": 8.13,
           "percentageTokens": 8.08,
           "newDuplicatedLines": 0,
           "newClones": 0
@@ -3356,14 +3356,14 @@
       }
     },
     "total": {
-      "lines": 31864,
-      "tokens": 247381,
+      "lines": 31879,
+      "tokens": 250339,
       "sources": 266,
       "clones": 127,
-      "duplicatedLines": 1697,
-      "duplicatedTokens": 15119,
-      "percentage": 5.33,
-      "percentageTokens": 6.11,
+      "duplicatedLines": 1690,
+      "duplicatedTokens": 15055,
+      "percentage": 5.3,
+      "percentageTokens": 6.01,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5927,17 +5927,17 @@
     },
     {
       "format": "cpp",
-      "lines": 23,
-      "fragment": "/C_wrapper.h\"\n#include <gtest/gtest.h>\n\n#include \"MobileRT/Shader.hpp\"\n\nclass AcceleratorTestEngine : public testing::Test {\nprotected:\n    ::MobileRT::Config config {};\n\n    void SetUp () final {\n        errno = 0;\n        config.width = 30;\n        config.height = 30;\n        config.threads = 3;\n        config.samplesPixel = 1;\n        config.samplesLight = 1;\n        config.repeats = 1;\n        config.objFilePath = ::std::string {\"\"};\n        config.mtlFilePath = ::std::string {\"\"};\n        config.camFilePath = ::std::string {\"\"};\n        const ::std::uint32_t size {static_cast<::std::uint32_t> (config.width) * static_cast<::std::uint32_t> (config.height)};\n        config.bitmap = ::std::vec",
+      "lines": 16,
+      "fragment": "\n\n    void SetUp () final {\n        errno = 0;\n        config.width = 40;\n        config.height = 40;\n        config.threads = 3;\n        config.samplesPixel = 1;\n        config.samplesLight = 1;\n        config.repeats = 1;\n        config.objFilePath = ::std::string {\"\"};\n        config.mtlFilePath = ::std::string {\"\"};\n        config.camFilePath = ::std::string {\"\"};\n        const ::std::uint32_t size {static_cast<::std::uint32_t> (config.width) * static_cast<::std::uint32_t> (config.height)};\n        config.bitmap = ::std::vec",
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
-        "start": 6,
+        "start": 13,
         "end": 28,
         "startLoc": {
-          "line": 6,
-          "column": 2,
-          "position": 9
+          "line": 13,
+          "column": 3,
+          "position": 73
         },
         "endLoc": {
           "line": 28,
@@ -5947,12 +5947,12 @@
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/TextureTestEngine.cpp",
-        "start": 6,
+        "start": 13,
         "end": 28,
         "startLoc": {
-          "line": 6,
-          "column": 2,
-          "position": 9
+          "line": 13,
+          "column": 3,
+          "position": 73
         },
         "endLoc": {
           "line": 28,
@@ -5968,17 +5968,17 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
-        "start": 83,
-        "end": 93,
+        "start": 94,
+        "end": 104,
         "startLoc": {
-          "line": 83,
+          "line": 94,
           "column": 10,
-          "position": 4036
+          "position": 6974
         },
         "endLoc": {
-          "line": 93,
+          "line": 104,
           "column": 19,
-          "position": 4229
+          "position": 7167
         }
       },
       "secondFile": {
@@ -6004,32 +6004,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
-        "start": 102,
-        "end": 112,
+        "start": 113,
+        "end": 123,
         "startLoc": {
-          "line": 102,
+          "line": 113,
           "column": 17,
-          "position": 4317
+          "position": 7255
         },
         "endLoc": {
-          "line": 112,
+          "line": 123,
           "column": 3,
-          "position": 4520
+          "position": 7458
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/ShaderTestEngine.cpp",
         "start": 42,
-        "end": 93,
+        "end": 104,
         "startLoc": {
           "line": 42,
           "column": 8,
           "position": 352
         },
         "endLoc": {
-          "line": 93,
+          "line": 104,
           "column": 3,
-          "position": 4239
+          "position": 7177
         }
       }
     },
@@ -6040,32 +6040,32 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
-        "start": 118,
-        "end": 133,
+        "start": 129,
+        "end": 144,
         "startLoc": {
-          "line": 118,
+          "line": 129,
           "column": 31,
-          "position": 4555
+          "position": 7493
         },
         "endLoc": {
-          "line": 133,
+          "line": 144,
           "column": 29,
-          "position": 4812
+          "position": 7750
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/ShaderTestEngine.cpp",
         "start": 56,
-        "end": 95,
+        "end": 106,
         "startLoc": {
           "line": 56,
           "column": 35,
           "position": 574
         },
         "endLoc": {
-          "line": 95,
+          "line": 106,
           "column": 31,
-          "position": 4250
+          "position": 7188
         }
       }
     },

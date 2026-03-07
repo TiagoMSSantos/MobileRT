@@ -80,7 +80,7 @@ void Renderer::renderFrame(::std::int32_t *const bitmap, const ::std::int32_t nu
     MobileRT::checkSystemError("All render threads finished");
     threads.clear();
     MobileRT::checkSystemError("Deleted render threads");
-    // LOG_INFO("bitmap: ", bitmap, this->width_ * this->height_);
+    LOG_DEBUG("bitmap: ", bitmap, this->width_ * this->height_);
 
     LOG_DEBUG("FINISH");
 }
