@@ -70,7 +70,7 @@ static void assertVectorsEqual(const ::std::vector<::std::int32_t>& bitmap, cons
 
         if (!match) {
             consecutiveFailures++;
-            if (consecutiveFailures >= 3) {
+            if (consecutiveFailures >= 2) {
                 ::std::ostringstream oss {""};
                 oss << "Vectors differ at index " << i << ": bitmap[i]=" << pixelBitmap << ", expected[i]=" << pixelExpected;
                 oss << " (red=" << red << ", green=" << green << ", blue=" << blue;
@@ -101,7 +101,7 @@ TEST_F(AcceleratorTestEngine, testRenderSceneWithNaive) {
     RayTrace(config, false);
     ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
 
-    assertVectorsEqual(config.bitmap, expectedBitmap, 43);
+    assertVectorsEqual(config.bitmap, expectedBitmap, 44);
 
     ::MobileRT::checkSystemError("testRenderSceneWithNaive end");
 }
@@ -139,7 +139,7 @@ TEST_F(AcceleratorTestEngine, testRenderSceneWithBVH) {
     RayTrace(config, false);
     ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
 
-    assertVectorsEqual(config.bitmap, expectedBitmap, 43);
+    assertVectorsEqual(config.bitmap, expectedBitmap, 44);
 
     ::MobileRT::checkSystemError("testRenderSceneWithBVH end");
 }

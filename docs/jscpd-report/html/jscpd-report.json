@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-03-07T18:07:30.716Z",
+    "detectionDate": "2026-03-07T19:58:11.579Z",
     "formats": {
       "java": {
         "sources": {
@@ -1241,10 +1241,10 @@
             "tokens": 1611,
             "sources": 1,
             "clones": 13,
-            "duplicatedLines": 132,
-            "duplicatedTokens": 2657,
-            "percentage": 112.82,
-            "percentageTokens": 164.93,
+            "duplicatedLines": 134,
+            "duplicatedTokens": 2668,
+            "percentage": 114.53,
+            "percentageTokens": 165.61,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1265,10 +1265,10 @@
             "tokens": 7749,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 50,
-            "duplicatedTokens": 834,
-            "percentage": 35.97,
-            "percentageTokens": 10.76,
+            "duplicatedLines": 52,
+            "duplicatedTokens": 845,
+            "percentage": 37.41,
+            "percentageTokens": 10.9,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1878,10 +1878,10 @@
           "tokens": 69166,
           "sources": 59,
           "clones": 37,
-          "duplicatedLines": 362,
-          "duplicatedTokens": 5488,
-          "percentage": 5.8,
-          "percentageTokens": 7.93,
+          "duplicatedLines": 364,
+          "duplicatedTokens": 5499,
+          "percentage": 5.83,
+          "percentageTokens": 7.95,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3360,10 +3360,10 @@
       "tokens": 250339,
       "sources": 266,
       "clones": 127,
-      "duplicatedLines": 1690,
-      "duplicatedTokens": 15055,
-      "percentage": 5.3,
-      "percentageTokens": 6.01,
+      "duplicatedLines": 1692,
+      "duplicatedTokens": 15066,
+      "percentage": 5.31,
+      "percentageTokens": 6.02,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5999,37 +5999,37 @@
     },
     {
       "format": "cpp",
-      "lines": 11,
-      "fragment": "ig.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_REGULAR_GRID;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::p",
+      "lines": 13,
+      "fragment": "ig.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_REGULAR_GRID;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n\n    assertVectorsEqual(config",
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
         "start": 113,
-        "end": 123,
+        "end": 125,
         "startLoc": {
           "line": 113,
           "column": 17,
           "position": 7255
         },
         "endLoc": {
-          "line": 123,
-          "column": 3,
-          "position": 7458
+          "line": 125,
+          "column": 37,
+          "position": 7469
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/ShaderTestEngine.cpp",
         "start": 42,
-        "end": 104,
+        "end": 106,
         "startLoc": {
           "line": 42,
           "column": 8,
           "position": 352
         },
         "endLoc": {
-          "line": 104,
-          "column": 3,
-          "position": 7177
+          "line": 106,
+          "column": 31,
+          "position": 7188
         }
       }
     },
