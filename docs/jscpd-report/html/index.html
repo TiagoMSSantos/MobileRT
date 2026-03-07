@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-03-05T08:46:07.160Z",
+    "detectionDate": "2026-03-07T14:26:42.046Z",
     "formats": {
       "java": {
         "sources": {
@@ -1243,10 +1243,10 @@
             "tokens": 1611,
             "sources": 1,
             "clones": 13,
-            "duplicatedLines": 130,
-            "duplicatedTokens": 2641,
-            "percentage": 111.11,
-            "percentageTokens": 163.94,
+            "duplicatedLines": 132,
+            "duplicatedTokens": 2657,
+            "percentage": 112.82,
+            "percentageTokens": 164.93,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1263,14 +1263,14 @@
             "newClones": 0
           },
           "app/Unit_Testing/engine/AcceleratorTestEngine.cpp": {
-            "lines": 78,
-            "tokens": 1067,
+            "lines": 124,
+            "tokens": 4723,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 55,
-            "duplicatedTokens": 882,
-            "percentage": 70.51,
-            "percentageTokens": 82.66,
+            "duplicatedLines": 57,
+            "duplicatedTokens": 898,
+            "percentage": 45.97,
+            "percentageTokens": 19.01,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1779,8 +1779,8 @@
             "newClones": 0
           },
           "app/MobileRT/Renderer.cpp": {
-            "lines": 198,
-            "tokens": 2007,
+            "lines": 199,
+            "tokens": 2010,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1876,14 +1876,14 @@
           }
         },
         "total": {
-          "lines": 6179,
-          "tokens": 62461,
+          "lines": 6226,
+          "tokens": 66120,
           "sources": 59,
           "clones": 37,
-          "duplicatedLines": 367,
-          "duplicatedTokens": 5536,
-          "percentage": 5.94,
-          "percentageTokens": 8.86,
+          "duplicatedLines": 369,
+          "duplicatedTokens": 5552,
+          "percentage": 5.93,
+          "percentageTokens": 8.4,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2695,8 +2695,8 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.hpp": {
-            "lines": 444,
-            "tokens": 2699,
+            "lines": 461,
+            "tokens": 2817,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3224,8 +3224,8 @@
           }
         },
         "total": {
-          "lines": 3494,
-          "tokens": 25930,
+          "lines": 3511,
+          "tokens": 26048,
           "sources": 47,
           "clones": 3,
           "duplicatedLines": 29,
@@ -3358,14 +3358,14 @@
       }
     },
     "total": {
-      "lines": 31779,
-      "tokens": 243396,
+      "lines": 31843,
+      "tokens": 247173,
       "sources": 266,
       "clones": 126,
-      "duplicatedLines": 1679,
-      "duplicatedTokens": 15011,
+      "duplicatedLines": 1681,
+      "duplicatedTokens": 15027,
       "percentage": 5.28,
-      "percentageTokens": 6.17,
+      "percentageTokens": 6.08,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5966,108 +5966,108 @@
     {
       "format": "cpp",
       "lines": 11,
-      "fragment": "   config.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_NAIVE;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placehol",
+      "fragment": "   config.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_NAIVE;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::b",
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
-        "start": 39,
-        "end": 49,
+        "start": 79,
+        "end": 89,
         "startLoc": {
-          "line": 39,
+          "line": 79,
           "column": 10,
-          "position": 340
+          "position": 3948
         },
         "endLoc": {
-          "line": 49,
-          "column": 31,
-          "position": 538
+          "line": 89,
+          "column": 19,
+          "position": 4141
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/ShaderTestEngine.cpp",
         "start": 42,
-        "end": 48,
+        "end": 45,
         "startLoc": {
           "line": 42,
           "column": 8,
           "position": 352
         },
         "endLoc": {
-          "line": 48,
-          "column": 42,
-          "position": 537
+          "line": 45,
+          "column": 9,
+          "position": 458
         }
       }
     },
     {
       "format": "cpp",
       "lines": 11,
-      "fragment": "ig.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_REGULAR_GRID;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::",
+      "fragment": "ig.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_REGULAR_GRID;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::p",
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
-        "start": 56,
-        "end": 66,
+        "start": 98,
+        "end": 108,
         "startLoc": {
-          "line": 56,
+          "line": 98,
           "column": 17,
-          "position": 605
+          "position": 4229
         },
         "endLoc": {
-          "line": 66,
-          "column": 37,
-          "position": 803
+          "line": 108,
+          "column": 3,
+          "position": 4432
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/ShaderTestEngine.cpp",
         "start": 42,
-        "end": 48,
+        "end": 89,
         "startLoc": {
           "line": 42,
           "column": 8,
           "position": 352
         },
         "endLoc": {
-          "line": 48,
-          "column": 42,
-          "position": 537
+          "line": 89,
+          "column": 3,
+          "position": 4151
         }
       }
     },
     {
       "format": "cpp",
-      "lines": 14,
-      "fragment": "estEngine, testRenderSceneWithBVH) {\n    ::MobileRT::checkSystemError(\"testRenderSceneWithBVH start\");\n    config.sceneIndex = -1; // OBJ\n    config.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeh",
+      "lines": 16,
+      "fragment": "estEngine, testRenderSceneWithBVH) {\n    ::MobileRT::checkSystemError(\"testRenderSceneWithBVH start\");\n    config.sceneIndex = -1; // OBJ\n    config.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n\n    assertVectorsEqua",
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
-        "start": 70,
-        "end": 83,
+        "start": 114,
+        "end": 129,
         "startLoc": {
-          "line": 70,
+          "line": 114,
           "column": 31,
-          "position": 827
+          "position": 4467
         },
         "endLoc": {
-          "line": 83,
+          "line": 129,
           "column": 29,
-          "position": 1068
+          "position": 4724
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/ShaderTestEngine.cpp",
         "start": 56,
-        "end": 48,
+        "end": 91,
         "startLoc": {
           "line": 56,
           "column": 35,
           "position": 574
         },
         "endLoc": {
-          "line": 48,
-          "column": 42,
-          "position": 537
+          "line": 91,
+          "column": 31,
+          "position": 4162
         }
       }
     },
