@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-03-07T15:44:09.100Z",
+    "detectionDate": "2026-03-07T16:12:43.446Z",
     "formats": {
       "java": {
         "sources": {
@@ -2695,14 +2695,14 @@
             "newClones": 0
           },
           "app/MobileRT/Utils/Utils.hpp": {
-            "lines": 461,
-            "tokens": 2817,
+            "lines": 478,
+            "tokens": 2937,
             "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
+            "clones": 2,
+            "duplicatedLines": 32,
+            "duplicatedTokens": 184,
+            "percentage": 6.69,
+            "percentageTokens": 6.26,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -3224,14 +3224,14 @@
           }
         },
         "total": {
-          "lines": 3511,
-          "tokens": 26048,
+          "lines": 3528,
+          "tokens": 26168,
           "sources": 47,
-          "clones": 3,
-          "duplicatedLines": 29,
-          "duplicatedTokens": 314,
-          "percentage": 0.83,
-          "percentageTokens": 1.21,
+          "clones": 4,
+          "duplicatedLines": 45,
+          "duplicatedTokens": 406,
+          "percentage": 1.28,
+          "percentageTokens": 1.55,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3358,14 +3358,14 @@
       }
     },
     "total": {
-      "lines": 31847,
-      "tokens": 247261,
+      "lines": 31864,
+      "tokens": 247381,
       "sources": 266,
-      "clones": 126,
-      "duplicatedLines": 1681,
-      "duplicatedTokens": 15027,
-      "percentage": 5.28,
-      "percentageTokens": 6.08,
+      "clones": 127,
+      "duplicatedLines": 1697,
+      "duplicatedTokens": 15119,
+      "percentage": 5.33,
+      "percentageTokens": 6.11,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6068,6 +6068,42 @@
           "line": 95,
           "column": 31,
           "position": 4250
+        }
+      }
+    },
+    {
+      "format": "cpp-header",
+      "lines": 17,
+      "fragment": "ter into the ostringstream.\n     *\n     * @tparam Type The type of the argument.\n     * @param oss The ostringstream to add the parameters.\n     * @param parameter The parameter to add in the ostringstream.\n     */\n    template<typename Type>\n    void addToStringStream(::std::ostringstream *const oss, const ::std::unique_ptr<Type>& parameter) {\n        const Type& parameterConst {*parameter};\n        addToStringStream(oss, parameterConst);\n    }\n\n    /**\n     * Helper method which adds a parameter into the ostringstream.\n     *\n     * @tparam Size The size of the argument arrayValues.\n     * @param oss The ostringstream to add the para",
+      "tokens": 0,
+      "firstFile": {
+        "name": "app/MobileRT/Utils/Utils.hpp",
+        "start": 250,
+        "end": 266,
+        "startLoc": {
+          "line": 250,
+          "column": 2,
+          "position": 1374
+        },
+        "endLoc": {
+          "line": 266,
+          "column": 8,
+          "position": 1466
+        }
+      },
+      "secondFile": {
+        "name": "app/MobileRT/Utils/Utils.hpp",
+        "start": 233,
+        "end": 248,
+        "startLoc": {
+          "line": 233,
+          "column": 2,
+          "position": 1256
+        },
+        "endLoc": {
+          "line": 248,
+          "column": 8,
+          "position": 1348
         }
       }
     },

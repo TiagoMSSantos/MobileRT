@@ -242,6 +242,23 @@ namespace MobileRT {
      * @param size The size of the array.
      */
     template<typename Size>
+    void addToStringStream(::std::ostringstream *const oss, const ::std::int32_t *const arrayValues, const Size size) {
+        for (Size i {}; i < size; ++i) {
+            const ::std::int32_t& parameterConst {arrayValues[i]};
+            addToStringStream(oss, parameterConst);
+            addToStringStream(oss, ", ");
+        }
+    }
+
+    /**
+     * Helper method which adds a parameter into the ostringstream.
+     *
+     * @tparam Size The size of the argument arrayValues.
+     * @param oss The ostringstream to add the parameters.
+     * @param arrayValues The parameter, which is an array to add in the ostringstream.
+     * @param size The size of the array.
+     */
+    template<typename Size>
     void addToStringStream(::std::ostringstream *const oss, ::std::int32_t *const arrayValues, const Size size) {
         for (Size i {}; i < size; ++i) {
             const ::std::int32_t& parameterConst {arrayValues[i]};
