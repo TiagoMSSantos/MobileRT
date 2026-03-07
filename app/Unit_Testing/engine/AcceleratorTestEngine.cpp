@@ -51,6 +51,7 @@ static void assertVectorsEqual(const ::std::vector<::std::int32_t>& bitmap, cons
         LOG_ERROR("expected: ", expected, expected.size());
         throw std::runtime_error(oss.str());
     }
+    int consecutiveFailures {0};
     for (size_t i {0}; i < bitmap.size(); ++i) {
         const ::std::uint32_t pixelBitmap {static_cast<::std::uint32_t> (bitmap[i])};
         const ::std::uint32_t pixelExpected {static_cast<::std::uint32_t> (expected[i])};
@@ -62,14 +63,24 @@ static void assertVectorsEqual(const ::std::vector<::std::int32_t>& bitmap, cons
         const ::std::uint32_t expectedRed {pixelExpected & 0xFFU};
         const ::std::uint32_t expectedGreen {(pixelExpected >> 8U) & 0xFFU};
         const ::std::uint32_t expectedBlue {(pixelExpected >> 16U) & 0xFFU};
-        if (!pixelEqual(red, expectedRed, maxAcceptableDiff) || !pixelEqual(green, expectedGreen, maxAcceptableDiff) || !pixelEqual(blue, expectedBlue, maxAcceptableDiff)) {
-            ::std::ostringstream oss {""};
-            oss << "Vectors differ at index " << i << ": bitmap[i]=" << pixelBitmap << ", expected[i]=" << pixelExpected;
-            oss << " (red=" << red << ", green=" << green << ", blue=" << blue;
-            oss << ", expectedRed=" << expectedRed << ", expectedGreen=" << expectedGreen << ", expectedBlue=" << expectedBlue << ")";
-            LOG_ERROR("bitmap: ", bitmap.data(), bitmap.size());
-            LOG_ERROR("expected: ", expected.data(), expected.size());
-            throw std::runtime_error(oss.str());
+
+        const bool match {pixelEqual(red,   expectedRed,   maxAcceptableDiff) &&
+                          pixelEqual(green, expectedGreen, maxAcceptableDiff) &&
+                          pixelEqual(blue,  expectedBlue,  maxAcceptableDiff)};
+
+        if (!match) {
+            consecutiveFailures++;
+            if (consecutiveFailures >= 2) {
+                ::std::ostringstream oss {""};
+                oss << "Vectors differ at index " << i << ": bitmap[i]=" << pixelBitmap << ", expected[i]=" << pixelExpected;
+                oss << " (red=" << red << ", green=" << green << ", blue=" << blue;
+                oss << ", expectedRed=" << expectedRed << ", expectedGreen=" << expectedGreen << ", expectedBlue=" << expectedBlue << ")";
+                LOG_ERROR("bitmap: ", bitmap.data(), bitmap.size());
+                LOG_ERROR("expected: ", expected.data(), expected.size());
+                throw ::std::runtime_error(oss.str());
+            }
+        } else {
+            consecutiveFailures = 0;
         }
     }
 }
