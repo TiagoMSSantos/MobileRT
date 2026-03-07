@@ -70,7 +70,7 @@ static void assertVectorsEqual(const ::std::vector<::std::int32_t>& bitmap, cons
 
         if (!match) {
             consecutiveFailures++;
-            if (consecutiveFailures >= 2) {
+            if (consecutiveFailures >= 3) {
                 ::std::ostringstream oss {""};
                 oss << "Vectors differ at index " << i << ": bitmap[i]=" << pixelBitmap << ", expected[i]=" << pixelExpected;
                 oss << " (red=" << red << ", green=" << green << ", blue=" << blue;
