@@ -540,14 +540,14 @@ runUnitTests() {
   files=$(ls "${dirUnitTests}");
   echo "Copy unit tests bin: ${files}/bin";
   echo "Copy unit tests libs: ${files}/lib";
-  readelf -h "${dirUnitTests}"/bin/UnitTests;
+  elfHeader=$(readelf -h "${dirUnitTests}"/bin/UnitTests 2>&1);
+  echo "Binary header: ${elfHeader}";
 
   unlockDevice;
 
   callCommandUntilSuccess 5 timeout 60 adb push -p "${dirUnitTests}"/bin/* ${internal_storage_path};
   callCommandUntilSuccess 5 timeout 60 adb push -p "${dirUnitTests}"/lib/* ${internal_storage_path};
 
-  echo 'Run unit tests';
   if [ "${type}" = 'debug' ]; then
     echo 'Enabling AddressSanitizer';
     timeout 60 adb shell setprop debug.asan.enabled true;
@@ -555,8 +555,23 @@ runUnitTests() {
   fi
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}/UnitTests";
   callAdbShellCommandUntilSuccess 'ls -laR '"${internal_storage_path}";
-  timeout 180 adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
-  timeout 60 adb pull "${internal_storage_path}"/unit_tests_result.log .;
+  echo 'Run unit tests';
+  if { [ "${androidApiDevice}" -ge 21 ]; }; then
+    echo 'Android device API >= 21 detected';
+    if echo "${elfHeader}" | grep -q -e 'EXEC (Executable file)'; then
+      echo 'Skipping unit tests because the generated unit tests binary does not support position-independent execution (PIE)';
+      # echo '0' > unit_tests_result.log;
+      timeout 180 adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
+      timeout 60 adb pull "${internal_storage_path}"/unit_tests_result.log .;
+    else
+      timeout 180 adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
+      timeout 60 adb pull "${internal_storage_path}"/unit_tests_result.log .;
+    fi
+  else
+    echo 'Android device API < 21 detected';
+    timeout 180 adb shell "LD_LIBRARY_PATH=${internal_storage_path} ${internal_storage_path}/UnitTests; echo "'$?'" > ${internal_storage_path}/unit_tests_result.log";
+    timeout 60 adb pull "${internal_storage_path}"/unit_tests_result.log .;
+  fi
   resUnitTests=$(cat "unit_tests_result.log");
   printCommandExitCode "${resUnitTests}" 'Unit tests';
 }

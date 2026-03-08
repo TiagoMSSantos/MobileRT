@@ -26,9 +26,12 @@ endif()
 message( STATUS "Setting up Unit Tests project." )
 project( UnitTests VERSION 1.0.0.0 LANGUAGES CXX )
 
-if( ANDROID_PLATFORM STREQUAL "android-15" OR ANDROID_PLATFORM STREQUAL "android-16")
+if( ANDROID_PLATFORM STREQUAL "android-15" )
   message( STATUS "Disabling PIE-style executable for Unit Tests, so it also works on Android API 15" )
   add_link_options( -no-pie )
+else()
+  message( STATUS "Enabling PIE-style executable for Unit Tests, so it works on Android API > 15" )
+  add_link_options( -pie )
 endif()
 
 message( STATUS "Adding unit tests source files." )

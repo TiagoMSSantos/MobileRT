@@ -1,11 +1,11 @@
 {
   "include":
   [
-    { "build_os": "ubuntu-24.04", "target_os": "ubuntu-24.04", "android_api": "15", "android_api_device": "15", "type": "release" },
-    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-22.04", "android_api": "16", "android_api_device": "16", "type": "release" },
-    { "build_os": "ubuntu-24.04", "target_os": "ubuntu-24.04", "android_api": "19", "android_api_device": "19", "type": "release" },
-    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-22.04", "android_api": "21", "android_api_device": "21", "type": "debug" },
-    { "build_os": "ubuntu-24.04", "target_os": "ubuntu-24.04", "android_api": "36", "android_api_device": "36", "type": "release" },
-    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-22.04", "android_api": "14", "android_api_device": "XY", "type": "release" }
+    { "build_os": "ubuntu-24.04", "target_os": "ubuntu-24.04", "android_api": "14", "android_api_device": "15", "type": "release" },
+    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-22.04", "android_api": "14", "android_api_device": "16", "type": "release" },
+    { "build_os": "ubuntu-24.04", "target_os": "ubuntu-24.04", "android_api": "14", "android_api_device": "19", "type": "release" },
+    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-22.04", "android_api": "14", "android_api_device": "21", "type": "debug" },
+    { "build_os": "ubuntu-24.04", "target_os": "ubuntu-24.04", "android_api": "14", "android_api_device": "36", "type": "release" },
+    { "build_os": "ubuntu-22.04", "target_os": "ubuntu-22.04", "android_api": "14", "android_api_device": "27", "type": "release" }
   ]
 }

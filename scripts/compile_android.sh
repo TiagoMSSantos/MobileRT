@@ -127,6 +127,22 @@ build() {
 ###############################################################################
 ###############################################################################
 
+validateUnitTestsBinaries() {
+  unitTestsBinaries=$(find . -name "UnitTests");
+  echo "Unit tests binaries: ${unitTestsBinaries}";
+  for unitTestsBinary in ${unitTestsBinaries}; do
+    echo "Unit tests binary: ${unitTestsBinary}";
+    unitTestsElfHeader=$(readelf -h "${unitTestsBinary}" 2>&1);
+    echo "Unit Tests binary header: ${unitTestsElfHeader}";
+    if echo "${unitTestsElfHeader}" | grep -q -e 'EXEC (Executable file)'; then
+      echo 'Unit Tests binary does not support position-independent execution (PIE)';
+      exit 1;
+    else
+      echo 'Unit Tests binary supports position-independent execution (PIE)';
+    fi
+  done
+}
+
 # Install C++ Conan dependencies.
 install_conan_dependencies() {
   conan install \
@@ -157,6 +173,7 @@ createReportsFolders;
 build;
 validateNativeLibCompiled;
 # checkLastModifiedFiles;
+validateUnitTestsBinaries;
 
 echo 'Searching for generated APK';
 find . -iname "*.apk" | grep -i "output";

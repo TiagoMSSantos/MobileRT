@@ -272,7 +272,7 @@ android {
         }
         externalNativeBuild {
             cmake {
-                arguments '-DCMAKE_VERBOSE_MAKEFILE=ON'
+                arguments "-DCMAKE_VERBOSE_MAKEFILE=ON -DANDROID_PLATFORM=android-${androidApiVersionValue}"
             }
         }
         javaCompileOptions {
