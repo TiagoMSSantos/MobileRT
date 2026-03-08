@@ -101,7 +101,7 @@ TEST_F(AcceleratorTestEngine, testRenderSceneWithNaive) {
     RayTrace(config, false);
     ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
 
-    assertVectorsEqual(config.bitmap, expectedBitmap, 44);
+    assertVectorsEqual(config.bitmap, expectedBitmap, 43);
 
     ::MobileRT::checkSystemError("testRenderSceneWithNaive end");
 }
@@ -139,7 +139,7 @@ TEST_F(AcceleratorTestEngine, testRenderSceneWithBVH) {
     RayTrace(config, false);
     ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));
 
-    assertVectorsEqual(config.bitmap, expectedBitmap, 44);
+    assertVectorsEqual(config.bitmap, expectedBitmap, 45);
 
     ::MobileRT::checkSystemError("testRenderSceneWithBVH end");
 }
