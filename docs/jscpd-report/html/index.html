@@ -2,7 +2,7 @@
                        // <!--
                        window.initialData = {
   "statistics": {
-    "detectionDate": "2026-03-07T19:58:11.579Z",
+    "detectionDate": "2026-03-09T18:46:34.931Z",
     "formats": {
       "java": {
         "sources": {
@@ -1243,10 +1243,10 @@
             "tokens": 1611,
             "sources": 1,
             "clones": 13,
-            "duplicatedLines": 134,
-            "duplicatedTokens": 2668,
-            "percentage": 114.53,
-            "percentageTokens": 165.61,
+            "duplicatedLines": 130,
+            "duplicatedTokens": 2646,
+            "percentage": 111.11,
+            "percentageTokens": 164.25,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1267,10 +1267,10 @@
             "tokens": 7749,
             "sources": 1,
             "clones": 4,
-            "duplicatedLines": 52,
-            "duplicatedTokens": 845,
-            "percentage": 37.41,
-            "percentageTokens": 10.9,
+            "duplicatedLines": 48,
+            "duplicatedTokens": 823,
+            "percentage": 34.53,
+            "percentageTokens": 10.62,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -1880,10 +1880,10 @@
           "tokens": 69166,
           "sources": 59,
           "clones": 37,
-          "duplicatedLines": 364,
-          "duplicatedTokens": 5499,
-          "percentage": 5.83,
-          "percentageTokens": 7.95,
+          "duplicatedLines": 360,
+          "duplicatedTokens": 5477,
+          "percentage": 5.77,
+          "percentageTokens": 7.92,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -2267,8 +2267,8 @@
             "newClones": 0
           },
           "scripts/run_tests_android.sh": {
-            "lines": 809,
-            "tokens": 6189,
+            "lines": 822,
+            "tokens": 6325,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -2375,14 +2375,14 @@
             "newClones": 0
           },
           "scripts/compile_android.sh": {
-            "lines": 170,
-            "tokens": 903,
+            "lines": 192,
+            "tokens": 1075,
             "sources": 1,
             "clones": 2,
             "duplicatedLines": 65,
             "duplicatedTokens": 209,
-            "percentage": 38.24,
-            "percentageTokens": 23.15,
+            "percentage": 33.85,
+            "percentageTokens": 19.44,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -2400,14 +2400,14 @@
           }
         },
         "total": {
-          "lines": 5343,
-          "tokens": 35417,
+          "lines": 5378,
+          "tokens": 35725,
           "sources": 15,
           "clones": 15,
           "duplicatedLines": 384,
           "duplicatedTokens": 1743,
-          "percentage": 7.19,
-          "percentageTokens": 4.92,
+          "percentage": 7.14,
+          "percentageTokens": 4.88,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3263,8 +3263,8 @@
             "newClones": 0
           },
           "gradle.properties": {
-            "lines": 88,
-            "tokens": 213,
+            "lines": 90,
+            "tokens": 219,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3276,8 +3276,8 @@
           }
         },
         "total": {
-          "lines": 129,
-          "tokens": 337,
+          "lines": 131,
+          "tokens": 343,
           "sources": 3,
           "clones": 0,
           "duplicatedLines": 0,
@@ -3358,14 +3358,14 @@
       }
     },
     "total": {
-      "lines": 31879,
-      "tokens": 250339,
+      "lines": 31916,
+      "tokens": 250653,
       "sources": 266,
       "clones": 127,
-      "duplicatedLines": 1692,
-      "duplicatedTokens": 15066,
-      "percentage": 5.31,
-      "percentageTokens": 6.02,
+      "duplicatedLines": 1688,
+      "duplicatedTokens": 15044,
+      "percentage": 5.29,
+      "percentageTokens": 6,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -6001,73 +6001,73 @@
     },
     {
       "format": "cpp",
-      "lines": 13,
-      "fragment": "ig.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_REGULAR_GRID;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n\n    assertVectorsEqual(config",
+      "lines": 11,
+      "fragment": "ig.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_REGULAR_GRID;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::p",
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
         "start": 113,
-        "end": 125,
+        "end": 123,
         "startLoc": {
           "line": 113,
           "column": 17,
           "position": 7255
         },
         "endLoc": {
-          "line": 125,
-          "column": 37,
-          "position": 7469
+          "line": 123,
+          "column": 3,
+          "position": 7458
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/ShaderTestEngine.cpp",
         "start": 42,
-        "end": 106,
+        "end": 104,
         "startLoc": {
           "line": 42,
           "column": 8,
           "position": 352
         },
         "endLoc": {
-          "line": 106,
-          "column": 31,
-          "position": 7188
+          "line": 104,
+          "column": 3,
+          "position": 7177
         }
       }
     },
     {
       "format": "cpp",
-      "lines": 16,
-      "fragment": "estEngine, testRenderSceneWithBVH) {\n    ::MobileRT::checkSystemError(\"testRenderSceneWithBVH start\");\n    config.sceneIndex = -1; // OBJ\n    config.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n\n    assertVectorsEqua",
+      "lines": 14,
+      "fragment": "estEngine, testRenderSceneWithBVH) {\n    ::MobileRT::checkSystemError(\"testRenderSceneWithBVH start\");\n    config.sceneIndex = -1; // OBJ\n    config.shader = 1; // Whitted\n    config.accelerator = ::MobileRT::Shader::Accelerator::ACC_BVH;\n\n    config.objFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.obj\"};\n    config.mtlFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.mtl\"};\n    config.camFilePath = ::std::string {\"./app/src/androidTest/resources/CornellBox/CornellBox-Water.cam\"};\n\n    ASSERT_TRUE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::placeholders::_1, config.bitmap.front())));\n    RayTrace(config, false);\n    ASSERT_FALSE(::std::all_of(config.bitmap.begin()+1, config.bitmap.end(), ::std::bind(std::equal_to<int>(), ::std::p",
       "tokens": 0,
       "firstFile": {
         "name": "app/Unit_Testing/engine/AcceleratorTestEngine.cpp",
         "start": 129,
-        "end": 144,
+        "end": 142,
         "startLoc": {
           "line": 129,
           "column": 31,
           "position": 7493
         },
         "endLoc": {
-          "line": 144,
-          "column": 29,
-          "position": 7750
+          "line": 142,
+          "column": 3,
+          "position": 7739
         }
       },
       "secondFile": {
         "name": "app/Unit_Testing/engine/ShaderTestEngine.cpp",
         "start": 56,
-        "end": 106,
+        "end": 104,
         "startLoc": {
           "line": 56,
           "column": 35,
           "position": 574
         },
         "endLoc": {
-          "line": 106,
-          "column": 31,
-          "position": 7188
+          "line": 104,
+          "column": 3,
+          "position": 7177
         }
       }
     },
