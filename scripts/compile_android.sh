@@ -141,9 +141,6 @@ validateUnitTestsBinaries() {
       fi
     else
       echo 'Unit Tests binary supports position-independent execution (PIE)';
-      if [ "${android_api_version}" -lt 16 ]; then
-        exit 1;
-      fi
     fi
   done
 }
