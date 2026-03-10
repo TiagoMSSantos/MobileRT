@@ -126,9 +126,9 @@ void BVH<T>::buildBVHParallel(::std::vector<T> &&primitives) {
         size_t end = (i == numThreads - 1) ? primitives.size() : begin + chunkSize;
 
         futures.emplace_back(::std::async(::std::launch::async,
-        [this, &buildNodeChunks, i, begin, end, &primitives] { // Capture `this` correctly
-            buildNodeThreadSafe(buildNodeChunks[i], ::std::vector<T>(primitives.begin() + begin, primitives.begin() + end));
-        }));
+            [this, &buildNodeChunks, i, begin, end, &primitives] {
+                buildNodeThreadSafe(buildNodeChunks[i], ::std::vector<T>(primitives.begin() + begin, primitives.begin() + end));
+            }));
     }
 
     // Wait for all threads to finish
@@ -157,7 +157,6 @@ void BVH<T>::build(::std::vector<T> &&primitives) {
 
 template<typename T>
 Intersection BVH<T>::trace(Intersection intersection) {
-    // Implementation of tracing logic
     for (const auto& node : boxes_) {
         const ::MobileRT::Ray& ray = intersection.ray_; // Assuming ray_ is directly accessible
         if (node.box_.intersect(ray)) { // Use the ray to check intersection
@@ -167,7 +166,11 @@ Intersection BVH<T>::trace(Intersection intersection) {
                 if constexpr (requires { primitive.intersect(ray); }) { // Ensure intersect method exists in the primitive class
                     if (primitive.intersect(ray)) { // Validate if intersect is callable
                         // Update intersection information if intersection occurs
-                        // Note: Actual update logic needs to be implemented based on your application logic
+                        // This is where you will implement your intersection logic.
+                        // Example:
+                        if (primitive.getIntersection(ray, intersection)) {
+                            // Possibly update intersection properties here.
+                        }
                     }
                 }
             }
@@ -178,10 +181,9 @@ Intersection BVH<T>::trace(Intersection intersection) {
 
 template<typename T>
 Intersection BVH<T>::shadowTrace(Intersection intersection) {
-    // Implementation of shadow tracing logic
     for (const auto& node : boxes_) {
         const ::MobileRT::Ray& ray = intersection.ray_; // Assuming similar access for shadow rays
-        if (node.box_.intersect(ray)) { // Use the ray to check intersection
+        if (node.box_.intersect(ray)) {
             // Logic to check for shadows against primitives
             for (::std::int32_t i = node.indexOffset_; i < node.indexOffset_ + node.numPrimitives_; ++i) {
                 const T& primitive = primitives_[i]; // Corrected to use []
