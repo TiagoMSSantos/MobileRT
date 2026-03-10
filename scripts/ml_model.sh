@@ -257,7 +257,6 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
   # shellcheck disable=SC2181
   if [ "${RESULT}" -eq 0 ]; then
     echo 'Compiled MobileRT successfully!';
-    break;
   else
     aiModelContext="Finish implementation of file ${aiModelFile} and fix the error occurred. Always use ::std:: instead of std:: for stdlib functions. $(grep -ine 'error:' -C10 compiled.log)";
     echo "Failed to compile MobileRT with AI Model [$(ls -lahp compiled.log)] response: '${RESULT}'. Replacing context with current error: $(grep -ine 'error:' -C0 compiled.log)";
@@ -266,6 +265,24 @@ for ((BATCH_INDEX=1; BATCH_INDEX<MAX_REQUESTS; BATCH_INDEX++)); do
     # tail -n 20 compiled.log;
     # echo 'error compiled.log:';
     # grep -ine 'error:' -C10 compiled.log;
+    continue;
+  fi
+
+  set +e;
+  unitTestsExe=$(find build_release -type f -name "UnitTests*" | head -1);
+  ${unitTestsExe} --gtest_filter=*Engine* > unit_tests.log 2>&1;
+  RESULT="${?}";
+  set -e;
+
+  # shellcheck disable=SC2181
+  if [ "${RESULT}" -eq 0 ]; then
+    echo 'MobileRT unit tests finished successfully!';
+    break;
+  else
+    aiModelContext="Finish implementation of file ${aiModelFile} and fix the error occurred on the unit tests without changing anything on the tests! Always use ::std:: instead of std:: for stdlib functions. $(grep -ine 'failed' -C10 unit_tests.log)";
+    echo "Failed to execute MobileRT unit tests with AI Model [$(ls -lahp unit_tests.log)] response: '${RESULT}'. Replacing context with current error: $(grep -ine 'failed' -C0 unit_tests.log)";
+    echo "Content of file '${aiModelFile}': $(cat "${aiModelFile}")";
+    continue;
   fi
 done
 
