@@ -247,7 +247,7 @@ jobs:
         ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       with:
         # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-        action: ReactiveCircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2
+        action: ReactiveCircus/android-emulator-runner@5d6e86df22ab11632167a1a6b0c9ab0dc3469586 # v2
         pre_retry_command: 'echo "Retrying Run Android tests step..."'
         attempt_limit: 3
         attempt_delay: 30000
