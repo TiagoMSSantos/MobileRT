@@ -1,6 +1,6 @@
 {
   "name": "Universal Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/universal:5.1.4",
+  "image": "mcr.microsoft.com/devcontainers/universal:5.1.5",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2.5.7": {},
     "ghcr.io/devcontainers/features/git:1.3.5": {},
