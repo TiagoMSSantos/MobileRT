@@ -11,6 +11,8 @@
 #include <glm/glm.hpp>
 #include <random>
 #include <vector>
+#include <thread>
+#include <future>
 
 namespace MobileRT {
 
@@ -183,11 +185,32 @@ namespace MobileRT {
 
         // Auxiliary structure used to sort all the AABBs by the position of the centroid.
         ::std::vector<BuildNode> buildNodes {};
-        buildNodes.reserve(static_cast<long unsigned> (primitivesSize));
-        for (::std::uint32_t i {}; i < primitivesSize; ++i) {
-            const T &primitive {primitives [i]};
-            AABB &&box {primitive.getAABB()};
-            buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t> (i));
+        buildNodes.resize(static_cast<::std::size_t> (primitivesSize));
+
+        const unsigned int hwThreads = ::std::max(1u, ::std::thread::hardware_concurrency());
+        const ::std::size_t numThreads = static_cast<::std::size_t>(::std::min<unsigned int>(hwThreads, static_cast<unsigned int>(primitivesSize)));
+        const ::std::size_t chunk = (static_cast<::std::size_t>(primitivesSize) + numThreads - 1) / numThreads;
+
+        ::std::vector<::std::future<void>> futures {};
+        futures.reserve(numThreads);
+        for (::std::size_t t {0}; t < numThreads; ++t) {
+            const ::std::size_t start = t * chunk;
+            const ::std::size_t end = ::std::min(start + chunk, static_cast<::std::size_t>(primitivesSize));
+            if (start >= end) break;
+
+            futures.emplace_back(::std::async(::std::launch::async,
+                [start, end, &primitives, &buildNodes]() {
+                    for (::std::size_t i = start; i < end; ++i) {
+                        const T &primitive = primitives[static_cast<::std::uint32_t>(i)];
+                        AABB box = primitive.getAABB();
+                        buildNodes[static_cast<::std::uint32_t>(i)] = BuildNode(::std::move(box), static_cast<::std::int32_t>(i));
+                    }
+                }
+            ));
+        }
+
+        for (auto &f : futures) {
+            f.get();
         }
 
         do {
@@ -229,12 +252,41 @@ namespace MobileRT {
 
 
             itCurrentBox->box_ = itBegin->box_;
-            ::std::vector<AABB> boxes {itCurrentBox->box_};
-            boxes.reserve(static_cast<::std::uint32_t> (boxPrimitivesSize));
-            for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
-                const AABB newBox {buildNodes[static_cast<::std::uint32_t> (i)].box_};
-                itCurrentBox->box_ = ::MobileRT::surroundingBox(newBox, itCurrentBox->box_);
-                boxes.emplace_back(newBox);
+            ::std::vector<AABB> boxes;
+            boxes.resize(static_cast<::std::size_t>(boxPrimitivesSize));
+            boxes[0] = itBegin->box_;
+
+            if (boxPrimitivesSize > 1) {
+                const ::std::size_t boxesCount = static_cast<::std::size_t>(boxPrimitivesSize);
+                const unsigned int hwThreadsLocal = ::std::max(1u, ::std::thread::hardware_concurrency());
+                const ::std::size_t numThreadsLocal = static_cast<::std::size_t>(::std::min<unsigned int>(hwThreadsLocal, static_cast<unsigned int>(boxesCount - 1)));
+                const ::std::size_t chunkLocal = (boxesCount - 1 + numThreadsLocal - 1) / numThreadsLocal;
+
+                ::std::vector<::std::future<void>> boxFuturesLocal;
+                boxFuturesLocal.reserve(numThreadsLocal);
+                for (::std::size_t t {0}; t < numThreadsLocal; ++t) {
+                    const ::std::size_t startK = 1 + t * chunkLocal;
+                    const ::std::size_t endK = ::std::min(1 + (t + 1) * chunkLocal, boxesCount);
+                    if (startK >= endK) break;
+
+                    boxFuturesLocal.emplace_back(::std::async(::std::launch::async,
+                        [startK, endK, beginBoxIndex, &buildNodes, &boxes]() {
+                            for (::std::size_t k = startK; k < endK; ++k) {
+                                const ::std::size_t srcIndex = static_cast<::std::size_t>(beginBoxIndex) + k;
+                                boxes[k] = buildNodes[srcIndex].box_;
+                            }
+                        }
+                    ));
+                }
+                for (auto &f : boxFuturesLocal) f.get();
+
+                // combine into current box (serial, cheap compared to AABB constructions)
+                itCurrentBox->box_ = boxes[0];
+                for (::std::size_t k = 1; k < boxes.size(); ++k) {
+                    itCurrentBox->box_ = ::MobileRT::surroundingBox(boxes[k], itCurrentBox->box_);
+                }
+            } else {
+                itCurrentBox->box_ = boxes[0];
             }
 
             const int maxPrimitivesInBoxLeaf {4};
@@ -274,13 +326,34 @@ namespace MobileRT {
         this->boxes_.shrink_to_fit();
         ::std::vector<BVHNode> {this->boxes_}.swap(this->boxes_);
 
-        // Insert primitives with the proper order.
-        this->primitives_.reserve(static_cast<long unsigned> (primitivesSize));
-        for (::std::uint32_t i {}; i < primitivesSize; ++i) {
-            const BuildNode &node {buildNodes[i]};
-            const ::std::uint32_t oldIndex {static_cast<::std::uint32_t> (node.oldIndex_)};
-            this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
+        // Insert primitives with the proper order (parallel move into a temporary buffer, then swap).
+        ::std::vector<T> primitivesOut;
+        primitivesOut.resize(static_cast<::std::size_t>(primitivesSize));
+
+        const unsigned int hwThreadsOut = ::std::max(1u, ::std::thread::hardware_concurrency());
+        const ::std::size_t numThreadsOut = static_cast<::std::size_t>(::std::min<unsigned int>(hwThreadsOut, static_cast<unsigned int>(primitivesSize)));
+        const ::std::size_t chunkOut = (static_cast<::std::size_t>(primitivesSize) + numThreadsOut - 1) / numThreadsOut;
+
+        ::std::vector<::std::future<void>> moveFutures{};
+        moveFutures.reserve(numThreadsOut);
+        for (::std::size_t t {0}; t < numThreadsOut; ++t) {
+            const ::std::size_t start = t * chunkOut;
+            const ::std::size_t end = ::std::min(start + chunkOut, static_cast<::std::size_t>(primitivesSize));
+            if (start >= end) break;
+
+            moveFutures.emplace_back(::std::async(::std::launch::async,
+                [start, end, &primitives, &buildNodes, &primitivesOut]() {
+                    for (::std::size_t i = start; i < end; ++i) {
+                        const BuildNode &node = buildNodes[i];
+                        const ::std::uint32_t oldIndex = static_cast<::std::uint32_t>(node.oldIndex_);
+                        primitivesOut[i] = ::std::move(primitives[oldIndex]);
+                    }
+                }
+            ));
         }
+        for (auto &f : moveFutures) f.get();
+
+        ::std::vector<T> {primitivesOut}.swap(this->primitives_);
     }
 
     /**
