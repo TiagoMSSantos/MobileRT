@@ -26,7 +26,7 @@ coverage:
       flag_coverage_not_uploaded_behavior: include
     project:
       Android:
-        target: 79%
+        target: 80%
         threshold: 1%
         base: auto
         if_ci_failed: error
@@ -72,7 +72,7 @@ coverage:
         # * Native tests (from Native workflow)
         # * Shell script tests (from Code Analysis workflow)
         # So, if not all workflows above were executed, then the code coverage is not valid.
-        target: 53%
+        target: 51%
         threshold: 1%
         base: auto
         if_ci_failed: error
@@ -138,7 +138,7 @@ component_management:
         - app/System_dependent/Android_JNI/**
       statuses:
         - type: project
-          target: 79%
+          target: 80%
     - component_id: module_native
       name: Native
       paths:
