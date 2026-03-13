@@ -13,7 +13,6 @@ on:
     - '!.github/workflows/*.yml'
     - '!.github/workflows/codeql-matrix.json'
     - '!.github/codeql/codeql-config.yml'
-    - '!codecov.yml'
     - '!Gemfile'
     - '!scripts/install_dependencies.sh'
     - '!scripts/helper_functions.sh'
