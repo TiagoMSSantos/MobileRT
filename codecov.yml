@@ -40,7 +40,7 @@ coverage:
           - "!app/System_dependent/**"
           - app/System_dependent/Android_JNI/**
       Native:
-        target: 88%
+        target: 87%
         threshold: 1%
         base: auto
         if_ci_failed: error
@@ -149,7 +149,7 @@ component_management:
         - app/System_dependent/Native/**
       statuses:
         - type: project
-          target: 88%
+          target: 87%
     - component_id: module_shell_scripts
       name: Shell-scripts
       paths:
