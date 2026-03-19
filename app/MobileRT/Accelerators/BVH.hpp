@@ -7,9 +7,12 @@
 #include "MobileRT/Utils/Utils.hpp"
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <boost/sort/spreadsort/spreadsort.hpp>
+#include <future>
 #include <glm/glm.hpp>
 #include <random>
+#include <thread>
 #include <vector>
 
 namespace MobileRT {
@@ -87,6 +90,14 @@ namespace MobileRT {
 
             Intersection intersect(Intersection intersection);
 
+            void buildNodeRange(::std::vector<BuildNode> *buildNodes,
+                                ::std::atomic<::std::int32_t> *maxNodeIndex,
+                                ::std::atomic<::std::int32_t> *activeAsyncTasks,
+                                ::std::int32_t maxAsyncTasks,
+                                ::std::int32_t nodeIndex,
+                                ::std::int32_t beginBoxIndex,
+                                ::std::int32_t endBoxIndex);
+
             template<typename Iterator>
             ::std::int32_t getSplitIndexSah(Iterator itBegin, Iterator itEnd);
 
@@ -160,26 +171,7 @@ namespace MobileRT {
      */
     template<typename T>
     void BVH<T>::build(::std::vector<T> &&primitives) {
-        ::std::int32_t currentBoxIndex {};
-        ::std::int32_t beginBoxIndex {};
         const long long unsigned primitivesSize {primitives.size()};
-        ::std::int32_t endBoxIndex {static_cast<::std::int32_t> (primitivesSize)};
-        ::std::int32_t maxNodeIndex {};
-
-        ::std::array<::std::int32_t, StackSize> stackBoxIndex {};
-        ::std::array<::std::int32_t, StackSize> stackBoxBegin {};
-        ::std::array<::std::int32_t, StackSize> stackBoxEnd {};
-
-        ::std::array<::std::int32_t, StackSize>::iterator itStackBoxIndex {stackBoxIndex.begin()};
-        ::std::advance(itStackBoxIndex, 1);
-
-        ::std::array<::std::int32_t, StackSize>::iterator itStackBoxBegin {stackBoxBegin.begin()};
-        ::std::advance(itStackBoxBegin, 1);
-
-        ::std::array<::std::int32_t, StackSize>::iterator itStackBoxEnd {stackBoxEnd.begin()};
-        ::std::advance(itStackBoxEnd, 1);
-
-        const ::std::array<::std::int32_t, StackSize>::const_iterator itStackBoxIndexBegin {stackBoxIndex.cbegin()};
 
         // Auxiliary structure used to sort all the AABBs by the position of the centroid.
         ::std::vector<BuildNode> buildNodes {};
@@ -190,87 +182,23 @@ namespace MobileRT {
             buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t> (i));
         }
 
-        do {
-            const auto itCurrentBox {this->boxes_.begin() + currentBoxIndex};
-            const ::std::int32_t boxPrimitivesSize {endBoxIndex - beginBoxIndex};
-            const auto itBegin {buildNodes.begin() + beginBoxIndex};
+        ::std::atomic<::std::int32_t> maxNodeIndex {0};
 
-            const auto itEnd {buildNodes.begin() + endBoxIndex};
-            const AABB surroundingBox {getSurroundingBox(itBegin, itEnd)};
-            const ::glm::vec3 maxDist {surroundingBox.getPointMax() - surroundingBox.getPointMin()};
-            const int longestAxis {
-                maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
-                ? 0
-                : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
-                  ? 1
-                  : 2
-            };
+        const unsigned int hwThreads {::std::thread::hardware_concurrency()};
+        const ::std::int32_t maxAsyncTasks {static_cast<::std::int32_t>(hwThreads > 0u ? hwThreads : 4u)};
+        ::std::atomic<::std::int32_t> activeAsyncTasks {0};
 
-            // Use C++ partition to sort primitives by buckets where each bucket don't have primitives sorted inside.
-            // It is faster than using C++ standard sort or C++ Boost Radix sort.
-            const int numBuckets {10};
-            const ::glm::vec3 step {maxDist / static_cast<float> (numBuckets)};
-            const float stepAxis {step[longestAxis]};
-            const float startBox {surroundingBox.getPointMin()[longestAxis]};
-            const float bucket1MaxLimit {startBox + stepAxis};
-            typename ::std::vector<BuildNode>::iterator itBucket {::std::partition(itBegin, itEnd,
-                [&](const BuildNode &node) {
-                    return node.centroid_[longestAxis] < bucket1MaxLimit;
-                }
-            )};
-            for (::std::int32_t bucketIndex {2}; bucketIndex < numBuckets; ++bucketIndex) {
-                const float bucketMaxLimit {startBox + stepAxis * bucketIndex};
-                itBucket = ::std::partition(::std::move(itBucket), itEnd,
-                    [&](const BuildNode &node) {
-                        return node.centroid_[longestAxis] < bucketMaxLimit;
-                    }
-                );
-            }
+        buildNodeRange(&buildNodes,
+                       &maxNodeIndex,
+                       &activeAsyncTasks,
+                       maxAsyncTasks,
+                       0,
+                       0,
+                       static_cast<::std::int32_t>(primitivesSize));
 
-
-            itCurrentBox->box_ = itBegin->box_;
-            ::std::vector<AABB> boxes {itCurrentBox->box_};
-            boxes.reserve(static_cast<::std::uint32_t> (boxPrimitivesSize));
-            for (::std::int32_t i {beginBoxIndex + 1}; i < endBoxIndex; ++i) {
-                const AABB newBox {buildNodes[static_cast<::std::uint32_t> (i)].box_};
-                itCurrentBox->box_ = ::MobileRT::surroundingBox(newBox, itCurrentBox->box_);
-                boxes.emplace_back(newBox);
-            }
-
-            const int maxPrimitivesInBoxLeaf {4};
-            const bool isLeaf {boxPrimitivesSize <= maxPrimitivesInBoxLeaf};
-            if (isLeaf) {
-                itCurrentBox->indexOffset_ = beginBoxIndex;
-                itCurrentBox->numPrimitives_ = boxPrimitivesSize;
-
-                ::std::advance(itStackBoxIndex, -1); // pop
-                currentBoxIndex = *itStackBoxIndex;
-                ::std::advance(itStackBoxBegin, -1); // pop
-                beginBoxIndex = *itStackBoxBegin;
-                ::std::advance(itStackBoxEnd, -1); // pop
-                endBoxIndex = *itStackBoxEnd;
-            } else {
-                const ::std::int32_t left {maxNodeIndex + 1};
-                const ::std::int32_t right {left + 1};
-                const ::std::int32_t splitIndex {getSplitIndexSah(boxes.begin(), boxes.end())};
-
-                itCurrentBox->indexOffset_ = left;
-                maxNodeIndex = ::std::max(right, maxNodeIndex);
-
-                *itStackBoxIndex = right;
-                ::std::advance(itStackBoxIndex, 1); // push
-                *itStackBoxBegin = beginBoxIndex + splitIndex;
-                ::std::advance(itStackBoxBegin, 1); // push
-                *itStackBoxEnd = endBoxIndex;
-                ::std::advance(itStackBoxEnd, 1); // push
-
-                currentBoxIndex = left;
-                endBoxIndex = beginBoxIndex + splitIndex;
-            }
-        } while(itStackBoxIndex > itStackBoxIndexBegin);
-
-        LOG_INFO("maxNodeIndex = ", maxNodeIndex);
-        this->boxes_.erase (this->boxes_.begin() + maxNodeIndex + 1, this->boxes_.end());
+        const ::std::int32_t finalMaxNodeIndex {maxNodeIndex.load()};
+        LOG_INFO("maxNodeIndex = ", finalMaxNodeIndex);
+        this->boxes_.erase (this->boxes_.begin() + finalMaxNodeIndex + 1, this->boxes_.end());
         this->boxes_.shrink_to_fit();
         ::std::vector<BVHNode> {this->boxes_}.swap(this->boxes_);
 
@@ -280,6 +208,124 @@ namespace MobileRT {
             const BuildNode &node {buildNodes[i]};
             const ::std::uint32_t oldIndex {static_cast<::std::uint32_t> (node.oldIndex_)};
             this->primitives_.emplace_back(::std::move(primitives[oldIndex]));
+        }
+    }
+
+    template<typename T>
+    void BVH<T>::buildNodeRange(::std::vector<BuildNode> *const buildNodes,
+                                ::std::atomic<::std::int32_t> *const maxNodeIndex,
+                                ::std::atomic<::std::int32_t> *const activeAsyncTasks,
+                                const ::std::int32_t maxAsyncTasks,
+                                const ::std::int32_t nodeIndex,
+                                const ::std::int32_t beginBoxIndex,
+                                const ::std::int32_t endBoxIndex) {
+        const ::std::int32_t boxPrimitivesSize {endBoxIndex - beginBoxIndex};
+        const typename ::std::vector<BuildNode>::iterator itBegin {buildNodes->begin() + beginBoxIndex};
+        const typename ::std::vector<BuildNode>::iterator itEnd {buildNodes->begin() + endBoxIndex};
+
+        const AABB surroundingBox {getSurroundingBox(itBegin, itEnd)};
+        const ::glm::vec3 maxDist {surroundingBox.getPointMax() - surroundingBox.getPointMin()};
+        const int longestAxis {
+            maxDist[0] >= maxDist[1] && maxDist[0] >= maxDist[2]
+            ? 0
+            : maxDist[1] >= maxDist[0] && maxDist[1] >= maxDist[2]
+              ? 1
+              : 2
+        };
+
+        // Use C++ partition to sort primitives by buckets where each bucket don't have primitives sorted inside.
+        // It is faster than using C++ standard sort or C++ Boost Radix sort.
+        const int numBuckets {10};
+        const ::glm::vec3 step {maxDist / static_cast<float> (numBuckets)};
+        const float stepAxis {step[longestAxis]};
+        const float startBox {surroundingBox.getPointMin()[longestAxis]};
+        const float bucket1MaxLimit {startBox + stepAxis};
+        typename ::std::vector<BuildNode>::iterator itBucket {::std::partition(itBegin, itEnd,
+            [&](const BuildNode &node) {
+                return node.centroid_[longestAxis] < bucket1MaxLimit;
+            }
+        )};
+        for (::std::int32_t bucketIndex {2}; bucketIndex < numBuckets; ++bucketIndex) {
+            const float bucketMaxLimit {startBox + stepAxis * bucketIndex};
+            itBucket = ::std::partition(::std::move(itBucket), itEnd,
+                [&](const BuildNode &node) {
+                    return node.centroid_[longestAxis] < bucketMaxLimit;
+                }
+            );
+        }
+
+        BVHNode *const currentNode {&this->boxes_[static_cast<::std::uint32_t>(nodeIndex)]};
+        currentNode->box_ = surroundingBox;
+
+        const ::std::int32_t maxPrimitivesInBoxLeaf {4};
+        const bool isLeaf {boxPrimitivesSize <= maxPrimitivesInBoxLeaf};
+        if (isLeaf) {
+            currentNode->indexOffset_ = beginBoxIndex;
+            currentNode->numPrimitives_ = boxPrimitivesSize;
+            return;
+        }
+
+        ::std::vector<AABB> boxes {};
+        boxes.reserve(static_cast<::std::uint32_t>(boxPrimitivesSize));
+        for (::std::int32_t i {beginBoxIndex}; i < endBoxIndex; ++i) {
+            const AABB box {(*buildNodes)[static_cast<::std::uint32_t>(i)].box_};
+            boxes.emplace_back(box);
+        }
+
+        const ::std::int32_t splitIndex {getSplitIndexSah(boxes.begin(), boxes.end())};
+        const ::std::int32_t midBoxIndex {beginBoxIndex + splitIndex};
+
+        const ::std::int32_t left {maxNodeIndex->fetch_add(2) + 1};
+        const ::std::int32_t right {left + 1};
+        currentNode->indexOffset_ = left;
+        currentNode->numPrimitives_ = 0;
+
+        const ::std::int32_t parallelMinPrimitives {2048};
+        const bool shouldParallelize {
+            boxPrimitivesSize >= parallelMinPrimitives &&
+            activeAsyncTasks->load() < maxAsyncTasks
+        };
+
+        if (shouldParallelize) {
+            activeAsyncTasks->fetch_add(1);
+
+            ::std::future<void> futureRight {::std::async(::std::launch::async,
+                [this, buildNodes, maxNodeIndex, activeAsyncTasks, maxAsyncTasks, right, midBoxIndex, endBoxIndex]() {
+                    this->buildNodeRange(buildNodes,
+                                         maxNodeIndex,
+                                         activeAsyncTasks,
+                                         maxAsyncTasks,
+                                         right,
+                                         midBoxIndex,
+                                         endBoxIndex);
+                }
+            )};
+
+            buildNodeRange(buildNodes,
+                           maxNodeIndex,
+                           activeAsyncTasks,
+                           maxAsyncTasks,
+                           left,
+                           beginBoxIndex,
+                           midBoxIndex);
+
+            futureRight.get();
+            activeAsyncTasks->fetch_sub(1);
+        } else {
+            buildNodeRange(buildNodes,
+                           maxNodeIndex,
+                           activeAsyncTasks,
+                           maxAsyncTasks,
+                           left,
+                           beginBoxIndex,
+                           midBoxIndex);
+            buildNodeRange(buildNodes,
+                           maxNodeIndex,
+                           activeAsyncTasks,
+                           maxAsyncTasks,
+                           right,
+                           midBoxIndex,
+                           endBoxIndex);
         }
     }
 
