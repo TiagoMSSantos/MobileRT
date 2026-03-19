@@ -129,6 +129,31 @@ jobs:
         df -Pk -h ${HOME};
         env;
 
+    - name: Set Android SDK versions
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      run: |
+        echo 'CMAKE_VERSION=4.0.2' >> "${GITHUB_ENV}";
+        if [ "${{ matrix.android_api }}" -ge 21 ]; then
+          echo "NDK_VERSION=29.0.14206865" >> "${GITHUB_ENV}";
+        elif [ "${{ matrix.android_api }}" -ge 19 ]; then
+          echo "NDK_VERSION=25.2.9519653" >> "${GITHUB_ENV}";
+        else
+          echo "NDK_VERSION=23.2.8568313" >> "${GITHUB_ENV}";
+        fi
+
+    - name: Cache Android NDK and CMake
+      id: cache-android-sdk
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success()
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        key: android_sdk_${{ runner.os }}_a${{ matrix.android_api }}_cmake${{ env.CMAKE_VERSION }}_ndk${{ env.NDK_VERSION }}
+        enableCrossOsArchive: true
+        path: |
+          ${{ env.ANDROID_HOME }}/ndk
+          ${{ env.ANDROID_HOME }}/cmake
+
     - name: Set Android CPU Architecture
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
@@ -156,19 +181,19 @@ jobs:
 
     - name: Download Android CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && !startsWith(matrix.host_os, 'windows') && !endsWith(matrix.host_os, '-arm')
+      if: success() && !startsWith(matrix.host_os, 'windows') && !endsWith(matrix.host_os, '-arm') && steps.cache-android-sdk.outputs.cache-hit != 'true'
       run: |
         . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
     - name: Download Android CMake Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.host_os, 'windows')
+      if: success() && startsWith(matrix.host_os, 'windows') && steps.cache-android-sdk.outputs.cache-hit != 'true'
       run: |
         . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 
     - name: Download NDK
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && !startsWith(matrix.host_os, 'windows')
+      if: success() && !startsWith(matrix.host_os, 'windows') && steps.cache-android-sdk.outputs.cache-hit != 'true'
       run: |
         if [ "${{ matrix.android_api }}" -ge 21 ]; then
           export NDK_VERSION='29.0.14206865';
@@ -181,7 +206,7 @@ jobs:
 
     - name: Download NDK Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && startsWith(matrix.host_os, 'windows')
+      if: success() && startsWith(matrix.host_os, 'windows') && steps.cache-android-sdk.outputs.cache-hit != 'true'
       run: |
         if [ "${{ matrix.android_api }}" -ge 21 ]; then
           export NDK_VERSION='29.0.14206865';

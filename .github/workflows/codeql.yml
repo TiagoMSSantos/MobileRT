@@ -227,15 +227,26 @@ jobs:
       run: |
         sh scripts/install_dependencies.sh;
 
+    - name: Cache Android CMake
+      id: cache-android-cmake
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'java-kotlin'
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        key: android_cmake_${{ runner.os }}_${{ matrix.host_os }}_4.0.2
+        enableCrossOsArchive: true
+        path: |
+          ${{ env.ANDROID_HOME }}/cmake
+
     - name: Download Android CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'java-kotlin' && !startsWith(matrix.host_os, 'windows')
+      if: success() && matrix.language == 'java-kotlin' && !startsWith(matrix.host_os, 'windows') && steps.cache-android-cmake.outputs.cache-hit != 'true'
       run: |
         . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
 
     - name: Download Android CMake Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      if: success() && matrix.language == 'java-kotlin' && startsWith(matrix.host_os, 'windows')
+      if: success() && matrix.language == 'java-kotlin' && startsWith(matrix.host_os, 'windows') && steps.cache-android-cmake.outputs.cache-hit != 'true'
       run: |
         . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
 

@@ -105,7 +105,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
           ruby-version: '4.0.0-preview3'
-          bundler-cache: false
+          bundler-cache: true
           cache-version: 0
 
       - name: Setup Pages
@@ -116,13 +116,6 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/configure-pages/blob/main/action.yml
           generator_config_file: docs/_config.yml
-
-      - name: Install Ruby dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        run: |
-          bundle config set path.system true;
-          bundle install;
 
       - name: Build with Jekyll
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

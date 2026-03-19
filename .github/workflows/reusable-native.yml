@@ -589,15 +589,8 @@ jobs:
         with:
           # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
           ruby-version: '4.0.0-preview3'
-          bundler-cache: false
+          bundler-cache: true
           cache-version: 0
-
-      - name: Install Ruby dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        run: |
-          bundle config set path.system true;
-          bundle install;
 
       - name: Code Coverage Shell script tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
