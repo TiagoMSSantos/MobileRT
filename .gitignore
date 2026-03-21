@@ -107,3 +107,7 @@
 
 # Secrets files
 **/*.jks
+
+# Trae CLI
+trae_config.yaml
+trajectories

@@ -352,6 +352,19 @@
       "customType": "regex"
     },
     {
+      "description": "Update Gradle Wrapper Android API 15",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "if \\(androidApiVersionValue >= 16\\) \\{.*\\n.*\\n[^}]*?gradleVersion = ['\"](?<currentValue>[^'\"]+)['\"][^}]*\\}"
+      ],
+      "depNameTemplate": "gradle-android-15",
+      "datasourceTemplate": "gradle-version",
+      "customType": "regex"
+    },
+    {
       "description": "Update Android NDK",
       "managerFilePatterns": [
         "/.*build.gradle/"
@@ -707,7 +720,8 @@
       "groupName": "Do not update Gradle Wrapper for Android API <= 15",
       "enabled": true,
       "matchDepNames": [
-        "gradle"
+        "gradle",
+        "gradle-android-15"
       ],
       "matchDatasources": [
         "gradle-version"
