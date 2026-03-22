@@ -104,7 +104,7 @@ jobs:
         uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
         with:
           # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
-          ruby-version: '4.0.0-preview3'
+          ruby-version: '4.0.2'
           bundler-cache: false
           cache-version: 0
 
