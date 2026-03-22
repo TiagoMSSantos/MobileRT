@@ -243,7 +243,7 @@
       ],
       "depNameTemplate": "com.android.tools.build:gradle",
       "datasourceTemplate": "maven",
-      "versioningTemplate": "gradle",
+      "versioningTemplate": "maven",
       "customType": "regex",
       "registryUrlTemplate": "https://maven.google.com"
     },
