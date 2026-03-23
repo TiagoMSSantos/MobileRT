@@ -94,7 +94,10 @@
     "enabled": true
   },
   "maven": {
-    "enabled": true
+    "enabled": true,
+    "registryUrls": [
+      "https://repo1.maven.org/maven2/"
+    ]
   },
   "ignorePaths": [
     "docs/jscpd-report/**"
