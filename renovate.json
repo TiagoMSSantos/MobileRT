@@ -96,6 +96,9 @@
   "maven": {
     "enabled": true
   },
+  "ignorePaths": [
+    "docs/jscpd-report/**"
+  ],
   "customManagers": [
     {
       "description": "Update GitHub runners",
