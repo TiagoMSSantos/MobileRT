@@ -198,7 +198,7 @@ jobs:
       - name: Deploy to GitHub Pages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
         with:
           # Check available parameters in: https://github.com/actions/deploy-pages/blob/main/action.yml
           artifact_name: github-pages
