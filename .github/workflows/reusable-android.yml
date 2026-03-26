@@ -813,7 +813,7 @@ jobs:
       - name: Upload Android Test results to Codecov
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6
         with:
           # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
           codecov_yml_path: codecov.yml
@@ -1131,7 +1131,7 @@ jobs:
       - name: Upload Unit Test results to Codecov
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6
         with:
           # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
           codecov_yml_path: codecov.yml
