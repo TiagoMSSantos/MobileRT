@@ -8,8 +8,10 @@
 #include <algorithm>
 #include <array>
 #include <boost/sort/spreadsort/spreadsort.hpp>
+#include <future>
 #include <glm/glm.hpp>
 #include <random>
+#include <thread>
 #include <vector>
 
 namespace MobileRT {
@@ -182,12 +184,36 @@ namespace MobileRT {
         const ::std::array<::std::int32_t, StackSize>::const_iterator itStackBoxIndexBegin {stackBoxIndex.cbegin()};
 
         // Auxiliary structure used to sort all the AABBs by the position of the centroid.
-        ::std::vector<BuildNode> buildNodes {};
-        buildNodes.reserve(static_cast<long unsigned> (primitivesSize));
-        for (::std::uint32_t i {}; i < primitivesSize; ++i) {
-            const T &primitive {primitives [i]};
-            AABB &&box {primitive.getAABB()};
-            buildNodes.emplace_back(::std::move(box), static_cast<::std::int32_t> (i));
+        ::std::vector<BuildNode> buildNodes (static_cast<long unsigned> (primitivesSize));
+        const unsigned int numThreadsRaw {::std::thread::hardware_concurrency()};
+        const unsigned int numThreads {numThreadsRaw == 0U ? 1U : numThreadsRaw};
+        const unsigned int maxTasks {static_cast<unsigned int> (primitivesSize)};
+        const unsigned int taskCount {::std::max(1U, ::std::min(numThreads, maxTasks))};
+        const ::std::uint32_t chunkSize {
+            static_cast<::std::uint32_t>((primitivesSize + taskCount - 1U) / taskCount)
+        };
+        ::std::vector<::std::future<void>> tasks {};
+        tasks.reserve(taskCount);
+        for (unsigned int taskIndex {}; taskIndex < taskCount; ++taskIndex) {
+            const ::std::uint32_t beginIndex {taskIndex * chunkSize};
+            const ::std::uint32_t endIndex {
+                ::std::min(static_cast<::std::uint32_t> (primitivesSize), beginIndex + chunkSize)
+            };
+            if (beginIndex >= endIndex) {
+                continue;
+            }
+            tasks.emplace_back(::std::async(::std::launch::async,
+                [beginIndex, endIndex, &primitives, &buildNodes]() {
+                    for (::std::uint32_t i {beginIndex}; i < endIndex; ++i) {
+                        const T &primitive {primitives[i]};
+                        AABB box {primitive.getAABB()};
+                        buildNodes[i] = BuildNode(::std::move(box), static_cast<::std::int32_t> (i));
+                    }
+                }
+            ));
+        }
+        for (::std::future<void> &task : tasks) {
+            task.get();
         }
 
         do {
