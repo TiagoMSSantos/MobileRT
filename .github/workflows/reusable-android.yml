@@ -165,6 +165,7 @@ jobs:
           distribution: zulu
           java-package: jdk
           check-latest: false
+          cache: gradle
           server-id: github
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
@@ -592,6 +593,7 @@ jobs:
           distribution: zulu
           java-package: jdk
           check-latest: false
+          cache: gradle
           server-id: github
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
@@ -982,6 +984,7 @@ jobs:
           distribution: zulu
           java-package: jdk
           check-latest: false
+          cache: gradle
           server-id: github
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
@@ -1269,6 +1272,7 @@ jobs:
           distribution: zulu
           java-package: jdk
           check-latest: false
+          cache: gradle
           server-id: github
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN

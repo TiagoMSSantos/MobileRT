@@ -33,7 +33,7 @@ env:
 jobs:
   Matrix:
     name: Set Matrix
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 2
 
     outputs:
@@ -89,6 +89,7 @@ jobs:
         distribution: zulu
         java-package: jdk
         check-latest: false
+        cache: gradle
         server-id: github
         server-username: GITHUB_ACTOR
         server-password: GITHUB_TOKEN
