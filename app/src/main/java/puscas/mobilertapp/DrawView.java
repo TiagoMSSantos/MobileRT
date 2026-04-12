@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
@@ -379,6 +380,9 @@ public final class DrawView extends GLSurfaceView {
         // We need to call `closeRenderer` method with the GL rendering thread.
         queueEvent(this.renderer::closeRenderer);
         setVisibility(View.GONE);
+
+        final boolean finished = MoreExecutors.shutdownAndAwaitTermination(this.executorService, 5, TimeUnit.SECONDS);
+        assert finished == true;
 
         final String message = ConstantsMethods.ON_DETACHED_FROM_WINDOW + ConstantsMethods.FINISHED;
         logger.info(message);
