@@ -71,7 +71,7 @@ class RenderTask private constructor(
      */
     private val executorService = Executors.newScheduledThreadPool(
         ConstantsRenderer.NUMBER_THREADS,
-        new ThreadFactoryBuilder()
+        ThreadFactoryBuilder()
             .setNameFormat("RenderTask-print-view-%d")
             .setPriority(Thread.NORM_PRIORITY - 1)
             .build()
