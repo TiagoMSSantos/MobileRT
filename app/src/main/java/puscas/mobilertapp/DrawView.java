@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.google.common.util.concurrent.Uninterruptibles;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -58,7 +59,13 @@ public final class DrawView extends GLSurfaceView {
      * {@link ConstantsRenderer#NUMBER_THREADS} number of threads that will
      * create Ray Tracer engine renderer.
      */
-    private final ExecutorService executorService = Executors.newFixedThreadPool(ConstantsRenderer.NUMBER_THREADS);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(
+        ConstantsRenderer.NUMBER_THREADS,
+        new ThreadFactoryBuilder()
+            .setNameFormat("DrawView-create-Ray-Tracer-engine-%d")
+            .setPriority(Thread.NORM_PRIORITY - 1)
+            .build()
+    );
 
     /**
      * The changing configs.

@@ -32,6 +32,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -461,7 +462,13 @@ public final class MainActivity extends Activity {
         try {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 final int maxCores = UtilsContext.getNumOfCores(this);
-                final ExecutorService executor = Executors.newFixedThreadPool(maxCores + 1);
+                final ExecutorService executor = Executors.newFixedThreadPool(
+                    maxCores + 1,
+                    new ThreadFactoryBuilder()
+                        .setNameFormat("MainActivity-onActivityResult-readFile-%d")
+                        .setPriority(Thread.NORM_PRIORITY - 1)
+                        .build()
+                );
                 final List<Future<?>> tasks = new ArrayList<>();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
                     final ClipData clipData = data.getClipData();

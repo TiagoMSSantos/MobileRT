@@ -6,6 +6,7 @@ import android.os.SystemClock
 import android.widget.Button
 import android.widget.TextView
 import com.google.common.base.Preconditions
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import kotlinx.coroutines.DelicateCoroutinesApi
 import puscas.mobilertapp.configs.ConfigRenderTask
 import puscas.mobilertapp.constants.Constants
@@ -68,7 +69,13 @@ class RenderTask private constructor(
      * [RenderTask.updateInterval] `TimeUnit.MILLISECONDS` the
      * [RenderTask.timer] [Runnable].
      */
-    private val executorService = Executors.newScheduledThreadPool(ConstantsRenderer.NUMBER_THREADS)
+    private val executorService = Executors.newScheduledThreadPool(
+        ConstantsRenderer.NUMBER_THREADS,
+        new ThreadFactoryBuilder()
+            .setNameFormat("RenderTask-print-view-%d")
+            .setPriority(Thread.NORM_PRIORITY - 1)
+            .build()
+    )
 
     /**
      * A [Runnable] which updates the text to print in the [TextView].
