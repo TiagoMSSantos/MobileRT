@@ -26,6 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -211,7 +212,7 @@ public final class MainActivityTest {
             .anyTimes();
 
         PowerMock.mockStatic(Executors.class);
-        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt()))
+        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt(), EasyMock.anyObject(ThreadFactory.class)))
             .andReturn(MoreExecutors.newDirectExecutorService())
             .anyTimes();
 
@@ -278,7 +279,7 @@ public final class MainActivityTest {
             .anyTimes();
 
         PowerMock.mockStatic(Executors.class);
-        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt()))
+        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt(), EasyMock.anyObject(ThreadFactory.class)))
             .andReturn(MoreExecutors.newDirectExecutorService())
             .anyTimes();
 

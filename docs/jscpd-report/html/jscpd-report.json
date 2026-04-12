@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-03-23T07:59:06.298Z",
+    "detectionDate": "2026-04-12T10:44:20.424Z",
     "formats": {
       "java": {
         "sources": {
@@ -809,14 +809,14 @@
             "newClones": 0
           },
           "app/src/test/java/puscas/mobilertapp/MainActivityTest.java": {
-            "lines": 304,
-            "tokens": 2584,
+            "lines": 305,
+            "tokens": 2615,
             "sources": 1,
             "clones": 5,
             "duplicatedLines": 126,
-            "duplicatedTokens": 1285,
-            "percentage": 41.45,
-            "percentageTokens": 49.73,
+            "duplicatedTokens": 1305,
+            "percentage": 41.31,
+            "percentageTokens": 49.9,
             "newDuplicatedLines": 0,
             "newClones": 0
           },
@@ -881,8 +881,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/DrawView.java": {
-            "lines": 442,
-            "tokens": 2716,
+            "lines": 449,
+            "tokens": 2769,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1050,12 +1050,12 @@
           }
         },
         "total": {
-          "lines": 9800,
-          "tokens": 68345,
+          "lines": 9808,
+          "tokens": 68429,
           "sources": 87,
           "clones": 60,
           "duplicatedLines": 595,
-          "duplicatedTokens": 5649,
+          "duplicatedTokens": 5659,
           "percentage": 6.07,
           "percentageTokens": 8.27,
           "newDuplicatedLines": 0,
@@ -1137,8 +1137,8 @@
             "newClones": 0
           },
           "app/src/main/java/puscas/mobilertapp/RenderTask.kt": {
-            "lines": 338,
-            "tokens": 2025,
+            "lines": 345,
+            "tokens": 2075,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -1150,8 +1150,8 @@
           }
         },
         "total": {
-          "lines": 708,
-          "tokens": 4050,
+          "lines": 715,
+          "tokens": 4100,
           "sources": 7,
           "clones": 0,
           "duplicatedLines": 0,
@@ -2789,8 +2789,8 @@
             "newClones": 0
           },
           "app/MobileRT/Accelerators/BVH.hpp": {
-            "lines": 462,
-            "tokens": 4397,
+            "lines": 486,
+            "tokens": 4756,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -3222,14 +3222,14 @@
           }
         },
         "total": {
-          "lines": 3528,
-          "tokens": 26168,
+          "lines": 3552,
+          "tokens": 26527,
           "sources": 47,
           "clones": 4,
           "duplicatedLines": 45,
           "duplicatedTokens": 406,
-          "percentage": 1.28,
-          "percentageTokens": 1.55,
+          "percentage": 1.27,
+          "percentageTokens": 1.53,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -3356,14 +3356,14 @@
       }
     },
     "total": {
-      "lines": 31944,
-      "tokens": 250879,
+      "lines": 31983,
+      "tokens": 251372,
       "sources": 266,
       "clones": 127,
       "duplicatedLines": 1688,
-      "duplicatedTokens": 15044,
+      "duplicatedTokens": 15054,
       "percentage": 5.28,
-      "percentageTokens": 6,
+      "percentageTokens": 5.99,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
@@ -5032,68 +5032,68 @@
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 244,
-        "end": 257,
+        "start": 245,
+        "end": 258,
         "startLoc": {
-          "line": 244,
+          "line": 245,
           "column": 37,
-          "position": 1914
+          "position": 1935
         },
         "endLoc": {
-          "line": 257,
+          "line": 258,
           "column": 6,
-          "position": 2060
+          "position": 2081
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 181,
-        "end": 194,
+        "start": 182,
+        "end": 195,
         "startLoc": {
-          "line": 181,
+          "line": 182,
           "column": 38,
-          "position": 1309
+          "position": 1320
         },
         "endLoc": {
-          "line": 194,
+          "line": 195,
           "column": 9,
-          "position": 1455
+          "position": 1466
         }
       }
     },
     {
       "format": "java",
       "lines": 47,
-      "fragment": ")\n            .anyTimes();\n        EasyMock.replay(intentMocked, uriMocked);\n\n        PowerMock.mockStatic(UtilsContext.class);\n        EasyMock.expect(UtilsContext.getInternalStorageFilePath())\n            .andReturn(new File (PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardFilePath(EasyMock.anyObject(Context.class)))\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getInternalStoragePath())\n            .andReturn(PATH_TO_INTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))\n            .andReturn(PATH_TO_EXTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getNumOfCores(EasyMock.anyObject(Context.class)))\n            .andReturn(1)\n            .anyTimes();\n\n        PowerMock.mockStatic(Executors.class);\n        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt()))\n            .andReturn(MoreExecutors.newDirectExecutorService())\n            .anyTimes();\n\n        PowerMock.mockStatic(Environment.class);\n        EasyMock.expect(Environment.getExternalStorageDirectory())\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(Environment.getDataDirectory())\n            .andReturn(new File(PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        PowerMock.replayAll();\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isNull();\n\n        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, \"OPEN_FILE_REQUEST_CODE\"));\n        this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isEqualTo(PATH_TO_OBJ_FILE);\n    }\n}",
+      "fragment": ")\n            .anyTimes();\n        EasyMock.replay(intentMocked, uriMocked);\n\n        PowerMock.mockStatic(UtilsContext.class);\n        EasyMock.expect(UtilsContext.getInternalStorageFilePath())\n            .andReturn(new File (PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardFilePath(EasyMock.anyObject(Context.class)))\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getInternalStoragePath())\n            .andReturn(PATH_TO_INTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getSdCardPath(EasyMock.anyObject(Context.class)))\n            .andReturn(PATH_TO_EXTERNAL_STORAGE)\n            .anyTimes();\n        EasyMock.expect(UtilsContext.getNumOfCores(EasyMock.anyObject(Context.class)))\n            .andReturn(1)\n            .anyTimes();\n\n        PowerMock.mockStatic(Executors.class);\n        EasyMock.expect(Executors.newFixedThreadPool(EasyMock.anyInt(), EasyMock.anyObject(ThreadFactory.class)))\n            .andReturn(MoreExecutors.newDirectExecutorService())\n            .anyTimes();\n\n        PowerMock.mockStatic(Environment.class);\n        EasyMock.expect(Environment.getExternalStorageDirectory())\n            .andReturn(new File(PATH_TO_EXTERNAL_STORAGE))\n            .anyTimes();\n        EasyMock.expect(Environment.getDataDirectory())\n            .andReturn(new File(PATH_TO_INTERNAL_STORAGE))\n            .anyTimes();\n        PowerMock.replayAll();\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isNull();\n\n        final int openFileRequestCode = (int) Objects.requireNonNull(ReflectionTestUtils.getField(MainActivity.class, \"OPEN_FILE_REQUEST_CODE\"));\n        this.targetMainActivityMocked.onActivityResult(openFileRequestCode, Activity.RESULT_OK, intentMocked);\n\n        Assertions.assertThat((String) ReflectionTestUtils.getField(this.targetMainActivityMocked, \"sceneFilePath\"))\n            .as(\"The 'MainActivity#sceneFilePath' field\")\n            .isEqualTo(PATH_TO_OBJ_FILE);\n    }\n}",
       "tokens": 0,
       "firstFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 259,
-        "end": 305,
+        "start": 260,
+        "end": 306,
         "startLoc": {
-          "line": 259,
+          "line": 260,
           "column": 9,
-          "position": 2128
+          "position": 2149
         },
         "endLoc": {
-          "line": 305,
+          "line": 306,
           "column": 2,
-          "position": 2584
+          "position": 2615
         }
       },
       "secondFile": {
         "name": "app/src/test/java/puscas/mobilertapp/MainActivityTest.java",
-        "start": 192,
-        "end": 242,
+        "start": 193,
+        "end": 243,
         "startLoc": {
-          "line": 192,
+          "line": 193,
           "column": 10,
-          "position": 1445
+          "position": 1456
         },
         "endLoc": {
-          "line": 242,
+          "line": 243,
           "column": 8,
-          "position": 1903
+          "position": 1924
         }
       }
     },
