@@ -354,6 +354,7 @@
         "if \\(androidApiVersionValue >= 16\\) \\{[^}]*?gradleVersion = ['\"](?<currentValue>[^'\"]+)['\"][^}]*\\}"
       ],
       "depNameTemplate": "gradle",
+      "packageNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
       "customType": "regex"
     },
@@ -367,6 +368,7 @@
         "if \\(androidApiVersionValue >= 16\\) \\{[^}]*?\\} else \\{[^}]*?gradleVersion = ['\"](?<currentValue>[^'\"]+)['\"][^}]*\\}"
       ],
       "depNameTemplate": "gradle-android-15",
+      "packageNameTemplate": "gradle",
       "datasourceTemplate": "gradle-version",
       "customType": "regex"
     },
@@ -937,6 +939,16 @@
       "rangeStrategy": "replace",
       "enabled": true,
       "pinDigests": true
+    },
+    {
+      "description": "Gradle-version datasource releases use Gradle semver; do not apply the global regex versioning rule here",
+      "matchDatasources": [
+        "gradle-version"
+      ],
+      "enabled": true,
+      "versioning": "gradle",
+      "rangeStrategy": "replace"
     }
   ]
 }
+
