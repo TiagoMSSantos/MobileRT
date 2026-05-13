@@ -29,8 +29,8 @@
   "separateMinorPatch": true,
   "separateMultipleMajor": true,
   "separateMultipleMinor": false,
-  "ignoreTests": false,
   "ignoreUnstable": true,
+  "ignoreTests": false,
   "prConcurrentLimit": 2,
   "branchConcurrentLimit": 2,
   "prHourlyLimit": 0,
@@ -473,6 +473,16 @@
   ],
   "packageRules": [
     {
+      "description": "Enable all by default",
+      "matchDatasources": [
+        "!/github-digest/"
+      ],
+      "versioning": "regex:^r?v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
+      "rangeStrategy": "replace",
+      "enabled": true,
+      "pinDigests": false
+    },
+    {
       "groupName": "GitHub releases",
       "enabled": true,
       "pinDigests": false,
@@ -571,8 +581,8 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentValue": "/^1\\.12\\.\\d+/",
-      "allowedVersions": "/^1\\.12\\.\\d+/"
+      "matchCurrentValue": "/^1\\.12\\.\\d+$/",
+      "allowedVersions": "/^1\\.12\\.\\d+$/"
     },
     {
       "groupName": "Only update patches of androidx.core:core for Android API < 21",
@@ -584,8 +594,8 @@
       "registryUrls": [
         "https://maven.google.com"
       ],
-      "matchCurrentValue": "/^1\\.13\\.\\d+/",
-      "allowedVersions": "/^1\\.13\\.\\d+/"
+      "matchCurrentValue": "/^1\\.13\\.\\d+$/",
+      "allowedVersions": "/^1\\.13\\.\\d+$/"
     },
     {
       "groupName": "Only update patches of androidx.test:core for Android API < 19",
@@ -917,16 +927,6 @@
       "versioning": "ubuntu",
       "matchCurrentValue": "/^24\\.\\d+-arm$/",
       "allowedVersions": "/^24\\.\\d+-arm$/"
-    },
-    {
-      "description": "Enable all by default",
-      "matchDatasources": [
-        "!/github-digest/"
-      ],
-      "versioning": "regex:^r?v?(?<major>[0-9a-z]+)\\.?(?<minor>[0-9a-z]+)?\\.?(?<patch>[0-9a-z]+)?-?(?<prerelease>[0-9a-z]+)?(?<compatibility>-.*)?$",
-      "rangeStrategy": "replace",
-      "enabled": true,
-      "pinDigests": false
     },
     {
       "description": "Enable GitHub digest updates",
