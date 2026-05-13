@@ -729,13 +729,11 @@
       "groupName": "Do not update Gradle Wrapper for Android API <= 15",
       "enabled": true,
       "matchDepNames": [
-        "gradle",
         "gradle-android-15"
       ],
       "matchDatasources": [
         "gradle-version"
       ],
-      "matchCurrentValue": "/^8\\.7$/",
       "allowedVersions": "/^8\\.7(\\.\\d+)?$/"
     },
     {
