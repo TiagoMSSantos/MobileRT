@@ -150,8 +150,13 @@ void JNI_OnUnload(JavaVM *const /*jvm*/, void * /*reserved*/) {
 
     // Free all memory.
     renderer_.reset();
-    javaVM_.reset();
+    // Join the render thread before releasing javaVM_ so that any in-flight
+    // DetachCurrentThread call completes before the JavaVM pointer is nulled.
+    if (thread_ != nullptr && thread_->joinable()) {
+        thread_->join();
+    }
     thread_.reset();
+    javaVM_.reset();
     objDefinition_.clear();
     objDefinition_.shrink_to_fit();
     mtlDefinition_.clear();
@@ -823,8 +828,6 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 const ::std::chrono::time_point<::std::chrono::system_clock> chronoEndRendering {::std::chrono::system_clock::now()};
                 ::std::chrono::duration<double> timeRendering {chronoEndRendering - chronoStartRendering};
                 LOG_INFO("RENDER FINISHED");
-                finishedRendering_ = true;
-                rendered_.notify_all();
                 {
                     const ::std::lock_guard<::std::mutex> lock {mutex_};
                     if (state_ != State::STOPPED) {
@@ -848,6 +851,10 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                         jniEnv = nullptr;
                         errno = 0;
                     }
+                    // Signal only after DetachCurrentThread so the next AttachCurrentThread
+                    // cannot race with this DetachCurrentThread on old Dalvik VMs.
+                    finishedRendering_ = true;
+                    rendered_.notify_all();
                 }
                 const double renderingTime {timeRendering.count()};
                 const ::std::uint64_t castedRays {renderer_->getTotalCastedRays()};
@@ -860,10 +867,14 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
             }
         };
 
+        // Join the previous render thread so that its DetachCurrentThread has fully
+        // completed before we create a new thread that calls AttachCurrentThread.
+        MobileRT::checkSystemError("rtRenderIntoBitmap joining previous thread");
+        if (thread_ != nullptr && thread_->joinable()) {
+            thread_->join();
+        }
         MobileRT::checkSystemError("rtRenderIntoBitmap creating thread");
         thread_ = ::MobileRT::std::make_unique<::std::thread>(lambda);
-        MobileRT::checkSystemError("rtRenderIntoBitmap detaching thread");
-        thread_->detach();
 
         LOG_DEBUG("rtRenderIntoBitmap finished preparing");
         MobileRT::checkSystemError("rtRenderIntoBitmap finish");

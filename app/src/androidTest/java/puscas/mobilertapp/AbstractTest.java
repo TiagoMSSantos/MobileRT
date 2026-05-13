@@ -321,6 +321,7 @@ public abstract class AbstractTest {
             while (isActivityRunning(AbstractTest.activity) && currentTimeSecs < timeToWaitSecs) {
                 logger.info(methodName + ": Finishing the Activity.");
                 AbstractTest.activity.finish();
+                Uninterruptibles.sleepUninterruptibly(waitInSecs, TimeUnit.SECONDS);
                 currentTimeSecs += waitInSecs;
             }
             // Wait for the app to be closed. Necessary for Android 12+.

@@ -96,12 +96,33 @@ install_dependencies() {
   # update_python;
 }
 
+# Run any apt-get subcommand with timeout and retry, recovering from dpkg lock/interrupted
+# state between attempts (timeout kills apt-get but may leave the dpkg child holding the lock).
+# Usage: apt_get_with_retry <subcommand> [args...]
+#   e.g. apt_get_with_retry update -y
+#        apt_get_with_retry install --no-install-recommends -y vim
+apt_get_with_retry() {
+  _max_retries=3;
+  _retry=0;
+  while [ "${_retry}" -lt "${_max_retries}" ]; do
+    _retry=$((_retry + 1));
+    # Wait briefly for any orphaned dpkg process (left by a timed-out apt-get) to finish
+    # and release its lock, then fix any interrupted dpkg state before the next attempt.
+    sudo dpkg --configure -a 2>&1 || true;
+    timeout 180 sudo apt-get -o DPkg::Lock::Timeout=30 "$@" && return 0;
+    echo "apt-get '$*' failed or timed out (attempt ${_retry} of ${_max_retries})";
+    sleep 5;
+  done;
+  return 1;
+}
+
 install_dependencies_debian() {
   sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
   echo 'Updating APT repositories.';
-  sudo apt-get update -y || true;
+  apt_get_with_retry update -y || true;
   echo 'Installing APT dependencies.';
-  sudo apt-get install --no-install-recommends -y \
+  apt_get_with_retry install --no-install-recommends -y lcov;
+  apt_get_with_retry install --no-install-recommends -y \
     xorg-dev \
     x11-xserver-utils \
     libx11-xcb-dev libxcb-xinerama0 \
@@ -116,19 +137,18 @@ install_dependencies_debian() {
     sudo git git-lfs ca-certificates shellcheck \
     libatomic1 \
     g++ build-essential cmake make \
-    lcov \
     python3 python3-pip python3-dev python3-setuptools \
     cpulimit lsof zip unzip || true;
   echo 'Installing Qt';
-  sudo apt-get install --no-install-recommends -y qtbase5-dev;
+  apt_get_with_retry install --no-install-recommends -y qtbase5-dev;
   echo 'Installing dependencies that conan might use.';
-  sudo apt-get install --no-install-recommends -y clang libc++-dev libc++abi-dev;
+  apt_get_with_retry install --no-install-recommends -y clang libc++-dev libc++abi-dev;
   echo 'Checking Qt path.';
   find /usr/include/*-linux-gnu/qt5 /usr/lib/*-linux-gnu/cmake/Qt5 -name "Qt[0-9]Config.cmake" -o -name "QDialog*" 2> /dev/null | grep -z /;
   echo "Found Qt: ${?}";
   if ! command -v readelf > /dev/null; then
     echo 'Installing readelf.';
-    sudo apt-get install --no-install-recommends -y binutils;
+    apt_get_with_retry install --no-install-recommends -y binutils;
   fi
 }
 
