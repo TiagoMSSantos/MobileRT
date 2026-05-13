@@ -528,18 +528,24 @@ public final class MainActivity extends Activity {
      */
     @NonNull
     private File[] getFilesFromDirectory(@NonNull final File baseFile) {
+        final File canonicalFile;
+        try {
+            canonicalFile = baseFile.getCanonicalFile();
+        } catch (final IOException ex) {
+            throw new IllegalArgumentException("Path '" + baseFile + "' canonicalization failed: " + ex.getMessage(), ex);
+        }
+        validatePath(canonicalFile);
         File[] files = null;
-        validatePath(baseFile);
-        if (baseFile.isDirectory()) {
+        if (canonicalFile.isDirectory()) {
             logger.info("Reading files from directory.");
-            files = baseFile.listFiles();
+            files = canonicalFile.listFiles();
         }
         if (files == null) {
             logger.info("Reading files from parent directory.");
-            files = new File(Objects.requireNonNull(baseFile.getParent())).listFiles();
+            files = new File(Objects.requireNonNull(canonicalFile.getParent())).listFiles();
         }
         if (files == null) {
-            throw new FailureException("It couldn't list the files in the selected path '" + baseFile + "'. Are you sure the necessary permissions were given?");
+            throw new FailureException("It couldn't list the files in the selected path '" + canonicalFile + "'. Are you sure the necessary permissions were given?");
         }
         return files;
     }

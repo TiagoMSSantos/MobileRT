@@ -485,8 +485,7 @@ namespace MobileRT {
              * @return A unique_ptr of an object of type T.
              */
             template<typename T, typename... Args>
-            ::std::unique_ptr<T> make_unique(Args &&... args) {
-                // Use log to avoid CodeQL false positive.
+            ::std::unique_ptr<T> make_unique(Args &&... args) { // codeql[cpp/unused-local-variable, cpp/unused-static-variable]
                 LOG_INFO("Called make_unique of ", typeid(T).name(), " with args: ", args...);
                 return ::std::make_unique<T>(::std::forward<Args>(args)...);
             }
