@@ -42,6 +42,11 @@ jobs:
     permissions:
       actions: write
 
+    outputs:
+      ndk_version: ${{ steps.android_versions.outputs.NDK_VERSION }}
+      cmake_version: ${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
+      android_home: ${{ steps.android_versions.outputs.ANDROID_HOME }}
+
     steps:
       - name: Checkout
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -57,18 +62,38 @@ jobs:
         run: |
           if [ -n "${ANDROID_HOME}" ]; then
             echo 'Available Android versions:';
-            du -h -d 1 ${ANDROID_HOME}/ndk;
-            du -h -d 1 ${ANDROID_HOME}/cmake || true;
-            du -h -d 1 ${ANDROID_HOME}/build-tools;
-            du -h -d 1 ${ANDROID_HOME}/platforms;
-            du -h -d 1 ${ANDROID_HOME}/extras;
-            du -h -d 1 ${ANDROID_HOME};
+            ls -lahp ${ANDROID_HOME}/ndk;
+            ls -lahp ${ANDROID_HOME}/cmake || true;
+            ls -lahp ${ANDROID_HOME}/build-tools;
+            ls -lahp ${ANDROID_HOME}/platforms;
+            ls -lahp ${ANDROID_HOME}/extras;
+            ls -lahp ${ANDROID_HOME};
           fi
           GRADLE_PATH="${HOME}/.gradle";
           echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";
           mkdir -p "${GRADLE_PATH}";
           df -Pk -h ${HOME};
           env;
+
+      - name: Set Android NDK version
+        id: android_versions
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          if [ "${{ inputs.android_api }}" -ge 21 ]; then
+            echo "NDK_VERSION=29.0.14206865" >> "${GITHUB_ENV}";
+            echo "NDK_VERSION=29.0.14206865" >> "${GITHUB_OUTPUT}";
+          elif [ "${{ inputs.android_api }}" -ge 19 ]; then
+            echo "NDK_VERSION=25.2.9519653" >> "${GITHUB_ENV}";
+            echo "NDK_VERSION=25.2.9519653" >> "${GITHUB_OUTPUT}";
+          else
+            echo "NDK_VERSION=23.2.8568313" >> "${GITHUB_ENV}";
+            echo "NDK_VERSION=23.2.8568313" >> "${GITHUB_OUTPUT}";
+          fi
+          echo "ANDROID_CMAKE_VERSION=4.0.2" >> "${GITHUB_ENV}";
+          echo "ANDROID_CMAKE_VERSION=4.0.2" >> "${GITHUB_OUTPUT}";
+          echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_ENV}";
+          echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_OUTPUT}";
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
@@ -189,43 +214,45 @@ jobs:
         run: |
           echo 'android_arch=\"armeabi-v7a\",\"arm64-v8a\",\"x86\",\"x86_64\"' >> "${GITHUB_ENV}";
 
+      - name: Cache Android CMake
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ${{ env.ANDROID_HOME }}/cmake/${{ env.ANDROID_CMAKE_VERSION }}
+          key: android-${{ inputs.android_api }}-cmake-${{ env.ANDROID_CMAKE_VERSION }}
+
       - name: Download Android CMake
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && !startsWith(inputs.build_os, 'windows')
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;${{ env.ANDROID_CMAKE_VERSION }}';
 
       - name: Download Android CMake Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.build_os, 'windows')
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;${{ env.ANDROID_CMAKE_VERSION }}';
+
+      - name: Cache Android NDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ${{ env.ANDROID_HOME }}/ndk/${{ env.NDK_VERSION }}
+          key: android-${{ inputs.android_api }}-ndk-${{ env.NDK_VERSION }}
 
       - name: Download NDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && !startsWith(inputs.build_os, 'windows')
         run: |
-          if [ "${{ inputs.android_api }}" -ge 21 ]; then
-            export NDK_VERSION='29.0.14206865';
-          elif [ "${{ inputs.android_api }}" -ge 19 ]; then
-            export NDK_VERSION='25.2.9519653';
-          else
-            export NDK_VERSION='23.2.8568313';
-          fi
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${NDK_VERSION}";
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.NDK_VERSION }}";
 
       - name: Download NDK Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.build_os, 'windows')
         run: |
-          if [ "${{ inputs.android_api }}" -ge 21 ]; then
-            export NDK_VERSION='29.0.14206865';
-          elif [ "${{ inputs.android_api }}" -ge 19 ]; then
-            export NDK_VERSION='25.2.9519653';
-          else
-            export NDK_VERSION='23.2.8568313';
-          fi
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install "ndk;${NDK_VERSION}";
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install "ndk;${{ env.NDK_VERSION }}";
 
       - name: Download Android dependencies
         timeout-minutes: 8
@@ -246,6 +273,7 @@ jobs:
           ANDROID_KEY_ALIAS_DEBUG: ${{ secrets.ANDROID_KEY_ALIAS_DEBUG }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
+          ls -lahp ${ANDROID_HOME}/ndk/${{ env.NDK_VERSION }};
           echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
           echo "android_arch: ${{ env.android_arch }}";
           sh scripts/compile_android.sh -t ${{ inputs.type }} -r yes -a ${{ inputs.android_api }} -f ${{ env.android_arch }};
@@ -322,15 +350,15 @@ jobs:
         if: success()
         run: |
           set +e;
-          du -h -d 1 ${{ env.GRADLE_PATH }};
-          du -h -d 1 ${{ env.GRADLE_PATH }}/caches;
-          du -h -d 1 ${{ env.GRADLE_PATH }}/wrapper/dists;
-          du -h -d 1 ${{ env.GRADLE_PATH }}/daemon;
-          du -h -d 1 ${{ env.GRADLE_PATH }}/notifications;
-          du -h -d 1 ${{ env.GRADLE_PATH }}/jdks;
-          du -h -d 1 ${{ env.GRADLE_PATH }}/kotlin-profile;
-          du -h -d 1 ${{ env.GRADLE_PATH }}/workers;
-          du -h -d 1 ${{ env.GRADLE_PATH }}/native;
+          ls -lahp ${{ env.GRADLE_PATH }};
+          ls -lahp ${{ env.GRADLE_PATH }}/caches;
+          ls -lahp ${{ env.GRADLE_PATH }}/wrapper/dists;
+          ls -lahp ${{ env.GRADLE_PATH }}/daemon;
+          ls -lahp ${{ env.GRADLE_PATH }}/notifications;
+          ls -lahp ${{ env.GRADLE_PATH }}/jdks;
+          ls -lahp ${{ env.GRADLE_PATH }}/kotlin-profile;
+          ls -lahp ${{ env.GRADLE_PATH }}/workers;
+          ls -lahp ${{ env.GRADLE_PATH }}/native;
 
           echo 'Deleting unnecessary cache.';
           rm -rf ${{ env.GRADLE_PATH }}/caches/build-cache-*;
@@ -345,27 +373,16 @@ jobs:
           rm -rf ${{ env.GRADLE_PATH }}/notifications;
 
           find ${{ env.GRADLE_PATH }}/wrapper/dists -not -iname '*gradle*.zip' -delete;
-          find ${{ env.GRADLE_PATH }} -iname "docs" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.log*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.txt*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.md*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.doc*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.xls*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.htm*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.lock*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.lck*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.ok*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.png*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.jpg*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.jpeg*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*.gif*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*README*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*NOTICE*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "*LICENSE*" -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -iname "transforms" -exec rm -rf {} \;
-
-          find ${{ env.GRADLE_PATH }} -empty -exec rm -rf {} \;
-          find ${{ env.GRADLE_PATH }} -size 0 -exec rm -rf {} \;
+          find ${{ env.GRADLE_PATH }} \( \
+            -iname "docs" -o \
+            -iname "transforms" -o \
+            -iname "*README*" -o -iname "*NOTICE*" -o -iname "*LICENSE*" -o \
+            -iname "*.log*" -o -iname "*.txt*" -o -iname "*.md*" -o \
+            -iname "*.doc*" -o -iname "*.xls*" -o -iname "*.htm*" -o \
+            -iname "*.lock*" -o -iname "*.lck*" -o -iname "*.ok*" -o \
+            -iname "*.png*" -o -iname "*.jpg*" -o -iname "*.jpeg*" -o -iname "*.gif*" \
+          \) -exec rm -rf {} +;
+          find ${{ env.GRADLE_PATH }} \( -empty -o -size 0 \) -exec rm -rf {} +;
           set -e;
 
           # shellcheck disable=SC1091
@@ -382,7 +399,7 @@ jobs:
           path: ${{ env.GRADLE_PATH }}/gradle-packages.zip
           if-no-files-found: error
           retention-days: 90
-          compression-level: 9
+          compression-level: 1
           overwrite: true
           include-hidden-files: true
 
@@ -438,49 +455,63 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
         run: |
+          export ANDROID_HOME=${{ needs.Build.outputs.android_home }};
+          echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_ENV}";
           if [ -n "${ANDROID_HOME}" ]; then
             echo 'Available Android versions:';
-            du -h -d 1 ${ANDROID_HOME};
-            rm -rf ${ANDROID_HOME}/ndk;
-            rm -rf ${ANDROID_HOME}/extras;
-            rm -rf ${ANDROID_HOME}/cmake;
-            mkdir -p ${ANDROID_HOME}/ndk;
-            mkdir -p ${ANDROID_HOME}/extras;
-            mkdir -p ${ANDROID_HOME}/cmake;
-            du -h -d 1 ${ANDROID_HOME}/ndk;
-            du -h -d 1 ${ANDROID_HOME}/cmake;
-            du -h -d 1 ${ANDROID_HOME}/build-tools;
-            du -h -d 1 ${ANDROID_HOME}/platforms;
-            du -h -d 1 ${ANDROID_HOME}/extras;
+            ls -lahp ${ANDROID_HOME};
+            # Empty NDK / extras / cmake to free disk space; the Cache Android
+            # CMake / NDK steps later will populate them from cache (or from
+            # sdkmanager on cache miss). Plain `rm -rf` instead of separate
+            # rm+mkdir — the Cache restore creates the target path itself.
+            rm -rf ${ANDROID_HOME}/ndk ${ANDROID_HOME}/extras ${ANDROID_HOME}/cmake;
           fi
           GRADLE_PATH="${HOME}/.gradle";
           echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";
           mkdir -p "${GRADLE_PATH}";
           df -Pk -h ${HOME};
           env;
+          # The runner image ships ~20 GB of language toolchains (JDK, .NET,
+          # Swift, Haskell, Julia, Chromium, etc.) that the Android emulator
+          # job does not need but which would otherwise consume disk space the
+          # emulator needs. Run all rm -rf calls in parallel — each target is
+          # independent and rm -rf is I/O bound, so overlapping the I/O
+          # noticeably cuts the cleanup time (~1m -> ~20s on a typical run).
           if command -v sudo > /dev/null; then
-            sudo rm -rf /usr/lib/jvm;
-            sudo rm -rf /usr/share/dotnet;
-            sudo rm -rf /usr/share/swift;
-            sudo rm -rf /usr/local/.ghcup;
-            sudo rm -rf /usr/local/julia*;
-            sudo rm -rf /usr/local/share/chromium;
-            sudo rm -rf /opt/microsoft;
-            sudo rm -rf /opt/google;
-            sudo rm -rf /opt/az;
-            sudo rm -rf /usr/local/share/powershell;
-            sudo rm -rf /opt/hostedtoolcache;
+            sudo rm -rf /usr/lib/jvm &
+            sudo rm -rf /usr/share/dotnet &
+            sudo rm -rf /usr/share/swift &
+            sudo rm -rf /usr/local/.ghcup &
+            sudo rm -rf /usr/local/julia* &
+            sudo rm -rf /usr/local/share/chromium &
+            sudo rm -rf /opt/microsoft &
+            sudo rm -rf /opt/google &
+            sudo rm -rf /opt/az &
+            sudo rm -rf /usr/local/share/powershell &
+            sudo rm -rf /opt/hostedtoolcache &
+            wait;
           fi
+          # Single `docker system prune --all --volumes --force` is a superset
+          # of the previous container/network/volume prunes; combining them
+          # avoids walking docker's state multiple times.
           if command -v docker > /dev/null; then
             docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')" || true;
-            docker system prune --volumes --force;
-            docker network prune --force;
-            docker volume prune --force;
-            docker system prune --all --force;
+            docker system prune --all --volumes --force;
             docker builder prune --all --force;
             docker system df;
           fi
           df -h;
+
+      - name: Download Android NDK from cache
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          key: android-${{ inputs.android_api }}-ndk-${{ needs.Build.outputs.ndk_version }}
+          enableCrossOsArchive: true
+          fail-on-cache-miss: true
+          lookup-only: false
+          path: ${{ env.ANDROID_HOME }}/ndk/${{ needs.Build.outputs.ndk_version }}
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
@@ -679,6 +710,11 @@ jobs:
               echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
             fi
           fi
+          if [ "${{ inputs.android_api_device }}" -le 22 ]; then
+            echo "EMULATOR_BOOT_TIMEOUT=240" >> "${GITHUB_ENV}";
+          else
+            echo "EMULATOR_BOOT_TIMEOUT=400" >> "${GITHUB_ENV}";
+          fi
 
       - name: Set CPU cores
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -701,13 +737,67 @@ jobs:
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
+      - name: AVD cache
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && !startsWith(inputs.target_os, 'windows')
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        id: avd-cache
+        with:
+          # Caches the AVD definition + the post-boot snapshot. On hit, the
+          # emulator-runner skips both AVD creation (~30s) and cold boot
+          # (~3-5 min), starting from the snapshot in ~30-60s. Bump the
+          # trailing version suffix (-v1) to invalidate stale snapshots.
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ inputs.android_api_device }}-${{ env.android_emulator_arch }}-${{ runner.os }}-v1
+
+      - name: Create AVD and generate snapshot for caching
+        timeout-minutes: 20
+        if: success() && !startsWith(inputs.target_os, 'windows') && steps.avd-cache.outputs.cache-hit != 'true'
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
+        env:
+          ANDROID_EMULATOR_MEM_MB: 4096
+          ANDROID_EMULATOR_CPU_CORES: 2
+        with:
+          action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+          pre_retry_command: 'echo "Retrying AVD snapshot generation..."'
+          attempt_limit: 2
+          attempt_delay: 30000
+          with: |
+            # No -no-snapshot-save here, so the emulator saves a snapshot on
+            # quit; actions/cache then stores it for the next run. RAM/CPU
+            # must match the test step below, otherwise snapshot load fails.
+            api-level: ${{ inputs.android_api_device }}
+            cmake: ${{ needs.Build.outputs.cmake_version }}
+            target: google_apis
+            arch: ${{ env.android_emulator_arch }}
+            disable-animations: false
+            channel: stable
+            emulator-options: -no-metrics -no-window -accel on -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -cache-size 512 -partition-size ${{ env.ANDROID_EMULATOR_MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none -camera-front none -netfast -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
+            cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
+            ram-size: ${{ env.ANDROID_EMULATOR_MEM_MB }}M
+            heap-size: 1024M
+            disk-size: 4096M
+            sdcard-path-or-size: 2048M
+            avd-name: Android_Emulator_API_${{ inputs.android_api_device }}
+            force-avd-creation: false
+            disable-linux-hw-accel: auto
+            enable-hw-keyboard: false
+            emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }}
+            script: echo "Generated AVD snapshot for caching."
+
       - name: Run Android tests
         timeout-minutes: 50
         if: success() && !startsWith(inputs.target_os, 'windows')
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
-          ANDROID_EMULATOR_MEM_MB: 3072
+          ANDROID_EMULATOR_MEM_MB: 4096
+          # GitHub-hosted ubuntu runners have 4 vCPUs. Leaving at least 2 cores
+          # for the host (adb, gradle, log capture) was measured to be ~3x faster
+          # than allocating all 4 to the emulator; previous bump to 4 caused
+          # severe regression (8m -> 22m on the Repeatable workflow).
           ANDROID_EMULATOR_CPU_CORES: 2
           ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -725,8 +815,12 @@ jobs:
             # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
             # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
             # Max api level for 32bit is: 30
+            # -no-snapshot-save is kept so the test step doesn't dirty the
+            # cached snapshot mid-run; the emulator still LOADS the snapshot
+            # saved by the cache step above, which is what gives the 3-5 min
+            # boot-time saving on cache hits.
             api-level: ${{ inputs.android_api_device }}
-            cmake: 4.0.2
+            cmake: ${{ needs.Build.outputs.cmake_version }}
             target: google_apis
             arch: ${{ env.android_emulator_arch }}
             disable-animations: true
@@ -742,8 +836,9 @@ jobs:
             force-avd-creation: false
             disable-linux-hw-accel: auto
             enable-hw-keyboard: false
-            emulator-boot-timeout: 400 # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
+            emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }} # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
             script: |
+              ls -lahp ${{ env.ANDROID_HOME }}/ndk/${{ needs.Build.outputs.ndk_version }};
               echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
               ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
               sh scripts/run_tests_android.sh -t ${{ inputs.type }} -r all -a ${{ inputs.android_api }} -k false -f ${{ env.android_arch }};
@@ -887,12 +982,12 @@ jobs:
         run: |
           if [ -n "${ANDROID_HOME}" ]; then
             echo 'Available Android versions:';
-            du -h -d 1 ${ANDROID_HOME}/ndk;
-            du -h -d 1 ${ANDROID_HOME}/cmake || true;
-            du -h -d 1 ${ANDROID_HOME}/build-tools;
-            du -h -d 1 ${ANDROID_HOME}/platforms;
-            du -h -d 1 ${ANDROID_HOME}/extras;
-            du -h -d 1 ${ANDROID_HOME};
+            ls -lahp ${ANDROID_HOME}/ndk;
+            ls -lahp ${ANDROID_HOME}/cmake || true;
+            ls -lahp ${ANDROID_HOME}/build-tools;
+            ls -lahp ${ANDROID_HOME}/platforms;
+            ls -lahp ${ANDROID_HOME}/extras;
+            ls -lahp ${ANDROID_HOME};
           fi
           GRADLE_PATH="${HOME}/.gradle";
           echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";
@@ -1167,12 +1262,12 @@ jobs:
         run: |
           if [ -n "${ANDROID_HOME}" ]; then
             echo 'Available Android versions:';
-            du -h -d 1 ${ANDROID_HOME}/ndk;
-            du -h -d 1 ${ANDROID_HOME}/cmake || true;
-            du -h -d 1 ${ANDROID_HOME}/build-tools;
-            du -h -d 1 ${ANDROID_HOME}/platforms;
-            du -h -d 1 ${ANDROID_HOME}/extras;
-            du -h -d 1 ${ANDROID_HOME};
+            ls -lahp ${ANDROID_HOME}/ndk;
+            ls -lahp ${ANDROID_HOME}/cmake || true;
+            ls -lahp ${ANDROID_HOME}/build-tools;
+            ls -lahp ${ANDROID_HOME}/platforms;
+            ls -lahp ${ANDROID_HOME}/extras;
+            ls -lahp ${ANDROID_HOME};
           fi
           GRADLE_PATH="${HOME}/.gradle";
           echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";

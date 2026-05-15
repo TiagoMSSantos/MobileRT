@@ -123,6 +123,11 @@ jobs:
         overwrite-settings: true
         gpg-private-key: ''
         gpg-passphrase: GPG_PASSPHRASE
+        # cache-dependency-path alone is a no-op without 'cache:'. Setting
+        # cache: gradle caches ~/.gradle/caches and ~/.gradle/wrapper between
+        # runs, so the CodeQL Autobuild step (6m 37s in May 2026) does not
+        # re-download every Gradle/Android Gradle Plugin dependency.
+        cache: gradle
         cache-dependency-path: '**/build.gradle'
 
     - name: Delete previous CodeQL runs
@@ -163,11 +168,13 @@ jobs:
       run: |
         if [ -n "${ANDROID_HOME}" ]; then
           echo 'Available Android versions:';
-          du -h -d 1 ${ANDROID_HOME}/ndk;
-          du -h -d 1 ${ANDROID_HOME}/cmake || true;
-          du -h -d 1 ${ANDROID_HOME}/build-tools;
+          ls -lahp ${ANDROID_HOME}/ndk;
+          ls -lahp ${ANDROID_HOME}/cmake || true;
+          ls -lahp ${ANDROID_HOME}/build-tools;
           ls -lahp ${ANDROID_HOME}/platforms;
+          echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_ENV}";
         fi
+        echo "ANDROID_CMAKE_VERSION=4.0.2" >> "${GITHUB_ENV}";
         ls -lahp ${HOME};
 
     - name: Initialize CodeQL tools for scanning
@@ -215,8 +222,8 @@ jobs:
         dir: '${{ github.workspace }}'
         install-deps: 'false'
         modules: ''
-        cache: 'false'
-        cache-key-prefix: '${{ env.qt_host }}-${{ env.qt_arch }}'
+        cache: 'true'
+        cache-key-prefix: 'qt-5.15.2-${{ env.qt_host }}-${{ env.qt_arch }}'
         setup-python: 'true'
         set-env: 'true'
         py7zrversion: '>=1.0.0'
@@ -227,17 +234,25 @@ jobs:
       run: |
         sh scripts/install_dependencies.sh;
 
+    - name: Cache Android CMake
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && matrix.language == 'java-kotlin'
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        path: ${{ env.ANDROID_HOME }}/cmake/${{ env.ANDROID_CMAKE_VERSION }}
+        key: android-cmake-${{ env.ANDROID_CMAKE_VERSION }}-${{ runner.os }}
+
     - name: Download Android CMake
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java-kotlin' && !startsWith(matrix.host_os, 'windows')
       run: |
-        . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;4.0.2';
+        . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;${{ env.ANDROID_CMAKE_VERSION }}';
 
     - name: Download Android CMake Windows
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && matrix.language == 'java-kotlin' && startsWith(matrix.host_os, 'windows')
       run: |
-        . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;4.0.2';
+        . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;${{ env.ANDROID_CMAKE_VERSION }}';
 
     - name: Setting Gradle Wrapper version
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}

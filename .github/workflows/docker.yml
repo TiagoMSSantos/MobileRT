@@ -321,6 +321,16 @@ jobs:
         if (-not $?) {throw "Failed to build image."}
         docker images
 
+    - name: Cache pip packages
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && !startsWith(matrix.host_os, 'windows')
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
+        path: ~/.cache/pip
+        key: pip-docker-squash-${{ runner.os }}
+        restore-keys: pip-docker-squash-
+
     - name: Pull base Docker image
       timeout-minutes: 60
       if: success()
@@ -335,10 +345,18 @@ jobs:
           . scripts/docker.sh && squashMobileRTDockerImage ${{ env.VERSION }} &
           pid_docker="$!";
         else
-          echo "Pulling docker base image ${{ matrix.base_image }}";
-          . scripts/docker.sh && pullDockerImage ${{ matrix.base_image }} &
-          pid_docker="$!";
-          export BUILD_IMAGE='yes';
+          echo "Trying pre-built MobileRT image ptpuscas/mobile_rt:${{ env.VERSION }}";
+          if . scripts/docker.sh && pullDockerImage ptpuscas/mobile_rt:${{ env.VERSION }}; then
+            echo "Pre-built MobileRT image found: ptpuscas/mobile_rt:${{ env.VERSION }}";
+            export BUILD_IMAGE='no';
+            (exit 0) &
+            pid_docker="$!";
+          else
+            echo "Pre-built image not found; pulling base image ${{ matrix.base_image }}";
+            . scripts/docker.sh && pullDockerImage ${{ matrix.base_image }} &
+            pid_docker="$!";
+            export BUILD_IMAGE='yes';
+          fi
         fi
         echo 'Waiting for docker pull.';
         wait ${pid_docker};

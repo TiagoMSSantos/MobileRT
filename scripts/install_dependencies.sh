@@ -117,38 +117,102 @@ apt_get_with_retry() {
 }
 
 install_dependencies_debian() {
+  if ! command -v sudo > /dev/null; then
+    echo 'Installing sudo.';
+    apt_get_with_retry install --no-install-recommends -y sudo;
+  fi
   sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
+
   echo 'Updating APT repositories.';
   apt_get_with_retry update -y || true;
-  echo 'Installing APT dependencies.';
-  apt_get_with_retry install --no-install-recommends -y lcov;
-  apt_get_with_retry install --no-install-recommends -y \
-    xorg-dev \
-    x11-xserver-utils \
-    libx11-xcb-dev libxcb-xinerama0 \
-    libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev \
-    libxcb-keysyms1-dev libxcb-xinerama0-dev libxcb-randr0-dev libxcb-shape0-dev \
-    libxcb-sync-dev libxcb-xfixes0-dev \
-    pkg-config \
-    bzip2 \
-    sqlite3 \
-    vim \
-    findutils \
-    sudo git git-lfs ca-certificates shellcheck \
-    libatomic1 \
-    g++ build-essential cmake make \
-    python3 python3-pip python3-dev python3-setuptools \
-    cpulimit lsof zip unzip || true;
-  echo 'Installing Qt';
-  apt_get_with_retry install --no-install-recommends -y qtbase5-dev;
-  echo 'Installing dependencies that conan might use.';
-  apt_get_with_retry install --no-install-recommends -y clang libc++-dev libc++abi-dev;
-  echo 'Checking Qt path.';
-  find /usr/include/*-linux-gnu/qt5 /usr/lib/*-linux-gnu/cmake/Qt5 -name "Qt[0-9]Config.cmake" -o -name "QDialog*" 2> /dev/null | grep -z /;
-  echo "Found Qt: ${?}";
+
+  if ! command -v lcov > /dev/null; then
+    echo 'Installing APT coverage dependencies (lcov).';
+    apt_get_with_retry install --no-install-recommends -y lcov;
+  fi
+  if ! command -v g++ > /dev/null; then
+    echo 'Installing APT host build tools (g++).';
+    apt_get_with_retry install --no-install-recommends -y g++;
+  fi
+  if ! dpkg -s build-essential > /dev/null 2>&1; then
+    echo 'Installing APT host build tools (build-essential).';
+    apt_get_with_retry install --no-install-recommends -y build-essential;
+  fi
+  if ! command -v cmake > /dev/null; then
+    echo 'Installing APT host build tools (cmake).';
+    apt_get_with_retry install --no-install-recommends -y cmake;
+  fi
+  if ! command -v make > /dev/null; then
+    echo 'Installing APT host build tools (make).';
+    apt_get_with_retry install --no-install-recommends -y make;
+  fi
+  if ! command -v vim > /dev/null; then
+    echo 'Installing vim.';
+    apt_get_with_retry install --no-install-recommends -y vim;
+  fi
+  if ! command -v git > /dev/null; then
+    echo 'Installing git.';
+    apt_get_with_retry install --no-install-recommends -y git;
+  fi
+  if ! command -v git-lfs > /dev/null; then
+    echo 'Installing git-lfs.';
+    apt_get_with_retry install --no-install-recommends -y git-lfs;
+  fi
+  if ! command -v shellcheck > /dev/null; then
+    echo 'Installing shellcheck.';
+    apt_get_with_retry install --no-install-recommends -y shellcheck;
+  fi
+  if ! command -v python3 > /dev/null; then
+    echo 'Installing python3.';
+    apt_get_with_retry install --no-install-recommends -y python3;
+  fi
+  if ! dpkg -s python3-dev > /dev/null 2>&1; then
+    echo 'Installing python3-dev.';
+    apt_get_with_retry install --no-install-recommends -y python3-dev;
+  fi
+  if ! dpkg -s python3-setuptools > /dev/null 2>&1; then
+    echo 'Installing python3-setuptools.';
+    apt_get_with_retry install --no-install-recommends -y python3-setuptools;
+  fi
+  if ! command -v pip3 > /dev/null; then
+    echo 'Installing pip3.';
+    apt_get_with_retry install --no-install-recommends -y python3-pip;
+  fi
+  if ! command -v cpulimit > /dev/null; then
+    echo 'Installing cpulimit.';
+    apt_get_with_retry install --no-install-recommends -y cpulimit;
+  fi
+  if ! command -v lsof > /dev/null; then
+    echo 'Installing lsof.';
+    apt_get_with_retry install --no-install-recommends -y lsof;
+  fi
+  if ! command -v zip > /dev/null; then
+    echo 'Installing zip.';
+    apt_get_with_retry install --no-install-recommends -y zip;
+  fi
+  if ! command -v unzip > /dev/null; then
+    echo 'Installing unzip.';
+    apt_get_with_retry install --no-install-recommends -y unzip;
+  fi
+  if ! command -v clang++ > /dev/null; then
+    echo 'Installing dependencies that conan might use.';
+    apt_get_with_retry install --no-install-recommends -y clang;
+  fi
+  if ! dpkg -s libc++-dev > /dev/null 2>&1; then
+    echo 'Installing libc++-dev.';
+    apt_get_with_retry install --no-install-recommends -y libc++-dev;
+  fi
+  if ! dpkg -s libc++abi-dev > /dev/null 2>&1; then
+    echo 'Installing libc++abi-dev.';
+    apt_get_with_retry install --no-install-recommends -y libc++abi-dev;
+  fi
   if ! command -v readelf > /dev/null; then
     echo 'Installing readelf.';
     apt_get_with_retry install --no-install-recommends -y binutils;
+  fi
+  if ! dpkg -s qtbase5-dev > /dev/null 2>&1; then
+    echo 'Installing Qt';
+    apt_get_with_retry install --no-install-recommends -y qtbase5-dev;
   fi
 }
 
@@ -310,20 +374,28 @@ install_dependencies_macos() {
   echo 'Avoid homebrew from auto-update itself every time its installed something.';
   export HOMEBREW_NO_AUTO_UPDATE=1;
 
-  echo 'Install packages separately, so it continues regardless if some error occurs in one.';
-  set +e;
-  sudo port help;
-  echo 'Updating MacPorts.';
-  sudo port -bn selfupdate;
-  echo 'Installing git via MacPorts.';
-  sudo port -bn install git git-lfs;
-  installedGit="$?";
-  if [ "${installedGit}" != '0' ]; then
-    echo 'Installing git via MacPorts failed. Installing git via Homebrew.';
-    brew list git > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git;
-    brew list git-lfs > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git-lfs;
+  # `port selfupdate` (~1-2 min) and the unconditional `port install git git-lfs`
+  # are the slowest steps of this function. Skip them when git and git-lfs are
+  # already present (the common case on GitHub-hosted macOS runners). If Qt
+  # later needs a macports install, that step will do its own work with whatever
+  # package definitions are cached locally; in practice the cached definitions
+  # on a fresh runner are recent enough, and a stale macports falls back to brew.
+  if ! command -v git > /dev/null || ! command -v git-lfs > /dev/null; then
+    echo 'Install packages separately, so it continues regardless if some error occurs in one.';
+    set +e;
+    sudo port help;
+    echo 'Updating MacPorts.';
+    sudo port -bn selfupdate;
+    echo 'Installing git via MacPorts.';
+    sudo port -bn install git git-lfs;
+    installedGit="$?";
+    if [ "${installedGit}" != '0' ]; then
+      echo 'Installing git via MacPorts failed. Installing git via Homebrew.';
+      brew list git > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git;
+      brew list git-lfs > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git-lfs;
+    fi
+    set -e;
   fi
-  set -e;
 
   if ! command -v timeout > /dev/null; then
     echo 'Installing coreutils.';

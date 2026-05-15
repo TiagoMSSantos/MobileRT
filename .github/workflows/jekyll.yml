@@ -105,7 +105,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/ruby/setup-ruby/blob/master/action.yml
           ruby-version: '3.4.8'
-          bundler-cache: false
+          bundler-cache: true
           cache-version: 0
 
       - name: Setup Pages

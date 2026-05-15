@@ -476,7 +476,7 @@ zipFilesForArtifact() {
   cd "${1}" || exit 1;
 
   echo "Zipping path: ${pathName}";
-  zip -9 -v -r "${2}" ./*;
+  zip -1 -v -r "${2}" ./*;
   cd "${oldpath}" || exit 1;
 
   du -h -d 1 "${1}";

@@ -132,11 +132,43 @@ jobs:
           dir: '${{ github.workspace }}'
           install-deps: 'false'
           modules: ''
-          cache: 'false'
-          cache-key-prefix: '${{ env.qt_host }}-${{ inputs.qt_arch }}'
+          cache: 'true'
+          cache-key-prefix: 'qt-${{ inputs.qt_version }}-${{ env.qt_host }}-${{ inputs.qt_arch }}'
           setup-python: 'true'
           set-env: 'true'
           py7zrversion: '>=1.0.0'
+
+      - name: Setup ccache
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        # Bug fix: the previous condition `!startsWith(inputs.compiler, 'cl')`
+        # also excluded 'clang++' (since "clang++" starts with "cl"), so clang
+        # builds were silently bypassing ccache. Use exact-equals on 'cl' to
+        # target ONLY the MSVC matrix entry.
+        if: success() && inputs.compiler != 'cl' && !startsWith(inputs.compiler, 'icpx')
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ccache-${{ inputs.build_os }}-${{ inputs.compiler }}-${{ inputs.type }}
+          restore-keys: ccache-${{ inputs.build_os }}-${{ inputs.compiler }}-
+          max-size: 500M
+          append-timestamp: false
+
+      - name: Setup sccache (MSVC)
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        # Exact-equals on 'cl' for the same reason as above: startsWith would
+        # also match 'clang++', installing sccache for macOS clang builds
+        # which should use ccache instead.
+        if: success() && inputs.compiler == 'cl'
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          # MSVC is not ccache-compatible (it requires /Z7 instead of /Zi for
+          # embedded debug info), so use sccache, which natively handles MSVC.
+          # The hendrikmuhs/ccache-action provides a unified entry point for
+          # both via the 'variant' parameter.
+          variant: sccache
+          key: sccache-${{ inputs.build_os }}-${{ inputs.compiler }}-${{ inputs.type }}
+          restore-keys: sccache-${{ inputs.build_os }}-${{ inputs.compiler }}-
+          max-size: 500M
+          append-timestamp: false
 
       - name: Install dependencies
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -180,22 +212,25 @@ jobs:
           else
             echo 'Expecting Qt was installed in MobileRT root path.';
             env | grep -ie qt -ie flags;
-            du -h -d 1 Qt;
+            ls -lahp Qt;
           fi
 
       - name: Install Intel C++ Compiler
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.compiler, 'icpx')
         run: |
+          . scripts/install_dependencies.sh;
           gpgKey='GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB';
           wget https://apt.repos.intel.com/intel-gpg-keys/"${gpgKey}";
           sudo apt-key add "${gpgKey}";
           rm "${gpgKey}";
           echo 'deb https://apt.repos.intel.com/oneapi all main' | sudo tee /etc/apt/sources.list.d/oneAPI.list;
           sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
-          sudo apt-get update;
-          sudo apt-get install intel-oneapi-compiler-dpcpp-cpp;
+          apt_get_with_retry update -y;
+          apt_get_with_retry install -y intel-oneapi-compiler-dpcpp-cpp;
+          set +u;
           . /opt/intel/oneapi/setvars.sh;
+          set -u;
           env;
           which icpx;
           which icx;
@@ -206,6 +241,14 @@ jobs:
       - name: Build ${{ inputs.type }}
         timeout-minutes: 40
         if: success()
+        env:
+          # Route compilation through the right cache binary: sccache for MSVC,
+          # ccache for everything else (except icpx, which is excluded because
+          # the Intel compiler intercepts the launcher in incompatible ways).
+          # Use exact-equals on 'cl' (not startsWith) because 'clang++' also
+          # starts with 'cl' and would otherwise route clang through sccache.
+          CMAKE_CXX_COMPILER_LAUNCHER: ${{ inputs.compiler == 'cl' && 'sccache' || (!startsWith(inputs.compiler, 'icpx') && 'ccache' || '') }}
+          CMAKE_C_COMPILER_LAUNCHER: ${{ inputs.compiler == 'cl' && 'sccache' || (!startsWith(inputs.compiler, 'icpx') && 'ccache' || '') }}
         run: |
           sh scripts/compile_native.sh -t ${{ inputs.type }} -c ${{ inputs.compiler }};
           if [ "${{ inputs.type }}" = 'release' ]; then
@@ -344,8 +387,8 @@ jobs:
           dir: '${{ github.workspace }}'
           install-deps: 'false'
           modules: ''
-          cache: 'false'
-          cache-key-prefix: '${{ env.qt_host }}-${{ inputs.qt_arch }}'
+          cache: 'true'
+          cache-key-prefix: 'qt-${{ inputs.qt_version }}-${{ env.qt_host }}-${{ inputs.qt_arch }}'
           setup-python: 'true'
           set-env: 'true'
           py7zrversion: '>=1.0.0'
@@ -362,15 +405,18 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.compiler, 'icpx')
         run: |
+          . scripts/install_dependencies.sh;
           gpgKey='GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB';
           wget https://apt.repos.intel.com/intel-gpg-keys/"${gpgKey}";
           sudo apt-key add "${gpgKey}";
           rm "${gpgKey}";
           echo 'deb https://apt.repos.intel.com/oneapi all main' | sudo tee /etc/apt/sources.list.d/oneAPI.list;
           sudo rm /etc/apt/sources.list.d/microsoft-prod.list || true;
-          sudo apt-get update;
-          sudo apt-get install intel-oneapi-compiler-dpcpp-cpp;
+          apt_get_with_retry update -y;
+          apt_get_with_retry install -y intel-oneapi-compiler-dpcpp-cpp;
+          set +u;
           . /opt/intel/oneapi/setvars.sh;
+          set -u;
           env;
           which icpx;
           which icx;
