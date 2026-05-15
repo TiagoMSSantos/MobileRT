@@ -1,6 +1,6 @@
 [requires]
 icu/78.2
-qt/6.10.1
+qt/6.10.3
 boost/1.91.0
 gtest/1.17.0
 tinyobjloader/1.0.7
