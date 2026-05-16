@@ -275,11 +275,11 @@ android {
                 final def cLauncher = System.getenv('CMAKE_C_COMPILER_LAUNCHER')
                 final def cxxLauncher = System.getenv('CMAKE_CXX_COMPILER_LAUNCHER')
                 if (cLauncher && cxxLauncher) {
-                    arguments '-DCMAKE_VERBOSE_MAKEFILE=ON',
+                    arguments '-DCMAKE_VERBOSE_MAKEFILE=OFF',
                               "-DCMAKE_C_COMPILER_LAUNCHER=${cLauncher}",
                               "-DCMAKE_CXX_COMPILER_LAUNCHER=${cxxLauncher}"
                 } else {
-                    arguments '-DCMAKE_VERBOSE_MAKEFILE=ON'
+                    arguments '-DCMAKE_VERBOSE_MAKEFILE=OFF'
                 }
             }
         }
