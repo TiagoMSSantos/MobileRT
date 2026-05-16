@@ -116,6 +116,98 @@ apt_get_with_retry() {
   return 1;
 }
 
+# Run any yum subcommand with timeout and retry.
+# Usage: yum_with_retry <subcommand> [args...]
+#   e.g. yum_with_retry update -y
+#        yum_with_retry install -y cmake
+yum_with_retry() {
+  _max_retries=3;
+  _retry=0;
+  while [ "${_retry}" -lt "${_max_retries}" ]; do
+    _retry=$((_retry + 1));
+    timeout 180 yum --setopt=skip_missing_names_on_install=False \
+      --setopt=skip_missing_names_on_update=False "$@" && return 0;
+    echo "yum '$*' failed or timed out (attempt ${_retry} of ${_max_retries})";
+    sleep 5;
+  done;
+  return 1;
+}
+
+# Check whether an RPM package is already installed.
+# Usage: rpm_installed <package-name>
+rpm_installed() { rpm -q "$1" > /dev/null 2>&1; }
+
+# Run any pacman subcommand with timeout and retry.
+# Usage: pacman_with_retry [flags] [args...]
+#   e.g. pacman_with_retry -Sy
+#        pacman_with_retry -S --noconfirm --needed cmake
+pacman_with_retry() {
+  _max_retries=3;
+  _retry=0;
+  while [ "${_retry}" -lt "${_max_retries}" ]; do
+    _retry=$((_retry + 1));
+    timeout 180 pacman "$@" && return 0;
+    echo "pacman '$*' failed or timed out (attempt ${_retry} of ${_max_retries})";
+    sleep 5;
+  done;
+  return 1;
+}
+
+# Check whether a pacman package is already installed.
+# Usage: pacman_installed <package-name>
+pacman_installed() { pacman -Q "$1" > /dev/null 2>&1; }
+
+# Run any apk subcommand with timeout and retry.
+# Usage: apk_with_retry <subcommand> [args...]
+#   e.g. apk_with_retry update
+#        apk_with_retry add cmake
+apk_with_retry() {
+  _max_retries=3;
+  _retry=0;
+  while [ "${_retry}" -lt "${_max_retries}" ]; do
+    _retry=$((_retry + 1));
+    timeout 180 apk "$@" && return 0;
+    echo "apk '$*' failed or timed out (attempt ${_retry} of ${_max_retries})";
+    sleep 5;
+  done;
+  return 1;
+}
+
+# Check whether an APK package is already installed.
+# Usage: apk_installed <package-name>
+apk_installed() { apk info -e "$1" > /dev/null 2>&1; }
+
+# Run any emerge subcommand with timeout and retry.
+# Usage: emerge_with_retry [flags] <atom>
+#   e.g. emerge_with_retry --sync
+#        emerge_with_retry --changed-use cmake
+emerge_with_retry() {
+  _max_retries=3;
+  _retry=0;
+  while [ "${_retry}" -lt "${_max_retries}" ]; do
+    _retry=$((_retry + 1));
+    timeout 300 emerge "$@" && return 0;
+    echo "emerge '$*' failed or timed out (attempt ${_retry} of ${_max_retries})";
+    sleep 5;
+  done;
+  return 1;
+}
+
+# Run any brew subcommand with retry (no timeout: brew manages its own network timeouts).
+# Usage: brew_with_retry <subcommand> [args...]
+#   e.g. brew_with_retry install --skip-cask-deps cmake
+brew_with_retry() {
+  _max_retries=3;
+  _retry=0;
+  while [ "${_retry}" -lt "${_max_retries}" ]; do
+    _retry=$((_retry + 1));
+    brew "$@" && return 0;
+    echo "brew '$*' failed (attempt ${_retry} of ${_max_retries})";
+    sleep 5;
+  done;
+  return 1;
+}
+
 install_dependencies_debian() {
   if ! command -v sudo > /dev/null; then
     echo 'Installing sudo.';
@@ -217,153 +309,320 @@ install_dependencies_debian() {
 }
 
 install_dependencies_red_hat() {
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y epel-release;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False update -y;
-  dnf install -y python3-pip;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y ShellCheck;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y vim;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y findutils;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y gcc-c++;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y cmake;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y make;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y git;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y git-lfs;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y ca-certificates;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y which;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y qt5-qtbase-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y procps; # Install 'ps'
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y lsof; # Install 'lsof'
+  echo 'Updating YUM repositories.';
+  yum_with_retry update -y;
+  if ! rpm_installed epel-release; then
+    echo 'Installing EPEL release.';
+    yum_with_retry install -y epel-release;
+    echo 'Updating YUM repositories after EPEL.';
+    yum_with_retry update -y;
+  fi
+  if ! command -v pip3 > /dev/null; then
+    echo 'Installing python3-pip.';
+    yum_with_retry install -y python3-pip;
+  fi
+  if ! command -v shellcheck > /dev/null; then
+    echo 'Installing ShellCheck.';
+    yum_with_retry install -y ShellCheck;
+  fi
+  if ! command -v vim > /dev/null; then
+    echo 'Installing vim.';
+    yum_with_retry install -y vim;
+  fi
+  if ! command -v find > /dev/null; then
+    echo 'Installing findutils.';
+    yum_with_retry install -y findutils;
+  fi
+  if ! command -v g++ > /dev/null; then
+    echo 'Installing gcc-c++.';
+    yum_with_retry install -y gcc-c++;
+  fi
+  if ! command -v cmake > /dev/null; then
+    echo 'Installing cmake.';
+    yum_with_retry install -y cmake;
+  fi
+  if ! command -v make > /dev/null; then
+    echo 'Installing make.';
+    yum_with_retry install -y make;
+  fi
+  if ! command -v git > /dev/null; then
+    echo 'Installing git.';
+    yum_with_retry install -y git;
+  fi
+  if ! command -v git-lfs > /dev/null; then
+    echo 'Installing git-lfs.';
+    yum_with_retry install -y git-lfs;
+  fi
+  if ! rpm_installed ca-certificates; then
+    echo 'Installing ca-certificates.';
+    yum_with_retry install -y ca-certificates;
+  fi
+  if ! command -v which > /dev/null; then
+    echo 'Installing which.';
+    yum_with_retry install -y which;
+  fi
+  if ! rpm_installed qt5-qtbase-devel; then
+    echo 'Installing Qt5.';
+    yum_with_retry install -y qt5-qtbase-devel;
+  fi
+  if ! command -v ps > /dev/null; then
+    echo 'Installing procps.';
+    yum_with_retry install -y procps; # Install 'ps'
+  fi
+  if ! command -v lsof > /dev/null; then
+    echo 'Installing lsof.';
+    yum_with_retry install -y lsof; # Install 'lsof'
+  fi
+  if ! command -v zip > /dev/null; then
+    echo 'Installing zip.';
+    yum_with_retry install -y zip;
+  fi
+  if ! command -v unzip > /dev/null; then
+    echo 'Installing unzip.';
+    yum_with_retry install -y unzip;
+  fi
 
   echo 'Installing dependencies that conan might use.';
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y mesa-libGL-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXaw-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXcomposite-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXcursor-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXtst-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXinerama-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXrandr-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXScrnSaver-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXdamage-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXv-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libuuid-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xkeyboard-config-devel;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libfontenc;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXdmcp;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libxkbfile;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXres;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util-wm;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util-image;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util-keysyms;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util-renderutil;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y libXxf86vm;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y xcb-util;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y zip;
-  yum --setopt=skip_missing_names_on_install=False --setopt=skip_missing_names_on_update=False install -y unzip;
+  if ! rpm_installed mesa-libGL-devel; then yum_with_retry install -y mesa-libGL-devel; fi
+  if ! rpm_installed libXaw-devel; then yum_with_retry install -y libXaw-devel; fi
+  if ! rpm_installed libXcomposite-devel; then yum_with_retry install -y libXcomposite-devel; fi
+  if ! rpm_installed libXcursor-devel; then yum_with_retry install -y libXcursor-devel; fi
+  if ! rpm_installed libXtst-devel; then yum_with_retry install -y libXtst-devel; fi
+  if ! rpm_installed libXinerama-devel; then yum_with_retry install -y libXinerama-devel; fi
+  if ! rpm_installed libXrandr-devel; then yum_with_retry install -y libXrandr-devel; fi
+  if ! rpm_installed libXScrnSaver-devel; then yum_with_retry install -y libXScrnSaver-devel; fi
+  if ! rpm_installed libXdamage-devel; then yum_with_retry install -y libXdamage-devel; fi
+  if ! rpm_installed libXv-devel; then yum_with_retry install -y libXv-devel; fi
+  if ! rpm_installed libuuid-devel; then yum_with_retry install -y libuuid-devel; fi
+  if ! rpm_installed xkeyboard-config-devel; then yum_with_retry install -y xkeyboard-config-devel; fi
+  if ! rpm_installed libfontenc; then yum_with_retry install -y libfontenc; fi
+  if ! rpm_installed libXdmcp; then yum_with_retry install -y libXdmcp; fi
+  if ! rpm_installed libxkbfile; then yum_with_retry install -y libxkbfile; fi
+  if ! rpm_installed libXres; then yum_with_retry install -y libXres; fi
+  if ! rpm_installed xcb-util-wm; then yum_with_retry install -y xcb-util-wm; fi
+  if ! rpm_installed xcb-util-image; then yum_with_retry install -y xcb-util-image; fi
+  if ! rpm_installed xcb-util-keysyms; then yum_with_retry install -y xcb-util-keysyms; fi
+  if ! rpm_installed xcb-util-renderutil; then yum_with_retry install -y xcb-util-renderutil; fi
+  if ! rpm_installed libXxf86vm; then yum_with_retry install -y libXxf86vm; fi
+  if ! rpm_installed xcb-util; then yum_with_retry install -y xcb-util; fi
 }
 
 install_dependencies_arch() {
-  echo 'Installing dependencies';
-  pacman -Sy --noconfirm --needed --noscriptlet icu qt5-base gcc;
+  echo 'Syncing package database.';
+  pacman_with_retry -Sy;
 
+  if ! pacman_installed icu; then
+    echo 'Installing icu.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet icu;
+  fi
+  if ! pacman_installed qt5-base; then
+    echo 'Installing qt5-base.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet qt5-base;
+  fi
+  if ! command -v g++ > /dev/null; then
+    echo 'Installing gcc.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet gcc;
+  fi
   if ! command -v cmake > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet cmake;
+    echo 'Installing cmake.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet cmake;
   fi
   if ! command -v vim > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet vim;
+    echo 'Installing vim.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet vim;
   fi
   if ! command -v make > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet make;
+    echo 'Installing make.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet make;
   fi
   if ! command -v shellcheck > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet ghc-libs shellcheck;
+    echo 'Installing shellcheck.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet ghc-libs shellcheck;
   fi
   if ! command -v git > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet ca-certificates git;
+    echo 'Installing git.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet ca-certificates git;
   fi
   if ! command -v git-lfs > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet git-lfs;
+    echo 'Installing git-lfs.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet git-lfs;
   fi
   if ! command -v which > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet which;
+    echo 'Installing which.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet which;
   fi
   if ! command -v python3 > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet python3;
+    echo 'Installing python3.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet python3;
   fi
   if ! command -v lsof > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet lsof;
+    echo 'Installing lsof.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet lsof;
   fi
   if ! command -v zip > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet zip;
+    echo 'Installing zip.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet zip;
   fi
   if ! command -v unzip > /dev/null; then
-    pacman -S --noconfirm --needed --noscriptlet unzip;
+    echo 'Installing unzip.';
+    pacman_with_retry -S --noconfirm --needed --noscriptlet unzip;
   fi
   echo 'Installed dependencies';
 }
 
 install_dependencies_alpine() {
-  apk update;
-  apk add \
-    vim \
-    findutils \
-    cmake make ncurses \
-    shellcheck \
-    git git-lfs ca-certificates \
-    qt5-qtbase-dev \
-    which \
-    g++ gcc \
-    py3-pip \
-    zip unzip;
+  echo 'Updating APK repositories.';
+  apk_with_retry update;
+
+  if ! command -v vim > /dev/null; then
+    echo 'Installing vim.';
+    apk_with_retry add vim;
+  fi
+  if ! command -v find > /dev/null; then
+    echo 'Installing findutils.';
+    apk_with_retry add findutils;
+  fi
+  if ! command -v cmake > /dev/null; then
+    echo 'Installing cmake.';
+    apk_with_retry add cmake;
+  fi
+  if ! command -v make > /dev/null; then
+    echo 'Installing make.';
+    apk_with_retry add make;
+  fi
+  if ! apk_installed ncurses; then
+    echo 'Installing ncurses.';
+    apk_with_retry add ncurses;
+  fi
+  if ! command -v shellcheck > /dev/null; then
+    echo 'Installing shellcheck.';
+    apk_with_retry add shellcheck;
+  fi
+  if ! command -v git > /dev/null; then
+    echo 'Installing git.';
+    apk_with_retry add git;
+  fi
+  if ! command -v git-lfs > /dev/null; then
+    echo 'Installing git-lfs.';
+    apk_with_retry add git-lfs;
+  fi
+  if ! apk_installed ca-certificates; then
+    echo 'Installing ca-certificates.';
+    apk_with_retry add ca-certificates;
+  fi
+  if ! apk_installed qt5-qtbase-dev; then
+    echo 'Installing Qt5.';
+    apk_with_retry add qt5-qtbase-dev;
+  fi
+  if ! command -v which > /dev/null; then
+    echo 'Installing which.';
+    apk_with_retry add which;
+  fi
+  if ! command -v g++ > /dev/null; then
+    echo 'Installing g++.';
+    apk_with_retry add g++;
+  fi
+  if ! command -v gcc > /dev/null; then
+    echo 'Installing gcc.';
+    apk_with_retry add gcc;
+  fi
+  if ! command -v pip3 > /dev/null; then
+    echo 'Installing py3-pip.';
+    apk_with_retry add py3-pip;
+  fi
+  if ! command -v zip > /dev/null; then
+    echo 'Installing zip.';
+    apk_with_retry add zip;
+  fi
+  if ! command -v unzip > /dev/null; then
+    echo 'Installing unzip.';
+    apk_with_retry add unzip;
+  fi
+
   echo 'Installing dependencies that conan might use.';
-  apk add libfontenc-dev libxaw-dev libxcomposite-dev libxcursor-dev libxi-dev \
-    libxinerama-dev libxkbfile-dev libxrandr-dev libxres-dev libxscrnsaver-dev \
-    libxtst-dev libxv-dev libxvmc-dev xcb-util-wm-dev;
+  if ! apk_installed libfontenc-dev; then apk_with_retry add libfontenc-dev; fi
+  if ! apk_installed libxaw-dev; then apk_with_retry add libxaw-dev; fi
+  if ! apk_installed libxcomposite-dev; then apk_with_retry add libxcomposite-dev; fi
+  if ! apk_installed libxcursor-dev; then apk_with_retry add libxcursor-dev; fi
+  if ! apk_installed libxi-dev; then apk_with_retry add libxi-dev; fi
+  if ! apk_installed libxinerama-dev; then apk_with_retry add libxinerama-dev; fi
+  if ! apk_installed libxkbfile-dev; then apk_with_retry add libxkbfile-dev; fi
+  if ! apk_installed libxrandr-dev; then apk_with_retry add libxrandr-dev; fi
+  if ! apk_installed libxres-dev; then apk_with_retry add libxres-dev; fi
+  if ! apk_installed libxscrnsaver-dev; then apk_with_retry add libxscrnsaver-dev; fi
+  if ! apk_installed libxtst-dev; then apk_with_retry add libxtst-dev; fi
+  if ! apk_installed libxv-dev; then apk_with_retry add libxv-dev; fi
+  if ! apk_installed libxvmc-dev; then apk_with_retry add libxvmc-dev; fi
+  if ! apk_installed xcb-util-wm-dev; then apk_with_retry add xcb-util-wm-dev; fi
 }
 
 install_dependencies_gentoo() {
   echo 'FEATURES="-sandbox -usersandbox -ipc-sandbox -network-sandbox -pid-sandbox"' >> /etc/portage/make.conf;
   echo 'USE="dev-libs/libpcre2-10.35 pcre16 x11-libs/libxkbcommon-1.0.3 media-libs/libglvnd-1.3.2-r2 X"' >> /etc/portage/make.conf;
   echo 'Emerge sync';
-  emerge --sync || true;
+  emerge_with_retry --sync || true;
   echo 'Emerge sys-apps/portage';
-  emerge --changed-use sys-apps/portage;
+  emerge_with_retry --changed-use sys-apps/portage;
   echo 'Emerge dev-libs/icu';
-  emerge --changed-use dev-libs/icu;
-  echo 'Emerge app-editors/vim';
-  emerge --changed-use app-editors/vim;
-  echo 'Emerge findutils';
-  emerge --changed-use findutils;
-  echo 'Emerge cmake';
-  emerge --changed-use cmake;
-  echo 'Emerge make';
-  emerge --changed-use make;
-  echo 'Emerge dev-vcs/git';
-  emerge --changed-use dev-vcs/git;
-  echo 'Emerge dev-vcs/git-lfs';
-  emerge --changed-use dev-vcs/git-lfs;
+  emerge_with_retry --changed-use dev-libs/icu;
+  if ! command -v vim > /dev/null; then
+    echo 'Emerge app-editors/vim';
+    emerge_with_retry --changed-use app-editors/vim;
+  fi
+  if ! command -v find > /dev/null; then
+    echo 'Emerge findutils';
+    emerge_with_retry --changed-use findutils;
+  fi
+  if ! command -v cmake > /dev/null; then
+    echo 'Emerge cmake';
+    emerge_with_retry --changed-use cmake;
+  fi
+  if ! command -v make > /dev/null; then
+    echo 'Emerge make';
+    emerge_with_retry --changed-use make;
+  fi
+  if ! command -v git > /dev/null; then
+    echo 'Emerge dev-vcs/git';
+    emerge_with_retry --changed-use dev-vcs/git;
+  fi
+  if ! command -v git-lfs > /dev/null; then
+    echo 'Emerge dev-vcs/git-lfs';
+    emerge_with_retry --changed-use dev-vcs/git-lfs;
+  fi
   echo 'Emerge ca-certificates';
-  emerge --changed-use ca-certificates;
-  echo 'Emerge which';
-  emerge --changed-use which;
+  emerge_with_retry --changed-use ca-certificates;
+  if ! command -v which > /dev/null; then
+    echo 'Emerge which';
+    emerge_with_retry --changed-use which;
+  fi
   echo 'Emerge xcb';
-  emerge --changed-use xcb;
+  emerge_with_retry --changed-use xcb;
   echo 'Emerge dev-qt/qtcore';
-  emerge --changed-use dev-qt/qtcore;
+  emerge_with_retry --changed-use dev-qt/qtcore;
   echo 'Emerge dev-qt/qtgui';
-  emerge --changed-use dev-qt/qtgui;
+  emerge_with_retry --changed-use dev-qt/qtgui;
   echo 'Emerge dev-qt/qtwidgets';
-  emerge --changed-use dev-qt/qtwidgets;
-  echo 'Emerge dev-lang/python';
-  emerge --changed-use dev-lang/python;
-  echo 'Emerge shellcheck';
-  emerge --changed-use dev-util/shellcheck-bin;
-  echo 'Emerge lsof';
-  emerge --changed-use sys-process/lsof;
-  echo 'Emerge zip';
-  emerge --changed-use app-arch/zip;
-  echo 'Emerge unzip';
-  emerge --changed-use app-arch/unzip;
+  emerge_with_retry --changed-use dev-qt/qtwidgets;
+  if ! command -v python3 > /dev/null; then
+    echo 'Emerge dev-lang/python';
+    emerge_with_retry --changed-use dev-lang/python;
+  fi
+  if ! command -v shellcheck > /dev/null; then
+    echo 'Emerge shellcheck';
+    emerge_with_retry --changed-use dev-util/shellcheck-bin;
+  fi
+  if ! command -v lsof > /dev/null; then
+    echo 'Emerge lsof';
+    emerge_with_retry --changed-use sys-process/lsof;
+  fi
+  if ! command -v zip > /dev/null; then
+    echo 'Emerge zip';
+    emerge_with_retry --changed-use app-arch/zip;
+  fi
+  if ! command -v unzip > /dev/null; then
+    echo 'Emerge unzip';
+    emerge_with_retry --changed-use app-arch/unzip;
+  fi
 }
 
 install_dependencies_macos() {
@@ -391,35 +650,35 @@ install_dependencies_macos() {
     installedGit="$?";
     if [ "${installedGit}" != '0' ]; then
       echo 'Installing git via MacPorts failed. Installing git via Homebrew.';
-      brew list git > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git;
-      brew list git-lfs > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install git-lfs;
+      brew list git > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install git;
+      brew list git-lfs > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install git-lfs;
     fi
     set -e;
   fi
 
   if ! command -v timeout > /dev/null; then
     echo 'Installing coreutils.';
-    brew list coreutils > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install coreutils || true; # To install 'timeout' command.
+    brew list coreutils > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install coreutils || true; # To install 'timeout' command.
   fi
   if ! command -v zip > /dev/null; then
     echo 'Installing zip.';
-    brew list zip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install zip;
+    brew list zip > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install zip;
   fi
   if ! command -v unzip > /dev/null; then
     echo 'Installing unzip.';
-    brew list unzip > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install unzip;
+    brew list unzip > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install unzip;
   fi
   if ! command -v lcov > /dev/null; then
     echo 'Installing lcov.';
-    brew list lcov > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install lcov;
+    brew list lcov > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install lcov;
   fi
   if ! command -v shellcheck > /dev/null; then
     echo 'Installing shellcheck.';
-    brew list shellcheck > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install shellcheck;
+    brew list shellcheck > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install shellcheck;
   fi
   if ! command -v readelf > /dev/null; then
     echo 'Installing readelf.';
-    brew list binutils > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install binutils;
+    brew list binutils > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install binutils;
     echo 'export PATH="/usr/local/opt/binutils/bin:${PATH}"' >> ~/.bash_profile;
     echo 'export PATH="/opt/homebrew/opt/binutils/bin:${PATH}"' >> ~/.bash_profile;
     . ~/.bash_profile;
@@ -444,7 +703,7 @@ install_dependencies_macos() {
       echo 'Installing Qt via MacPorts failed. Installing Qt via Homebrew.';
       brew unlink openssl;
       brew link --overwrite openssl;
-      brew list qt@5 > /dev/null 2>&1 || brew install --skip-cask-deps --skip-post-install qt@5;
+      brew list qt@5 > /dev/null 2>&1 || brew_with_retry install --skip-cask-deps --skip-post-install qt@5;
     fi
   fi
 

@@ -536,7 +536,7 @@ public final class MainActivity extends Activity {
         }
         validatePath(canonicalFile);
         File[] files = null;
-        if (canonicalFile.isDirectory()) {
+        if (canonicalFile.isDirectory()) { // codeql[java/path-injection] - false positive: validatePath already asserts the canonical path is within the allowed MobileRT directories
             logger.info("Reading files from directory.");
             files = canonicalFile.listFiles();
         }

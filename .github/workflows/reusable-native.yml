@@ -145,7 +145,7 @@ jobs:
         # builds were silently bypassing ccache. Use exact-equals on 'cl' to
         # target ONLY the MSVC matrix entry.
         if: success() && inputs.compiler != 'cl' && !startsWith(inputs.compiler, 'icpx')
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2
         with:
           key: ccache-${{ inputs.build_os }}-${{ inputs.compiler }}-${{ inputs.type }}
           restore-keys: ccache-${{ inputs.build_os }}-${{ inputs.compiler }}-
@@ -158,7 +158,7 @@ jobs:
         # also match 'clang++', installing sccache for macOS clang builds
         # which should use ccache instead.
         if: success() && inputs.compiler == 'cl'
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2
         with:
           # MSVC is not ccache-compatible (it requires /Z7 instead of /Zi for
           # embedded debug info), so use sccache, which natively handles MSVC.

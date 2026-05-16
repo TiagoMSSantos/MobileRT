@@ -235,24 +235,34 @@ jobs:
           . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;${{ env.ANDROID_CMAKE_VERSION }}';
 
       - name: Cache Android NDK
+        id: ndk-cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: ${{ env.ANDROID_HOME }}/ndk/${{ env.NDK_VERSION }}
           key: android-${{ inputs.android_api }}-ndk-${{ env.NDK_VERSION }}
 
       - name: Download NDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && !startsWith(inputs.build_os, 'windows')
+        if: success() && steps.ndk-cache.outputs.cache-hit != 'true' && !startsWith(inputs.build_os, 'windows')
         run: |
           . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.NDK_VERSION }}";
 
       - name: Download NDK Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && startsWith(inputs.build_os, 'windows')
+        if: success() && steps.ndk-cache.outputs.cache-hit != 'true' && startsWith(inputs.build_os, 'windows')
         run: |
           . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install "ndk;${{ env.NDK_VERSION }}";
+
+      - name: Save Android NDK to cache
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success() && steps.ndk-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ${{ env.ANDROID_HOME }}/ndk/${{ env.NDK_VERSION }}
+          key: android-${{ inputs.android_api }}-ndk-${{ env.NDK_VERSION }}
+          upload-chunk-size: 536870912
 
       - name: Download Android dependencies
         timeout-minutes: 8
@@ -361,7 +371,6 @@ jobs:
           ls -lahp ${{ env.GRADLE_PATH }}/native;
 
           echo 'Deleting unnecessary cache.';
-          rm -rf ${{ env.GRADLE_PATH }}/caches/build-cache-*;
           rm -rf ${{ env.GRADLE_PATH }}/caches/journal-*;
           rm -rf ${{ env.GRADLE_PATH }}/caches/transforms-4;
           rm -rf ${{ env.GRADLE_PATH }}/daemon;
@@ -503,15 +512,26 @@ jobs:
           df -h;
 
       - name: Download Android NDK from cache
+        id: ndk-cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           key: android-${{ inputs.android_api }}-ndk-${{ needs.Build.outputs.ndk_version }}
           enableCrossOsArchive: true
-          fail-on-cache-miss: true
-          lookup-only: false
           path: ${{ env.ANDROID_HOME }}/ndk/${{ needs.Build.outputs.ndk_version }}
+
+      - name: Download NDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && steps.ndk-cache.outputs.cache-hit != 'true' && !startsWith(inputs.target_os, 'windows')
+        run: |
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ needs.Build.outputs.ndk_version }}";
+
+      - name: Download NDK Windows
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && steps.ndk-cache.outputs.cache-hit != 'true' && startsWith(inputs.target_os, 'windows')
+        run: |
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install "ndk;${{ needs.Build.outputs.ndk_version }}";
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
