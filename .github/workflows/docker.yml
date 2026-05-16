@@ -329,7 +329,6 @@ jobs:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         path: ~/.cache/pip
         key: pip-docker-squash-${{ runner.os }}
-        restore-keys: pip-docker-squash-
 
     - name: Pull base Docker image
       timeout-minutes: 60

@@ -264,6 +264,23 @@ jobs:
           key: android-${{ inputs.android_api }}-ndk-${{ env.NDK_VERSION }}
           upload-chunk-size: 536870912
 
+      - name: Setup ccache for Android C++ builds
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2
+        with:
+          key: android-ccache-${{ inputs.android_api }}-${{ inputs.type }}-${{ inputs.build_os }}-${{ github.sha }}
+          max-size: 2G
+          variant: ccache
+          save: true
+
+      - name: Set ccache as CMake compiler launcher
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          echo 'CMAKE_C_COMPILER_LAUNCHER=ccache' >> "${GITHUB_ENV}";
+          echo 'CMAKE_CXX_COMPILER_LAUNCHER=ccache' >> "${GITHUB_ENV}";
+
       - name: Download Android dependencies
         timeout-minutes: 8
         if: success()
@@ -704,6 +721,23 @@ jobs:
               . scripts/helper_functions.sh && checkPathExists app/build/tmp/kotlin-classes/debug;
             fi
           fi
+
+      - name: Restore ccache for Android C++ builds
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2
+        with:
+          key: android-ccache-${{ inputs.android_api }}-${{ inputs.type }}-${{ inputs.build_os }}-${{ github.sha }}
+          max-size: 2G
+          variant: ccache
+          save: false
+
+      - name: Set ccache as CMake compiler launcher
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        run: |
+          echo 'CMAKE_C_COMPILER_LAUNCHER=ccache' >> "${GITHUB_ENV}";
+          echo 'CMAKE_CXX_COMPILER_LAUNCHER=ccache' >> "${GITHUB_ENV}";
 
       - name: Enable KVM group permissions
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

@@ -148,7 +148,6 @@ jobs:
         uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2
         with:
           key: ccache-${{ inputs.build_os }}-${{ inputs.compiler }}-${{ inputs.type }}
-          restore-keys: ccache-${{ inputs.build_os }}-${{ inputs.compiler }}-
           max-size: 500M
           append-timestamp: false
 
@@ -166,7 +165,6 @@ jobs:
           # both via the 'variant' parameter.
           variant: sccache
           key: sccache-${{ inputs.build_os }}-${{ inputs.compiler }}-${{ inputs.type }}
-          restore-keys: sccache-${{ inputs.build_os }}-${{ inputs.compiler }}-
           max-size: 500M
           append-timestamp: false
 
