@@ -280,6 +280,14 @@ jobs:
         run: |
           echo 'CMAKE_C_COMPILER_LAUNCHER=ccache' >> "${GITHUB_ENV}";
           echo 'CMAKE_CXX_COMPILER_LAUNCHER=ccache' >> "${GITHUB_ENV}";
+          # The Android NDK clang++ is restored from the NDK cache with a
+          # different mtime in the Build vs test job, so the default
+          # compiler_check=mtime makes ccache treat it as a new compiler and
+          # miss 100%. Hash the compiler contents instead, and make the cache
+          # path-independent so Build-job entries are reused by the test jobs.
+          echo 'CCACHE_COMPILERCHECK=content' >> "${GITHUB_ENV}";
+          echo 'CCACHE_BASEDIR=${{ github.workspace }}' >> "${GITHUB_ENV}";
+          echo 'CCACHE_SLOPPINESS=time_macros,include_file_mtime,include_file_ctime,locale,pch_defines' >> "${GITHUB_ENV}";
 
       - name: Download Android dependencies
         timeout-minutes: 8
@@ -738,6 +746,14 @@ jobs:
         run: |
           echo 'CMAKE_C_COMPILER_LAUNCHER=ccache' >> "${GITHUB_ENV}";
           echo 'CMAKE_CXX_COMPILER_LAUNCHER=ccache' >> "${GITHUB_ENV}";
+          # The Android NDK clang++ is restored from the NDK cache with a
+          # different mtime in the Build vs test job, so the default
+          # compiler_check=mtime makes ccache treat it as a new compiler and
+          # miss 100%. Hash the compiler contents instead, and make the cache
+          # path-independent so Build-job entries are reused by the test jobs.
+          echo 'CCACHE_COMPILERCHECK=content' >> "${GITHUB_ENV}";
+          echo 'CCACHE_BASEDIR=${{ github.workspace }}' >> "${GITHUB_ENV}";
+          echo 'CCACHE_SLOPPINESS=time_macros,include_file_mtime,include_file_ctime,locale,pch_defines' >> "${GITHUB_ENV}";
 
       - name: Enable KVM group permissions
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
