@@ -366,20 +366,32 @@ jobs:
             fi
           fi
 
-      - name: Upload generated binaries to cache
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      # Hand the compiled binaries to the downstream test/Sonar jobs as an
+      # ARTIFACT, not via actions/cache. Per-run caches keyed by run id are
+      # big (~hundreds of MB x matrix) and routinely LRU-evicted under the
+      # 10 GB Actions-cache cap before the later jobs restore them. Artifacts
+      # use a separate store that is not subject to that LRU. The Gradle
+      # build-cache (~/.gradle/caches/build-cache-*) is intentionally NOT
+      # included here because it is already handed off via the gradle-packages
+      # artifact (see the "Zip Gradle packages" step below).
+      - name: Upload generated binaries as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          upload-chunk-size: 536870912
-          enableCrossOsArchive: true
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: compiled_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           path: |
             app/build
             app/.cxx
             gradle/wrapper
-            ${{ env.GRADLE_PATH }}/caches/build-cache-*
+          if-no-files-found: error
+          # Ephemeral intra-run handoff (consumed by the test/Sonar jobs in
+          # the same run, never needed afterwards). Keep retention at the
+          # 1-day minimum so these large artifacts do not pile up in storage.
+          retention-days: 1
+          overwrite: true
+          include-hidden-files: true
 
       - name: Zip Gradle packages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -687,21 +699,35 @@ jobs:
           echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
           echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
-      - name: Download generated binaries from cache
+      # Restore the compiled binaries from the artifact uploaded by the Build
+      # job (not actions/cache: per-run caches are LRU-evicted under the 10 GB
+      # cap before this job runs). The Gradle build-cache is restored
+      # separately from the gradle-packages artifact. if_no_artifact_found:
+      # fail keeps this a hard dependency - the job fails if it is missing.
+      - name: Download generated binaries artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          enableCrossOsArchive: true
-          fail-on-cache-miss: true
-          lookup-only: false
-          path: |
-            app/build
-            app/.cxx
-            gradle/wrapper
-            ${{ env.GRADLE_PATH }}/caches/build-cache-*
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          action: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # v21
+          pre_retry_command: 'echo "Retrying Download generated binaries artifact step..."'
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            workflow: android.yml
+            workflow_conclusion: ''
+            pr: ${{ github.event.pull_request.number }}
+            commit: ${{ github.event.pull_request.head.sha }}
+            name: compiled_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
+            path: .
+            repo: ${{ github.repository }}
+            allow_forks: true
+            check_artifacts: true
+            search_artifacts: true
+            if_no_artifact_found: fail
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1008,17 +1034,31 @@ jobs:
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && checkPathExists app/build/reports/jacoco/jacocoTestReport jacocoTestReport.xml;
 
-      - name: Upload reports to cache
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      # Sonar runs LAST (~30+ min later). The per-run compiled_*/reports_*
+      # actions/cache entries it needs are routinely LRU-evicted before then
+      # because the repo sits at the 10 GB Actions cache cap. Artifacts use a
+      # SEPARATE store that is NOT subject to that LRU, so additionally hand
+      # the exact inputs Sonar needs (compiled classes + jacoco coverage +
+      # native build + wrapper) to it as an artifact. Sonar still hard-fails
+      # if this is missing, so it remains a required gate.
+      - name: Upload Sonar inputs as artifact
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && inputs.type == 'debug'
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/save/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          upload-chunk-size: 536870912
-          enableCrossOsArchive: true
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: sonar-inputs_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
           path: |
-            app/build/reports
+            app/build
+            app/.cxx
+            gradle/wrapper
+          if-no-files-found: error
+          # Ephemeral intra-run handoff (consumed by the Sonar job in the same
+          # run, never needed afterwards). Keep retention at the 1-day minimum
+          # so these large artifacts do not pile up in storage.
+          retention-days: 1
+          overwrite: true
+          include-hidden-files: true
 
       - name: Upload test screenshots as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1173,21 +1213,35 @@ jobs:
           echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
           echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
-      - name: Download generated binaries from cache
+      # Restore the compiled binaries from the artifact uploaded by the Build
+      # job (not actions/cache: per-run caches are LRU-evicted under the 10 GB
+      # cap before this job runs). The Gradle build-cache is restored
+      # separately from the gradle-packages artifact. if_no_artifact_found:
+      # fail keeps this a hard dependency - the job fails if it is missing.
+      - name: Download generated binaries artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          enableCrossOsArchive: true
-          fail-on-cache-miss: true
-          lookup-only: false
-          path: |
-            app/build
-            app/.cxx
-            gradle/wrapper
-            ${{ env.GRADLE_PATH }}/caches/build-cache-*
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          action: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # v21
+          pre_retry_command: 'echo "Retrying Download generated binaries artifact step..."'
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            workflow: android.yml
+            workflow_conclusion: ''
+            pr: ${{ github.event.pull_request.number }}
+            commit: ${{ github.event.pull_request.head.sha }}
+            name: compiled_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
+            path: .
+            repo: ${{ github.repository }}
+            allow_forks: true
+            check_artifacts: true
+            search_artifacts: true
+            if_no_artifact_found: fail
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1461,21 +1515,36 @@ jobs:
           echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
           echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
-      - name: Download generated binaries from cache
+      # Restore Sonar's inputs (compiled classes + jacoco coverage + native
+      # build + wrapper) from the artifact uploaded by the AndroidTests job.
+      # Artifacts are NOT subject to the 10 GB Actions-cache LRU, so unlike the
+      # per-run compiled_*/reports_* caches they are not evicted before this
+      # late-running job. if_no_artifact_found: fail keeps Sonar a hard gate -
+      # the pipeline still fails (never silently passes) if inputs are absent.
+      - name: Download Sonar inputs artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: compiled_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          enableCrossOsArchive: true
-          fail-on-cache-miss: true
-          lookup-only: false
-          path: |
-            app/build
-            app/.cxx
-            gradle/wrapper
-            ${{ env.GRADLE_PATH }}/caches/build-cache-*
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          action: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # v21
+          pre_retry_command: 'echo "Retrying Download Sonar inputs artifact step..."'
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            workflow: android.yml
+            workflow_conclusion: ''
+            pr: ${{ github.event.pull_request.number }}
+            commit: ${{ github.event.pull_request.head.sha }}
+            name: sonar-inputs_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
+            path: .
+            repo: ${{ github.repository }}
+            allow_forks: true
+            check_artifacts: true
+            search_artifacts: true
+            if_no_artifact_found: fail
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1509,19 +1578,6 @@ jobs:
         if: success()
         run: |
           mkdir -p app/build/reports;
-
-      - name: Download reports from cache
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success()
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
-        with:
-          # Check available parameters in: https://github.com/actions/cache/blob/main/restore/action.yml
-          key: reports_${{ github.sha }}_${{ github.run_id }}_${{ github.run_number }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          enableCrossOsArchive: true
-          fail-on-cache-miss: true
-          lookup-only: false
-          path: |
-            app/build/reports
 
       - name: Check files from reports cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

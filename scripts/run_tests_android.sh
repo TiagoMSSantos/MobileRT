@@ -537,6 +537,13 @@ runUnitTests() {
 
   unlockDevice;
 
+  # Restore the executable bit on the native UnitTests binary. The compiled
+  # binaries are handed between jobs as a GitHub artifact, and artifacts do
+  # NOT preserve Unix file permissions (the +x bit is stripped on download).
+  # `adb push -p` preserves the host mode, so without this the on-device
+  # binary is not executable and fails with "Permission denied" (exit 126).
+  chmod +x "${dirUnitTests}"/bin/*;
+
   callCommandUntilSuccess 5 timeout 60 adb push -p "${dirUnitTests}"/bin/* ${internal_storage_path};
   callCommandUntilSuccess 5 timeout 60 adb push -p "${dirUnitTests}"/lib/* ${internal_storage_path};
 
