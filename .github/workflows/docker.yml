@@ -176,7 +176,11 @@ jobs:
 
     - name: Delete unnecessary Docker images
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-      if: success()
+      # Skip on Windows: the Windows Docker engine is never started in this
+      # workflow (the Windows buildkit/buildx setup step is disabled), so
+      # `docker images`/`docker system prune` here would fail to connect to
+      # the daemon. Every other Docker-engine step already excludes Windows.
+      if: success() && !startsWith(matrix.host_os, 'windows')
       run: |
         baseImageRegex=$(echo "${{ matrix.base_image }}" | sed 's/:/.*/');
         mobilertImageRegex=$(echo "mobile_rt.*${{ env.VERSION }}");
