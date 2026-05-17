@@ -379,6 +379,18 @@ jobs:
         echo "VERSION: ${{ env.VERSION }}";
         . scripts/docker.sh && buildDockerImage ${{ matrix.base_image }} ${{ env.BRANCH }} ${{ env.VERSION }};
 
+    - name: Cache Docker ccache
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+      if: success() && env.BUILD_IMAGE != 'yes' && !startsWith(matrix.host_os, 'windows')
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        # Persists the C++ objects compiled inside the container (mounted at
+        # ~/.ccache-docker) across runs, keyed per base image. The restore-keys
+        # prefix lets a new commit warm-start from the previous run's cache.
+        path: ~/.ccache-docker
+        key: docker-ccache-${{ matrix.base_image }}-${{ github.sha }}
+        restore-keys: docker-ccache-${{ matrix.base_image }}-
+
     - name: Build MobileRT
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && env.BUILD_IMAGE != 'yes'

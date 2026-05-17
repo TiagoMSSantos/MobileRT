@@ -300,21 +300,35 @@ build() {
 
   cmakeVersion=$(cmake --version | grep -i version | tr -s ' ' | cut -d ' ' -f 3);
   echo "CMake version: ${cmakeVersion}";
+  # Opt-in compiler-cache support: when CMAKE_C/CXX_COMPILER_LAUNCHER are
+  # exported (CI sets them to 'ccache'), pass them to CMake so previously
+  # compiled objects are reused. When unset (local builds, and the CodeQL
+  # traced build which must observe every real compiler invocation) this is
+  # empty and the build behaves exactly as before.
+  ccacheLauncherArgs='';
+  if [ -n "${CMAKE_CXX_COMPILER_LAUNCHER:-}" ] && [ -n "${CMAKE_C_COMPILER_LAUNCHER:-}" ]; then
+    ccacheLauncherArgs="-DCMAKE_CXX_COMPILER_LAUNCHER=${CMAKE_CXX_COMPILER_LAUNCHER} -DCMAKE_C_COMPILER_LAUNCHER=${CMAKE_C_COMPILER_LAUNCHER}";
+    echo "Using compiler launcher: ${ccacheLauncherArgs}";
+  fi
   if [ -f "${conanToolchainFile}" ]; then
     addConanToolchain="-DCMAKE_TOOLCHAIN_FILE=${conanToolchainFile}";
+    # shellcheck disable=SC2086
     cmake \
       -G "${generator}" \
       -DCMAKE_CXX_COMPILER="${compiler}" \
       -DCMAKE_C_COMPILER="${c_compiler}" \
       -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
+      ${ccacheLauncherArgs} \
        "${addConanToolchain}" \
       ../app;
   else
+    # shellcheck disable=SC2086
     cmake \
       -G "${generator}" \
       -DCMAKE_CXX_COMPILER="${compiler}" \
       -DCMAKE_C_COMPILER="${c_compiler}" \
       -DCMAKE_BUILD_TYPE="${typeWithCapitalLetter}" \
+      ${ccacheLauncherArgs} \
       ../app;
   fi
 

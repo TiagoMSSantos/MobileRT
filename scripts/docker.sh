@@ -130,9 +130,22 @@ compileMobileRTInDockerContainer() {
   echo "Current path: ${currentPath}";
   echo "Volume path: ${mobilertVolumeInContainer}";
   echo "Current commit: $(git log -1 --format=%H-%B)";
+  # Mount a host ccache directory into Unix containers so the C++ objects
+  # compiled here are reused across runs. It is only activated inside the
+  # container if ccache is actually installed in that image; otherwise the
+  # build proceeds normally (graceful no-op, never breaks images without it).
+  # Windows containers are intentionally left untouched.
+  ccacheDockerArgs='';
+  if ! { echo "${1}" | grep -iq 'microsoft' || echo "${1}" | grep -iq 'windows'; }; then
+    ccacheHostDir="${HOME}/.ccache-docker";
+    mkdir -p "${ccacheHostDir}";
+    ccacheDockerArgs="--volume=${ccacheHostDir}:/ccache";
+  fi
+  # shellcheck disable=SC2086
   docker run -t \
     --name="mobile_rt_built_${1}" \
     --volume="${currentPath}":"${mobilertVolumeInContainer}" \
+    ${ccacheDockerArgs} \
     ptpuscas/mobile_rt:"${1}" \
       "echo Current path in container: $(pwd) \
       && cp -rpf ${mobilertVolumeInContainer}/* . \
@@ -145,7 +158,9 @@ compileMobileRTInDockerContainer() {
       && rm -rf build_* \
       && git init \
       && ls -lahp . \
+      && if command -v ccache >/dev/null 2>&1; then export CMAKE_CXX_COMPILER_LAUNCHER=ccache; export CMAKE_C_COMPILER_LAUNCHER=ccache; export CCACHE_DIR=/ccache; export CCACHE_COMPILERCHECK=content; export CCACHE_BASEDIR=\$(pwd); ccache -z || true; else echo 'ccache not present in this image; building without it'; fi \
       && sh scripts/compile_native.sh -t release -c g++ -r yes \
+      && (command -v ccache >/dev/null 2>&1 && ccache -s || true) \
       && rm -rf app/third_party/boost \
       && rm -rf app/third_party/glm \
       && rm -rf app/third_party/googletest \

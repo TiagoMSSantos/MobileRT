@@ -215,7 +215,7 @@ public final class UtilsT {
     public static void executeWithCatching(@NonNull final Runnable method) {
         try {
             method.run();
-        } catch (final RuntimeException ex) {
+        } catch (final Exception ex) {
             logger.severe("Error: " + ex.getMessage() + "\nCause: " + ex.getCause());
         }
     }

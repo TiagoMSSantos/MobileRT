@@ -247,6 +247,11 @@ jobs:
           # starts with 'cl' and would otherwise route clang through sccache.
           CMAKE_CXX_COMPILER_LAUNCHER: ${{ inputs.compiler == 'cl' && 'sccache' || (!startsWith(inputs.compiler, 'icpx') && 'ccache' || '') }}
           CMAKE_C_COMPILER_LAUNCHER: ${{ inputs.compiler == 'cl' && 'sccache' || (!startsWith(inputs.compiler, 'icpx') && 'ccache' || '') }}
+          # Identify the compiler by its contents, not its mtime: GitHub runner
+          # image refreshes change the system compiler's timestamp and would
+          # otherwise invalidate the whole cache (sccache ignores CCACHE_* vars).
+          CCACHE_COMPILERCHECK: content
+          CCACHE_BASEDIR: ${{ github.workspace }}
         run: |
           sh scripts/compile_native.sh -t ${{ inputs.type }} -c ${{ inputs.compiler }};
           if [ "${{ inputs.type }}" = 'release' ]; then

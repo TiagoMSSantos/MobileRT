@@ -3,6 +3,7 @@ package puscas.mobilertapp;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.opengl.GLSurfaceView;
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.content.ClipData;
@@ -251,10 +252,19 @@ public abstract class AbstractTest {
                     logger.severe(this.testName.getMethodName() + " couldn't request focus");
                 }
             });
+            // MobileRT's DrawView is a GLSurfaceView that renders continuously
+            // (GLSurfaceView's default mode), which perpetually invalidates the
+            // view tree. Espresso refuses to act until the root view has focus
+            // and stops requesting layout, so the continuous render loop makes
+            // it intermittently time out after 10s. Quiesce the renderer for
+            // the duration of Espresso stabilization, then restore continuous
+            // mode so the test bodies behave exactly as before.
+            setDrawViewRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             Espresso.onIdle();
 
             ViewActionWait.waitForButtonUpdate(0);
+            setDrawViewRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         } catch (final NoActivityResumedException ex) {
             UtilsLogging.logException(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
             logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
@@ -330,6 +340,29 @@ public abstract class AbstractTest {
         }
 
         logger.info(methodName + " finished");
+    }
+
+    /**
+     * Changes the render mode of the {@link MainActivity}'s {@code drawView}
+     * ({@link GLSurfaceView}) on the main thread. Used to temporarily quiesce
+     * the continuous render loop so Espresso's root view can become stable.
+     * This is purely a flakiness mitigation, so any failure to access the
+     * view is logged and ignored rather than failing the test.
+     *
+     * @param renderMode {@link GLSurfaceView#RENDERMODE_WHEN_DIRTY} to quiesce
+     *                   the renderer, or
+     *                   {@link GLSurfaceView#RENDERMODE_CONTINUOUSLY} to
+     *                   restore the original behaviour.
+     */
+    private void setDrawViewRenderMode(final int renderMode) {
+        try {
+            final GLSurfaceView drawView = UtilsT.getPrivateField(AbstractTest.activity, "drawView");
+            InstrumentationRegistry.getInstrumentation()
+                .runOnMainSync(() -> drawView.setRenderMode(renderMode));
+        } catch (final Exception ex) {
+            logger.warning(this.testName.getMethodName()
+                + ": could not change DrawView render mode: " + ex);
+        }
     }
 
     /**

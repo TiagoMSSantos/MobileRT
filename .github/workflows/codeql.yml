@@ -305,6 +305,16 @@ jobs:
     - name: Build C++
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
       if: success() && matrix.language == 'c-cpp'
+      env:
+        # CodeQL builds its C/C++ database by tracing every real compiler
+        # invocation. A compiler cache that serves a cached object skips the
+        # real compiler, so that translation unit would be silently missing
+        # from the security database. Force the compiler to run for every
+        # file here: keep the launcher empty and disable ccache outright.
+        # This build must stay un-cached for analysis completeness.
+        CMAKE_CXX_COMPILER_LAUNCHER: ''
+        CMAKE_C_COMPILER_LAUNCHER: ''
+        CCACHE_DISABLE: '1'
       run: |
         sh scripts/compile_native.sh -t debug -c ${{ env.compiler }} -r yes;
 
