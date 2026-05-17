@@ -134,7 +134,7 @@ jobs:
           # will download all artifacts if not specified
           # and extract them into respective subdirectories
           # https://github.com/actions/download-artifact#download-all-artifacts
-          name: gradle-packages
+          name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
           # Optional, a directory where to extract artifact(s), defaults to the current directory
           path: ${{ env.GRADLE_PATH }}
           # Optional, defaults to current repo
@@ -154,13 +154,22 @@ jobs:
           # can be one of:
           #  "fail", "warn", "ignore"
           # default fail
-          if_no_artifact_found: fail
+          # warn (not fail): this is a cross-run warm-start. The name is now
+          # keyed by the current commit+run, which by definition does not
+          # exist yet when the Build job runs (Build is what uploads it), so
+          # this download always misses and the job simply cold-starts. It is
+          # kept only so a future same-run re-run of Build can reuse it.
+          if_no_artifact_found: warn
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && steps.download-gradle-artifact.outputs.found_artifact == 'true'
         run: |
           ls -lahp ${{ env.GRADLE_PATH }};
+          # dawidd6 (skip_unpack) saves the artifact as <artifact-name>.zip.
+          # The artifact name is now commit/run keyed, so normalise the
+          # downloaded file back to the fixed name the extract logic expects.
+          mv "${{ env.GRADLE_PATH }}"/gradle-packages_*.zip "${{ env.GRADLE_PATH }}"/gradle-packages.zip 2> /dev/null || true;
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -442,7 +451,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: gradle-packages
+          name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
           path: ${{ env.GRADLE_PATH }}/gradle-packages.zip
           if-no-files-found: error
           retention-days: 90
@@ -614,7 +623,7 @@ jobs:
             # will download all artifacts if not specified
             # and extract them into respective subdirectories
             # https://github.com/actions/download-artifact#download-all-artifacts
-            name: gradle-packages
+            name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
             # Optional, a directory where to extract artifact(s), defaults to the current directory
             path: ${{ env.GRADLE_PATH }}
             # Optional, defaults to current repo
@@ -660,6 +669,10 @@ jobs:
         if: success()
         run: |
           ls -lahp ${{ env.GRADLE_PATH }};
+          # dawidd6 (skip_unpack) saves the artifact as <artifact-name>.zip.
+          # The artifact name is now commit/run keyed, so normalise the
+          # downloaded file back to the fixed name the extract logic expects.
+          mv "${{ env.GRADLE_PATH }}"/gradle-packages_*.zip "${{ env.GRADLE_PATH }}"/gradle-packages.zip 2> /dev/null || true;
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -1154,7 +1167,7 @@ jobs:
             # will download all artifacts if not specified
             # and extract them into respective subdirectories
             # https://github.com/actions/download-artifact#download-all-artifacts
-            name: gradle-packages
+            name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
             # Optional, a directory where to extract artifact(s), defaults to the current directory
             path: ${{ env.GRADLE_PATH }}
             # Optional, defaults to current repo
@@ -1181,6 +1194,10 @@ jobs:
         if: success()
         run: |
           ls -lahp ${{ env.GRADLE_PATH }};
+          # dawidd6 (skip_unpack) saves the artifact as <artifact-name>.zip.
+          # The artifact name is now commit/run keyed, so normalise the
+          # downloaded file back to the fixed name the extract logic expects.
+          mv "${{ env.GRADLE_PATH }}"/gradle-packages_*.zip "${{ env.GRADLE_PATH }}"/gradle-packages.zip 2> /dev/null || true;
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -1449,7 +1466,7 @@ jobs:
             # will download all artifacts if not specified
             # and extract them into respective subdirectories
             # https://github.com/actions/download-artifact#download-all-artifacts
-            name: gradle-packages
+            name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
             # Optional, a directory where to extract artifact(s), defaults to the current directory
             path: ${{ env.GRADLE_PATH }}
             # Optional, defaults to current repo
@@ -1476,6 +1493,10 @@ jobs:
         if: success()
         run: |
           ls -lahp ${{ env.GRADLE_PATH }};
+          # dawidd6 (skip_unpack) saves the artifact as <artifact-name>.zip.
+          # The artifact name is now commit/run keyed, so normalise the
+          # downloaded file back to the fixed name the extract logic expects.
+          mv "${{ env.GRADLE_PATH }}"/gradle-packages_*.zip "${{ env.GRADLE_PATH }}"/gradle-packages.zip 2> /dev/null || true;
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
