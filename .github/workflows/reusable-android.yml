@@ -895,7 +895,13 @@ jobs:
             cmake: ${{ needs.Build.outputs.cmake_version }}
             target: google_apis
             arch: ${{ env.android_emulator_arch }}
-            disable-animations: true
+            # Keep false: the action disables animations via an un-timeout-
+            # wrapped `adb shell settings put ...` right after boot. On a
+            # wedged-but-booted emulator that adb call blocks forever and
+            # consumes the entire 50-min step (observed hang). run_tests_android.sh
+            # already disables all animation scales itself via
+            # callAdbShellCommandUntilSuccess (timeout-wrapped, retried).
+            disable-animations: false
             disable-spellchecker: true
             channel: stable
             emulator-options: -no-metrics -no-window -accel on -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -cache-size 512 -partition-size ${{ env.ANDROID_EMULATOR_MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none -camera-front none -netfast -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose -no-snapshot-save

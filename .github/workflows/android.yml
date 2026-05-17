@@ -87,6 +87,63 @@ jobs:
           echo "Matrix: ${MATRIX}";
           echo "matrix=${MATRIX}" >> ${GITHUB_OUTPUT};
 
+      - name: Free stale Actions caches
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The binary-handoff (compiled_*) and report (reports_*) caches are
+          # keyed as <prefix>_<sha>_<run_id>_<run_number>_... Entries from
+          # FINISHED runs are dead weight that keeps the repo pinned at the
+          # 10 GB Actions cache cap and LRU-evicts the in-flight handoff cache
+          # before the late Sonar job restores it (fail-on-cache-miss hard
+          # failure even when tests passed).
+          #
+          # SAFETY: a concurrently-running build on another branch has its own
+          # run id and its Build job's compiled_* cache is still needed by its
+          # own later jobs. So only delete a cache when its owning run is
+          # already 'completed'. The current run is always kept. Pure cache
+          # hygiene: no effect on build/test/emulator behaviour.
+          set +e;
+          page=1;
+          while :; do
+            entries=$(gh api "repos/${GITHUB_REPOSITORY}/actions/caches?per_page=100&page=${page}" --jq '.actions_caches[] | "\(.id) \(.key)"' 2>/dev/null);
+            if [ -z "${entries}" ]; then
+              break;
+            fi
+            echo "${entries}" | while read -r id key; do
+              case "${key}" in
+                compiled_*|reports_*) ;;
+                *) continue ;;
+              esac
+              cacheRunId=$(echo "${key}" | cut -d '_' -f3);
+              # Skip if run id is not numeric (unexpected key shape) or is the
+              # current run.
+              case "${cacheRunId}" in
+                ''|*[!0-9]*) continue ;;
+              esac
+              if [ "${cacheRunId}" = "${GITHUB_RUN_ID}" ]; then
+                continue;
+              fi
+              runStatus=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${cacheRunId}" --jq '.status' 2>/dev/null);
+              # Delete ONLY when the owning run is explicitly 'completed'. An
+              # empty/unknown status (transient API error, or a purged run) is
+              # treated as "keep" on purpose: a network blip must never cause
+              # us to delete the cache of a still-running build. Stale caches
+              # from truly-purged runs are rare and GitHub's own 7-day cache
+              # eviction reclaims them anyway.
+              if [ "${runStatus}" = 'completed' ]; then
+                echo "Deleting stale cache (run ${cacheRunId} completed): ${key}";
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/caches/${id}" > /dev/null 2>&1 || true;
+              else
+                echo "Keeping cache (run ${cacheRunId} status='${runStatus:-unknown}'): ${key}";
+              fi
+            done;
+            page=$((page + 1));
+          done;
+          true;
+
       - name: Check code coverage runs in current branch
         id: check_status
         env:

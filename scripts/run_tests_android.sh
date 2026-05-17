@@ -368,14 +368,6 @@ waitForEmulator() {
     exit 1;
   fi
 
-  echo 'Disable animations';
-  # Error in API 15 & 16: /system/bin/sh: settings: not found
-  if [ "${androidApiDevice}" -gt 16 ]; then
-    callAdbShellCommandUntilSuccess 'settings put global window_animation_scale 0';
-    callAdbShellCommandUntilSuccess 'settings put global transition_animation_scale 0';
-    callAdbShellCommandUntilSuccess 'settings put global animator_duration_scale 0';
-  fi
-
   echo 'Activate JNI extended checking mode';
   # Command fails on Android 34.
   # callAdbShellCommandUntilSuccess 'setprop dalvik.vm.checkjni true';
