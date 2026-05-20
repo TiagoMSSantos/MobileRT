@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import androidx.annotation.CallSuper;
@@ -224,6 +225,7 @@ public abstract class AbstractTest {
      */
     @Before
     @CallSuper
+    @SuppressWarnings("deprecation") // FLAG_DISMISS_KEYGUARD etc. were deprecated in API 27, but we still test on API < 27.
     public void setUp() {
         final String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         logger.info(methodName + ": " + this.testName.getMethodName());
@@ -256,9 +258,17 @@ public abstract class AbstractTest {
             newActivityScenario.onActivity(newActivity -> AbstractTest.activity = newActivity);
 
             // Ensure the activity's window has focus so Espresso can interact with views.
+            // See runWithStabilizedFocus() for why these WindowManager flags are necessary
+            // on slow API <= 23 emulators where the keyguard otherwise sits above the
+            // activity and steals window focus.
             InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
                 if (AbstractTest.activity.getWindow() != null && AbstractTest.activity.getWindow().getDecorView() != null) {
                     logger.info(this.testName.getMethodName() + " requesting focus");
+                    AbstractTest.activity.getWindow().addFlags(
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                            | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                            | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                            | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
                     AbstractTest.activity.getWindow().getDecorView().requestFocus();
                     logger.info(this.testName.getMethodName() + " requested focus");
                 } else {
@@ -301,24 +311,58 @@ public abstract class AbstractTest {
      * refuses to act until the root view has focus and stops requesting
      * layout. On slow emulators the window can also take longer than
      * Espresso's single ~10s RootViewPicker wait to gain focus, surfacing as
-     * a transient {@code RootViewWithoutFocusException}. This re-requests
-     * focus, quiesces the renderer and retries a bounded number of times
-     * (well under the 180s per-test {@link Timeout} rule). Only that
-     * focus-timeout is retried; any other throwable propagates immediately so
-     * genuine failures are unchanged. The caller restores
+     * a transient {@code RootViewWithoutFocusException}. On API <= 23 the
+     * keyguard sits above the activity and prevents the window from
+     * acquiring focus at all, so each attempt also applies
+     * {@link WindowManager.LayoutParams#FLAG_DISMISS_KEYGUARD},
+     * {@code FLAG_SHOW_WHEN_LOCKED}, {@code FLAG_TURN_SCREEN_ON} and
+     * {@code FLAG_KEEP_SCREEN_ON} to force the activity to own focus.
+     * This re-requests focus, quiesces the renderer and retries a bounded
+     * number of times (well under the 180s per-test {@link Timeout} rule).
+     * Between retries a short wall-clock sleep is inserted so the system
+     * server has time to dispatch focus-changed events from another process
+     * (which {@code waitForIdleSync()} alone does not wait for). Only the
+     * focus-timeout is retried; any other throwable propagates immediately
+     * so genuine failures are unchanged. The caller restores
      * {@link GLSurfaceView#RENDERMODE_CONTINUOUSLY} once all the
      * Espresso-dependent setup has succeeded.
      *
      * @param espressoAction The Espresso-dependent action to run.
      */
+    @SuppressWarnings("deprecation") // FLAG_DISMISS_KEYGUARD etc. were deprecated in API 27, but we still test on API < 27.
     private void runWithStabilizedFocus(final Runnable espressoAction) {
-        final int maxFocusAttempts = 6;
+        // 10 attempts ~= 100s of focus-acquisition budget (Espresso's RootViewPicker waits
+        // ~10s per attempt). The per-test Timeout(180s) leaves the rest for the test body.
+        // Increased from 6 after a slow API 23 emulator boot kept the activity window in
+        // has-window-focus=false for ~67s (six attempts wasn't enough; cf. CI run 26164814369).
+        //
+        // Note: an earlier revision tried to escalate by calling
+        // ActivityScenario#recreate() at the half-way point to discard any stale
+        // sibling window owning focus. That regressed worse: recreate() begins with
+        // checkNotNull(currentActivity), and on a fresh emulator boot the scenario's
+        // currentActivity is null until the activity reaches RESUMED, so the very
+        // first test's setUp threw NullPointerException (cf. CI run 26176865894).
+        // moveToState(RESUMED) has the same null-guard, so it cannot be used as a
+        // safer alternative. We accept the rare mid-suite sibling-window flake as
+        // wretry-recoverable instead.
+        final int maxFocusAttempts = 10;
         RuntimeException lastFocusFailure = null;
         for (int focusAttempt = 1; focusAttempt <= maxFocusAttempts; focusAttempt++) {
             // Ensure the activity's window has focus so Espresso can interact with views.
             InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
                 if (AbstractTest.activity.getWindow() != null && AbstractTest.activity.getWindow().getDecorView() != null) {
                     logger.info(this.testName.getMethodName() + " requesting focus");
+                    // Window-level focus on emulators where the keyguard sits above the
+                    // activity: requestFocus() alone targets a VIEW inside the window and
+                    // cannot pull focus from a system window. These flags tell the system
+                    // to dismiss the keyguard, show this window even when locked, turn the
+                    // screen on, and keep it on - which lets the activity own focus on
+                    // slow API <= 23 boots where the keyguard otherwise stays on top.
+                    AbstractTest.activity.getWindow().addFlags(
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                            | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                            | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                            | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
                     AbstractTest.activity.getWindow().getDecorView().requestFocus();
                     logger.info(this.testName.getMethodName() + " requested focus");
                 } else {
@@ -345,8 +389,13 @@ public abstract class AbstractTest {
                     + ": Espresso could not get a focused root (attempt " + focusAttempt
                     + '/' + maxFocusAttempts + "); retrying. " + focusMsg);
                 // Let the (slow) emulator make progress towards the window
-                // gaining focus before the next attempt.
+                // gaining focus before the next attempt. A short wall-clock sleep
+                // is essential on top of waitForIdleSync() because the latter only
+                // drains pending main-thread messages - it does not wait for the
+                // system_server to dispatch focus-changed events from another
+                // process (a Toast/popup dismiss can take longer than zero idle).
                 InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                Uninterruptibles.sleepUninterruptibly(500L, TimeUnit.MILLISECONDS);
             }
         }
         throw lastFocusFailure;
