@@ -301,6 +301,13 @@ waitForEmulator() {
   callCommandUntilSuccess 5 timeout 60 adb kill-server;
   #_restartAdbProcesses;
   callCommandUntilSuccess 5 timeout 60 adb start-server;
+  # After restarting adb-server above, the new daemon needs a moment to
+  # re-discover the running emulator and complete the adbd handshake.
+  # Without this wait, follow-up `adb shell` calls return "device offline"
+  # *instantly* (not a timeout), and the 70-retry loop further down in
+  # _waitForEmulatorToBoot exhausts in ~70 seconds with no recovery.
+  # Block here (bounded) until the device transitions out of `offline`.
+  callCommandUntilSuccess 5 timeout 30 adb wait-for-device;
   set +e;
   adb_devices_running=$(timeout 60 adb devices | tail -n +2);
   retry=0;
@@ -366,6 +373,21 @@ waitForEmulator() {
     # Abort if emulator didn't start.
     echo "Android emulator didn't start ... will exit.";
     exit 1;
+  fi
+
+  echo 'Disable animations';
+  # Espresso's RootViewPicker requires animations off, otherwise the window
+  # never settles/gains focus and tests fail with RootViewWithoutFocusException
+  # (observed on the slow API 19 emulator). The reusable workflows keep the
+  # setup-android-emulator action's `disable-animations: false` on purpose
+  # (that action's un-timeout-wrapped adb call can hang a wedged emulator for
+  # the whole step), so the scales are disabled here instead, via the
+  # timeout-wrapped & retried callAdbShellCommandUntilSuccess.
+  # Error in API 15 & 16: /system/bin/sh: settings: not found
+  if [ "${androidApiDevice}" -gt 16 ]; then
+    callAdbShellCommandUntilSuccess 'settings put global window_animation_scale 0';
+    callAdbShellCommandUntilSuccess 'settings put global transition_animation_scale 0';
+    callAdbShellCommandUntilSuccess 'settings put global animator_duration_scale 0';
   fi
 
   echo 'Activate JNI extended checking mode';
@@ -438,30 +460,36 @@ copyResources() {
 
   unlockDevice;
   echo 'Install File Manager';
+  # The file manager is a third-party test fixture used only by a subset of
+  # UI tests. A flaky package-manager error (the preceding pm uninstall
+  # routinely yields DELETE_FAILED_INTERNAL_ERROR, and pm install can hit a
+  # transient INSTALL_FAILED_*) must not hard-abort the entire Android test
+  # job. callAdbShellCommandUntilSuccess already retries; on a persistent
+  # failure we warn and continue (best-effort, like the teapot push above)
+  # so the rest of the suite still runs and produces reports. set +e spans
+  # the whole block so the tolerated uninstall no longer needs its own.
+  set +e;
   if [ "${androidApiDevice}" -gt 31 ]; then
     echo "Not installing any file manager APK because the available ones are not compatible with Android API: ${androidApiDevice}";
   elif [ "${androidApiDevice}" -gt 30 ]; then
-    set +e;
     timeout 60 adb shell "pm uninstall ${internal_storage_path}/APKs/asus-file-manager-2-8-0-85-230220.apk;";
-    set -e;
-    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/asus-file-manager-2-8-0-85-230220.apk';
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/asus-file-manager-2-8-0-85-230220.apk' \
+      || echo 'WARNING: file manager install failed after retries; continuing without it (dependent UI tests may skip/fail).';
   elif [ "${androidApiDevice}" -gt 29 ]; then
-    set +e;
     timeout 60 adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk";
-    set -e;
-    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk';
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager_2.7.0.28_220608-1520700140_minAPI30_apkmirror.com.apk' \
+      || echo 'WARNING: file manager install failed after retries; continuing without it (dependent UI tests may skip/fail).';
   elif [ "${androidApiDevice}" -gt 16 ]; then
-    set +e;
     timeout 60 adb shell "pm uninstall ${internal_storage_path}/APKs/com.asus.filemanager.apk";
-    set -e;
-    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager.apk';
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.asus.filemanager.apk' \
+      || echo 'WARNING: file manager install failed after retries; continuing without it (dependent UI tests may skip/fail).';
   elif [ "${androidApiDevice}" -lt 16 ]; then
-    set +e;
     timeout 60 adb shell "pm uninstall ${internal_storage_path}/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk";
-    set -e;
     # This file manager is compatible with Android 4.0.3 (API 15) which the Asus one is not.
-    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk';
+    callAdbShellCommandUntilSuccess 'pm install -r '"${internal_storage_path}"'/APKs/com.estrongs.android.pop_4.2.1.8-10057_minAPI14.apk' \
+      || echo 'WARNING: file manager install failed after retries; continuing without it (dependent UI tests may skip/fail).';
   fi
+  set -e;
 }
 
 startCopyingLogcatToFile() {

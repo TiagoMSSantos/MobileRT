@@ -258,11 +258,15 @@ jobs:
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
       run: |
-        if [ "${{ matrix.android_api }}" -le 22 ]; then
-          echo "EMULATOR_BOOT_TIMEOUT=240" >> "${GITHUB_ENV}";
-        else
-          echo "EMULATOR_BOOT_TIMEOUT=400" >> "${GITHUB_ENV}";
-        fi
+        # Right-sized to observed reality: a healthy emulator boot on these
+        # runners completes in ~15-30s (logs across APIs). The old 240/400s
+        # values were ~8-25x over-provisioned, so when an emulator wedged the
+        # android-emulator-runner step idled the full boot-timeout before
+        # failing - even after the adb timeout-shim had already detected and
+        # killed the wedged emulator (~90s). 180s keeps >5x headroom over a
+        # healthy boot yet lets a wedged attempt fail fast so wretry retries
+        # on a fresh emulator promptly instead of burning the 20-min cap.
+        echo "EMULATOR_BOOT_TIMEOUT=180" >> "${GITHUB_ENV}";
 
     - name: AVD cache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -284,23 +288,33 @@ jobs:
       if: success() && !startsWith(inputs.target_os, 'windows')
       run: |
         set -eu
-        # Root cause being mitigated: ReactiveCircus/android-emulator-runner's
-        # wait-for-boot loop runs `adb -s emulator-5554 shell getprop
-        # sys.boot_completed` with NO per-call timeout. When the guest adbd
-        # wedges while the emulator process is still alive, that adb call
-        # blocks forever; the action's emulator-boot-timeout never fires (it
-        # is checked between iterations) and wretry never retries (a hang is
-        # not a failure), so the whole step burns until GitHub's SIGINT
-        # (~20 min) - killing every wretry attempt with it.
+        # ReactiveCircus/android-emulator-runner's wait-for-boot loop runs
+        # `adb -s emulator-<id> shell getprop sys.boot_completed` with NO
+        # per-call timeout. When the guest adbd wedges while the emulator
+        # process is still alive, that adb call blocks forever; the action's
+        # emulator-boot-timeout never fires (it is only checked between
+        # iterations) and wretry never retries (a hang is not a failure), so
+        # the whole step burns until GitHub's SIGINT (~20 min), killing
+        # every wretry attempt with it.
+        #
+        # The same hang affects post-boot adb calls the action makes
+        # itself - e.g. `adb -s emulator-<id> shell input keyevent 82` to
+        # unlock the device, which has been observed to idle the full 300s
+        # before the action terminates and wretry retries.
         #
         # The action invokes adb by ABSOLUTE path, so a PATH shim cannot
         # intercept it; replace the binary in place with a wrapper that
-        # execs the real adb under `timeout`. 300s is the largest
-        # in-repo per-call bound (scripts already wrap adb in `timeout 300`)
-        # and below the 20-min step timeout, so only genuine hangs are
-        # killed: a wedged boot poll now fails in ~6 min, letting the
-        # action's emulator-boot-timeout + wretry's 3 attempts recover on a
-        # fresh emulator instead of one unrecoverable 20-min SIGINT.
+        # tiers adb calls by source:
+        #   * boot poll (`getprop sys.boot_completed`): 45s bound AND,
+        #     on 2 consecutive timeouts (~90s), actively kill the wedged
+        #     emulator so the step fails right away and wretry retries on
+        #     a FRESH emulator (which boots in ~15-30s);
+        #   * any other call carrying `-s emulator-<id>` (the action's
+        #     marker - scripts in this repo never use it): 60s bound, so
+        #     a wedged post-boot setup call fails the attempt fast;
+        #   * everything else (the repo's own script calls, which already
+        #     wrap adb in `timeout 300`): keep the generous 300s bound, so
+        #     legitimate long pm install/pull operations are not killed.
         PT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}/platform-tools"
         if [ ! -x "${PT}/adb.real" ]; then
           mv "${PT}/adb" "${PT}/adb.real"
@@ -308,22 +322,37 @@ jobs:
         cat > "${PT}/adb" <<EOF
         #!/usr/bin/env sh
         # adb timeout-shim - see the "Install adb timeout-shim" workflow step.
-        # The emulator-runner boot poll 'adb -s ... shell getprop
-        # sys.boot_completed' hangs forever on a wedged-but-alive emulator,
-        # and the action just re-issues it after each kill. A 300s bound
-        # made each hang ~5 min, so ~4 hangs filled the 20-min step before
-        # the action's emulator-boot-timeout (400s) / wretry could react.
-        # Bound ONLY the boot poll short (45s) so the loop iterates fast and
-        # the action's own boot-timeout fires, letting wretry retry on a
-        # fresh emulator (which boots in ~30s). Every other adb call keeps
-        # the generous 300s bound: the repo already wraps adb in
-        # 'timeout 300' itself, so a short global value would kill
-        # legitimate long installs/pulls.
+        ADB_REAL="${PT}/adb.real"
         case " \$* " in
           *" getprop sys.boot_completed"*)
-            exec timeout -k 5s -s TERM 45s "${PT}/adb.real" "\$@" ;;
+            # Detect a wedged-but-alive emulator fast and force a retry.
+            HANG_STATE=/tmp/adb-shim-boot-hangs
+            timeout -k 5s -s TERM 45s "\$ADB_REAL" "\$@"
+            rc=\$?
+            if [ "\$rc" -eq 124 ] || [ "\$rc" -eq 137 ]; then
+              n=\$(( \$(cat "\$HANG_STATE" 2>/dev/null || echo 0) + 1 ))
+              echo "\$n" > "\$HANG_STATE"
+              if [ "\$n" -ge 2 ]; then
+                echo "adb timeout-shim: boot poll hung \${n}x consecutively; emulator is wedged - killing it so the test step fails fast and wretry retries on a fresh emulator." >&2
+                "\$ADB_REAL" emu kill >/dev/null 2>&1 || true
+                pkill -9 -f qemu-system >/dev/null 2>&1 || true
+                rm -f "\$HANG_STATE"
+              fi
+            else
+              rm -f "\$HANG_STATE"
+            fi
+            exit "\$rc" ;;
+          *" -s emulator-"*)
+            # Any other action-level adb call (e.g. the post-boot
+            # 'input keyevent 82' device unlock) can also hang on a
+            # wedged-but-alive emulator. The scripts in this repo never
+            # use '-s emulator-<id>', so that prefix is a precise marker for
+            # the action's calls - bound them short (60s) so a hang fails
+            # the attempt fast instead of idling the default 300s before
+            # the action terminates and wretry retries.
+            exec timeout -k 5s -s TERM 60s "\$ADB_REAL" "\$@" ;;
           *)
-            exec timeout -k 10s -s TERM 300s "${PT}/adb.real" "\$@" ;;
+            exec timeout -k 10s -s TERM 300s "\$ADB_REAL" "\$@" ;;
         esac
         EOF
         chmod +x "${PT}/adb";
@@ -408,7 +437,7 @@ jobs:
           sdcard-path-or-size: 2048M
           avd-name: Android_Emulator_API_${{ matrix.android_api }}
           force-avd-creation: false
-          emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }} # It can take more than 5 min to boot, and the tests can take more than 17 min to finish.
+          emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }} # See EMULATOR_BOOT_TIMEOUT (~180s): healthy boot is ~15-30s; a wedged one fails fast so wretry retries.
           script: |
             echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
             sh scripts/run_tests_android.sh -t ${{ matrix.type }} -r rep_puscas.mobilertapp.${{ matrix.test }} -a ${{ matrix.android_api }} -k false -f ${{ env.android_arch }};

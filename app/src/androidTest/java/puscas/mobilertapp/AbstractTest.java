@@ -242,29 +242,12 @@ public abstract class AbstractTest {
             Intents.assertNoUnverifiedIntents();
         }
         try {
-            // Ensure the activity's window has focus so Espresso can interact with views.
-            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
-                if (AbstractTest.activity.getWindow() != null && AbstractTest.activity.getWindow().getDecorView() != null) {
-                    logger.info(this.testName.getMethodName() + " requesting focus");
-                    AbstractTest.activity.getWindow().getDecorView().requestFocus();
-                    logger.info(this.testName.getMethodName() + " requested focus");
-                } else {
-                    logger.severe(this.testName.getMethodName() + " couldn't request focus");
-                }
-            });
-            // MobileRT's DrawView is a GLSurfaceView that renders continuously
-            // (GLSurfaceView's default mode), which perpetually invalidates the
-            // view tree. Espresso refuses to act until the root view has focus
-            // and stops requesting layout, so the continuous render loop makes
-            // it intermittently time out after 10s. Quiesce the renderer for
-            // the duration of Espresso stabilization, then restore continuous
-            // mode so the test bodies behave exactly as before.
-            setDrawViewRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-            Espresso.onIdle();
-
-            ViewActionWait.waitForButtonUpdate(0);
-            setDrawViewRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+            // Stabilize Espresso (activity window focus + quiesced
+            // GLSurfaceView) and run the first Espresso-dependent setup step.
+            // See runWithStabilizedFocus for the rationale and bounded retry;
+            // the continuous render mode is restored only once every
+            // Espresso-dependent step below has succeeded.
+            runWithStabilizedFocus(() -> ViewActionWait.waitForButtonUpdate(0));
         } catch (final NoActivityResumedException ex) {
             UtilsLogging.logException(ex, this.testName.getMethodName() + ": AbstractTest#setUp");
             logger.warning(this.testName.getMethodName() + ": The MainActivity didn't start as expected. Forcing a restart.");
@@ -290,11 +273,83 @@ public abstract class AbstractTest {
         final Matcher<Intent> matcher = Matchers.allOf(IntentMatchers.hasCategories(Collections.singleton(Intent.CATEGORY_LAUNCHER)), IntentMatchers.hasAction(Intent.ACTION_MAIN));
         final VerificationMode verificationMode = VerificationModes.times(intentsToVerify.size());
         logger.info(this.testName.getMethodName() + ": " + methodName + " validating '" + intentsToVerify.size() + "' Intents");
-        Intents.intended(matcher, verificationMode);
-        logger.info(this.testName.getMethodName() + ": " + methodName + " validating unverified Intents");
-        Intents.assertNoUnverifiedIntents();
+        // Intents.intended() internally runs an Espresso ViewInteraction, so
+        // it has the same focused-stable-root requirement as onView(). Run it
+        // (and the unverified-intents check) through the same stabilization +
+        // bounded focus retry with the GLSurfaceView still quiesced; restoring
+        // continuous render mode any earlier reopens the focus-timeout window
+        // for these calls (observed: RootViewWithoutFocusException thrown from
+        // Intents.intended on the slow API 19 emulator).
+        runWithStabilizedFocus(() -> {
+            Intents.intended(matcher, verificationMode);
+            logger.info(this.testName.getMethodName() + ": " + methodName + " validating unverified Intents");
+            Intents.assertNoUnverifiedIntents();
+        });
+        // Every Espresso-dependent setup step succeeded: restore continuous
+        // rendering so the test bodies behave exactly as before.
+        setDrawViewRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
         logger.info(this.testName.getMethodName() + " started");
+    }
+
+    /**
+     * Runs an Espresso-dependent action after stabilizing the activity window
+     * focus and quiescing the continuously-rendering GLSurfaceView.
+     *
+     * <p>MobileRT's DrawView is a GLSurfaceView that renders continuously
+     * (its default mode), perpetually invalidating the view tree; Espresso
+     * refuses to act until the root view has focus and stops requesting
+     * layout. On slow emulators the window can also take longer than
+     * Espresso's single ~10s RootViewPicker wait to gain focus, surfacing as
+     * a transient {@code RootViewWithoutFocusException}. This re-requests
+     * focus, quiesces the renderer and retries a bounded number of times
+     * (well under the 180s per-test {@link Timeout} rule). Only that
+     * focus-timeout is retried; any other throwable propagates immediately so
+     * genuine failures are unchanged. The caller restores
+     * {@link GLSurfaceView#RENDERMODE_CONTINUOUSLY} once all the
+     * Espresso-dependent setup has succeeded.
+     *
+     * @param espressoAction The Espresso-dependent action to run.
+     */
+    private void runWithStabilizedFocus(final Runnable espressoAction) {
+        final int maxFocusAttempts = 6;
+        RuntimeException lastFocusFailure = null;
+        for (int focusAttempt = 1; focusAttempt <= maxFocusAttempts; focusAttempt++) {
+            // Ensure the activity's window has focus so Espresso can interact with views.
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+                if (AbstractTest.activity.getWindow() != null && AbstractTest.activity.getWindow().getDecorView() != null) {
+                    logger.info(this.testName.getMethodName() + " requesting focus");
+                    AbstractTest.activity.getWindow().getDecorView().requestFocus();
+                    logger.info(this.testName.getMethodName() + " requested focus");
+                } else {
+                    logger.severe(this.testName.getMethodName() + " couldn't request focus");
+                }
+            });
+            setDrawViewRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            Espresso.onIdle();
+            try {
+                espressoAction.run();
+                return;
+            } catch (final RuntimeException focusEx) {
+                final String focusMsg = focusEx.getMessage();
+                final boolean isFocusTimeout =
+                    focusEx.getClass().getName().contains("RootViewWithoutFocus")
+                        || (focusMsg != null && focusMsg.contains("window focus")
+                            && focusMsg.contains("request layout"));
+                if (!isFocusTimeout) {
+                    throw focusEx;
+                }
+                lastFocusFailure = focusEx;
+                logger.warning(this.testName.getMethodName()
+                    + ": Espresso could not get a focused root (attempt " + focusAttempt
+                    + '/' + maxFocusAttempts + "); retrying. " + focusMsg);
+                // Let the (slow) emulator make progress towards the window
+                // gaining focus before the next attempt.
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            }
+        }
+        throw lastFocusFailure;
     }
 
     /**
