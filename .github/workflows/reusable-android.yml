@@ -1102,23 +1102,35 @@ jobs:
           resolve_ignore_classname: false
           skip_comment_without_tests: false
 
+      # Codecov's CLI wrapper fetches Codecov's GPG public key from an external
+      # endpoint to verify the downloaded uploader binary. That fetch
+      # intermittently times out ("no valid OpenPGP data found" -> "Can't check
+      # signature: No public key"), and with fail_ci_if_error it hard-fails the
+      # job (cf. CI run 26179498206). Wrap the action in wretry to ride out the
+      # transient blip; MEDIUM timeout so up to 3 attempts fit (a hung key fetch
+      # can take ~60s to fail).
       - name: Upload Android Test results to Codecov
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
-          codecov_yml_path: codecov.yml
-          report_type: test_results
-          directory: app/build/outputs/androidTest-results
-          disable_search: false
-          fail_ci_if_error: true
-          flags: Android-Instrumentation-Tests
-          name: Android-instrumentation-test-results
-          version: latest
-          token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
-          working-directory: .
+          action: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+          pre_retry_command: 'echo "Retrying Codecov upload (Android test results)..."'
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
+            codecov_yml_path: codecov.yml
+            report_type: test_results
+            directory: app/build/outputs/androidTest-results
+            disable_search: false
+            fail_ci_if_error: true
+            flags: Android-Instrumentation-Tests
+            name: Android-instrumentation-test-results
+            version: latest
+            token: ${{ secrets.CODECOV_TOKEN }}
+            verbose: true
+            working-directory: .
 
       - name: Check report's paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1453,23 +1465,30 @@ jobs:
           resolve_ignore_classname: false
           skip_comment_without_tests: false
 
+      # See the "Upload Android Test results to Codecov" step above for why this
+      # is wrapped in wretry (transient Codecov GPG-key-fetch failures).
       - name: Upload Unit Test results to Codecov
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
-          codecov_yml_path: codecov.yml
-          report_type: test_results
-          directory: app/build/test-results
-          disable_search: false
-          fail_ci_if_error: true
-          flags: Android-Unit-Tests
-          name: Android-unit-test-results
-          version: latest
-          token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
-          working-directory: .
+          action: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+          pre_retry_command: 'echo "Retrying Codecov upload (Android unit test results)..."'
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
+            codecov_yml_path: codecov.yml
+            report_type: test_results
+            directory: app/build/test-results
+            disable_search: false
+            fail_ci_if_error: true
+            flags: Android-Unit-Tests
+            name: Android-unit-test-results
+            version: latest
+            token: ${{ secrets.CODECOV_TOKEN }}
+            verbose: true
+            working-directory: .
 
   Sonar:
     needs: [AndroidTests]
