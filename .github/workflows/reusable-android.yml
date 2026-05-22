@@ -616,7 +616,11 @@ jobs:
             # Optional, defaults to all types
             # event: push
             # Optional, will use specified workflow run
-            # run_id: 1122334455
+            # Pin to THIS run so the same-run artifact is read by run_id directly,
+            # not via the flaky cross-run search that paginates GitHub's artifact
+            # API and transiently misses it (cf. CI run 26244860134: only the API
+            # 15 Unit tests job missed, hard-failing via if_no_artifact_found: fail).
+            run_id: ${{ github.run_id }}
             # Optional, run number from the workflow
             # run_number: 34
             # Optional, uploaded artifact name,
@@ -1272,7 +1276,11 @@ jobs:
             # Optional, defaults to all types
             # event: push
             # Optional, will use specified workflow run
-            # run_id: 1122334455
+            # Pin to THIS run so the same-run artifact is read by run_id directly,
+            # not via the flaky cross-run search that paginates GitHub's artifact
+            # API and transiently misses it (cf. CI run 26244860134: only the API
+            # 15 Unit tests job missed, hard-failing via if_no_artifact_found: fail).
+            run_id: ${{ github.run_id }}
             # Optional, run number from the workflow
             # run_number: 34
             # Optional, uploaded artifact name,
@@ -1592,7 +1600,11 @@ jobs:
             # Optional, defaults to all types
             # event: push
             # Optional, will use specified workflow run
-            # run_id: 1122334455
+            # Pin to THIS run so the same-run artifact is read by run_id directly,
+            # not via the flaky cross-run search that paginates GitHub's artifact
+            # API and transiently misses it (cf. CI run 26244860134: only the API
+            # 15 Unit tests job missed, hard-failing via if_no_artifact_found: fail).
+            run_id: ${{ github.run_id }}
             # Optional, run number from the workflow
             # run_number: 34
             # Optional, uploaded artifact name,

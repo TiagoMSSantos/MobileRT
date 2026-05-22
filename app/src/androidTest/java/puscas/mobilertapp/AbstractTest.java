@@ -67,7 +67,6 @@ import puscas.mobilertapp.constants.ConstantsUI;
 import puscas.mobilertapp.constants.Scene;
 import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
-import puscas.mobilertapp.exceptions.FailureException;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
 import puscas.mobilertapp.utils.UtilsLogging;
@@ -135,10 +134,16 @@ public abstract class AbstractTest {
 
             if (!oneTestFailed) {
                 oneTestFailed = true;
+                // Do NOT throw here. TestWatcher.failed() is called inside
+                // failedQuietly(), which catches any thrown exception and adds it to
+                // the errors list alongside the original failure. That turns 1 failure
+                // into a MultipleFailureException (2 entries). Old Dalvik
+                // instrumentation runners (API <= 16) crash when they receive
+                // MultipleFailureException — they only handle single-exception
+                // propagation — surfacing as "Process crashed" and silently killing
+                // the remaining tests.
                 if (exception != null) {
-                    // Throw exception to print the test name in the error message.
-                    final String errorMessage = testName.getMethodName() + ": " + exception.getMessage();
-                    throw new FailureException(errorMessage, exception);
+                    logger.severe(testName.getMethodName() + ": " + exception.getMessage());
                 }
             }
         }
