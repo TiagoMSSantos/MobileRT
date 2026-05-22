@@ -421,14 +421,16 @@ jobs:
           api-level: ${{ matrix.android_api }}
           target: google_apis
           arch: ${{ env.android_emulator_arch }}
-          # Keep false: the action disables animations via an un-timeout-
-          # wrapped `adb shell settings put ...` right after boot. On a
-          # wedged-but-booted emulator that adb call blocks forever and
-          # consumes the entire 50-min step (observed hang). run_tests_android.sh
-          # already disables all animation scales itself via
-          # callAdbShellCommandUntilSuccess (timeout-wrapped, retried).
+          # Keep false: the action disables animations/spellchecker via an
+          # un-timeout-wrapped `adb shell settings put ...` right after boot.
+          # On API 21, after snapshot restore, the Settings provider is not
+          # fully ready even when boot_completed=1 -- that adb call hangs
+          # for >60s (killed by the shim) and fails every wretry attempt.
+          # run_tests_android.sh already disables all animation scales itself
+          # via callAdbShellCommandUntilSuccess (timeout-wrapped, retried).
+          # The spell checker does not affect rendering tests.
           disable-animations: false
-          disable-spellchecker: true
+          disable-spellchecker: false
           channel: stable
           emulator-options: -no-metrics -no-window -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-snapshot-save
           cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
