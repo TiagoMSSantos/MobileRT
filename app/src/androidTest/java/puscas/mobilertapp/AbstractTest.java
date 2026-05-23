@@ -419,6 +419,7 @@ public abstract class AbstractTest {
             Preconditions.checkNotNull(AbstractTest.activity, "The Activity didn't finish as expected!");
         }
 
+        setDrawViewRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         logger.info(this.testName.getMethodName() + " finished");
     }
 

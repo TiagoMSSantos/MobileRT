@@ -56,6 +56,25 @@ jobs:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
 
+      - name: Set up JDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+          java-version: 21
+          distribution: zulu
+          java-package: jdk
+          check-latest: false
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          settings-path: ~/.gradle
+          overwrite-settings: true
+          gpg-private-key: ''
+          gpg-passphrase: GPG_PASSPHRASE
+          cache-dependency-path: '**/build.gradle'
+
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
@@ -188,25 +207,6 @@ jobs:
             --connect-timeout 5 \
             --data-binary @codecov.yml \
             https://codecov.io/validate;
-
-      - name: Set up JDK
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
-        with:
-          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-          java-version: 21
-          distribution: zulu
-          java-package: jdk
-          check-latest: false
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          settings-path: ~/.gradle
-          overwrite-settings: true
-          gpg-private-key: ''
-          gpg-passphrase: GPG_PASSPHRASE
-          cache-dependency-path: '**/build.gradle'
 
       - name: Install dependencies
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -558,6 +558,25 @@ jobs:
           fi
           df -h;
 
+      - name: Set up JDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+          java-version: 21
+          distribution: zulu
+          java-package: jdk
+          check-latest: false
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          settings-path: ~/.gradle
+          overwrite-settings: true
+          gpg-private-key: ''
+          gpg-passphrase: GPG_PASSPHRASE
+          cache-dependency-path: '**/build.gradle'
+
       - name: Download Android NDK from cache
         id: ndk-cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -688,25 +707,6 @@ jobs:
           mv release/android/app-${{ inputs.type }}-signed.apk release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
           ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
 
-      - name: Set up JDK
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
-        with:
-          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-          java-version: 21
-          distribution: zulu
-          java-package: jdk
-          check-latest: false
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          settings-path: ~/.gradle
-          overwrite-settings: true
-          gpg-private-key: ''
-          gpg-passphrase: GPG_PASSPHRASE
-          cache-dependency-path: '**/build.gradle'
-
       - name: Install dependencies
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
@@ -819,7 +819,7 @@ jobs:
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
             fi
           else
-            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 24 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
+            if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 24 ] && [ "${{ inputs.android_api_device }}" -ne 25 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
               echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
