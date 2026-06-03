@@ -259,7 +259,9 @@ android {
         setMinSdkVersion "${androidApiVersion}"
         setTargetSdkVersion 36
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        testInstrumentationRunnerArguments = ['clearPackageData': 'true', 'disableAnalytics': 'true']
+        testInstrumentationRunnerArguments = [
+            'clearPackageData': 'true', 'disableAnalytics': 'true', 'waitForActivitiesToComplete': 'true'
+        ]
         setApplicationId 'puscas.mobilertapp'
         setVersionName '1.0'
         setVersionCode 1

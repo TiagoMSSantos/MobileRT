@@ -114,6 +114,55 @@ jobs:
           echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_ENV}";
           echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_OUTPUT}";
 
+      - name: Install Android SDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success() && !startsWith(inputs.build_os, 'windows')
+        run: |
+          # On pre-provisioned runners (ubuntu-22.04) the SDK is already present;
+          # the guard makes this step a no-op in that case.
+          # Cross-architecture support: GitHub-hosted ARM runners
+          # (ubuntu-24.04-arm) do not ship with qemu-user-static, so the Android
+          # SDK's x86_64-only Linux binaries (adb, aapt2, build-tools natives)
+          # cannot execute. Installing qemu-user-static + binfmt-support
+          # registers binfmt_misc entries so the kernel transparently emulates
+          # x86_64 binaries on ARM64 hosts. On x86_64 hosts the check is a
+          # no-op (no apt invocation, no extra install time).
+          if [ "$(uname -m)" = 'aarch64' ] || [ "$(uname -m)" = 'arm64' ]; then
+            echo 'ARM host detected; installing qemu-user-static + binfmt-support for x86_64 binary execution.';
+            sudo apt-get update -qq;
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq qemu-user-static binfmt-support;
+            # qemu-user-static alone is insufficient: the x86_64 SDK binaries
+            # ELF-INTERP /lib64/ld-linux-x86-64.so.2 and link against amd64
+            # libc/libstdc++, neither of which ship on the arm64 image.
+            # Without these AAPT2's daemon dies on startup with
+            # "x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'".
+            # shellcheck disable=SC1091
+            . scripts/helper_functions.sh && setupAmd64MultiarchOnArm64;
+          fi
+          if [ -z "${ANDROID_HOME}" ] || [ ! -d "${ANDROID_HOME}" ]; then
+            echo "Android SDK not found at '${ANDROID_HOME}', installing...";
+            ANDROID_SDK_ROOT="${HOME}/android-sdk";
+            mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools";
+            # commandlinetools-linux-*.zip contains pure-Java JARs and shell
+            # wrappers, so the same archive works on both x86_64 and ARM64.
+            curl -sSfL \
+              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
+              -o /tmp/cmdline-tools.zip;
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
+            mv /tmp/cmdline-tools-extract/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest";
+            rm -f /tmp/cmdline-tools.zip;
+            rm -rf /tmp/cmdline-tools-extract;
+            echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "${GITHUB_ENV}";
+            export ANDROID_HOME="${ANDROID_SDK_ROOT}";
+            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true;
+            "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
+              "platform-tools" \
+              "platforms;android-${{ inputs.android_api }}";
+            echo "Android SDK installed at ${ANDROID_HOME}";
+          else
+            echo "Android SDK already available at ${ANDROID_HOME}";
+          fi
+
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
       - name: Download Gradle packages artifact
@@ -307,7 +356,7 @@ jobs:
             --info --warning-mode all --stacktrace;
 
       - name: Build ${{ inputs.type }}
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        timeout-minutes: 30
         if: success()
         env:
           ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}
@@ -507,13 +556,32 @@ jobs:
           # Check available parameters in: https://github.com/actions/checkout/blob/main/action.yml
           lfs: true
 
+      - name: Set up JDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
+          java-version: 21
+          distribution: zulu
+          java-package: jdk
+          check-latest: false
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          settings-path: ~/.gradle
+          overwrite-settings: true
+          gpg-private-key: ''
+          gpg-passphrase: GPG_PASSPHRASE
+          cache-dependency-path: '**/build.gradle'
+
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
         run: |
           export ANDROID_HOME=${{ needs.Build.outputs.android_home }};
           echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_ENV}";
-          if [ -n "${ANDROID_HOME}" ]; then
+          if [ -n "${ANDROID_HOME}" ] && [ -d "${ANDROID_HOME}" ]; then
             echo 'Available Android versions:';
             ls -lahp ${ANDROID_HOME};
             # Empty NDK / extras / cmake to free disk space; the Cache Android
@@ -534,7 +602,6 @@ jobs:
           # independent and rm -rf is I/O bound, so overlapping the I/O
           # noticeably cuts the cleanup time (~1m -> ~20s on a typical run).
           if command -v sudo > /dev/null; then
-            sudo rm -rf /usr/lib/jvm &
             sudo rm -rf /usr/share/dotnet &
             sudo rm -rf /usr/share/swift &
             sudo rm -rf /usr/local/.ghcup &
@@ -544,7 +611,6 @@ jobs:
             sudo rm -rf /opt/google &
             sudo rm -rf /opt/az &
             sudo rm -rf /usr/local/share/powershell &
-            sudo rm -rf /opt/hostedtoolcache &
             wait;
           fi
           # Single `docker system prune --all --volumes --force` is a superset
@@ -558,24 +624,59 @@ jobs:
           fi
           df -h;
 
-      - name: Set up JDK
+      - name: Install Android SDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success()
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
-        with:
-          # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
-          java-version: 21
-          distribution: zulu
-          java-package: jdk
-          check-latest: false
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          settings-path: ~/.gradle
-          overwrite-settings: true
-          gpg-private-key: ''
-          gpg-passphrase: GPG_PASSPHRASE
-          cache-dependency-path: '**/build.gradle'
+        if: success() && !startsWith(inputs.target_os, 'windows')
+        run: |
+          # On pre-provisioned runners (ubuntu-22.04) the SDK exported by the
+          # Build job is already present; the guard makes this step a no-op.
+          # On runners that lack a pre-installed SDK (e.g. ubuntu-24.04-arm)
+          # this step bootstraps the SDK so subsequent steps can use sdkmanager
+          # (for NDK), adb (the timeout-shim), and android-emulator-runner.
+          # Cross-architecture support: GitHub-hosted ARM runners
+          # (ubuntu-24.04-arm) do not ship with qemu-user-static, so the Android
+          # SDK's x86_64-only Linux binaries (adb, aapt2, build-tools natives)
+          # cannot execute. Installing qemu-user-static + binfmt-support
+          # registers binfmt_misc entries so the kernel transparently emulates
+          # x86_64 binaries on ARM64 hosts. On x86_64 hosts the check is a
+          # no-op (no apt invocation, no extra install time).
+          if [ "$(uname -m)" = 'aarch64' ] || [ "$(uname -m)" = 'arm64' ]; then
+            echo 'ARM host detected; installing qemu-user-static + binfmt-support for x86_64 binary execution.';
+            sudo apt-get update -qq;
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq qemu-user-static binfmt-support;
+            # qemu-user-static alone is insufficient: the x86_64 SDK binaries
+            # ELF-INTERP /lib64/ld-linux-x86-64.so.2 and link against amd64
+            # libc/libstdc++, neither of which ship on the arm64 image.
+            # Without these AAPT2's daemon dies on startup with
+            # "x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'".
+            # shellcheck disable=SC1091
+            . scripts/helper_functions.sh && setupAmd64MultiarchOnArm64;
+          fi
+          if [ -z "${ANDROID_HOME}" ] || [ ! -d "${ANDROID_HOME}" ]; then
+            echo "Android SDK not found at '${ANDROID_HOME}', installing...";
+            ANDROID_SDK_ROOT="${HOME}/android-sdk";
+            mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools";
+            # commandlinetools-linux-*.zip contains pure-Java JARs and shell
+            # wrappers, so the same archive works on both x86_64 and ARM64.
+            # sdkmanager then downloads architecture-specific native binaries
+            # (adb, fastboot, emulator) for the host architecture.
+            curl -sSfL \
+              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
+              -o /tmp/cmdline-tools.zip;
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
+            mv /tmp/cmdline-tools-extract/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest";
+            rm -f /tmp/cmdline-tools.zip;
+            rm -rf /tmp/cmdline-tools-extract;
+            echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "${GITHUB_ENV}";
+            export ANDROID_HOME="${ANDROID_SDK_ROOT}";
+            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true;
+            "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
+              "platform-tools" \
+              "platforms;android-${{ inputs.android_api_device }}";
+            echo "Android SDK installed at ${ANDROID_HOME}";
+          else
+            echo "Android SDK already available at ${ANDROID_HOME}";
+          fi
 
       - name: Download Android NDK from cache
         id: ndk-cache
@@ -802,9 +903,18 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.target_os, 'ubuntu')
         run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules;
-          sudo udevadm control --reload-rules;
-          sudo udevadm trigger --name-match=kvm;
+          # GitHub-hosted ARM runners (ubuntu-24.04-arm) do not expose nested
+          # virtualization, so /dev/kvm is absent and `udevadm trigger
+          # --name-match=kvm` fails with "Failed to open the device 'kvm':
+          # Invalid argument". ARM emulators run the ARM system image natively
+          # without KVM, so the step is safe to skip in that case.
+          if [ -e /dev/kvm ]; then
+            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules;
+            sudo udevadm control --reload-rules;
+            sudo udevadm trigger --name-match=kvm;
+          else
+            echo 'No /dev/kvm device present; skipping KVM group permissions (typical on ARM runners).';
+          fi
 
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -812,11 +922,18 @@ jobs:
         run: |
           echo 'android_arch=\"armeabi-v7a\",\"arm64-v8a\",\"x86\",\"x86_64\"' >> "${GITHUB_ENV}";
           cpuArch=$(uname -m);
-          if [ "${cpuArch}" = 'arm64' ]; then
-            if [ "${{ inputs.android_api }}" -gt 20 ]; then
+          # Linux's `uname -m` returns 'aarch64' for ARM64 hosts (the macOS/iOS
+          # 'arm64' string never appears on a GitHub Linux runner). Both are
+          # accepted here so the detection is correct on any future host arch
+          # naming change.
+          if [ "${cpuArch}" = 'arm64' ] || [ "${cpuArch}" = 'aarch64' ]; then
+            # API 21+ has arm64-v8a system images; older APIs only have
+            # armeabi-v7a, so the emulator must use that on ARM hosts for
+            # legacy APIs.
+            if [ "${{ inputs.android_api_device }}" -ge 21 ]; then
               echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
             else
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+              echo 'android_emulator_arch=armeabi-v7a' >> "${GITHUB_ENV}";
             fi
           else
             if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 24 ] && [ "${{ inputs.android_api_device }}" -ne 25 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
@@ -866,10 +983,16 @@ jobs:
           # emulator-runner skips both AVD creation (~30s) and cold boot
           # (~3-5 min), starting from the snapshot in ~30-60s. Bump the
           # trailing version suffix (-v1) to invalidate stale snapshots.
+          # The system-image `target` (default/google_apis) is part of the key:
+          # the cached AVD's config.ini hardcodes the tag chosen at creation, so
+          # a target change must rotate the cache - otherwise a stale `default`
+          # AVD is restored against a freshly-installed `google_apis` image (or
+          # vice versa), and the emulator dies on "Broken AVD system path". Keep
+          # this ternary in sync with the `target:` inputs of the steps below.
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-${{ inputs.android_api_device }}-${{ env.android_emulator_arch }}-${{ runner.os }}-v1
+          key: avd-${{ inputs.android_api_device }}-${{ inputs.android_api_device == 26 && 'default' || 'google_apis' }}-${{ env.android_emulator_arch }}-${{ runner.os }}-v1
 
       - name: Install adb timeout-shim
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -965,7 +1088,12 @@ jobs:
             # must match the test step below, otherwise snapshot load fails.
             api-level: ${{ inputs.android_api_device }}
             cmake: ${{ needs.Build.outputs.cmake_version }}
-            target: google_apis
+            # API 26 (8.0) google_apis ships the Nexus Launcher + Google Play Services,
+            # whose constant churn on the 2-core software emulator keeps stealing window
+            # focus from the test activity (RootViewWithoutFocusException). The app needs no
+            # Play features, so use the AOSP `default` image (no GApps, lightweight launcher)
+            # on API 26. API 25 stays on google_apis (already green).
+            target: ${{ inputs.android_api_device == 26 && 'default' || 'google_apis' }}
             arch: ${{ env.android_emulator_arch }}
             disable-animations: false
             channel: stable
@@ -1010,13 +1138,25 @@ jobs:
             # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
             # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
             # Max api level for 32bit is: 30
-            # -no-snapshot-save is kept so the test step doesn't dirty the
-            # cached snapshot mid-run; the emulator still LOADS the snapshot
-            # saved by the cache step above, which is what gives the 3-5 min
-            # boot-time saving on cache hits.
+            # Snapshot flag is API-scoped (see emulator-options below):
+            #  - API 26 -> -no-snapshot: COLD boot (no snapshot load/save). The headless
+            #    -no-window WindowManager intermittently never grants the app window focus
+            #    when restoring the cached snapshot (RootViewWithoutFocusException; proven a
+            #    per-boot flake - same snapshot, focus worked one run and failed entirely the
+            #    next). A fresh cold boot re-initialises WM from scratch each run, which is
+            #    more reliable for focus. Costs ~40-90s boot (vs ~8s restore) - well under
+            #    EMULATOR_BOOT_TIMEOUT=180s.
+            #  - Other APIs (incl. green API 25) -> -no-snapshot-save: the test step does NOT
+            #    dirty the cached snapshot but still LOADS it, giving the ~8s boot on cache
+            #    hits. Unchanged behaviour.
             api-level: ${{ inputs.android_api_device }}
             cmake: ${{ needs.Build.outputs.cmake_version }}
-            target: google_apis
+            # API 26 (8.0) google_apis ships the Nexus Launcher + Google Play Services,
+            # whose constant churn on the 2-core software emulator keeps stealing window
+            # focus from the test activity (RootViewWithoutFocusException). The app needs no
+            # Play features, so use the AOSP `default` image (no GApps, lightweight launcher)
+            # on API 26. API 25 stays on google_apis (already green).
+            target: ${{ inputs.android_api_device == 26 && 'default' || 'google_apis' }}
             arch: ${{ env.android_emulator_arch }}
             # Keep false: the action disables animations/spellchecker via an
             # un-timeout-wrapped `adb shell settings put ...` right after boot.
@@ -1342,6 +1482,55 @@ jobs:
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
+
+      - name: Install Android SDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success() && !startsWith(inputs.target_os, 'windows')
+        run: |
+          # UnitTests is a JVM job (no emulator) but Gradle still requires
+          # ANDROID_HOME to point at a valid SDK to evaluate the Android plugin
+          # ("SDK location not found"). On runners that lack a pre-installed SDK
+          # (e.g. ubuntu-24.04-arm), bootstrap one here.
+          # Cross-architecture support: GitHub-hosted ARM runners
+          # (ubuntu-24.04-arm) do not ship with qemu-user-static, so the Android
+          # SDK's x86_64-only Linux binaries (adb, aapt2, build-tools natives)
+          # cannot execute. Installing qemu-user-static + binfmt-support
+          # registers binfmt_misc entries so the kernel transparently emulates
+          # x86_64 binaries on ARM64 hosts. On x86_64 hosts the check is a
+          # no-op (no apt invocation, no extra install time).
+          if [ "$(uname -m)" = 'aarch64' ] || [ "$(uname -m)" = 'arm64' ]; then
+            echo 'ARM host detected; installing qemu-user-static + binfmt-support for x86_64 binary execution.';
+            sudo apt-get update -qq;
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq qemu-user-static binfmt-support;
+            # qemu-user-static alone is insufficient: the x86_64 SDK binaries
+            # ELF-INTERP /lib64/ld-linux-x86-64.so.2 and link against amd64
+            # libc/libstdc++, neither of which ship on the arm64 image.
+            # Without these AAPT2's daemon dies on startup with
+            # "x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'".
+            # shellcheck disable=SC1091
+            . scripts/helper_functions.sh && setupAmd64MultiarchOnArm64;
+          fi
+          if [ -z "${ANDROID_HOME}" ] || [ ! -d "${ANDROID_HOME}" ]; then
+            echo "Android SDK not found at '${ANDROID_HOME}', installing...";
+            ANDROID_SDK_ROOT="${HOME}/android-sdk";
+            mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools";
+            curl -sSfL \
+              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
+              -o /tmp/cmdline-tools.zip;
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
+            mv /tmp/cmdline-tools-extract/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest";
+            rm -f /tmp/cmdline-tools.zip;
+            rm -rf /tmp/cmdline-tools-extract;
+            echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "${GITHUB_ENV}";
+            export ANDROID_HOME="${ANDROID_SDK_ROOT}";
+            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true;
+            "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
+              "platform-tools" \
+              "platforms;android-${{ inputs.android_api }}";
+            echo "Android SDK installed at ${ANDROID_HOME}";
+          else
+            echo "Android SDK already available at ${ANDROID_HOME}";
+          fi
 
       - name: Install dependencies
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -1673,6 +1862,54 @@ jobs:
           gpg-private-key: ''
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
+
+      - name: Install Android SDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success() && !startsWith(inputs.build_os, 'windows')
+        run: |
+          # Sonar runs on build_os (ubuntu-22.04 has the SDK pre-installed, so
+          # this guard is a no-op there). The block bootstraps a fresh SDK on
+          # any runner that ships without one, keeping the job portable.
+          # Cross-architecture support: GitHub-hosted ARM runners
+          # (ubuntu-24.04-arm) do not ship with qemu-user-static, so the Android
+          # SDK's x86_64-only Linux binaries (adb, aapt2, build-tools natives)
+          # cannot execute. Installing qemu-user-static + binfmt-support
+          # registers binfmt_misc entries so the kernel transparently emulates
+          # x86_64 binaries on ARM64 hosts. On x86_64 hosts the check is a
+          # no-op (no apt invocation, no extra install time).
+          if [ "$(uname -m)" = 'aarch64' ] || [ "$(uname -m)" = 'arm64' ]; then
+            echo 'ARM host detected; installing qemu-user-static + binfmt-support for x86_64 binary execution.';
+            sudo apt-get update -qq;
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq qemu-user-static binfmt-support;
+            # qemu-user-static alone is insufficient: the x86_64 SDK binaries
+            # ELF-INTERP /lib64/ld-linux-x86-64.so.2 and link against amd64
+            # libc/libstdc++, neither of which ship on the arm64 image.
+            # Without these AAPT2's daemon dies on startup with
+            # "x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'".
+            # shellcheck disable=SC1091
+            . scripts/helper_functions.sh && setupAmd64MultiarchOnArm64;
+          fi
+          if [ -z "${ANDROID_HOME}" ] || [ ! -d "${ANDROID_HOME}" ]; then
+            echo "Android SDK not found at '${ANDROID_HOME}', installing...";
+            ANDROID_SDK_ROOT="${HOME}/android-sdk";
+            mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools";
+            curl -sSfL \
+              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
+              -o /tmp/cmdline-tools.zip;
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
+            mv /tmp/cmdline-tools-extract/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest";
+            rm -f /tmp/cmdline-tools.zip;
+            rm -rf /tmp/cmdline-tools-extract;
+            echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "${GITHUB_ENV}";
+            export ANDROID_HOME="${ANDROID_SDK_ROOT}";
+            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true;
+            "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
+              "platform-tools" \
+              "platforms;android-${{ inputs.android_api }}";
+            echo "Android SDK installed at ${ANDROID_HOME}";
+          else
+            echo "Android SDK already available at ${ANDROID_HOME}";
+          fi
 
       - name: Install dependencies
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}

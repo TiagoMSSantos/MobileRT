@@ -361,8 +361,8 @@ waitForEmulator() {
   _waitForEmulatorToBoot;
 
   echo "Setting Gradle Wrapper to a version that is compatible with Android API: '${android_api_version}'".;
-  callCommandUntilSuccess 2 sh gradlew --parallel wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
-  callCommandUntilSuccess 2 sh gradlew --parallel --daemon --no-rebuild -DtestType="${type}" -DandroidApiVersion="${android_api_version}" \
+  callCommandUntilSuccess 2 sh gradlew --parallel --info wrapper -DtestType="${type}" -DandroidApiVersion="${android_api_version}" -DabiFilters="[${cpu_architecture}]";
+  callCommandUntilSuccess 2 sh gradlew --parallel --info --daemon --no-rebuild -DtestType="${type}" -DandroidApiVersion="${android_api_version}" \
     -DabiFilters="[${cpu_architecture}]" --info --warning-mode fail --stacktrace;
 
   unlockDevice;
@@ -509,7 +509,10 @@ startCopyingLogcatToFile() {
   callAdbShellCommandUntilSuccess 'logcat '"${bufferSize}"' -c';
 
   echo 'Copy realtime logcat to file';
-  timeout 60 adb logcat -v threadtime "*":V | tee "${reports_path}"/logcat_"${type}".log 2>&1 &
+  # Backstop only: clear_func kills pid_logcat cleanly at suite end. The cap must
+  # outlast the whole suite (connectedAndroidTest gets `timeout 600`), otherwise the
+  # capture dies during the unit tests and the instrumentation render is never logged.
+  adb logcat -v threadtime "*":V | tee "${reports_path}"/logcat_"${type}".log 2>&1 &
   pid_logcat="$!";
   echo "pid of logcat: '${pid_logcat}'";
 }

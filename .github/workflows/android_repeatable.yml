@@ -224,7 +224,7 @@ jobs:
           --info --warning-mode all --stacktrace;
 
     - name: Build ${{ matrix.type }}
-      timeout-minutes: 20
+      timeout-minutes: 30
       if: success()
       env:
         ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}
@@ -278,10 +278,16 @@ jobs:
         # emulator-runner skips both AVD creation (~30s) and cold boot
         # (~3-5 min), starting from the snapshot in ~30-60s. Bump the
         # trailing version suffix (-v1) to invalidate stale snapshots.
+        # The system-image `target` (default/google_apis) is part of the key:
+        # the cached AVD's config.ini hardcodes the tag chosen at creation, so
+        # a target change must rotate the cache - otherwise a stale `default`
+        # AVD is restored against a freshly-installed `google_apis` image (or
+        # vice versa), and the emulator dies on "Broken AVD system path". Keep
+        # this ternary in sync with the `target:` inputs of the steps below.
         path: |
           ~/.android/avd/*
           ~/.android/adb*
-        key: avd-${{ matrix.android_api }}-${{ env.android_emulator_arch }}-${{ runner.os }}-v1
+        key: avd-${{ matrix.android_api }}-${{ matrix.android_api == 26 && 'default' || 'google_apis' }}-${{ env.android_emulator_arch }}-${{ runner.os }}-v1
 
     - name: Install adb timeout-shim
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -376,7 +382,12 @@ jobs:
           # quit; actions/cache then stores it for the next run. RAM/CPU
           # must match the test step below, otherwise snapshot load fails.
           api-level: ${{ matrix.android_api }}
-          target: google_apis
+          # API 26 (8.0) google_apis ships the Nexus Launcher + Google Play Services,
+          # whose constant churn on the 2-core software emulator keeps stealing window
+          # focus from the test activity (RootViewWithoutFocusException). The app needs no
+          # Play features, so use the AOSP `default` image (no GApps, lightweight launcher)
+          # on API 26. API 25 stays on google_apis (already green).
+          target: ${{ matrix.android_api == 26 && 'default' || 'google_apis' }}
           arch: ${{ env.android_emulator_arch }}
           disable-animations: false
           channel: stable
@@ -419,7 +430,12 @@ jobs:
           # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
           # Max api level for 32bit is: 30
           api-level: ${{ matrix.android_api }}
-          target: google_apis
+          # API 26 (8.0) google_apis ships the Nexus Launcher + Google Play Services,
+          # whose constant churn on the 2-core software emulator keeps stealing window
+          # focus from the test activity (RootViewWithoutFocusException). The app needs no
+          # Play features, so use the AOSP `default` image (no GApps, lightweight launcher)
+          # on API 26. API 25 stays on google_apis (already green).
+          target: ${{ matrix.android_api == 26 && 'default' || 'google_apis' }}
           arch: ${{ env.android_emulator_arch }}
           # Keep false: the action disables animations/spellchecker via an
           # un-timeout-wrapped `adb shell settings put ...` right after boot.

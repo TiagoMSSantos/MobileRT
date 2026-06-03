@@ -108,6 +108,9 @@
 # Secrets files
 **/*.jks
 
-# Trae CLI
+# AI Agents
 trae_config.yaml
 trajectories
+graphify-out
+.claude
+.cursor

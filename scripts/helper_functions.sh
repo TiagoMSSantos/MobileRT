@@ -284,6 +284,61 @@ capitalizeFirstletter() {
   echo "${res}";
 }
 
+# Make x86_64 dynamic ELFs (Android SDK build-tools: aapt2, adb, etc.) runnable
+# on arm64 GitHub-hosted runners (ubuntu-24.04-arm). qemu-user-static emulates the
+# CPU but the binaries still ELF-INTERP to /lib64/ld-linux-x86-64.so.2 and need
+# amd64 libc; the arm64 image ships neither, hence "x86_64-binfmt-P: Could not
+# open '/lib64/ld-linux-x86-64.so.2'" -> AAPT2 daemon startup fails.
+# Idempotent + a no-op on non-arm64 hosts.
+setupAmd64MultiarchOnArm64() {
+  case "$(uname -m)" in
+    aarch64|arm64) ;;
+    *) return 0 ;;
+  esac
+  if dpkg --print-foreign-architectures 2> /dev/null | grep -qx amd64 \
+     && [ -e /lib64/ld-linux-x86-64.so.2 ]; then
+    return 0;
+  fi
+  echo 'arm64 host: enabling amd64 multiarch for x86_64 Android SDK binaries.';
+  sudo dpkg --add-architecture amd64;
+  # Restrict the pre-existing ports.ubuntu.com sources to arm64 so apt does not
+  # try to fetch amd64 packages from the ports mirror (which only carries arm64/
+  # armhf/riscv64/ppc64el/s390x). The deb822 file is Ubuntu 24.04's default.
+  if [ -f /etc/apt/sources.list.d/ubuntu.sources ] \
+     && ! grep -q '^Architectures:' /etc/apt/sources.list.d/ubuntu.sources; then
+    sudo sed -i '/^Types: /a Architectures: arm64' /etc/apt/sources.list.d/ubuntu.sources;
+  fi
+  # Ubuntu 22.04 (and older) use the legacy one-line format in
+  # /etc/apt/sources.list rather than the deb822 file patched above. Restrict
+  # those ports.ubuntu.com entries to arm64 too, else apt tries to fetch
+  # binary-amd64 indexes from the ports mirror (which only carries arm64/armhf/
+  # riscv64/ppc64el/s390x) and apt-get update fails with 404 / exit 100.
+  if [ -f /etc/apt/sources.list ]; then
+    sudo sed -i -E 's|^deb (http)|deb [arch=arm64] \1|' /etc/apt/sources.list;
+  fi
+  codename="$(. /etc/os-release && echo "${VERSION_CODENAME}")";
+  sudo tee /etc/apt/sources.list.d/amd64.sources > /dev/null <<EOF
+Types: deb
+URIs: http://archive.ubuntu.com/ubuntu/
+Suites: ${codename} ${codename}-updates ${codename}-backports
+Components: main universe multiverse restricted
+Architectures: amd64
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+URIs: http://security.ubuntu.com/ubuntu/
+Suites: ${codename}-security
+Components: main universe multiverse restricted
+Architectures: amd64
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+EOF
+  sudo apt-get update -qq;
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+    libc6:amd64 libstdc++6:amd64 zlib1g:amd64;
+  echo 'amd64 multiarch ready; x86_64 dyld present at:';
+  ls -l /lib64/ld-linux-x86-64.so.2;
+}
+
 # Parallelize building of MobileRT.
 parallelizeBuild() {
   uname -a;
