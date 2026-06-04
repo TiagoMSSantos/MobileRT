@@ -45,22 +45,27 @@ println('Reading system properties.')
 println('Gradle version: ' + gradle_version)
 println('Gradle major version: ' + gradleVersionMajor)
 println('Gradle minor version: ' + gradleVersionMinor)
-def javaBinariesPath, javaUnitTestBinaries, javaAndroidTestBinaries
+def javaBinariesPath, javaUnitTestBinaries, javaAndroidTestBinaries, kotlinBinariesPath
 if (gradleVersionMajor >= 9) {
     println('Gradle version is more recent than 9 so using new path to classes.')
     javaBinariesPath = 'compileDebugJavaWithJavac/classes/'
     javaUnitTestBinaries = 'compileDebugUnitTestJavaWithJavac/classes/'
     javaAndroidTestBinaries = 'compileDebugAndroidTestJavaWithJavac/classes/'
+    // AGP 9 compiles Kotlin with the built-in Kotlin support, which writes the
+    // classes to a different directory than the legacy Kotlin Gradle plugin.
+    kotlinBinariesPath = 'build/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes/'
 } else if (gradleVersionMajor >= 8 && gradleVersionMinor >= 3) {
     println('Gradle version is more recent than 8.3 so using new path to classes.')
     javaBinariesPath = 'compileDebugJavaWithJavac/classes/'
     javaUnitTestBinaries = 'compileDebugUnitTestJavaWithJavac/classes/'
     javaAndroidTestBinaries = 'compileDebugAndroidTestJavaWithJavac/classes/'
+    kotlinBinariesPath = 'build/tmp/kotlin-classes/debug/'
 } else {
     println('Gradle version is older than 8.3, so using legacy path to classes.')
     javaBinariesPath = 'classes/'
     javaUnitTestBinaries = 'classes/'
     javaAndroidTestBinaries = 'classes/'
+    kotlinBinariesPath = 'build/tmp/kotlin-classes/debug/'
 }
 
 println('Android API version: ' + androidApiVersion)
@@ -167,18 +172,46 @@ sonar {
         property 'sonar.sourceEncoding', 'UTF-8'
         property 'sonar.java.source', JavaVersion.VERSION_21.toString()
         property 'sonar.java.target', JavaVersion.VERSION_21.toString()
-        property 'sonar.sources', 'src/main/java'
-        property 'sonar.tests', 'src/test/java, src/androidTest/java'
-        property 'sonar.java.binaries', "build/intermediates/javac/debug/${javaBinariesPath},build/tmp/kotlin-classes/debug/,build/intermediates/classes/debug/jacocoDebug/dirs/"
-        properties['sonar.java.test.binaries'] += "build/intermediates/javac/debugUnitTest/${javaUnitTestBinaries}"
-        properties['sonar.java.test.binaries'] += "build/intermediates/javac/debugAndroidTest/${javaAndroidTestBinaries}"
+        // Do not set sonar.sources / sonar.tests for the main source set or unit
+        // tests: the org.sonarqube plugin (>= 7.3.x, AGP Variant Sources API)
+        // auto-detects them as absolute paths and APPENDS to any value set here.
+        // Listing them again (as relative paths) makes the same directory appear
+        // twice, so every file is "indexed twice" and the analysis fails. Only
+        // src/androidTest/java is not auto-detected, so it must be added here.
+        property 'sonar.tests', 'src/androidTest/java'
+        property 'sonar.java.binaries', "build/intermediates/javac/debug/${javaBinariesPath},${kotlinBinariesPath},build/intermediates/classes/debug/jacocoDebug/dirs/"
+        // Set sonar.java.test.binaries as a single comma-separated value. Using
+        // properties['sonar.java.test.binaries'] += instead concatenated onto a
+        // null entry, producing a single invalid path ('null' prefix + the two
+        // directories mashed together with no separator).
+        property 'sonar.java.test.binaries', "build/intermediates/javac/debugUnitTest/${javaUnitTestBinaries},build/intermediates/javac/debugAndroidTest/${javaAndroidTestBinaries}"
         property 'sonar.junit.reportPaths', 'build/test-results/testDebugUnitTest'
 
         // More properties
         property 'sonar.inclusions', '**/src/**/*.java,**/src/**/*.kt,**/*.cpp,**/*.hpp'
         property 'sonar.exclusions', '**/Unit_Testing/**,**/test**,**/**Generated**,**/third_party**,**/build**'
 
+        // C/C++ analysis (CFamily). The analyzer needs a compilation database to
+        // know how each translation unit is compiled. AGP + CMake already emit a
+        // per-ABI compile_commands.json under app/.cxx; the stageSonarCompileCommands
+        // task (below) copies one to this stable path before the sonar task runs.
+        // Use an absolute path: the CFamily reader resolves a relative value against
+        // the root project base dir (.../MobileRT/build/...), not the :app module
+        // dir where the file is staged (.../MobileRT/app/build/...), causing a
+        // NoSuchFileException. The absolute path matches the staging task's outFile.
+        // Stage OUTSIDE build/sonar: the org.sonarqube plugin uses build/sonar as
+        // sonar.working.directory and wipes it at scanner startup, which would delete
+        // the staged database before CFamily reads it (another NoSuchFileException).
+        property 'sonar.cfamily.compile-commands', layout.buildDirectory.file('sonar-cfamily/compile_commands.json').get().asFile.absolutePath
+        property 'sonar.cfamily.threads', '4'
+
         property 'sonar.host.url', 'https://sonarcloud.io'
+        // The sonarqube plugin's scanner-engine auto-provisions a JRE by querying
+        // https://api.sonarcloud.io/analysis/jres at bootstrap. That endpoint returns
+        // HTTP 403 Forbidden here ("Failed to query JRE metadata"), aborting before
+        // analysis even starts. The runner already runs Gradle on a valid JDK, so skip
+        // provisioning and reuse JAVA_HOME instead of fetching a JRE from SonarCloud.
+        property 'sonar.scanner.skipJreProvisioning', 'true'
         property 'sonar.verbose', 'true'
 
         // Properties not documented
@@ -196,6 +229,44 @@ sonar {
         property 'sonar.log.level.es', 'TRACE'
         property 'sonar.scm.exclusions.disabled', 'false'
     }
+}
+
+// AGP + CMake emit a compile_commands.json per ABI under app/.cxx/<config>/<hash>/<abi>/.
+// The Sonar CFamily analyzer wants a single compilation database at a stable path,
+// so copy the most recent non-empty one to build/sonar-cfamily/compile_commands.json.
+// Must NOT live under build/sonar: that is the scanner's sonar.working.directory,
+// wiped at startup, which would remove the staged file before CFamily reads it. The
+// sonar task depends on this so it always runs first (in CI the .cxx directory is
+// shipped to the Sonar job as part of the sonar-inputs artifact).
+tasks.register('stageSonarCompileCommands') {
+    description = 'Stages a CMake compile_commands.json at a stable path for the Sonar CFamily analyzer.'
+    final def cxxDir = layout.projectDirectory.dir('.cxx').asFile
+    final def outFile = layout.buildDirectory.file('sonar-cfamily/compile_commands.json').get().asFile
+    outputs.file(outFile)
+    doLast {
+        if (!cxxDir.exists()) {
+            throw new GradleException("No .cxx directory at ${cxxDir}. The native build must run before Sonar so CMake produces compile_commands.json.")
+        }
+        final def candidates = fileTree(cxxDir) { include '**/compile_commands.json' }.files
+            .findAll { it.length() > 0L }
+            .sort { -it.lastModified() }
+        if (candidates.isEmpty()) {
+            throw new GradleException("No non-empty compile_commands.json found under ${cxxDir}.")
+        }
+        final def source = candidates.first()
+        outFile.parentFile.mkdirs()
+        // SonarCFamily's ClangDriver cannot expand the @<...>.modmap Clang module-map
+        // response files that CMake emits for every translation unit under -std=c++20
+        // (C++20 module dependency scanning), aborting with "unexpanded response file".
+        // The project uses no C++20 modules so these modmaps are empty; strip the
+        // @*.modmap token from each command (no effect on analysis).
+        outFile.text = source.text.replaceAll(/\s+@\S+\.modmap/, '')
+        println("Staged Sonar compile commands from ${source} to ${outFile}")
+    }
+}
+
+tasks.named('sonar') {
+    dependsOn 'stageSonarCompileCommands'
 }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

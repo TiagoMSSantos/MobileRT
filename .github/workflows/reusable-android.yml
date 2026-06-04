@@ -2002,11 +2002,12 @@ jobs:
         if: success()
         run: |
           . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
+            -DandroidApiVersion="${{ inputs.android_api }}" \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             --info --warning-mode all --stacktrace sonar;
 
       - name: Analyze Sonar
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
