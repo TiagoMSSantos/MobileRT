@@ -2014,7 +2014,8 @@ jobs:
           # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
           GRADLE_OPTS: -Xms8G -Xmx8G -XX:ActiveProcessorCount=5
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew --offline --profile --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew --profile --parallel \
+            -DandroidApiVersion="${{ inputs.android_api }}" \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             --info --warning-mode all --stacktrace sonar;
 

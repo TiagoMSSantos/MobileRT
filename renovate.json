@@ -572,6 +572,30 @@
       "versioning": "maven"
     },
     {
+      "groupName": "Update SonarQube Gradle plugin",
+      "enabled": true,
+      "matchDepNames": [
+        "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin"
+      ],
+      "versioning": "maven"
+    },
+    {
+      "groupName": "Update Ruby gems",
+      "enabled": true,
+      "matchDatasources": [
+        "rubygems"
+      ],
+      "versioning": "ruby"
+    },
+    {
+      "groupName": "Update Rust crates",
+      "enabled": true,
+      "matchDatasources": [
+        "crate"
+      ],
+      "versioning": "cargo"
+    },
+    {
       "groupName": "Only update patches of androidx.core:core for Android API < 19",
       "enabled": true,
       "matchDepNames": [
@@ -927,6 +951,14 @@
       "versioning": "ubuntu",
       "matchCurrentValue": "/^24\\.\\d+-arm$/",
       "allowedVersions": "/^24\\.\\d+-arm$/"
+    },
+    {
+      "description": "Do not manage rolling '-latest' GitHub runner aliases (not pinnable versions)",
+      "matchDatasources": [
+        "github-runners"
+      ],
+      "matchCurrentValue": "/^latest$/",
+      "enabled": false
     },
     {
       "description": "Enable GitHub digest updates",
