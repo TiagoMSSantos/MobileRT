@@ -15,14 +15,14 @@ libc = "^0.2"               # C library compatibility.
 serde_json = "^1.0"         # JSON serialization/deserialization.
 tokio = { version = "^1.44", features = ["full"] }  # Async runtime.
 tokio-stream = "^0.1"       # Tokio stream utilities.
-warp = "^0.3"               # HTTP/REST API framework.
+warp = "^0.4"               # HTTP/REST API framework.
 futures-util = "^0.3"       # Utilities for async futures.
 
 
 [dev-dependencies]
 # Dependencies for development and testing.
 futures = "^0.3"             # Base futures library for testing.
-tokio-tungstenite = "^0.27"  # WebSocket support for tests.
+tokio-tungstenite = "^0.29"  # WebSocket support for tests.
 
 
 [build-dependencies]
