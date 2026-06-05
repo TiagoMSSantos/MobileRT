@@ -443,6 +443,8 @@ jobs:
             app/build
             app/.cxx
             gradle/wrapper
+            gradlew
+            gradlew.bat
           if-no-files-found: error
           # Ephemeral intra-run handoff (consumed by the test/Sonar jobs in
           # the same run, never needed afterwards). Keep retention at the
@@ -1319,10 +1321,19 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
           name: sonar-inputs_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
+          # The 'wrapper' Gradle task (build.gradle) regenerates the WHOLE wrapper
+          # set per Android API (8.7 for API < 16, else 9.5.1): gradlew, gradlew.bat,
+          # the jar and the properties. Shipping only gradle/wrapper leaves the
+          # downstream Sonar job with the regenerated 8.7 jar (whose manifest has no
+          # Main-Class) paired with the committed 9.5.1 gradlew (which runs `java -jar`),
+          # so `sh gradlew` fails with "no main manifest attribute". Ship the matching
+          # gradlew scripts too so the wrapper set stays self-consistent downstream.
           path: |
             app/build
             app/.cxx
             gradle/wrapper
+            gradlew
+            gradlew.bat
           if-no-files-found: error
           # Ephemeral intra-run handoff (consumed by the Sonar job in the same
           # run, never needed afterwards). Keep retention at the 1-day minimum
