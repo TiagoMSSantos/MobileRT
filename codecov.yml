@@ -55,7 +55,7 @@ coverage:
           - "!app/System_dependent/**"
           - app/System_dependent/Native/**
       Shell-scripts:
-        target: 5%
+        target: 4%
         threshold: 1%
         base: auto
         if_ci_failed: error

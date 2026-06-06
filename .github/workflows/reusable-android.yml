@@ -116,52 +116,14 @@ jobs:
 
       - name: Install Android SDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.build_os, 'windows')
+        if: success()
         run: |
-          # On pre-provisioned runners (ubuntu-22.04) the SDK is already present;
-          # the guard makes this step a no-op in that case.
-          # Cross-architecture support: GitHub-hosted ARM runners
-          # (ubuntu-24.04-arm) do not ship with qemu-user-static, so the Android
-          # SDK's x86_64-only Linux binaries (adb, aapt2, build-tools natives)
-          # cannot execute. Installing qemu-user-static + binfmt-support
-          # registers binfmt_misc entries so the kernel transparently emulates
-          # x86_64 binaries on ARM64 hosts. On x86_64 hosts the check is a
-          # no-op (no apt invocation, no extra install time).
-          if [ "$(uname -m)" = 'aarch64' ] || [ "$(uname -m)" = 'arm64' ]; then
-            echo 'ARM host detected; installing qemu-user-static + binfmt-support for x86_64 binary execution.';
-            sudo apt-get update -qq;
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq qemu-user-static binfmt-support;
-            # qemu-user-static alone is insufficient: the x86_64 SDK binaries
-            # ELF-INTERP /lib64/ld-linux-x86-64.so.2 and link against amd64
-            # libc/libstdc++, neither of which ship on the arm64 image.
-            # Without these AAPT2's daemon dies on startup with
-            # "x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'".
-            # shellcheck disable=SC1091
-            . scripts/helper_functions.sh && setupAmd64MultiarchOnArm64;
-          fi
-          if [ -z "${ANDROID_HOME}" ] || [ ! -d "${ANDROID_HOME}" ]; then
-            echo "Android SDK not found at '${ANDROID_HOME}', installing...";
-            ANDROID_SDK_ROOT="${HOME}/android-sdk";
-            mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools";
-            # commandlinetools-linux-*.zip contains pure-Java JARs and shell
-            # wrappers, so the same archive works on both x86_64 and ARM64.
-            curl -sSfL \
-              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
-              -o /tmp/cmdline-tools.zip;
-            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
-            mv /tmp/cmdline-tools-extract/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest";
-            rm -f /tmp/cmdline-tools.zip;
-            rm -rf /tmp/cmdline-tools-extract;
-            echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "${GITHUB_ENV}";
-            export ANDROID_HOME="${ANDROID_SDK_ROOT}";
-            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true;
-            "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
-              "platform-tools" \
-              "platforms;android-${{ inputs.android_api }}";
-            echo "Android SDK installed at ${ANDROID_HOME}";
-          else
-            echo "Android SDK already available at ${ANDROID_HOME}";
-          fi
+          # Portable across Linux, macOS and Windows runners; on pre-provisioned
+          # images (e.g. ubuntu-22.04, GitHub macOS/Windows) ANDROID_HOME is
+          # already set so this is a no-op. See installAndroidSdk for per-OS
+          # archive selection and the Linux ARM multiarch bootstrap.
+          # shellcheck disable=SC1091
+          . scripts/helper_functions.sh && installAndroidSdk "${{ inputs.android_api }}";
 
       # Useful step to avoid gradle having to download Gradle dependencies
       # Taken from: https://github.com/marketplace/actions/download-workflow-artifact
@@ -351,7 +313,7 @@ jobs:
         timeout-minutes: 8
         if: success()
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 5 timeout 180 sh gradlew build --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -387,17 +349,26 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: problems-report
-          path: |
-            build/reports
-            app/build/reports
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: problems-report
+            path: |
+              build/reports
+              app/build/reports
+            if-no-files-found: error
+            retention-days: 90
+            overwrite: true
+            include-hidden-files: true
 
       - name: Check binaries' paths
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -435,23 +406,32 @@ jobs:
       - name: Upload generated binaries as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: compiled_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          path: |
-            app/build
-            app/.cxx
-            gradle/wrapper
-            gradlew
-            gradlew.bat
-          if-no-files-found: error
-          # Ephemeral intra-run handoff (consumed by the test/Sonar jobs in
-          # the same run, never needed afterwards). Keep retention at the
-          # 1-day minimum so these large artifacts do not pile up in storage.
-          retention-days: 1
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: compiled_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
+            path: |
+              app/build
+              app/.cxx
+              gradle/wrapper
+              gradlew
+              gradlew.bat
+            if-no-files-found: error
+            # Ephemeral intra-run handoff (consumed by the test/Sonar jobs in
+            # the same run, never needed afterwards). Keep retention at the
+            # 1-day minimum so these large artifacts do not pile up in storage.
+            retention-days: 1
+            overwrite: true
+            include-hidden-files: true
 
       - name: Zip Gradle packages
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -499,16 +479,25 @@ jobs:
         timeout-minutes: 20
         if: success() && strategy.job-index == 0
         continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
-          path: ${{ env.GRADLE_PATH }}/gradle-packages.zip
-          if-no-files-found: error
-          retention-days: 90
-          compression-level: 1
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
+            path: ${{ env.GRADLE_PATH }}/gradle-packages.zip
+            if-no-files-found: error
+            retention-days: 90
+            compression-level: 1
+            overwrite: true
+            include-hidden-files: true
 
       - name: Sign APK
         id: sign-apk
@@ -526,15 +515,24 @@ jobs:
       - name: Upload APK as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
-          path: ${{ steps.sign-apk.outputs.signedFile }}
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}-apk
+            path: ${{ steps.sign-apk.outputs.signedFile }}
+            if-no-files-found: error
+            retention-days: 90
+            overwrite: true
+            include-hidden-files: true
 
 
   AndroidTests:
@@ -577,6 +575,103 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
 
+      - name: Free up disk space
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+        if: success()
+        run: |
+          echo 'Disk usage before cleanup:';
+          df -Ph / "${HOME}" 2>/dev/null || true;
+          # Delete only pre-installed toolchains this Android job never uses.
+          # Keep: Android SDK/NDK/CMake, the active JDK, rust (cargo/rustup),
+          # and the default Xcode (xcrun/simctl below depend on it).
+          case "$(uname -s)" in
+            Linux*)
+              echo 'Cleaning up Linux runner disk space...';
+              # The runner image ships ~20 GB of language toolchains (JDK, .NET,
+              # Swift, Haskell, Julia, Chromium, etc.) that the Android emulator
+              # job does not need but which would otherwise consume disk space the
+              # emulator needs. Run all rm -rf calls in parallel — each target is
+              # independent and rm -rf is I/O bound, so overlapping the I/O
+              # noticeably cuts the cleanup time (~1m -> ~20s on a typical run).
+              if command -v sudo > /dev/null; then
+                echo 'Cleaning up runner disk space by deleting unneeded pre-installed toolchains...';
+                sudo rm -rf "${AGENT_TOOLSDIRECTORY}"/CodeQL &
+                sudo rm -rf /usr/share/dotnet &
+                sudo rm -rf /opt/ghc &
+                sudo rm -rf /mnt/swapfile &
+                sudo rm -rf /usr/share/swift &
+                sudo rm -rf /usr/local/.ghcup &
+                sudo rm -rf /usr/local/julia* &
+                sudo rm -rf /usr/local/share/chromium &
+                sudo rm -rf /opt/microsoft &
+                sudo rm -rf /opt/google &
+                sudo rm -rf /opt/az &
+                sudo rm -rf /usr/local/share/powershell &
+                sudo rm -rf /opt/pipx &
+                sudo rm -rf /usr/share/miniconda &
+                sudo rm -rf /usr/local/graalvm &
+                sudo rm -rf /usr/local/share/vcpkg &
+                sudo rm -rf /usr/local/share/boost &
+                sudo rm -rf /usr/lib/mono &
+                sudo rm -rf /usr/lib/google-cloud-sdk &
+                sudo rm -rf /usr/local/lib/heroku &
+                wait;
+              fi
+              if command -v docker > /dev/null; then
+                # Single `docker system prune --all --volumes --force` is a superset
+                # of the previous container/network/volume prunes; combining them
+                # avoids walking docker's state multiple times.
+                echo 'Cleaning up runner disk space by pruning Docker containers, images, volumes and builder cache...';
+                docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')" || true;
+                # shellcheck disable=SC2046 # intentional word-split: one arg per image id
+                docker rmi $(docker image ls -aq) 2>/dev/null || true;
+                docker system prune --all --volumes --force;
+                docker builder prune --all --force;
+                docker system df;
+              fi
+              sudo apt-get clean || true;
+              ;;
+            Darwin*)
+              echo 'Cleaning up macOS runner disk space...';
+              # Remove the non-default Xcode versions (~15 GB each); keep only the
+              # one xcode-select points at, since xcrun/simctl below depend on it.
+              xcodeActive="$(xcode-select -p 2>/dev/null | sed 's#/Contents/Developer$##')";
+              for xcodeApp in /Applications/Xcode_*.app; do
+                [ -e "${xcodeApp}" ] || continue;
+                [ "${xcodeApp}" = "${xcodeActive}" ] && continue;
+                if command -v sudo > /dev/null; then
+                  sudo rm -rf "${xcodeApp}" &
+                fi
+              done
+              # iOS/tvOS/watchOS simulator runtimes (user + system), devices, caches.
+              rm -rf "${HOME}/Library/Developer/CoreSimulator/Profiles/Runtimes/"* &
+              rm -rf "${HOME}/Library/Developer/CoreSimulator/Devices/"* &
+              rm -rf "${HOME}/Library/Developer/CoreSimulator/Caches/"* &
+              if command -v sudo > /dev/null; then
+                sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/* &
+                # Toolchains the Android job never uses.
+                sudo rm -rf /Library/Frameworks/Mono.framework &
+              fi
+              # Xcode derived data / device support (regenerated on demand).
+              rm -rf "${HOME}/Library/Developer/Xcode/DerivedData/"* &
+              rm -rf "${HOME}/Library/Developer/Xcode/iOS DeviceSupport/"* &
+              rm -rf "${HOME}/Library/Developer/Xcode/watchOS DeviceSupport/"* &
+              rm -rf "${HOME}/Library/Developer/Xcode/tvOS DeviceSupport/"* &
+              rm -rf "${HOME}/.cocoapods" &
+              rm -rf "${HOME}/Library/Caches/"* &
+              wait;
+              # Homebrew download cache (keep installed formulae, drop tarballs).
+              if command -v brew >/dev/null 2>&1; then
+                brew cleanup -s 2>/dev/null || true;
+                rm -rf "$(brew --cache)" 2>/dev/null || true;
+              fi
+              # Pruning symbolic links and directories from /usr/local takes some minutes
+              # xcrun simctl delete unavailable 2>/dev/null || true;
+              ;;
+          esac
+          echo 'Disk usage after cleanup:';
+          df -Ph / "${HOME}" 2>/dev/null || true;
+
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
@@ -590,95 +685,28 @@ jobs:
             # CMake / NDK steps later will populate them from cache (or from
             # sdkmanager on cache miss). Plain `rm -rf` instead of separate
             # rm+mkdir — the Cache restore creates the target path itself.
-            rm -rf ${ANDROID_HOME}/ndk ${ANDROID_HOME}/extras ${ANDROID_HOME}/cmake;
+            rm -rf ${ANDROID_HOME}/ndk &
+            rm -rf ${ANDROID_HOME}/extras &
+            rm -rf ${ANDROID_HOME}/cmake &
+            wait;
           fi
           GRADLE_PATH="${HOME}/.gradle";
           echo "GRADLE_PATH=${GRADLE_PATH}" >> "${GITHUB_ENV}";
           mkdir -p "${GRADLE_PATH}";
           df -Pk -h ${HOME};
           env;
-          # The runner image ships ~20 GB of language toolchains (JDK, .NET,
-          # Swift, Haskell, Julia, Chromium, etc.) that the Android emulator
-          # job does not need but which would otherwise consume disk space the
-          # emulator needs. Run all rm -rf calls in parallel — each target is
-          # independent and rm -rf is I/O bound, so overlapping the I/O
-          # noticeably cuts the cleanup time (~1m -> ~20s on a typical run).
-          if command -v sudo > /dev/null; then
-            sudo rm -rf /usr/share/dotnet &
-            sudo rm -rf /usr/share/swift &
-            sudo rm -rf /usr/local/.ghcup &
-            sudo rm -rf /usr/local/julia* &
-            sudo rm -rf /usr/local/share/chromium &
-            sudo rm -rf /opt/microsoft &
-            sudo rm -rf /opt/google &
-            sudo rm -rf /opt/az &
-            sudo rm -rf /usr/local/share/powershell &
-            wait;
-          fi
-          # Single `docker system prune --all --volumes --force` is a superset
-          # of the previous container/network/volume prunes; combining them
-          # avoids walking docker's state multiple times.
-          if command -v docker > /dev/null; then
-            docker rm -f "$(docker ps -a | awk 'NR>1 {print $1}')" || true;
-            docker system prune --all --volumes --force;
-            docker builder prune --all --force;
-            docker system df;
-          fi
           df -h;
 
       - name: Install Android SDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.target_os, 'windows')
+        if: success()
         run: |
-          # On pre-provisioned runners (ubuntu-22.04) the SDK exported by the
-          # Build job is already present; the guard makes this step a no-op.
-          # On runners that lack a pre-installed SDK (e.g. ubuntu-24.04-arm)
-          # this step bootstraps the SDK so subsequent steps can use sdkmanager
-          # (for NDK), adb (the timeout-shim), and android-emulator-runner.
-          # Cross-architecture support: GitHub-hosted ARM runners
-          # (ubuntu-24.04-arm) do not ship with qemu-user-static, so the Android
-          # SDK's x86_64-only Linux binaries (adb, aapt2, build-tools natives)
-          # cannot execute. Installing qemu-user-static + binfmt-support
-          # registers binfmt_misc entries so the kernel transparently emulates
-          # x86_64 binaries on ARM64 hosts. On x86_64 hosts the check is a
-          # no-op (no apt invocation, no extra install time).
-          if [ "$(uname -m)" = 'aarch64' ] || [ "$(uname -m)" = 'arm64' ]; then
-            echo 'ARM host detected; installing qemu-user-static + binfmt-support for x86_64 binary execution.';
-            sudo apt-get update -qq;
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq qemu-user-static binfmt-support;
-            # qemu-user-static alone is insufficient: the x86_64 SDK binaries
-            # ELF-INTERP /lib64/ld-linux-x86-64.so.2 and link against amd64
-            # libc/libstdc++, neither of which ship on the arm64 image.
-            # Without these AAPT2's daemon dies on startup with
-            # "x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'".
-            # shellcheck disable=SC1091
-            . scripts/helper_functions.sh && setupAmd64MultiarchOnArm64;
-          fi
-          if [ -z "${ANDROID_HOME}" ] || [ ! -d "${ANDROID_HOME}" ]; then
-            echo "Android SDK not found at '${ANDROID_HOME}', installing...";
-            ANDROID_SDK_ROOT="${HOME}/android-sdk";
-            mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools";
-            # commandlinetools-linux-*.zip contains pure-Java JARs and shell
-            # wrappers, so the same archive works on both x86_64 and ARM64.
-            # sdkmanager then downloads architecture-specific native binaries
-            # (adb, fastboot, emulator) for the host architecture.
-            curl -sSfL \
-              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
-              -o /tmp/cmdline-tools.zip;
-            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
-            mv /tmp/cmdline-tools-extract/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest";
-            rm -f /tmp/cmdline-tools.zip;
-            rm -rf /tmp/cmdline-tools-extract;
-            echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "${GITHUB_ENV}";
-            export ANDROID_HOME="${ANDROID_SDK_ROOT}";
-            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true;
-            "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
-              "platform-tools" \
-              "platforms;android-${{ inputs.android_api_device }}";
-            echo "Android SDK installed at ${ANDROID_HOME}";
-          else
-            echo "Android SDK already available at ${ANDROID_HOME}";
-          fi
+          # Bootstraps the SDK so later steps can use sdkmanager (NDK), adb (the
+          # timeout-shim) and android-emulator-runner. Portable across Linux,
+          # macOS and Windows; a no-op on images that pre-install the SDK. See
+          # installAndroidSdk for per-OS archive + Linux ARM multiarch handling.
+          # shellcheck disable=SC1091
+          . scripts/helper_functions.sh && installAndroidSdk "${{ inputs.android_api_device }}";
 
       - name: Download Android NDK from cache
         id: ndk-cache
@@ -937,12 +965,19 @@ jobs:
             else
               echo 'android_emulator_arch=armeabi-v7a' >> "${GITHUB_ENV}";
             fi
+            # Not all GitHub Apple Silicon runner images expose
+            # Hypervisor.framework; `-accel on` then hard-fails with
+            # 'HVF error: HV_UNSUPPORTED' / 'failed to initialize HVF'. Fall
+            # back to software acceleration (TCG) on ARM hosts.
+            echo 'EMULATOR_ACCEL=off' >> "${GITHUB_ENV}";
           else
             if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 24 ] && [ "${{ inputs.android_api_device }}" -ne 25 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
               echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
             else
               echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
             fi
+            # x86 hosts (Intel runners) have working HVF for x86 guests.
+            echo 'EMULATOR_ACCEL=on' >> "${GITHUB_ENV}";
           fi
           # Right-sized to observed reality: a healthy emulator boot on these
           # runners completes in ~15-30s (logs across APIs). The old 240/400s
@@ -952,7 +987,7 @@ jobs:
           # killed the wedged emulator (~90s). 180s keeps >5x headroom over a
           # healthy boot yet lets a wedged attempt fail fast so wretry retries
           # on a fresh emulator promptly instead of burning the 20-min cap.
-          echo "EMULATOR_BOOT_TIMEOUT=180" >> "${GITHUB_ENV}";
+          echo "EMULATOR_BOOT_TIMEOUT=300" >> "${GITHUB_ENV}";
 
       - name: Set CPU cores
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -971,7 +1006,7 @@ jobs:
           else
             gradle_command='connectedAndroidTest';
           fi
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 5 timeout 180 sh gradlew "${gradle_command}" --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -1078,12 +1113,12 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         env:
           ANDROID_EMULATOR_MEM_MB: 4096
-          ANDROID_EMULATOR_CPU_CORES: 2
+          ANDROID_EMULATOR_CPU_CORES: 3
         with:
           action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
           pre_retry_command: 'echo "Retrying AVD snapshot generation..."'
-          attempt_limit: 2
-          attempt_delay: 30000
+          attempt_limit: 3
+          attempt_delay: 60000
           with: |
             # No -no-snapshot-save here, so the emulator saves a snapshot on
             # quit; actions/cache then stores it for the next run. RAM/CPU
@@ -1099,11 +1134,11 @@ jobs:
             arch: ${{ env.android_emulator_arch }}
             disable-animations: false
             channel: stable
-            emulator-options: -no-metrics -no-window -accel on -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -cache-size 512 -partition-size ${{ env.ANDROID_EMULATOR_MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none -camera-front none -netfast -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
+            emulator-options: -no-metrics -no-window -accel ${{ env.EMULATOR_ACCEL }} -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -cache-size 512 -partition-size ${{ env.ANDROID_EMULATOR_MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none -camera-front none -netfast -no-sim -no-passive-gps -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose
             cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
             ram-size: ${{ env.ANDROID_EMULATOR_MEM_MB }}M
             heap-size: 1024M
-            disk-size: 4096M
+            disk-size: 8192M
             sdcard-path-or-size: 2048M
             avd-name: Android_Emulator_API_${{ inputs.android_api_device }}
             force-avd-creation: false
@@ -1119,11 +1154,11 @@ jobs:
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
           ANDROID_EMULATOR_MEM_MB: 4096
-          # GitHub-hosted ubuntu runners have 4 vCPUs. Leaving at least 2 cores
-          # for the host (adb, gradle, log capture) was measured to be ~3x faster
-          # than allocating all 4 to the emulator; previous bump to 4 caused
-          # severe regression (8m -> 22m on the Repeatable workflow).
-          ANDROID_EMULATOR_CPU_CORES: 2
+          # Leave headroom for the host (adb, gradle, log capture). Bumping to
+          # all 4 cores caused a severe regression (8m -> 22m on the Repeatable
+          # workflow); 2 was ~3x faster. 3 is a middle ground to speed cold boot
+          # without fully starving the host. Revert to 2 if the regression returns.
+          ANDROID_EMULATOR_CPU_CORES: 3
           ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEY_PASSWORD_DEBUG }}
@@ -1135,7 +1170,7 @@ jobs:
           action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
           pre_retry_command: 'echo "Retrying Run Android tests step..."'
           attempt_limit: 3
-          attempt_delay: 30000
+          attempt_delay: 60000
           with: |
             # Check available parameters in: https://github.com/ReactiveCircus/android-emulator-runner/blob/main/action.yml
             # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
@@ -1147,7 +1182,7 @@ jobs:
             #    per-boot flake - same snapshot, focus worked one run and failed entirely the
             #    next). A fresh cold boot re-initialises WM from scratch each run, which is
             #    more reliable for focus. Costs ~40-90s boot (vs ~8s restore) - well under
-            #    EMULATOR_BOOT_TIMEOUT=180s.
+            #    EMULATOR_BOOT_TIMEOUT=300s.
             #  - Other APIs (incl. green API 25) -> -no-snapshot-save: the test step does NOT
             #    dirty the cached snapshot but still LOADS it, giving the ~8s boot on cache
             #    hits. Unchanged behaviour.
@@ -1171,17 +1206,17 @@ jobs:
             disable-animations: false
             disable-spellchecker: false
             channel: stable
-            emulator-options: -no-metrics -no-window -accel on -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -cache-size 512 -partition-size ${{ env.ANDROID_EMULATOR_MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none -camera-front none -netfast -no-sim -no-passive-gps -no-direct-adb -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose -no-snapshot-save
+            emulator-options: -no-metrics -no-window -accel ${{ env.EMULATOR_ACCEL }} -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -cache-size 512 -partition-size ${{ env.ANDROID_EMULATOR_MEM_MB }} -ranchu -fixed-scale -skip-adb-auth -gpu swiftshader_indirect -no-audio -no-boot-anim -camera-back none -camera-front none -netfast -no-sim -no-passive-gps -no-location-ui -no-hidpi-scaling -no-mouse-reposition -no-nested-warnings -verbose -no-snapshot-save
             cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
             ram-size: ${{ env.ANDROID_EMULATOR_MEM_MB }}M
             heap-size: 1024M
-            disk-size: 4096M
+            disk-size: 8192M
             sdcard-path-or-size: 2048M
             avd-name: Android_Emulator_API_${{ inputs.android_api_device }}
             force-avd-creation: false
             disable-linux-hw-accel: auto
             enable-hw-keyboard: false
-            emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }} # See EMULATOR_BOOT_TIMEOUT (~180s): healthy boot is ~15-30s; a wedged one fails fast so wretry retries.
+            emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }} # See EMULATOR_BOOT_TIMEOUT (~300s): healthy boot is ~15-30s; a wedged one fails fast so wretry retries.
             script: |
               ls -lahp ${{ env.ANDROID_HOME }}/ndk/${{ needs.Build.outputs.ndk_version }};
               echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
@@ -1194,7 +1229,10 @@ jobs:
         if: failure()
         run: |
           ls -lahp .;
+          ls -lahp app/build/reports/tombstones;
+          echo 'Print Android tombstone logs:';
           set +e;
+          cat app/build/reports/tombstones/*;
           echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
           sudo dmesg -T;
           echo 'Print native JVM stacktrace if possible:';
@@ -1204,17 +1242,26 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: problems-report
-          path: |
-            build/reports
-            app/build/reports
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: problems-report
+            path: |
+              build/reports
+              app/build/reports
+            if-no-files-found: error
+            retention-days: 90
+            overwrite: true
+            include-hidden-files: true
 
       - name: Publish Android Test Report
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1317,43 +1364,61 @@ jobs:
       - name: Upload Sonar inputs as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success() && inputs.type == 'debug'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: sonar-inputs_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          # The 'wrapper' Gradle task (build.gradle) regenerates the WHOLE wrapper
-          # set per Android API (8.7 for API < 16, else 9.5.1): gradlew, gradlew.bat,
-          # the jar and the properties. Shipping only gradle/wrapper leaves the
-          # downstream Sonar job with the regenerated 8.7 jar (whose manifest has no
-          # Main-Class) paired with the committed 9.5.1 gradlew (which runs `java -jar`),
-          # so `sh gradlew` fails with "no main manifest attribute". Ship the matching
-          # gradlew scripts too so the wrapper set stays self-consistent downstream.
-          path: |
-            app/build
-            app/.cxx
-            gradle/wrapper
-            gradlew
-            gradlew.bat
-          if-no-files-found: error
-          # Ephemeral intra-run handoff (consumed by the Sonar job in the same
-          # run, never needed afterwards). Keep retention at the 1-day minimum
-          # so these large artifacts do not pile up in storage.
-          retention-days: 1
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: sonar-inputs_${{ github.sha }}_${{ github.run_id }}_a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
+            # The 'wrapper' Gradle task (build.gradle) regenerates the WHOLE wrapper
+            # set per Android API (8.7 for API < 16, else 9.5.1): gradlew, gradlew.bat,
+            # the jar and the properties. Shipping only gradle/wrapper leaves the
+            # downstream Sonar job with the regenerated 8.7 jar (whose manifest has no
+            # Main-Class) paired with the committed 9.5.1 gradlew (which runs `java -jar`),
+            # so `sh gradlew` fails with "no main manifest attribute". Ship the matching
+            # gradlew scripts too so the wrapper set stays self-consistent downstream.
+            path: |
+              app/build
+              app/.cxx
+              gradle/wrapper
+              gradlew
+              gradlew.bat
+            if-no-files-found: error
+            # Ephemeral intra-run handoff (consumed by the Sonar job in the same
+            # run, never needed afterwards). Keep retention at the 1-day minimum
+            # so these large artifacts do not pile up in storage.
+            retention-days: 1
+            overwrite: true
+            include-hidden-files: true
 
       - name: Upload test screenshots as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: MobileRT_${{ inputs.type }}_android_api-a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_test_screenshots
-          path: screenshots
-          if-no-files-found: warn
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: MobileRT_${{ inputs.type }}_android_api-a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_test_screenshots
+            path: screenshots
+            if-no-files-found: warn
+            retention-days: 90
+            overwrite: true
+            include-hidden-files: true
 
 
   UnitTests:
@@ -1496,52 +1561,15 @@ jobs:
 
       - name: Install Android SDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.target_os, 'windows')
+        if: success()
         run: |
           # UnitTests is a JVM job (no emulator) but Gradle still requires
           # ANDROID_HOME to point at a valid SDK to evaluate the Android plugin
-          # ("SDK location not found"). On runners that lack a pre-installed SDK
-          # (e.g. ubuntu-24.04-arm), bootstrap one here.
-          # Cross-architecture support: GitHub-hosted ARM runners
-          # (ubuntu-24.04-arm) do not ship with qemu-user-static, so the Android
-          # SDK's x86_64-only Linux binaries (adb, aapt2, build-tools natives)
-          # cannot execute. Installing qemu-user-static + binfmt-support
-          # registers binfmt_misc entries so the kernel transparently emulates
-          # x86_64 binaries on ARM64 hosts. On x86_64 hosts the check is a
-          # no-op (no apt invocation, no extra install time).
-          if [ "$(uname -m)" = 'aarch64' ] || [ "$(uname -m)" = 'arm64' ]; then
-            echo 'ARM host detected; installing qemu-user-static + binfmt-support for x86_64 binary execution.';
-            sudo apt-get update -qq;
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq qemu-user-static binfmt-support;
-            # qemu-user-static alone is insufficient: the x86_64 SDK binaries
-            # ELF-INTERP /lib64/ld-linux-x86-64.so.2 and link against amd64
-            # libc/libstdc++, neither of which ship on the arm64 image.
-            # Without these AAPT2's daemon dies on startup with
-            # "x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'".
-            # shellcheck disable=SC1091
-            . scripts/helper_functions.sh && setupAmd64MultiarchOnArm64;
-          fi
-          if [ -z "${ANDROID_HOME}" ] || [ ! -d "${ANDROID_HOME}" ]; then
-            echo "Android SDK not found at '${ANDROID_HOME}', installing...";
-            ANDROID_SDK_ROOT="${HOME}/android-sdk";
-            mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools";
-            curl -sSfL \
-              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
-              -o /tmp/cmdline-tools.zip;
-            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
-            mv /tmp/cmdline-tools-extract/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest";
-            rm -f /tmp/cmdline-tools.zip;
-            rm -rf /tmp/cmdline-tools-extract;
-            echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "${GITHUB_ENV}";
-            export ANDROID_HOME="${ANDROID_SDK_ROOT}";
-            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true;
-            "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
-              "platform-tools" \
-              "platforms;android-${{ inputs.android_api }}";
-            echo "Android SDK installed at ${ANDROID_HOME}";
-          else
-            echo "Android SDK already available at ${ANDROID_HOME}";
-          fi
+          # ("SDK location not found"). Portable across Linux, macOS and Windows;
+          # a no-op on images that pre-install the SDK. See installAndroidSdk for
+          # per-OS archive + Linux ARM multiarch handling.
+          # shellcheck disable=SC1091
+          . scripts/helper_functions.sh && installAndroidSdk "${{ inputs.android_api }}";
 
       - name: Install dependencies
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -1617,7 +1645,7 @@ jobs:
         timeout-minutes: 8
         if: success()
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 5 timeout 180 sh gradlew test"${{ inputs.type }}"UnitTest lint --dry-run -Dorg.gradle.configuration-cache=false --parallel \
             -DtestType="${{ inputs.type }}" -DandroidApiVersion="${{ inputs.android_api }}" -DabiFilters="[${{ env.android_arch }}]" \
             --info --warning-mode all --stacktrace;
 
@@ -1643,17 +1671,26 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: problems-report
-          path: |
-            build/reports
-            app/build/reports
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: problems-report
+            path: |
+              build/reports
+              app/build/reports
+            if-no-files-found: error
+            retention-days: 90
+            overwrite: true
+            include-hidden-files: true
 
       - name: Run linter
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -1876,51 +1913,14 @@ jobs:
 
       - name: Install Android SDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
-        if: success() && !startsWith(inputs.build_os, 'windows')
+        if: success()
         run: |
-          # Sonar runs on build_os (ubuntu-22.04 has the SDK pre-installed, so
-          # this guard is a no-op there). The block bootstraps a fresh SDK on
-          # any runner that ships without one, keeping the job portable.
-          # Cross-architecture support: GitHub-hosted ARM runners
-          # (ubuntu-24.04-arm) do not ship with qemu-user-static, so the Android
-          # SDK's x86_64-only Linux binaries (adb, aapt2, build-tools natives)
-          # cannot execute. Installing qemu-user-static + binfmt-support
-          # registers binfmt_misc entries so the kernel transparently emulates
-          # x86_64 binaries on ARM64 hosts. On x86_64 hosts the check is a
-          # no-op (no apt invocation, no extra install time).
-          if [ "$(uname -m)" = 'aarch64' ] || [ "$(uname -m)" = 'arm64' ]; then
-            echo 'ARM host detected; installing qemu-user-static + binfmt-support for x86_64 binary execution.';
-            sudo apt-get update -qq;
-            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq qemu-user-static binfmt-support;
-            # qemu-user-static alone is insufficient: the x86_64 SDK binaries
-            # ELF-INTERP /lib64/ld-linux-x86-64.so.2 and link against amd64
-            # libc/libstdc++, neither of which ship on the arm64 image.
-            # Without these AAPT2's daemon dies on startup with
-            # "x86_64-binfmt-P: Could not open '/lib64/ld-linux-x86-64.so.2'".
-            # shellcheck disable=SC1091
-            . scripts/helper_functions.sh && setupAmd64MultiarchOnArm64;
-          fi
-          if [ -z "${ANDROID_HOME}" ] || [ ! -d "${ANDROID_HOME}" ]; then
-            echo "Android SDK not found at '${ANDROID_HOME}', installing...";
-            ANDROID_SDK_ROOT="${HOME}/android-sdk";
-            mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools";
-            curl -sSfL \
-              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" \
-              -o /tmp/cmdline-tools.zip;
-            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
-            mv /tmp/cmdline-tools-extract/cmdline-tools "${ANDROID_SDK_ROOT}/cmdline-tools/latest";
-            rm -f /tmp/cmdline-tools.zip;
-            rm -rf /tmp/cmdline-tools-extract;
-            echo "ANDROID_HOME=${ANDROID_SDK_ROOT}" >> "${GITHUB_ENV}";
-            export ANDROID_HOME="${ANDROID_SDK_ROOT}";
-            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true;
-            "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
-              "platform-tools" \
-              "platforms;android-${{ inputs.android_api }}";
-            echo "Android SDK installed at ${ANDROID_HOME}";
-          else
-            echo "Android SDK already available at ${ANDROID_HOME}";
-          fi
+          # Sonar runs on build_os and needs a valid SDK for the Gradle Android
+          # plugin. Portable across Linux, macOS and Windows; a no-op on images
+          # that pre-install the SDK. See installAndroidSdk for per-OS archive +
+          # Linux ARM multiarch handling.
+          # shellcheck disable=SC1091
+          . scripts/helper_functions.sh && installAndroidSdk "${{ inputs.android_api }}";
 
       - name: Install dependencies
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
@@ -2012,7 +2012,7 @@ jobs:
         timeout-minutes: 8
         if: success()
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 5 timeout 180 sh gradlew --dry-run -Dorg.gradle.configuration-cache=true --parallel --profile \
             -DandroidApiVersion="${{ inputs.android_api }}" \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             --info --warning-mode all --stacktrace sonar;
@@ -2046,17 +2046,26 @@ jobs:
       - name: Upload problems reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: problems-report
-          path: |
-            build/reports
-            app/build/reports
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: problems-report
+            path: |
+              build/reports
+              app/build/reports
+            if-no-files-found: error
+            retention-days: 90
+            overwrite: true
+            include-hidden-files: true
 
       - name: Check sonar path
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -2082,12 +2091,21 @@ jobs:
       - name: Upload reports as artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-          name: reports_${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
-          path: app/build/reports
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-          include-hidden-files: true
+          # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+          # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+          # artifact backend ("Failed to CreateArtifact: Unable to make
+          # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+          # is wrappable by wretry (unlike composite actions).
+          action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          attempt_limit: 3
+          attempt_delay: 30000
+          with: |
+            # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+            name: reports_${{ inputs.android_api }}_d${{ inputs.android_api_device }}_${{ inputs.type }}_${{ inputs.build_os }}_${{ inputs.target_os }}
+            path: app/build/reports
+            if-no-files-found: error
+            retention-days: 90
+            overwrite: true
+            include-hidden-files: true

@@ -106,6 +106,14 @@ gather_logs_func() {
   grep -e "${pid_app}" -e "I DEBUG" "${reports_path}"/logcat_"${type}".log \
     > "${reports_path}"/logcat_app_"${type}".log;
   echo "Filtered logcat of the app '${pid_app}' to logcat_app_${type}.log";
+
+  # Pull native crash tombstones while adb is still up (the EXIT trap runs this
+  # before the emulator is torn down), so a native SIGSEGV/SIGBUS leaves a
+  # backtrace in the uploaded reports artifact and in this log.
+  echo 'Pulling native crash tombstones from the device';
+  timeout 60 adb root > /dev/null 2>&1 || true;
+  timeout 60 adb pull /data/tombstones "${reports_path}" 2> /dev/null || echo 'No tombstones to pull.';
+  cat "${reports_path}"/tombstones/* 2> /dev/null || true;
   set -e;
 
   appLogPath="${PWD}/${reports_path}";

@@ -291,6 +291,10 @@ capitalizeFirstletter() {
 # open '/lib64/ld-linux-x86-64.so.2'" -> AAPT2 daemon startup fails.
 # Idempotent + a no-op on non-arm64 hosts.
 setupAmd64MultiarchOnArm64() {
+  # apt/dpkg multiarch is Debian/Ubuntu-only; no-op on macOS (arm64 too) / Windows.
+  if [ "$(uname -s)" != 'Linux' ]; then
+    return 0;
+  fi
   case "$(uname -m)" in
     aarch64|arm64) ;;
     *) return 0 ;;
@@ -337,6 +341,48 @@ EOF
     libc6:amd64 libstdc++6:amd64 zlib1g:amd64;
   echo 'amd64 multiarch ready; x86_64 dyld present at:';
   ls -l /lib64/ld-linux-x86-64.so.2;
+}
+
+# Ensure an Android SDK is available at ANDROID_HOME, installing the
+# command-line tools + the requested platform when the runner ships without one.
+# Portable across Linux, macOS and Windows (Git bash) runners; GitHub-hosted
+# images that pre-install the SDK make this a no-op (ANDROID_HOME already set).
+# Argument: the Android API level of the platform to install (e.g. 26).
+installAndroidSdk() {
+  androidApi="$1";
+  # Linux ARM runners lack qemu/amd64 multiarch, so the x86_64-only SDK natives
+  # (adb, aapt2, build-tools) cannot run; this enables it. No-op elsewhere.
+  setupAmd64MultiarchOnArm64;
+  if [ -n "${ANDROID_HOME}" ] && [ -d "${ANDROID_HOME}" ]; then
+    echo "Android SDK already available at ${ANDROID_HOME}";
+    return 0;
+  fi
+  echo "Android SDK not found at '${ANDROID_HOME}', installing...";
+  # Pick the host-specific command-line tools archive + sdkmanager wrapper. The
+  # archive only carries the Java tooling; sdkmanager then fetches host-native
+  # binaries for the running platform.
+  sdkmanagerBin='sdkmanager';
+  case "$(uname -s)" in
+    Linux*)  cmdlineOs='linux' ;;
+    Darwin*) cmdlineOs='mac' ;;
+    *)       cmdlineOs='win'; sdkmanagerBin='sdkmanager.bat' ;;
+  esac
+  androidSdkRoot="${HOME}/android-sdk";
+  mkdir -p "${androidSdkRoot}/cmdline-tools";
+  curl -sSfL \
+    "https://dl.google.com/android/repository/commandlinetools-${cmdlineOs}-11076708_latest.zip" \
+    -o /tmp/cmdline-tools.zip;
+  unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract;
+  mv /tmp/cmdline-tools-extract/cmdline-tools "${androidSdkRoot}/cmdline-tools/latest";
+  rm -f /tmp/cmdline-tools.zip;
+  rm -rf /tmp/cmdline-tools-extract;
+  echo "ANDROID_HOME=${androidSdkRoot}" >> "${GITHUB_ENV}";
+  export ANDROID_HOME="${androidSdkRoot}";
+  yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/${sdkmanagerBin}" --licenses > /dev/null 2>&1 || true;
+  "${ANDROID_HOME}/cmdline-tools/latest/bin/${sdkmanagerBin}" \
+    "platform-tools" \
+    "platforms;android-${androidApi}";
+  echo "Android SDK installed at ${ANDROID_HOME}";
 }
 
 # Parallelize building of MobileRT.

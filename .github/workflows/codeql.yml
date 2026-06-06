@@ -405,12 +405,21 @@ jobs:
     - name: Upload reports as artifact
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
       with:
-        # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
-        name: sarif_${{ matrix.language }}_${{ matrix.host_os }}-artifacts
-        path: codeql-results
-        if-no-files-found: error
-        retention-days: 90
-        overwrite: true
-        include-hidden-files: true
+        # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
+        # Retry to survive transient ENOTFOUND/DNS blips reaching the GitHub
+        # artifact backend ("Failed to CreateArtifact: Unable to make
+        # request: ENOTFOUND"). upload-artifact is a plain JS action, so it
+        # is wrappable by wretry (unlike composite actions).
+        action: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        attempt_limit: 3
+        attempt_delay: 30000
+        with: |
+          # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
+          name: sarif_${{ matrix.language }}_${{ matrix.host_os }}-artifacts
+          path: codeql-results
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: true
+          include-hidden-files: true
