@@ -1316,7 +1316,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         continue-on-error: true
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         # The 3 attempts share an identical `with:` - anchor it here (&...) and
         # alias it (*...) in the retry attempts below so the inputs live once.
         with: &cc_android_test_with
@@ -1338,13 +1338,13 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         continue-on-error: true
         if: ${{ !cancelled() && steps.cc_android_test_1.outcome == 'failure' }}
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with: *cc_android_test_with
 
       - name: Upload Android Test results to Codecov (attempt 3/3)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: ${{ !cancelled() && steps.cc_android_test_1.outcome == 'failure' && steps.cc_android_test_2.outcome == 'failure' }}
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with: *cc_android_test_with
 
       - name: Check report's paths
@@ -1740,7 +1740,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         continue-on-error: true
         if: ${{ !cancelled() }} # Always run even if the previous step fails
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         # The 3 attempts share an identical `with:` - anchor it here (&...) and
         # alias it (*...) in the retry attempts below so the inputs live once.
         with: &cc_android_unit_with
@@ -1762,13 +1762,13 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         continue-on-error: true
         if: ${{ !cancelled() && steps.cc_android_unit_1.outcome == 'failure' }}
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with: *cc_android_unit_with
 
       - name: Upload Unit Test results to Codecov (attempt 3/3)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: ${{ !cancelled() && steps.cc_android_unit_1.outcome == 'failure' && steps.cc_android_unit_2.outcome == 'failure' }}
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with: *cc_android_unit_with
 
   Sonar:
