@@ -719,7 +719,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         continue-on-error: true
         if: success()
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         # The 3 attempts share an identical `with:` - anchor it here (&...) and
         # alias it (*...) in the retry attempts below so the inputs live once.
         with: &cc_native_with
@@ -736,11 +736,11 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         continue-on-error: true
         if: ${{ success() && steps.cc_native_1.outcome == 'failure' }}
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with: *cc_native_with
 
       - name: Upload reports to Codecov (attempt 3/3)
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: ${{ success() && steps.cc_native_1.outcome == 'failure' && steps.cc_native_2.outcome == 'failure' }}
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with: *cc_native_with
