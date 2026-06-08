@@ -138,7 +138,7 @@ buildscript {
         // wired in (execution + androidTestUtil) for androidApiVersionValue >= 16
         // in app/build.gradle, so API 15 never installs it.
         if (project.properties["androidX_test_orchestrator_version"] == null) {
-            androidX_test_orchestrator_version = '1.4.2'
+            androidX_test_orchestrator_version = '1.6.1'
         }
         // Test-services APK (storage content provider). Installed alongside the
         // Orchestrator so multi-process JaCoCo coverage can be routed through the
