@@ -239,6 +239,36 @@
       "registryUrlTemplate": "https://maven.google.com"
     },
     {
+      "description": "Update Android test orchestrator",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_test_orchestrator_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test:orchestrator",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://maven.google.com"
+    },
+    {
+      "description": "Update Android test services",
+      "managerFilePatterns": [
+        "/.*build.gradle/"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "androidX_test_services_version = ['\"](?<currentValue>.*)['\"]"
+      ],
+      "depNameTemplate": "androidx.test.services:test-services",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "gradle",
+      "customType": "regex",
+      "registryUrlTemplate": "https://maven.google.com"
+    },
+    {
       "description": "Update Android Gradle Plugin",
       "managerFilePatterns": [
         "/.*build.gradle/"
@@ -708,6 +738,54 @@
       ],
       "matchCurrentValue": "/^3\\.6\\.\\d+$/",
       "allowedVersions": "/^3\\.6\\.\\d+$/"
+    },
+    {
+      "groupName": "Only update patches of androidx.test:orchestrator for Android API < 16",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.test:orchestrator"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentValue": "/^1\\.4\\.\\d+$/",
+      "allowedVersions": "/^1\\.4\\.\\d+$/"
+    },
+    {
+      "groupName": "Only update patches of androidx.test:orchestrator for Android API >= 19",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.test:orchestrator"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentValue": "/^1\\.5\\.\\d+$/",
+      "allowedVersions": "/^1\\.5\\.\\d+$/"
+    },
+    {
+      "groupName": "Only update patches of androidx.test.services:test-services for Android API < 16",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.test.services:test-services"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentValue": "/^1\\.4\\.\\d+$/",
+      "allowedVersions": "/^1\\.4\\.\\d+$/"
+    },
+    {
+      "groupName": "Only update patches of androidx.test.services:test-services for Android API >= 19",
+      "enabled": true,
+      "matchDepNames": [
+        "androidx.test.services:test-services"
+      ],
+      "registryUrls": [
+        "https://maven.google.com"
+      ],
+      "matchCurrentValue": "/^1\\.5\\.\\d+$/",
+      "allowedVersions": "/^1\\.5\\.\\d+$/"
     },
     {
       "groupName": "Ubuntu to LTS versions",
