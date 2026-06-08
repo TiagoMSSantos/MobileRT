@@ -100,6 +100,7 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 # Helper functions.
 ###############################################################################
 gather_logs_func() {
+  gl_exit_code="${1:-0}";
   set +e;
   pid_app=$(grep -E -i "proc.puscas:*" "${reports_path}"/logcat_"${type}".log |
     grep -i "pid=" | cut -d "=" -f 2 | cut -d "u" -f 1 | tr -d ' ' | tail -1);
@@ -109,11 +110,48 @@ gather_logs_func() {
 
   # Pull native crash tombstones while adb is still up (the EXIT trap runs this
   # before the emulator is torn down), so a native SIGSEGV/SIGBUS leaves a
-  # backtrace in the uploaded reports artifact and in this log.
+  # backtrace in the uploaded reports artifact. The pull is unconditional (the
+  # artifact must always have it); the cat to stdout is deferred to the
+  # failure-gated block below, so a passing run - e.g. the C++ death test that
+  # deliberately fires signal 11 and passes - does not spam a backtrace.
   echo 'Pulling native crash tombstones from the device';
   timeout 60 adb root > /dev/null 2>&1 || true;
   timeout 60 adb pull /data/tombstones "${reports_path}" 2> /dev/null || echo 'No tombstones to pull.';
-  cat "${reports_path}"/tombstones/* 2> /dev/null || true;
+
+  # Memory + kernel post-mortem (runs while adb is still up; adb root above is
+  # needed for dmesg). The streamed logcat can stop capturing mid-run (observed:
+  # the pipe died ~3.5min before a crash, leaving the failing iteration with zero
+  # device logs) and AGP's per-test logcat retrieval routinely returns nothing on
+  # old APIs. Without this snapshot there is no way to tell an OOM-kill
+  # (lowmemorykiller, in dmesg - never in logcat) from a hang or a native crash.
+  # Best-effort, never fatal.
+  echo 'Capturing device memory and kernel diagnostics';
+  timeout 30 adb shell cat /proc/meminfo > "${reports_path}"/proc_meminfo_"${type}".log 2>&1 || true;
+  timeout 30 adb shell dumpsys meminfo > "${reports_path}"/dumpsys_meminfo_"${type}".log 2>&1 || true;
+  # Kernel ring buffer: lowmemorykiller / oom-killer verdicts land here, not in logcat.
+  timeout 30 adb shell dmesg > "${reports_path}"/dmesg_"${type}".log 2>&1 || true;
+  # Full logcat ring-buffer dump as a fallback for the streamed file (which can
+  # die mid-run). '-d' dumps and exits; '-b all' grabs every buffer, falling back
+  # to the default buffer on old APIs that reject '-b all'.
+  timeout 60 adb logcat -d -b all > "${reports_path}"/logcat_dump_"${type}".log 2>&1 \
+    || timeout 60 adb logcat -d > "${reports_path}"/logcat_dump_"${type}".log 2>&1 || true;
+
+  # If this run failed, echo the diagnostics to stdout now. wretry retries the
+  # whole step (attempt_limit), so a transient failure that a later attempt
+  # recovers from leaves the job green and the `Print error logs` step (which is
+  # `if: failure()`) never runs - the failing attempt's evidence would be lost.
+  # The report files are also overwritten by each later attempt, so a job-level
+  # `if: always()` dump would only show the last (passing) attempt. Printing here
+  # puts the failing attempt's diagnostics in *its own* console log, always.
+  if [ "${gl_exit_code}" -ne 0 ]; then
+    echo "===== Test run failed (exit ${gl_exit_code}); dumping device diagnostics =====";
+    echo '----- native crash tombstones (backtrace if SIGSEGV/SIGABRT) -----'; cat "${reports_path}"/tombstones/* 2> /dev/null || echo '(none)';
+    echo '----- /proc/meminfo -----'; cat "${reports_path}"/proc_meminfo_"${type}".log 2> /dev/null;
+    echo '----- dumpsys meminfo -----'; cat "${reports_path}"/dumpsys_meminfo_"${type}".log 2> /dev/null;
+    echo '----- dmesg (lowmemorykiller/oom-killer verdicts appear here) -----'; cat "${reports_path}"/dmesg_"${type}".log 2> /dev/null;
+    echo '----- logcat ring-buffer dump (tail) -----'; tail -n 2000 "${reports_path}"/logcat_dump_"${type}".log 2> /dev/null;
+    echo '===== End device diagnostics =====';
+  fi
   set -e;
 
   appLogPath="${PWD}/${reports_path}";
@@ -139,6 +177,37 @@ gather_logs_func() {
   fi
 }
 
+# Capture a Java thread dump of the app while it is still alive on the device.
+#
+# The repeatable workflow (run_test=rep_*) re-launches a single test until one
+# launch hangs: the app process starts but the instrumentation never makes
+# progress (logcat goes silent, no test report is written) and the per-attempt
+# `timeout` eventually kills it. When that happens the only evidence left is an
+# empty logcat, which is useless for diagnosis. SIGQUIT (kill -3) makes the ART
+# runtime dump every Java thread's stack to logcat and to /data/anr/traces.txt,
+# so we can see *where* the launch is stuck (Espresso RootViewPicker, GL init,
+# native render, ...). This must run BEFORE clear_func kills the app, otherwise
+# there is nothing left to dump. On the success path no app process is alive, so
+# this is a cheap no-op.
+gather_anr_func() {
+  set +e;
+  pid_apps=$(timeout 10 adb shell ps | grep -i "puscas.mobilertapp" | tr -s ' ' | cut -d ' ' -f 2);
+  if [ -n "${pid_apps}" ]; then
+    echo 'App process still alive on exit (possible hang); capturing thread dump';
+    for pid_app in ${pid_apps}; do
+      echo "Sending SIGQUIT to MobileRT pid '${pid_app}' to force an ART thread dump";
+      timeout 60 adb shell 'kill -3 '"${pid_app}";
+    done
+    sleep 2; # Give ART time to write the dump to logcat and traces.txt.
+    timeout 60 adb shell 'dumpsys activity activities' > "${reports_path}"/dumpsys_activity_"${type}".log 2>&1 || true;
+    timeout 60 adb pull /data/anr/traces.txt "${reports_path}" 2> /dev/null || echo 'No ANR traces.txt to pull.';
+    echo '----- ANR / thread dump (/data/anr/traces.txt) -----';
+    cat "${reports_path}"/traces.txt 2> /dev/null || true;
+    echo '----- end ANR / thread dump -----';
+  fi
+  set -e;
+}
+
 clear_func() {
   set +u; # Variable might not have been set if canceled too soon.
   echo "Killing pid of logcat: '${pid_logcat}'";
@@ -155,11 +224,13 @@ clear_func() {
 }
 
 catch_signal() {
-  echo 'Caught signal';
+  catch_exit_code="${1:-0}";
+  echo "Caught signal (exit code: ${catch_exit_code})";
   trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
 
+  gather_anr_func; # Dump the wedged app's threads before clear_func kills it.
   clear_func;
-  gather_logs_func;
+  gather_logs_func "${catch_exit_code}";
   callCommandUntilSuccess 5 timeout 60 adb kill-server > /dev/null 2>&1;
   callCommandUntilSuccess 5 timeout 60 adb start-server > /dev/null 2>&1;
   unlockDevice > /dev/null 2>&1;
@@ -209,7 +280,7 @@ kill_adb_processes() {
     for ADB_PROCESS in ${ADB_PROCESSES}; do
       kill -TERM "${ADB_PROCESS}";
     done;
-    sleep 1;
+    sleep 2;
   fi
   set -eu;
 }
@@ -398,10 +469,39 @@ waitForEmulator() {
     callAdbShellCommandUntilSuccess 'settings put global animator_duration_scale 0';
   fi
 
-  echo 'Activate JNI extended checking mode';
-  # Command fails on Android 34.
-  # callAdbShellCommandUntilSuccess 'setprop dalvik.vm.checkjni true';
-  callAdbShellCommandUntilSuccess 'setprop debug.checkjni 1';
+  # CheckJNI wraps every JNI transition in extra validation frames and extra
+  # ref-table bookkeeping allocations. Two distinct runtimes crash under it:
+  #
+  #   * Old Dalvik (API <= 19): the VM-internal threads (e.g. the Signal Catcher)
+  #     get a tiny fixed stack, so the extra frames tip a routine VM-bootstrap
+  #     thread attach (Thread.<init>) into a double stack-overflow -> dvmAbort
+  #     (SIGSEGV 0xdeadd00d) -> the process dies on launch.
+  #   * First-gen ART (API 21/22 = Android 5.0/5.1 Lollipop): the original
+  #     concurrent mark-sweep GC has a fragile card-table / mod-union-table path.
+  #     CheckJNI's extra allocations multiply heap churn -> more dirty cards and
+  #     more frequent GC cycles -> SIGSEGV in the GCDaemon inside
+  #     ModUnionTableCardCache::ClearCards (observed: every relaunched
+  #     app_process crashes there, the instrumentation hangs, the outer timeout
+  #     fires (exit 124), no index.html -> red).
+  #
+  # Android 6.0 (API 23) rewrote the ART GC (the card-table / mod-union code that
+  # faults on 5.x is fixed), so CheckJNI is safe there. Enable it only on API >= 23.
+  # (Low confidence on the exact ART-version boundary: causation is inferred from
+  # the GCDaemon backtrace + AOSP history, not bisected to the fixing commit.)
+  if [ "${androidApiDevice}" -ge 23 ]; then
+    echo 'Activate JNI extended checking mode';
+    # Command fails on Android 34.
+    # callAdbShellCommandUntilSuccess 'setprop dalvik.vm.checkjni true';
+    callAdbShellCommandUntilSuccess 'setprop debug.checkjni 1';
+  else
+    # Old Dalvik (API <= 19) / first-gen ART (API 21/22): keep CheckJNI off. It is
+    # a global property that every spawned app_process VM inherits - including
+    # `pm install` - so a stale/on value crashes the test-services / orchestrator
+    # install itself ("Unknown failure: Segmentation fault") before any test runs.
+    # Force it off defensively rather than relying on the default.
+    echo 'Skip JNI extended checking mode (old Dalvik small stacks / early-ART GC abort under CheckJNI)';
+    callAdbShellCommandUntilSuccess 'setprop debug.checkjni 0';
+  fi
 
   unlockDevice;
 }
@@ -631,7 +731,7 @@ verifyResources() {
   set -e;
   echo 'Verified memory available on Android emulator.';
 
-  grep -r "hw.ramSize" ~/.android 2> /dev/null || true;
+  grep -r "hw.ramSize" ~/.android/avd/ 2> /dev/null || true;
 }
 
 runInstrumentationTests() {
@@ -767,6 +867,17 @@ runInstrumentationTests() {
 _executeAndroidTests() {
   unlockDevice;
 
+  # Start every iteration from a clean app state. The repeatable workflow
+  # (run_test=rep_*) re-launches the same test many times in a row via
+  # callCommandUntilError; a leftover app process / GL context / ART state from
+  # the previous launch can wedge the next one (observed: N launches pass, then
+  # one hangs before the first @Test). Force-stopping the package between
+  # iterations removes that carried-over state. No-op on the first launch and on
+  # the `all` path (nothing running yet); guarded so it never aborts the run.
+  set +e;
+  timeout 60 adb shell 'am force-stop puscas.mobilertapp';
+  set -e;
+
   callAdbShellCommandUntilSuccess 'mkdir -p '"${internal_storage_path}"'/screenshots';
   callAdbShellCommandUntilSuccess 'chmod -R 777 '"${internal_storage_path}"'/screenshots';
   callAdbShellCommandUntilSuccess 'ls -la '"${internal_storage_path}"'/screenshots';
@@ -778,20 +889,24 @@ _executeAndroidTests() {
   callAdbShellCommandUntilSuccess 'ls -la '"${sdcard_path_android}"'/WavefrontOBJs/teapot/teapot.obj';
 
   if [ "${run_test}" = 'all' ]; then
-    timeout 1200 sh gradlew "${gradle_command}" -DtestType="${type}" \
+    timeout 1800 sh gradlew "${gradle_command}" -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
       -Pandroid.testInstrumentationRunnerArguments.package='puscas' \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
   elif echo "${run_test}" | grep -q "rep_"; then
-    timeout 180 sh gradlew connectedAndroidTest -DtestType="${type}" \
-      -DandroidApiVersion="${android_api_version}" \
+    # Single focused test: disable coverage. A coverage report over one test is
+    # meaningless and createDebugAndroidTestCoverageReport would otherwise fail
+    # the build with "no coverage data was found".
+    timeout 200 sh gradlew connectedAndroidTest -DtestType="${type}" \
+      -DandroidApiVersion="${android_api_version}" -DdisableTestCoverage=true \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
   else
-    timeout 180 sh gradlew connectedAndroidTest -DtestType="${type}" \
-      -DandroidApiVersion="${android_api_version}" \
+    # Single focused test: disable coverage (see the rep_ branch above).
+    timeout 200 sh gradlew connectedAndroidTest -DtestType="${type}" \
+      -DandroidApiVersion="${android_api_version}" -DdisableTestCoverage=true \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test}" \
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;

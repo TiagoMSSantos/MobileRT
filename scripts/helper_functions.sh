@@ -156,7 +156,7 @@ callCommandUntilError() { (
     "$@";
     lastResult=${?};
     echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
-    sleep 1;
+    sleep 2;
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
@@ -188,7 +188,7 @@ callCommandUntilSuccess() { (
     "${@}";
     lastResult=${?};
     echo "Retry: ${_retry} of command '$*'; result: '${lastResult}'";
-    sleep 1;
+    sleep 2;
   done
   set -e;
   if [ "${lastResult}" -eq 0 ]; then
@@ -219,6 +219,12 @@ callAdbShellCommandUntilSuccess() { (
   else
     _lastResultValid=true;
   fi
+  # On old devices (e.g. API 15) the '::$?::' exit-code marker can be missing
+  # from the captured stdout even though the command ran. Coerce the empty
+  # value to a non-zero number so the numeric '[ -ne ]'/'[ -eq ]' tests below
+  # do not abort with '[: Illegal number'; this turns a lost marker into a
+  # retry instead of a hard crash.
+  [ -z "${lastResult}" ] && lastResult='1';
   echo "result: '${lastResult}'";
 
   while [ "${lastResult}" -ne 0 ] && [ "${lastResult}" != '127' ] && [ "${lastResult}" != '2' ] && [ "${_lastResultValid}" = 'true' ] && [ ${_retry} -lt 3 ]; do
@@ -231,8 +237,10 @@ callAdbShellCommandUntilSuccess() { (
     else
       _lastResultValid=true;
     fi
+    # See note above: a missing exit-code marker must not crash the numeric tests.
+    [ -z "${lastResult}" ] && lastResult='1';
     echo "Retry: ${_retry} of command 'adb shell $*'; result: '${lastResult}'";
-    sleep 1;
+    sleep 2;
   done
 
   if [ "${_oldSetErrorValue}" = 'true' ]; then
@@ -502,7 +510,7 @@ clearOldBuildFiles() {
         retry_file=$(( retry_file + 1 ));
         _killProcessUsingFile "${file_being_used}";
         echo 'sleeping 1 sec';
-        sleep 1;
+        sleep 2;
         rm "${file_being_used}" || true;
       done
     done;
