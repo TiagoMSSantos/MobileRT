@@ -145,7 +145,7 @@ buildscript {
         // shared test storage (useTestStorageService) and aggregated by AGP across
         // the per-test processes. Kept in lockstep with the orchestrator tiers.
         if (project.properties["androidX_test_services_version"] == null) {
-            androidX_test_services_version = '1.4.2'
+            androidX_test_services_version = '1.6.0'
         }
 
         // Unit tests dependencies
