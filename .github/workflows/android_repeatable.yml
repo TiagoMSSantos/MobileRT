@@ -98,6 +98,15 @@ jobs:
         gpg-passphrase: GPG_PASSPHRASE
         cache-dependency-path: '**/build.gradle'
 
+    - name: Install dependencies
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+      if: success()
+      run: |
+        sh scripts/install_dependencies.sh;
+        echo 'Add binutils to PATH for readelf command in MacOS.';
+        echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+        echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
+
     - name: Add custom environment variables
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success()
@@ -120,15 +129,6 @@ jobs:
           echo "NDK_VERSION=23.2.8568313" >> "${GITHUB_ENV}";
         fi
         echo "ANDROID_CMAKE_VERSION=4.0.2" >> "${GITHUB_ENV}";
-
-    - name: Install dependencies
-      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-      if: success()
-      run: |
-        sh scripts/install_dependencies.sh;
-        echo 'Add binutils to PATH for readelf command in MacOS.';
-        echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
-        echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
     - name: Delete unnecessary Android SDK components
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
@@ -277,17 +277,18 @@ jobs:
         # Caches the AVD definition + the post-boot snapshot. On hit, the
         # emulator-runner skips both AVD creation (~30s) and cold boot
         # (~3-5 min), starting from the snapshot in ~30-60s. Bump the
-        # trailing version suffix (-v1) to invalidate stale snapshots.
-        # The system-image `target` (default/google_apis) is part of the key:
-        # the cached AVD's config.ini hardcodes the tag chosen at creation, so
-        # a target change must rotate the cache - otherwise a stale `default`
-        # AVD is restored against a freshly-installed `google_apis` image (or
-        # vice versa), and the emulator dies on "Broken AVD system path". Keep
-        # this ternary in sync with the `target:` inputs of the steps below.
+        # trailing version suffix to invalidate stale snapshots.
+        # The system-image `target` (default) is part of the key: the cached
+        # AVD's config.ini hardcodes the tag chosen at creation, so a target
+        # change must rotate the cache - otherwise a stale AVD is restored
+        # against a freshly-installed image and the emulator dies on
+        # "Broken AVD system path". All APIs use the AOSP `default` image (see
+        # the `target:` inputs below). The -v2 suffix also rotates the cache
+        # after the RAM bump (a 4096 snapshot fails to load at the new size).
         path: |
           ~/.android/avd/*
           ~/.android/adb*
-        key: avd-${{ matrix.android_api }}-${{ matrix.android_api == 26 && 'default' || 'google_apis' }}-${{ env.android_emulator_arch }}-${{ runner.os }}-v1
+        key: avd-${{ matrix.android_api }}-default-${{ env.android_emulator_arch }}-${{ runner.os }}-v2
 
     - name: Install adb timeout-shim
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -370,7 +371,7 @@ jobs:
       if: success() && !startsWith(matrix.host_os, 'windows') && steps.avd-cache.outputs.cache-hit != 'true'
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
       env:
-        ANDROID_EMULATOR_MEM_MB: 4096
+        ANDROID_EMULATOR_MEM_MB: 6144
         ANDROID_EMULATOR_CPU_CORES: 3
       with:
         action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
@@ -382,16 +383,25 @@ jobs:
           # quit; actions/cache then stores it for the next run. RAM/CPU
           # must match the test step below, otherwise snapshot load fails.
           api-level: ${{ matrix.android_api }}
-          # API 26 (8.0) google_apis ships the Nexus Launcher + Google Play Services,
-          # whose constant churn on the 2-core software emulator keeps stealing window
-          # focus from the test activity (RootViewWithoutFocusException). The app needs no
-          # Play features, so use the AOSP `default` image (no GApps, lightweight launcher)
-          # on API 26. API 25 stays on google_apis (already green).
-          target: ${{ matrix.android_api == 26 && 'default' || 'google_apis' }}
+          # All APIs use the AOSP `default` image (no GApps). The google_apis
+          # image ships the Nexus Launcher + Google Play Services, whose churn
+          # (a) steals window focus from the test activity on API 26
+          # (RootViewWithoutFocusException) and (b) spawns extra system services
+          # (printspooler, Play) that multiply short-lived process teardowns -
+          # on first-gen ART (API 21/22) that tripped a guest-kernel MM bug
+          # (BUG: Bad page state in exit_mmap) -> GCDaemon SIGSEGV storm. The
+          # app needs no Play features, so default is lighter and avoids both.
+          target: default
           arch: ${{ env.android_emulator_arch }}
           disable-animations: false
           channel: stable
-          emulator-options: -no-metrics -no-window -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          # -memory is a launch-time QEMU flag: it sets guest RAM even when the
+          # cached AVD is reused (force-avd-creation: false), unlike ram-size
+          # which only writes hw.ramSize into config.ini and is ignored on a
+          # cache hit. The guest was seeing ~328MB despite ram-size 4096M; the
+          # explicit -memory raises it (matches reusable-android.yml). Must stay
+          # identical to the test step below or snapshot load fails.
+          emulator-options: -no-metrics -no-window -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
           ram-size: ${{ env.ANDROID_EMULATOR_MEM_MB }}M
           disk-size: 8192M
@@ -399,7 +409,20 @@ jobs:
           avd-name: Android_Emulator_API_${{ matrix.android_api }}
           force-avd-creation: false
           emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }}
-          script: echo "Generated AVD snapshot for caching."
+          script: |
+            echo "Generated AVD snapshot for caching.";
+            # Bounded teardown watchdog. This step omits -no-snapshot-save, so
+            # android-emulator-runner saves the snapshot on quit and then blocks
+            # until the qemu process exits. Under -no-window -gpu
+            # swiftshader_indirect the GL render threads can fail to terminate,
+            # so qemu never exits and the step burns the full 20min cap
+            # (observed: emu kill "OK: killing emulator, bye bye" then ~19min
+            # dead -> SIGINT -> "The action has timed out"). A healthy snapshot
+            # save finishes in seconds, so spawn a detached watchdog that
+            # force-reaps a wedged qemu after 180s; the action's post-script
+            # wait then returns and wretry can retry, instead of one hang
+            # eating the whole budget.
+            nohup sh -c 'sleep 180; if pgrep -f qemu-system >/dev/null 2>&1; then echo "Watchdog: qemu wedged after snapshot save; force-reaping."; pkill -9 -f qemu-system || true; fi' >/dev/null 2>&1 &
 
     - name: Run Android tests
       timeout-minutes: ${{ case(startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'release', 20, startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug', 40, 50) }}
@@ -407,7 +430,7 @@ jobs:
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
       env:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
-        ANDROID_EMULATOR_MEM_MB: 4096
+        ANDROID_EMULATOR_MEM_MB: 6144
         # GitHub-hosted ubuntu runners have 4 vCPUs. Leaving at least 2 cores
         # for the host (adb, gradle, log capture) was measured to be ~3x faster
         # than allocating all 4 to the emulator; previous bump to 4 caused
@@ -430,12 +453,15 @@ jobs:
           # Available CI host machines: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
           # Max api level for 32bit is: 30
           api-level: ${{ matrix.android_api }}
-          # API 26 (8.0) google_apis ships the Nexus Launcher + Google Play Services,
-          # whose constant churn on the 2-core software emulator keeps stealing window
-          # focus from the test activity (RootViewWithoutFocusException). The app needs no
-          # Play features, so use the AOSP `default` image (no GApps, lightweight launcher)
-          # on API 26. API 25 stays on google_apis (already green).
-          target: ${{ matrix.android_api == 26 && 'default' || 'google_apis' }}
+          # All APIs use the AOSP `default` image (no GApps). The google_apis
+          # image ships the Nexus Launcher + Google Play Services, whose churn
+          # (a) steals window focus from the test activity on API 26
+          # (RootViewWithoutFocusException) and (b) spawns extra system services
+          # (printspooler, Play) that multiply short-lived process teardowns -
+          # on first-gen ART (API 21/22) that tripped a guest-kernel MM bug
+          # (BUG: Bad page state in exit_mmap) -> GCDaemon SIGSEGV storm. The
+          # app needs no Play features, so default is lighter and avoids both.
+          target: default
           arch: ${{ env.android_emulator_arch }}
           # Keep false: the action disables animations/spellchecker via an
           # un-timeout-wrapped `adb shell settings put ...` right after boot.
@@ -448,7 +474,9 @@ jobs:
           disable-animations: false
           disable-spellchecker: false
           channel: stable
-          emulator-options: -no-metrics -no-window -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-snapshot-save
+          # -memory must match the snapshot-generation step above (snapshot load
+          # fails on a RAM mismatch). See the rationale comment there.
+          emulator-options: -no-metrics -no-window -cores ${{ env.ANDROID_EMULATOR_CPU_CORES }} -memory ${{ env.ANDROID_EMULATOR_MEM_MB }} -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -no-snapshot-save
           cores: ${{ env.ANDROID_EMULATOR_CPU_CORES }}
           ram-size: ${{ env.ANDROID_EMULATOR_MEM_MB }}M
           disk-size: 8192M
@@ -466,10 +494,20 @@ jobs:
       if: failure()
       run: |
         ls -lahp .;
+        set +e;
         ls -lahp app/build/reports/tombstones;
         echo 'Print Android tombstone logs:';
-        set +e;
         cat app/build/reports/tombstones/*;
+        echo 'Print Android ART thread dump:';
+        cat app/build/reports/traces.txt;
+        echo 'Print device memory snapshot (/proc/meminfo):';
+        cat app/build/reports/proc_meminfo_*.log;
+        echo 'Print device dumpsys meminfo:';
+        cat app/build/reports/dumpsys_meminfo_*.log;
+        echo 'Print device kernel ring buffer (dmesg) - lowmemorykiller/oom-killer lines appear here:';
+        cat app/build/reports/dmesg_*.log;
+        echo 'Print device logcat ring-buffer dump (tail):';
+        tail -n 2000 app/build/reports/logcat_dump_*.log;
         echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
         sudo dmesg -T;
         echo 'Print native JVM stacktrace if possible:';

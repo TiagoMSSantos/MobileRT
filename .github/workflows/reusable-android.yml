@@ -75,6 +75,15 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
 
+      - name: Install dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success()
+        run: |
+          sh scripts/install_dependencies.sh;
+          echo 'Add binutils to PATH for readelf command in MacOS.';
+          echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
+
       - name: Add custom environment variables
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success()
@@ -218,15 +227,6 @@ jobs:
             --connect-timeout 5 \
             --data-binary @codecov.yml \
             https://codecov.io/validate;
-
-      - name: Install dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-        if: success()
-        run: |
-          sh scripts/install_dependencies.sh;
-          echo 'Add binutils to PATH for readelf command in MacOS.';
-          echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
-          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
       - name: Set Android CPU Architecture
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -575,6 +575,15 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
 
+      - name: Install dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success()
+        run: |
+          sh scripts/install_dependencies.sh;
+          echo 'Add binutils to PATH for readelf command in MacOS.';
+          echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
+
       - name: Free up disk space
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
@@ -633,37 +642,52 @@ jobs:
               ;;
             Darwin*)
               echo 'Cleaning up macOS runner disk space...';
-              # Remove the non-default Xcode versions (~15 GB each); keep only the
-              # one xcode-select points at, since xcrun/simctl below depend on it.
-              xcodeActive="$(xcode-select -p 2>/dev/null | sed 's#/Contents/Developer$##')";
-              for xcodeApp in /Applications/Xcode_*.app; do
-                [ -e "${xcodeApp}" ] || continue;
-                [ "${xcodeApp}" = "${xcodeActive}" ] && continue;
+              # The Android job needs ~20-30 GB (SDK + NDK + system image + gradle
+              # caches + build outputs). GitHub macOS runners typically boot with
+              # ~100 GB free, so the expensive cleanup below - deleting multiple
+              # ~15 GB Xcode.app bundles + CoreSimulator runtimes, i.e. minutes of
+              # per-inode APFS unlinks that have timed this step out past the 10-min
+              # cap - is almost always unnecessary. Only run it when disk is tight.
+              neededGb=50;
+              availKb="$(df -Pk "${HOME}" | awk 'NR==2 {print $4}')";
+              availGb=$(( availKb / 1048576 ));
+              echo "Free space on ${HOME}: ${availGb} GiB (threshold ${neededGb} GiB).";
+              if [ "${availGb}" -ge "${neededGb}" ]; then
+                echo "Enough free disk - skipping the slow Xcode/simulator cleanup.";
+              else
+                echo "Low disk - removing non-default Xcode versions and simulator runtimes...";
+                # Remove the non-default Xcode versions (~15 GB each); keep only the
+                # one xcode-select points at, since xcrun/simctl below depend on it.
+                xcodeActive="$(xcode-select -p 2>/dev/null | sed 's#/Contents/Developer$##')";
+                for xcodeApp in /Applications/Xcode_*.app; do
+                  [ -e "${xcodeApp}" ] || continue;
+                  [ "${xcodeApp}" = "${xcodeActive}" ] && continue;
+                  if command -v sudo > /dev/null; then
+                    sudo rm -rf "${xcodeApp}" &
+                  fi
+                done
+                # iOS/tvOS/watchOS simulator runtimes (user + system), devices, caches.
+                rm -rf "${HOME}/Library/Developer/CoreSimulator/Profiles/Runtimes/"* &
+                rm -rf "${HOME}/Library/Developer/CoreSimulator/Devices/"* &
+                rm -rf "${HOME}/Library/Developer/CoreSimulator/Caches/"* &
                 if command -v sudo > /dev/null; then
-                  sudo rm -rf "${xcodeApp}" &
+                  sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/* &
+                  # Toolchains the Android job never uses.
+                  sudo rm -rf /Library/Frameworks/Mono.framework &
                 fi
-              done
-              # iOS/tvOS/watchOS simulator runtimes (user + system), devices, caches.
-              rm -rf "${HOME}/Library/Developer/CoreSimulator/Profiles/Runtimes/"* &
-              rm -rf "${HOME}/Library/Developer/CoreSimulator/Devices/"* &
-              rm -rf "${HOME}/Library/Developer/CoreSimulator/Caches/"* &
-              if command -v sudo > /dev/null; then
-                sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes/* &
-                # Toolchains the Android job never uses.
-                sudo rm -rf /Library/Frameworks/Mono.framework &
-              fi
-              # Xcode derived data / device support (regenerated on demand).
-              rm -rf "${HOME}/Library/Developer/Xcode/DerivedData/"* &
-              rm -rf "${HOME}/Library/Developer/Xcode/iOS DeviceSupport/"* &
-              rm -rf "${HOME}/Library/Developer/Xcode/watchOS DeviceSupport/"* &
-              rm -rf "${HOME}/Library/Developer/Xcode/tvOS DeviceSupport/"* &
-              rm -rf "${HOME}/.cocoapods" &
-              rm -rf "${HOME}/Library/Caches/"* &
-              wait;
-              # Homebrew download cache (keep installed formulae, drop tarballs).
-              if command -v brew >/dev/null 2>&1; then
-                brew cleanup -s 2>/dev/null || true;
-                rm -rf "$(brew --cache)" 2>/dev/null || true;
+                # Xcode derived data / device support (regenerated on demand).
+                rm -rf "${HOME}/Library/Developer/Xcode/DerivedData/"* &
+                rm -rf "${HOME}/Library/Developer/Xcode/iOS DeviceSupport/"* &
+                rm -rf "${HOME}/Library/Developer/Xcode/watchOS DeviceSupport/"* &
+                rm -rf "${HOME}/Library/Developer/Xcode/tvOS DeviceSupport/"* &
+                rm -rf "${HOME}/.cocoapods" &
+                rm -rf "${HOME}/Library/Caches/"* &
+                wait;
+                # Homebrew download cache (keep installed formulae, drop tarballs).
+                if command -v brew >/dev/null 2>&1; then
+                  brew cleanup -s 2>/dev/null || true;
+                  rm -rf "$(brew --cache)" 2>/dev/null || true;
+                fi
               fi
               # Pruning symbolic links and directories from /usr/local takes some minutes
               # xcrun simctl delete unavailable 2>/dev/null || true;
@@ -838,15 +862,6 @@ jobs:
           mv release/android/app-${{ inputs.type }}-signed.apk release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
           ls -lahp release/android/MobileRT_${{ inputs.type }}_min_android_api-${{ inputs.android_api }}.apk;
 
-      - name: Install dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-        if: success()
-        run: |
-          sh scripts/install_dependencies.sh;
-          echo 'Add binutils to PATH for readelf command in MacOS.';
-          echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
-          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
-
       # Restore the compiled binaries from the artifact uploaded by the Build
       # job (not actions/cache: per-run caches are LRU-evicted under the 10 GB
       # cap before this job runs). The Gradle build-cache is restored
@@ -976,8 +991,15 @@ jobs:
             else
               echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
             fi
-            # x86 hosts (Intel runners) have working HVF for x86 guests.
-            echo 'EMULATOR_ACCEL=on' >> "${GITHUB_ENV}";
+            # x86 hosts: Linux runners have KVM; '-accel on' works. GitHub macOS
+            # Intel runners may lack Hypervisor.framework, where '-accel on' hard-
+            # fails with 'HVF error: HV_UNSUPPORTED'. Use '-accel auto' on macOS so
+            # the emulator uses HVF when present and falls back to TCG otherwise.
+            if [ "$(uname -s)" = 'Darwin' ]; then
+              echo 'EMULATOR_ACCEL=auto' >> "${GITHUB_ENV}";
+            else
+              echo 'EMULATOR_ACCEL=on' >> "${GITHUB_ENV}";
+            fi
           fi
           # Right-sized to observed reality: a healthy emulator boot on these
           # runners completes in ~15-30s (logs across APIs). The old 240/400s
@@ -1019,17 +1041,18 @@ jobs:
           # Caches the AVD definition + the post-boot snapshot. On hit, the
           # emulator-runner skips both AVD creation (~30s) and cold boot
           # (~3-5 min), starting from the snapshot in ~30-60s. Bump the
-          # trailing version suffix (-v1) to invalidate stale snapshots.
-          # The system-image `target` (default/google_apis) is part of the key:
-          # the cached AVD's config.ini hardcodes the tag chosen at creation, so
-          # a target change must rotate the cache - otherwise a stale `default`
-          # AVD is restored against a freshly-installed `google_apis` image (or
-          # vice versa), and the emulator dies on "Broken AVD system path". Keep
-          # this ternary in sync with the `target:` inputs of the steps below.
+          # trailing version suffix to invalidate stale snapshots.
+          # The system-image `target` (default) is part of the key: the cached
+          # AVD's config.ini hardcodes the tag chosen at creation, so a target
+          # change must rotate the cache - otherwise a stale AVD is restored
+          # against a freshly-installed image and the emulator dies on
+          # "Broken AVD system path". All APIs use the AOSP `default` image (see
+          # the `target:` inputs below). The -v2 suffix also rotates the cache
+          # after the RAM bump (a 4096 snapshot fails to load at the new size).
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-${{ inputs.android_api_device }}-${{ inputs.android_api_device == 26 && 'default' || 'google_apis' }}-${{ env.android_emulator_arch }}-${{ runner.os }}-v1
+          key: avd-${{ inputs.android_api_device }}-default-${{ env.android_emulator_arch }}-${{ runner.os }}-v2
 
       - name: Install adb timeout-shim
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1112,7 +1135,7 @@ jobs:
         if: success() && !startsWith(inputs.target_os, 'windows') && steps.avd-cache.outputs.cache-hit != 'true'
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         env:
-          ANDROID_EMULATOR_MEM_MB: 4096
+          ANDROID_EMULATOR_MEM_MB: 6144
           ANDROID_EMULATOR_CPU_CORES: 3
         with:
           action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
@@ -1125,12 +1148,15 @@ jobs:
             # must match the test step below, otherwise snapshot load fails.
             api-level: ${{ inputs.android_api_device }}
             cmake: ${{ needs.Build.outputs.cmake_version }}
-            # API 26 (8.0) google_apis ships the Nexus Launcher + Google Play Services,
-            # whose constant churn on the 2-core software emulator keeps stealing window
-            # focus from the test activity (RootViewWithoutFocusException). The app needs no
-            # Play features, so use the AOSP `default` image (no GApps, lightweight launcher)
-            # on API 26. API 25 stays on google_apis (already green).
-            target: ${{ inputs.android_api_device == 26 && 'default' || 'google_apis' }}
+            # All APIs use the AOSP `default` image (no GApps). The google_apis
+            # image ships the Nexus Launcher + Google Play Services, whose churn
+            # (a) steals window focus from the test activity on API 26
+            # (RootViewWithoutFocusException) and (b) spawns extra system services
+            # (printspooler, Play) that multiply short-lived process teardowns -
+            # on first-gen ART (API 21/22) that tripped a guest-kernel MM bug
+            # (BUG: Bad page state in exit_mmap) -> GCDaemon SIGSEGV storm. The
+            # app needs no Play features, so default is lighter and avoids both.
+            target: default
             arch: ${{ env.android_emulator_arch }}
             disable-animations: false
             channel: stable
@@ -1145,7 +1171,20 @@ jobs:
             disable-linux-hw-accel: auto
             enable-hw-keyboard: false
             emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }}
-            script: echo "Generated AVD snapshot for caching."
+            script: |
+              echo "Generated AVD snapshot for caching.";
+              # Bounded teardown watchdog. This step omits -no-snapshot-save, so
+              # android-emulator-runner saves the snapshot on quit and then blocks
+              # until the qemu process exits. Under -no-window -gpu
+              # swiftshader_indirect the GL render threads can fail to terminate,
+              # so qemu never exits and the step burns the full 20min cap
+              # (observed: emu kill "OK: killing emulator, bye bye" then ~19min
+              # dead -> SIGINT -> "The action has timed out"). A healthy snapshot
+              # save finishes in seconds, so spawn a detached watchdog that
+              # force-reaps a wedged qemu after 180s; the action's post-script
+              # wait then returns and wretry can retry, instead of one hang
+              # eating the whole budget.
+              nohup sh -c 'sleep 180; if pgrep -f qemu-system >/dev/null 2>&1; then echo "Watchdog: qemu wedged after snapshot save; force-reaping."; pkill -9 -f qemu-system || true; fi' >/dev/null 2>&1 &
 
       - name: Run Android tests
         timeout-minutes: ${{ case(startsWith(inputs.target_os, 'ubuntu') && inputs.type == 'release', 20, startsWith(inputs.target_os, 'ubuntu') && inputs.type == 'debug', 40, 50) }}
@@ -1153,7 +1192,7 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
-          ANDROID_EMULATOR_MEM_MB: 4096
+          ANDROID_EMULATOR_MEM_MB: 6144
           # Leave headroom for the host (adb, gradle, log capture). Bumping to
           # all 4 cores caused a severe regression (8m -> 22m on the Repeatable
           # workflow); 2 was ~3x faster. 3 is a middle ground to speed cold boot
@@ -1188,12 +1227,15 @@ jobs:
             #    hits. Unchanged behaviour.
             api-level: ${{ inputs.android_api_device }}
             cmake: ${{ needs.Build.outputs.cmake_version }}
-            # API 26 (8.0) google_apis ships the Nexus Launcher + Google Play Services,
-            # whose constant churn on the 2-core software emulator keeps stealing window
-            # focus from the test activity (RootViewWithoutFocusException). The app needs no
-            # Play features, so use the AOSP `default` image (no GApps, lightweight launcher)
-            # on API 26. API 25 stays on google_apis (already green).
-            target: ${{ inputs.android_api_device == 26 && 'default' || 'google_apis' }}
+            # All APIs use the AOSP `default` image (no GApps). The google_apis
+            # image ships the Nexus Launcher + Google Play Services, whose churn
+            # (a) steals window focus from the test activity on API 26
+            # (RootViewWithoutFocusException) and (b) spawns extra system services
+            # (printspooler, Play) that multiply short-lived process teardowns -
+            # on first-gen ART (API 21/22) that tripped a guest-kernel MM bug
+            # (BUG: Bad page state in exit_mmap) -> GCDaemon SIGSEGV storm. The
+            # app needs no Play features, so default is lighter and avoids both.
+            target: default
             arch: ${{ env.android_emulator_arch }}
             # Keep false: the action disables animations/spellchecker via an
             # un-timeout-wrapped `adb shell settings put ...` right after boot.
@@ -1229,10 +1271,20 @@ jobs:
         if: failure()
         run: |
           ls -lahp .;
+          set +e;
           ls -lahp app/build/reports/tombstones;
           echo 'Print Android tombstone logs:';
-          set +e;
           cat app/build/reports/tombstones/*;
+          echo 'Print Android ART thread dump:';
+          cat app/build/reports/traces.txt;
+          echo 'Print device memory snapshot (/proc/meminfo):';
+          cat app/build/reports/proc_meminfo_*.log;
+          echo 'Print device dumpsys meminfo:';
+          cat app/build/reports/dumpsys_meminfo_*.log;
+          echo 'Print device kernel ring buffer (dmesg) - lowmemorykiller/oom-killer lines appear here:';
+          cat app/build/reports/dmesg_*.log;
+          echo 'Print device logcat ring-buffer dump (tail):';
+          tail -n 2000 app/build/reports/logcat_dump_*.log;
           echo 'Print JVM errors if provided by Kernel, and just check the logs from the last line of the previous call:';
           sudo dmesg -T;
           echo 'Print native JVM stacktrace if possible:';
@@ -1321,6 +1373,13 @@ jobs:
         # alias it (*...) in the retry attempts below so the inputs live once.
         with: &cc_android_test_with
           # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
+          # The wrapper imports Codecov's PGP key from keybase.io to verify the
+          # downloaded uploader binary. That fetch returns empty ("no valid
+          # OpenPGP data found" -> "Can't check signature: No public key"), which
+          # hard-fails every retry identically (it is not transient, and the
+          # action is already pinned to its latest commit). Skip the binary's
+          # signature check; the upload itself is still TLS + token authenticated.
+          skip_validation: true
           codecov_yml_path: codecov.yml
           report_type: test_results
           directory: app/build/outputs/androidTest-results
@@ -1745,6 +1804,10 @@ jobs:
         # alias it (*...) in the retry attempts below so the inputs live once.
         with: &cc_android_unit_with
           # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
+          # Skip the uploader-binary signature check: the keybase.io PGP-key
+          # fetch returns empty and hard-fails every retry (see the test-results
+          # upload above for the full rationale). Upload stays TLS + token auth'd.
+          skip_validation: true
           codecov_yml_path: codecov.yml
           report_type: test_results
           directory: app/build/test-results
@@ -1911,6 +1974,15 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
           cache-dependency-path: '**/build.gradle'
 
+      - name: Install dependencies
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
+        if: success()
+        run: |
+          sh scripts/install_dependencies.sh;
+          echo 'Add binutils to PATH for readelf command in MacOS.';
+          echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
+          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
+
       - name: Install Android SDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
@@ -1921,15 +1993,6 @@ jobs:
           # Linux ARM multiarch handling.
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && installAndroidSdk "${{ inputs.android_api }}";
-
-      - name: Install dependencies
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
-        if: success()
-        run: |
-          sh scripts/install_dependencies.sh;
-          echo 'Add binutils to PATH for readelf command in MacOS.';
-          echo "/usr/local/opt/binutils/bin" >> ${GITHUB_PATH};
-          echo "/opt/homebrew/opt/binutils/bin" >> ${GITHUB_PATH};
 
       # Restore Sonar's inputs (compiled classes + jacoco coverage + native
       # build + wrapper) from the artifact uploaded by the AndroidTests job.

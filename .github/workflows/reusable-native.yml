@@ -724,6 +724,10 @@ jobs:
         # alias it (*...) in the retry attempts below so the inputs live once.
         with: &cc_native_with
           # Check available parameters in: https://github.com/codecov/codecov-action/blob/main/action.yml
+          # Skip the uploader-binary signature check: the keybase.io PGP-key
+          # fetch returns empty and hard-fails every retry (see the test-results
+          # upload above for the full rationale). Upload stays TLS + token auth'd.
+          skip_validation: true
           report_type: coverage
           directory: 'coverage'
           fail_ci_if_error: true
