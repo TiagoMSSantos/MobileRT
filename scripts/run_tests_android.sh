@@ -131,10 +131,17 @@ gather_logs_func() {
   # Kernel ring buffer: lowmemorykiller / oom-killer verdicts land here, not in logcat.
   timeout 30 adb shell dmesg > "${reports_path}"/dmesg_"${type}".log 2>&1 || true;
   # Full logcat ring-buffer dump as a fallback for the streamed file (which can
-  # die mid-run). '-d' dumps and exits; '-b all' grabs every buffer, falling back
-  # to the default buffer on old APIs that reject '-b all'.
-  timeout 60 adb logcat -d -b all > "${reports_path}"/logcat_dump_"${type}".log 2>&1 \
-    || timeout 60 adb logcat -d > "${reports_path}"/logcat_dump_"${type}".log 2>&1 || true;
+  # die mid-run). '-d' dumps and exits. NOTE: '-b all' is NOT usable here: on API
+  # <= 19 it fails with "Unable to open log device '/dev/log/all'" yet STILL exits
+  # 0, so a `|| fallback` never fires and the file holds only the error line. Use
+  # the same explicit, known-good buffer set as the streamed capture, then fall
+  # back to the default buffer when the file is empty or holds the open-device
+  # error (the only reliable signal that the buffer set was rejected).
+  logcat_dump="${reports_path}/logcat_dump_${type}.log";
+  timeout 60 adb logcat -d -b main -b system -b radio -b events > "${logcat_dump}" 2>&1 || true;
+  if [ ! -s "${logcat_dump}" ] || grep -q 'Unable to open log device' "${logcat_dump}" 2> /dev/null; then
+    timeout 60 adb logcat -d > "${logcat_dump}" 2>&1 || true;
+  fi
 
   # If this run failed, echo the diagnostics to stdout now. wretry retries the
   # whole step (attempt_limit), so a transient failure that a later attempt
@@ -150,6 +157,11 @@ gather_logs_func() {
     echo '----- dumpsys meminfo -----'; cat "${reports_path}"/dumpsys_meminfo_"${type}".log 2> /dev/null;
     echo '----- dmesg (lowmemorykiller/oom-killer verdicts appear here) -----'; cat "${reports_path}"/dmesg_"${type}".log 2> /dev/null;
     echo '----- logcat ring-buffer dump (tail) -----'; tail -n 2000 "${reports_path}"/logcat_dump_"${type}".log 2> /dev/null;
+    # The streamed capture is fuller than the ring-buffer dump (the ring is tiny
+    # on old APIs and cannot be enlarged with '-G'), so tail it too: if the
+    # auto-restart kept the stream alive across the crash, the failing render's
+    # last lines are here, not in the truncated ring dump above.
+    echo '----- streamed logcat (tail) -----'; tail -n 2000 "${reports_path}"/logcat_"${type}".log 2> /dev/null;
     echo '===== End device diagnostics =====';
   fi
   set -e;
@@ -620,7 +632,20 @@ startCopyingLogcatToFile() {
   # Backstop only: clear_func kills pid_logcat cleanly at suite end. The cap must
   # outlast the whole suite (connectedAndroidTest gets `timeout 600`), otherwise the
   # capture dies during the unit tests and the instrumentation render is never logged.
-  adb logcat -v threadtime "*":V | tee "${reports_path}"/logcat_"${type}".log 2>&1 &
+  #
+  # Wrap the capture in an auto-restart loop: on a software-emulated CPU (API 26) a
+  # max-samples render takes ~3min, and the adb logcat pipe was observed dying
+  # mid-run (~7min before a crash), losing exactly the failing iteration's logs. If
+  # the pipe drops the loop reconnects and keeps appending. Truncate once up front,
+  # then append ('tee -a') so reconnects don't wipe earlier output. clear_func kills
+  # pid_logcat (this subshell -> stops respawn) and the 'tee' pid by name (-> the
+  # inner 'adb logcat' dies via SIGPIPE), so the loop tears down cleanly at suite end.
+  : > "${reports_path}"/logcat_"${type}".log;
+  ( while true; do
+      adb logcat -v threadtime "*":V | tee -a "${reports_path}"/logcat_"${type}".log;
+      echo 'logcat stream dropped; reconnecting in 1s' >&2;
+      sleep 1;
+    done ) &
   pid_logcat="$!";
   echo "pid of logcat: '${pid_logcat}'";
 }
