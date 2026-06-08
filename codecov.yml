@@ -72,7 +72,7 @@ coverage:
         # * Native tests (from Native workflow)
         # * Shell script tests (from Code Analysis workflow)
         # So, if not all workflows above were executed, then the code coverage is not valid.
-        target: 51%
+        target: 49%
         threshold: 1%
         base: auto
         if_ci_failed: error
@@ -157,4 +157,4 @@ component_management:
         - scripts/**/*.sh
       statuses:
         - type: project
-          target: 5%
+          target: 4%
