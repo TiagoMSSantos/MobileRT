@@ -330,9 +330,26 @@ android {
         setMinSdkVersion "${androidApiVersion}"
         setTargetSdkVersion 36
         setTestInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        testInstrumentationRunnerArguments = [
-            'clearPackageData': 'true', 'disableAnalytics': 'true', 'waitForActivitiesToComplete': 'true'
+        def runnerArgs = [
+            'clearPackageData': 'false', 'disableAnalytics': 'true', 'waitForActivitiesToComplete': 'true'
         ]
+        // clearPackageData is OFF on purpose. On API >= 16 the Orchestrator already
+        // runs each test in its own process (fresh in-memory state per test), so we
+        // do not need a disk wipe for isolation. clearPackageData triggered
+        // clearApplicationUserData between tests, which deleted the read-only
+        // fixtures staged once into the app-external dir (e.g. the teapot OBJ/MTL/CAM
+        // under .../Android/data/puscas.mobilertapp/files/MobileRT). That wiped the
+        // inputs FileSystemTest/TextureTest/RayTracingTest depend on, and also nuked
+        // the on-device JaCoCo .ec file before AGP could pull it. The app persists
+        // nothing to disk between tests, so leaving data in place is safe.
+        // useTestStorageService is still enabled (API >= 16) so multi-process JaCoCo
+        // .ec output is routed through the AndroidX test storage service and AGP
+        // aggregates it across the per-test processes; requires the test-services
+        // APK wired in below. Gated to API >= 16 to match the test-services minSdk.
+        if (androidApiVersionValue >= 16) {
+            runnerArgs['useTestStorageService'] = 'true'
+        }
+        testInstrumentationRunnerArguments = runnerArgs
         setApplicationId 'puscas.mobilertapp'
         setVersionName '1.0'
         setVersionCode 1
@@ -387,7 +404,11 @@ android {
         debug {
             setDebuggable true
             setJniDebuggable true
-            setTestCoverageEnabled true
+            // Coverage on by default; callers can disable it for a single run via
+            // -DdisableTestCoverage=true (repeatable single-test job - coverage of
+            // one test is meaningless and only risks the createDebugAndroidTest-
+            // CoverageReport "no coverage data" failure).
+            setTestCoverageEnabled !disableTestCoverage
             setVersionNameSuffix 'd'
             setRenderscriptOptimLevel 0
             setMinifyEnabled false
@@ -451,6 +472,16 @@ android {
         unitTests.includeAndroidResources = true
         unitTests.returnDefaultValues = true
         setAnimationsDisabled true
+        // Run each instrumentation test in its own process via the Test
+        // Orchestrator: the app+test process is killed and respawned between
+        // tests, giving each test a clean in-memory state without needing a disk
+        // wipe (clearPackageData is intentionally off - see runnerArgs above).
+        // Guarded to API >= 16: the orchestrator/test-services APKs have a minSdk
+        // floor, so enabling it on API 15 would break that leg. Also backs the
+        // multi-process JaCoCo coverage routed via useTestStorageService.
+        if (androidApiVersionValue >= 16) {
+            execution = 'ANDROIDX_TEST_ORCHESTRATOR'
+        }
     }
 
     // Add resources directories to tests
@@ -516,7 +547,19 @@ configurations {
 tasks.register('jacocoTestReport', JacocoReport) {
     dependsOn = [
         'test' + systemTestType.capitalize() + 'UnitTest',
-        'connected' + systemTestType.capitalize() + 'AndroidTest',
+        // connectedXAndroidTest runs the instrumentation tests and writes the
+        // per-test JaCoCo .ec files on-device (routed through the test storage
+        // service when the Orchestrator is on). It does NOT pull them to the
+        // host. createXAndroidTestCoverageReport is the AGP task that pulls and
+        // aggregates the on-device coverage into
+        // build/outputs/code_coverage/<X>AndroidTest/connected/<device>/coverage.ec,
+        // which is the only path executionData (**/*coverage.ec) below can see.
+        // It already dependsOn connectedXAndroidTest, so depending on it pulls in
+        // the test run as well; without it this report finds no execution data and
+        // is silently SKIPPED (no html report generated). Coverage is debug-only
+        // (release sets testCoverageEnabled false) and jacocoTestReport only runs
+        // for the debug 'all' path, so systemTestType is always 'debug' here.
+        'create' + systemTestType.capitalize() + 'AndroidTestCoverageReport',
     ]
     reports {
         xml.getRequired().set(true)
@@ -551,9 +594,14 @@ tasks.register('jacocoTestReport', JacocoReport) {
     classDirectories.setFrom(allClasses)
 
     // Set execution data files to analyze.
+    // AGP 9 + AndroidX Test Orchestrator 1.6.x no longer emit a single
+    // `coverage.ec`; each test writes its own `<Class>#<method>.ec` under
+    // build/outputs/code_coverage/. Match every `.ec` so connected-test coverage
+    // is picked up (otherwise jacocoTestReport is SKIPPED via its onlyIf, the html
+    // dir is never created, and the downstream du check fails an otherwise-green run).
     executionData.setFrom(fileTree(
         dir: "${layout.buildDirectory.getAsFile().get().toString()}",
-        includes: ['**/test*UnitTest.exec', '**/*coverage.ec'],
+        includes: ['**/test*UnitTest.exec', '**/*.ec'],
     ))
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -593,6 +641,19 @@ dependencies {
     androidTestImplementation "androidx.test:core-ktx:${androidX_test_core_version}"
     androidTestImplementation "androidx.test.espresso:espresso-intents:${androidX_test_espresso_version}"
     androidTestImplementation "androidx.test.ext:junit:${androidX_test_junit_version}"
+    // Orchestrator + test-services APKs, installed onto the device by AGP for
+    // connectedAndroidTest. Only added for API >= 16: their APK minSdk floor
+    // makes the install fail (and break the leg) on API 15. Must stay in sync
+    // with the `execution 'ANDROIDX_TEST_ORCHESTRATOR'` guard in testOptions.
+    if (androidApiVersionValue >= 16) {
+        androidTestUtil "androidx.test:orchestrator:${androidX_test_orchestrator_version}"
+        // test-services provides the shared test storage content provider that
+        // backs useTestStorageService, so the per-test JaCoCo .ec files from the
+        // Orchestrator's separate processes are aggregated by AGP. Same API >= 16
+        // guard. (AGP also auto-installs this as a buddy APK when the Orchestrator
+        // is enabled; the explicit line pins the version.)
+        androidTestUtil "androidx.test.services:test-services:${androidX_test_services_version}"
+    }
 
     println('Enabling tracing for the instrumentation tests.')
     debugImplementation "androidx.test.espresso:espresso-core:${androidX_test_espresso_version}"
