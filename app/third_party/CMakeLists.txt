@@ -13,31 +13,40 @@ ProcessorCount( JOBS )
 ###############################################################################
 message( STATUS "Cloning third party repositories." )
 
-# These work via conan but not for all environments
-execute_process( COMMAND git clone https://github.com/g-truc/glm
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
+# Cloning needs the network and can fail transiently (e.g. DNS outage:
+# 'Could not resolve host: github.com'). Skip the clone when the directory
+# already has content (e.g. local checkouts with the submodules initialized),
+# retry it a few times otherwise, and stop the configure step loudly if the
+# content still did not materialize, instead of poisoning the build with
+# missing headers, which no retry of the build step can recover from.
+function( clone_third_party_repository dependency url )
+  foreach( attempt RANGE 1 3 )
+    file( GLOB DEPENDENCY_CONTENTS "${CMAKE_CURRENT_SOURCE_DIR}/${dependency}/*" )
+    if( DEPENDENCY_CONTENTS )
+      return()
+    endif()
+    if( attempt GREATER 1 )
+      message( STATUS "Retrying to clone '${dependency}' in 5 seconds (attempt ${attempt} of 3)." )
+      execute_process( COMMAND ${CMAKE_COMMAND} -E sleep 5 )
+    endif()
+    execute_process( COMMAND git clone ${url}
+      --shallow-submodules --jobs=${JOBS}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+  endforeach( attempt )
+  file( GLOB DEPENDENCY_CONTENTS "${CMAKE_CURRENT_SOURCE_DIR}/${dependency}/*" )
+  if( NOT DEPENDENCY_CONTENTS )
+    message( FATAL_ERROR "Third party dependency '${dependency}' was not cloned into '${CMAKE_CURRENT_SOURCE_DIR}/${dependency}' after 3 attempts. Check the network connection to github.com and retry." )
+  endif()
+endfunction( clone_third_party_repository )
 
-execute_process( COMMAND git clone https://github.com/nothings/stb
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
+# These work via conan but not for all environments.
+clone_third_party_repository( glm https://github.com/g-truc/glm )
+clone_third_party_repository( stb https://github.com/nothings/stb )
 
-
-execute_process( COMMAND git clone https://github.com/syoyo/tinyobjloader
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
-
-execute_process( COMMAND git clone https://github.com/google/googletest
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
-
-execute_process( COMMAND git clone https://github.com/boostorg/boost
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
-
-execute_process( COMMAND git clone https://github.com/imneme/pcg-cpp
-  --shallow-submodules --progress --jobs=${JOBS}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ERROR_QUIET )
+clone_third_party_repository( tinyobjloader https://github.com/syoyo/tinyobjloader )
+clone_third_party_repository( googletest https://github.com/google/googletest )
+clone_third_party_repository( boost https://github.com/boostorg/boost )
+clone_third_party_repository( pcg-cpp https://github.com/imneme/pcg-cpp )
 ###############################################################################
 ###############################################################################
 
@@ -179,13 +188,32 @@ target_include_directories( MobileRT SYSTEM PUBLIC ${CMAKE_INCLUDE_PATH} )
 message( STATUS "Adding C++ Boost dependencies." )
 set( BOOST_PATH "${CMAKE_CURRENT_SOURCE_DIR}/boost/libs" )
 
+# Initializing a C++ Boost submodule needs the network and can fail transiently
+# (e.g. DNS outage: 'Could not resolve host: github.com'). Retry it a few times
+# and fail the configure step loudly if the module headers still did not
+# materialize. Otherwise the build proceeds and fails later with confusing
+# 'boost/*.hpp file not found' errors that persist across build retries.
+function( checkout_boost_module submodule )
+  foreach( attempt RANGE 1 3 )
+    if( attempt GREATER 1 )
+      message( STATUS "Retrying to initialize C++ Boost module '${submodule}' in 5 seconds (attempt ${attempt} of 3)." )
+      execute_process( COMMAND ${CMAKE_COMMAND} -E sleep 5 )
+    endif()
+    execute_process( COMMAND git submodule update --init --rebase
+      ${BOOST_PATH}/${submodule}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
+    execute_process( COMMAND git checkout --progress -f ${BOOST_VERSION}
+      WORKING_DIRECTORY ${BOOST_PATH}/${submodule} )
+    if( IS_DIRECTORY "${BOOST_PATH}/${submodule}/include" )
+      return()
+    endif()
+  endforeach( attempt )
+  message( FATAL_ERROR "C++ Boost module '${submodule}' was not initialized in '${BOOST_PATH}/${submodule}' after 3 attempts. Check the network connection to github.com and retry." )
+endfunction( checkout_boost_module )
+
 message( STATUS "Updating and adding C++ Boost modules used." )
 foreach( submodule assert config core mpl preprocessor utility type_traits static_assert range iterator sort )
-  execute_process( COMMAND git submodule update --init --rebase
-    ${BOOST_PATH}/${submodule}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-  execute_process( COMMAND git checkout --progress -f ${BOOST_VERSION}
-    WORKING_DIRECTORY ${BOOST_PATH}/${submodule} )
+  checkout_boost_module( ${submodule} )
   target_include_directories( MobileRT SYSTEM PUBLIC "${BOOST_PATH}/${submodule}/include" )
   target_include_directories( MobileRT SYSTEM PUBLIC "${BOOST_PATH}/${submodule}/conversion/include" )
 endforeach( submodule )
@@ -193,11 +221,7 @@ endforeach( submodule )
 if( CMAKE_HOST_SYSTEM MATCHES "Linux" )
   message( STATUS "Updating and adding Linux only C++ Boost modules used." )
   foreach( submodule stacktrace predef container_hash )
-    execute_process( COMMAND git submodule update --init --rebase
-      ${BOOST_PATH}/${submodule}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/boost )
-    execute_process( COMMAND git checkout --progress -f ${BOOST_VERSION}
-      WORKING_DIRECTORY ${BOOST_PATH}/${submodule} )
+    checkout_boost_module( ${submodule} )
     target_include_directories( MobileRT SYSTEM PUBLIC "${BOOST_PATH}/${submodule}/include" )
   endforeach( submodule )
 endif()
