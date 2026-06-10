@@ -92,7 +92,7 @@ pullDockerImage() {
   echo "Creating '${NCPU_CORES}' processes to perform docker pull.";
   while [ "${i}" -le "${NCPU_CORES}" ]; do
     echo "Scheduling docker pull process: ${i}";
-    docker pull "${1}" | tee /tmp/fd3 &
+    docker pull "${1}" 2>&1 | tee /tmp/fd3 &
     i=$((i + 1));
   done
   echo 'jobs created:';
@@ -104,11 +104,13 @@ pullDockerImage() {
   exec 3>&-; # Close file descriptor 3.
   if echo "${output}" | grep -q 'up to date' || echo "${output}" | grep -q 'Downloaded newer image for'; then
     echo 'Docker image found!';
+    return 0;
   elif echo "${output}" | grep -q 'toomanyrequests' || echo "${output}" | grep -q 'reached your pull rate limit' || [ -z "${output}" ]; then
     echo 'Failed to pull the docker image.';
-    exit 1;
+    return 1;
   else
     echo 'Did not find the Docker image. Will have to build the image.';
+    return 1;
   fi
 }
 
