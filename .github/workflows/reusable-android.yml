@@ -109,18 +109,13 @@ jobs:
         if: success()
         run: |
           if [ "${{ inputs.android_api }}" -ge 21 ]; then
-            echo "NDK_VERSION=29.0.14206865" >> "${GITHUB_ENV}";
             echo "NDK_VERSION=29.0.14206865" >> "${GITHUB_OUTPUT}";
           elif [ "${{ inputs.android_api }}" -ge 19 ]; then
-            echo "NDK_VERSION=25.2.9519653" >> "${GITHUB_ENV}";
             echo "NDK_VERSION=25.2.9519653" >> "${GITHUB_OUTPUT}";
           else
-            echo "NDK_VERSION=23.2.8568313" >> "${GITHUB_ENV}";
             echo "NDK_VERSION=23.2.8568313" >> "${GITHUB_OUTPUT}";
           fi
-          echo "ANDROID_CMAKE_VERSION=4.0.2" >> "${GITHUB_ENV}";
           echo "ANDROID_CMAKE_VERSION=4.0.2" >> "${GITHUB_OUTPUT}";
-          echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_ENV}";
           echo "ANDROID_HOME=${ANDROID_HOME}" >> "${GITHUB_OUTPUT}";
 
       - name: Install Android SDK
@@ -239,20 +234,20 @@ jobs:
         if: success()
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
-          path: ${{ env.ANDROID_HOME }}/cmake/${{ env.ANDROID_CMAKE_VERSION }}
-          key: android-${{ inputs.android_api }}-cmake-${{ env.ANDROID_CMAKE_VERSION }}
+          path: ${{ steps.android_versions.outputs.ANDROID_HOME }}/cmake/${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
+          key: android-${{ inputs.android_api }}-cmake-${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
 
       - name: Download Android CMake
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && !startsWith(inputs.build_os, 'windows')
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;${{ env.ANDROID_CMAKE_VERSION }}';
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${{ steps.android_versions.outputs.ANDROID_HOME }}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}';
 
       - name: Download Android CMake Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && startsWith(inputs.build_os, 'windows')
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;${{ env.ANDROID_CMAKE_VERSION }}';
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${{ steps.android_versions.outputs.ANDROID_HOME }}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}';
 
       - name: Cache Android NDK
         id: ndk-cache
@@ -260,28 +255,28 @@ jobs:
         if: success()
         uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
-          path: ${{ env.ANDROID_HOME }}/ndk/${{ env.NDK_VERSION }}
-          key: android-${{ inputs.android_api }}-ndk-${{ env.NDK_VERSION }}
+          path: ${{ steps.android_versions.outputs.ANDROID_HOME }}/ndk/${{ steps.android_versions.outputs.NDK_VERSION }}
+          key: android-${{ inputs.android_api }}-ndk-${{ steps.android_versions.outputs.NDK_VERSION }}
 
       - name: Download NDK
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && steps.ndk-cache.outputs.cache-hit != 'true' && !startsWith(inputs.build_os, 'windows')
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.NDK_VERSION }}";
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${{ steps.android_versions.outputs.ANDROID_HOME }}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ steps.android_versions.outputs.NDK_VERSION }}";
 
       - name: Download NDK Windows
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && steps.ndk-cache.outputs.cache-hit != 'true' && startsWith(inputs.build_os, 'windows')
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install "ndk;${{ env.NDK_VERSION }}";
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${{ steps.android_versions.outputs.ANDROID_HOME }}/cmdline-tools/latest/bin/sdkmanager.bat --install "ndk;${{ steps.android_versions.outputs.NDK_VERSION }}";
 
       - name: Save Android NDK to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success() && steps.ndk-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
-          path: ${{ env.ANDROID_HOME }}/ndk/${{ env.NDK_VERSION }}
-          key: android-${{ inputs.android_api }}-ndk-${{ env.NDK_VERSION }}
+          path: ${{ steps.android_versions.outputs.ANDROID_HOME }}/ndk/${{ steps.android_versions.outputs.NDK_VERSION }}
+          key: android-${{ inputs.android_api }}-ndk-${{ steps.android_versions.outputs.NDK_VERSION }}
           upload-chunk-size: 536870912
 
       - name: Setup ccache for Android C++ builds
@@ -328,7 +323,7 @@ jobs:
           ANDROID_KEY_ALIAS_DEBUG: ${{ secrets.ANDROID_KEY_ALIAS_DEBUG }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
-          ls -lahp ${ANDROID_HOME}/ndk/${{ env.NDK_VERSION }};
+          ls -lahp ${{ steps.android_versions.outputs.ANDROID_HOME }}/ndk/${{ steps.android_versions.outputs.NDK_VERSION }};
           echo "${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}" | base64 -d > app/MobileRT.jks;
           echo "android_arch: ${{ env.android_arch }}";
           sh scripts/compile_android.sh -t ${{ inputs.type }} -r yes -a ${{ inputs.android_api }} -f ${{ env.android_arch }};
@@ -896,7 +891,21 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
-          echo 'Deleting JSON files from build cache to allow execute Android tests in a different host OS';
+          # Delete the native build model JSONs unconditionally to force AGP to
+          # re-run the CMake configure step. The kept JSONs record buildFiles
+          # under app/third_party, which this job's workspace does not have
+          # (the compiled artifact ships no third party sources and the checkout
+          # has no submodules). AGP 8.2.2 (the API 15 tier) then treats the JSONs
+          # as up-to-date, skips the reconfigure and hard-fails validating those
+          # buildFiles with '[CXX1409] expected buildFiles file ... to exist';
+          # AGP 9 legs reconfigure regardless (Task.upToDateWhen is false), so
+          # keeping the JSONs saves nothing anywhere. The reconfigure clones the
+          # third party dependencies from the network mid-job, which is safe now:
+          # app/third_party/CMakeLists.txt retries the clones and fails the
+          # configure step loudly on e.g. a transient DNS blip ('Could not
+          # resolve host: github.com'), leaving no JSON behind, so a retry of the
+          # step re-runs the configure cleanly.
+          echo 'Deleting native build model JSON files to force the CMake configure step';
           find app/.cxx/ -iname "*.json" -delete;
           find app/build/ -iname "*.class";
           # shellcheck disable=SC1091
@@ -1699,6 +1708,48 @@ jobs:
         if: success()
         run: |
           echo 'android_arch=\"armeabi-v7a\",\"arm64-v8a\",\"x86\",\"x86_64\"' >> "${GITHUB_ENV}";
+
+      - name: Cache Android CMake
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          path: ${{ env.ANDROID_HOME }}/cmake/${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
+          key: android-${{ inputs.android_api }}-cmake-${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
+
+      - name: Download Android CMake
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && !startsWith(inputs.target_os, 'windows')
+        run: |
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install 'cmake;${{ needs.Build.outputs.cmake_version }}';
+
+      - name: Download Android CMake Windows
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && startsWith(inputs.target_os, 'windows')
+        run: |
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install 'cmake;${{ needs.Build.outputs.cmake_version }}';
+
+      - name: Download Android NDK from cache
+        id: ndk-cache
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success()
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+        with:
+          key: android-${{ inputs.android_api }}-ndk-${{ needs.Build.outputs.ndk_version }}
+          enableCrossOsArchive: true
+          path: ${{ env.ANDROID_HOME }}/ndk/${{ needs.Build.outputs.ndk_version }}
+
+      - name: Download NDK
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && steps.ndk-cache.outputs.cache-hit != 'true' && !startsWith(inputs.target_os, 'windows')
+        run: |
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ needs.Build.outputs.ndk_version }}";
+
+      - name: Download NDK Windows
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && steps.ndk-cache.outputs.cache-hit != 'true' && startsWith(inputs.target_os, 'windows')
+        run: |
+          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager.bat --install "ndk;${{ needs.Build.outputs.ndk_version }}";
 
       - name: Download Android dependencies
         timeout-minutes: 8
