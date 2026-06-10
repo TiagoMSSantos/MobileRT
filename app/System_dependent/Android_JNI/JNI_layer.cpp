@@ -482,6 +482,17 @@ void Java_puscas_mobilertapp_DrawView_rtStopRender(
         }
         LOG_DEBUG("Renderer finished");
     }
+    // Join the render thread (outside the mutex_ scope, since the render thread's
+    // tail locks mutex_ before it detaches). This guarantees the render thread has
+    // fully exited - and called DetachCurrentThread - before teardown lets the
+    // Dalvik/ART VM shut down. Without this, a render thread can still be attaching
+    // or detaching while the VM tears down, overflowing the Dalvik interpreter
+    // stack inside AttachCurrentThread (dvmAbort -> SIGSEGV at 0xdeadd00d).
+    if (wait && thread_ != nullptr && thread_->joinable()) {
+        LOG_INFO("Joining render thread");
+        thread_->join();
+        LOG_INFO("Render thread joined");
+    }
     env->ExceptionClear();
     LOG_DEBUG("rtStopRender finished");
     MobileRT::checkSystemError("rtStopRender finish");
