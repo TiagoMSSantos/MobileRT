@@ -283,12 +283,11 @@ jobs:
         # change must rotate the cache - otherwise a stale AVD is restored
         # against a freshly-installed image and the emulator dies on
         # "Broken AVD system path". All APIs use the AOSP `default` image (see
-        # the `target:` inputs below). The -v2 suffix also rotates the cache
-        # after the RAM bump (a 4096 snapshot fails to load at the new size).
+        # the `target:` inputs below).
         path: |
           ~/.android/avd/*
           ~/.android/adb*
-        key: avd-${{ matrix.android_api }}-default-${{ env.android_emulator_arch }}-${{ runner.os }}-v2
+        key: avd-os_${{ runner.os }}-api_${{ matrix.android_api }}-arch_${{ env.android_emulator_arch }}-cores_${{ env.ANDROID_EMULATOR_CPU_CORES }}-mem_${{ env.ANDROID_EMULATOR_MEM_MB }}-img_default
 
     - name: Install adb timeout-shim
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -499,7 +498,7 @@ jobs:
         echo 'Print Android tombstone logs:';
         cat app/build/reports/tombstones/*;
         echo 'Print Android ART thread dump:';
-        cat app/build/reports/traces.txt;
+        cat app/build/reports/trace*;
         echo 'Print device memory snapshot (/proc/meminfo):';
         cat app/build/reports/proc_meminfo_*.log;
         echo 'Print device dumpsys meminfo:';

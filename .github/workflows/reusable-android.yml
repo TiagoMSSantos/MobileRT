@@ -1056,12 +1056,11 @@ jobs:
           # change must rotate the cache - otherwise a stale AVD is restored
           # against a freshly-installed image and the emulator dies on
           # "Broken AVD system path". All APIs use the AOSP `default` image (see
-          # the `target:` inputs below). The -v2 suffix also rotates the cache
-          # after the RAM bump (a 4096 snapshot fails to load at the new size).
+          # the `target:` inputs below).
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-${{ inputs.android_api_device }}-default-${{ env.android_emulator_arch }}-${{ runner.os }}-v2
+          key: avd-os_${{ runner.os }}-api_${{ inputs.android_api }}-arch_${{ env.android_emulator_arch }}-cores_${{ env.ANDROID_EMULATOR_CPU_CORES }}-mem_${{ env.ANDROID_EMULATOR_MEM_MB }}-img_default
 
       - name: Install adb timeout-shim
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -1182,6 +1181,29 @@ jobs:
             emulator-boot-timeout: ${{ env.EMULATOR_BOOT_TIMEOUT }}
             script: |
               echo "Generated AVD snapshot for caching.";
+              # Validate that core system services are published BEFORE the
+              # emulator quits and saves the snapshot that actions/cache will
+              # store. Run 27307810672 (API 30) restored a cached snapshot
+              # whose guest had system_server's 'input' service unregistered,
+              # so the emulator-runner's own post-boot unlock
+              # ('input keyevent 82') failed with ServiceNotFoundException on
+              # EVERY restore - deterministically, because the bad state was
+              # baked into the cached image and the test step's wretry just
+              # replayed it 3x. Failing this script keeps such a snapshot out
+              # of the cache: wretry retries the whole step on a fresh boot,
+              # and if all attempts fail the job fails, so the actions/cache
+              # post step (which only saves on job success) never stores it.
+              # Poll briefly per service - registration can trail
+              # sys.boot_completed on a slow software-rendered guest.
+              # 'input' only exists in servicemanager since API 16
+              # (InputManagerService); on older guests the 'input' shell
+              # command injects via IWindowManager instead, so there is no
+              # poison risk and checking it would always fail (run
+              # 27331699222 killed the API 15 leg this way).
+              # MUST be a single line: the emulator-runner executes each script
+              # line as its own `sh -c` (run 27325686075: the multi-line loop
+              # died with "Syntax error: end of file unexpected" on every leg).
+              for service in ${{ inputs.android_api_device >= 16 && 'input window activity package' || 'window activity package' }}; do tries=0; until timeout 60 adb shell service check "${service}" 2> /dev/null | grep -q ": found"; do tries=$((tries + 1)); if [ "${tries}" -ge 12 ]; then echo "Service '${service}' still not published after $((tries * 5))s; failing so this snapshot is NOT cached."; exit 1; fi; sleep 5; done; echo "Service '${service}' is published."; done
               # Bounded teardown watchdog. This step omits -no-snapshot-save, so
               # android-emulator-runner saves the snapshot on quit and then blocks
               # until the qemu process exits. Under -no-window -gpu
@@ -1193,7 +1215,19 @@ jobs:
               # force-reaps a wedged qemu after 180s; the action's post-script
               # wait then returns and wretry can retry, instead of one hang
               # eating the whole budget.
-              nohup sh -c 'sleep 180; if pgrep -f qemu-system >/dev/null 2>&1; then echo "Watchdog: qemu wedged after snapshot save; force-reaping."; pkill -9 -f qemu-system || true; fi' >/dev/null 2>&1 &
+              # The kill MUST be scoped to the PID of the qemu alive right now.
+              # A pattern kill (pkill -f qemu-system) outlives this step and
+              # murdered the TEST step's fresh emulator exactly 180s after spawn
+              # on every AVD-cache-miss leg (run 27266459682: watchdog spawned
+              # 09:41:29 -> test emulator dead 09:44:29 -> gradle "No connected
+              # devices!", wasting wretry attempt 1); the -f pattern also matched
+              # the watchdog's own sh cmdline, so it fired unconditionally.
+              # kill -0 checks only this exact PID: already exited = healthy
+              # save = no-op; still alive = wedged save = reap it.
+              # Single line: each script line runs in its OWN `sh -c`, so a
+              # variable assigned on one line is empty on the next (the old
+              # two-line form spawned the watchdog with an empty PID = no-op).
+              qemu_pid="$(pgrep -o -f qemu-system || true)"; nohup sh -c 'sleep 180; if [ -n "$1" ] && kill -0 "$1" 2>/dev/null; then echo "Watchdog: qemu (pid $1) wedged after snapshot save; force-reaping."; kill -9 "$1" 2>/dev/null || true; fi' watchdog "${qemu_pid}" >/dev/null 2>&1 &
 
       - name: Run Android tests
         timeout-minutes: ${{ case(startsWith(inputs.target_os, 'ubuntu') && inputs.type == 'release', 20, startsWith(inputs.target_os, 'ubuntu') && inputs.type == 'debug', 40, 50) }}
@@ -1276,16 +1310,64 @@ jobs:
               rm app/MobileRT.jks;
 
       - name: Print error logs
-        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        # MEDIUM (not SMALL): the post-mortem below may pay a gdb attach
+        # (bounded 120s) plus several bounded adb calls before the prints.
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: failure()
         run: |
           ls -lahp .;
           set +e;
+          # Host-side emulator forensics FIRST, before any teardown. When the
+          # guest wedges mid-run the step timeout SIGKILLs the test script
+          # before its EXIT trap can run gather_logs_func, so none of the
+          # device-side report files printed below exist and the orphan qemu
+          # process is the only evidence left (run 27266459682: every cat
+          # below said "No such file or directory" while the runner reaped a
+          # still-alive qemu at job end, state never examined). None of this
+          # needs adb; /proc and gdb are Linux-only and degrade silently on
+          # macOS.
+          echo 'Host-side qemu process state:';
+          ps aux | grep -i 'qemu-system' | grep -v 'grep';
+          qemu_pid="$(pgrep -o -f qemu-system)";
+          if [ -n "${qemu_pid}" ]; then
+            echo "qemu still alive (pid ${qemu_pid}); dumping host-side state before the runner reaps it.";
+            cat "/proc/${qemu_pid}/status" 2> /dev/null;
+            echo 'Kernel stacks of all qemu threads (where each thread is blocked):';
+            sudo sh -c "cat /proc/${qemu_pid}/task/*/stack" 2> /dev/null;
+            if command -v gdb > /dev/null 2>&1; then
+              echo 'gdb backtrace of all qemu threads:';
+              timeout 120 sudo gdb -p "${qemu_pid}" -batch -ex 'thread apply all bt' 2>&1 | tail -n 300;
+            fi
+          else
+            echo 'No qemu process alive.';
+          fi
+          # Second chance at the device-side post-mortem the test script could
+          # not take: restart adb and, only if the device still answers,
+          # capture the same diagnostics gather_logs_func would have produced.
+          # The *_postmortem files match the globs printed below and the
+          # problems-report artifact upload.
+          timeout 30 adb kill-server;
+          timeout 30 adb start-server;
+          if timeout 15 adb shell echo postmortem-ping > /dev/null 2>&1; then
+            echo 'Device responsive; capturing post-mortem diagnostics.';
+            mkdir -p app/build/reports;
+            timeout 30 adb root;
+            timeout 30 adb shell cat /proc/meminfo > app/build/reports/proc_meminfo_postmortem.log 2>&1;
+            timeout 30 adb shell dumpsys meminfo > app/build/reports/dumpsys_meminfo_postmortem.log 2>&1;
+            timeout 30 adb shell dmesg > app/build/reports/dmesg_postmortem.log 2>&1;
+            timeout 60 adb logcat -d > app/build/reports/logcat_dump_postmortem.log 2>&1;
+            timeout 60 adb pull /data/tombstones app/build/reports 2> /dev/null;
+            # API >= 28 writes ART thread dumps to /data/anr/trace_XX, older APIs
+            # to /data/anr/traces.txt; pull the whole directory to cover both.
+            timeout 60 adb pull /data/anr app/build/reports 2> /dev/null;
+          else
+            echo 'Device unresponsive; device-side post-mortem unavailable.';
+          fi
           ls -lahp app/build/reports/tombstones;
           echo 'Print Android tombstone logs:';
           cat app/build/reports/tombstones/*;
           echo 'Print Android ART thread dump:';
-          cat app/build/reports/traces.txt;
+          cat app/build/reports/anr/* app/build/reports/trace*;
           echo 'Print device memory snapshot (/proc/meminfo):';
           cat app/build/reports/proc_meminfo_*.log;
           echo 'Print device dumpsys meminfo:';

@@ -78,6 +78,9 @@ printEnvironment() {
 ###############################################################################
 echo 'Set path to reports';
 reports_path='app/build/reports';
+# Written by the liveness watchdog when it reaps a wedged emulator; makes the
+# in-script test retry fail fast instead of boot-waiting on a dead device.
+liveness_marker="${reports_path}/.liveness_watchdog_killed_emulator";
 
 echo 'Set path to instrumentation tests resources';
 internal_storage_path='/data/local/tmp/MobileRT';
@@ -212,9 +215,14 @@ gather_anr_func() {
     done
     sleep 2; # Give ART time to write the dump to logcat and traces.txt.
     timeout 60 adb shell 'dumpsys activity activities' > "${reports_path}"/dumpsys_activity_"${type}".log 2>&1 || true;
-    timeout 60 adb pull /data/anr/traces.txt "${reports_path}" 2> /dev/null || echo 'No ANR traces.txt to pull.';
-    echo '----- ANR / thread dump (/data/anr/traces.txt) -----';
-    cat "${reports_path}"/traces.txt 2> /dev/null || true;
+    # API >= 28 writes the dump to /data/anr/trace_XX (tombstoned), older APIs to
+    # /data/anr/traces.txt. Pull the whole directory (root needed on most emulators;
+    # harmless no-op where unsupported) so the dump is not lost to the wrong filename.
+    timeout 60 adb root > /dev/null 2>&1 || true;
+    timeout 60 adb wait-for-device > /dev/null 2>&1 || true; # adb root restarts adbd.
+    timeout 60 adb pull /data/anr "${reports_path}" 2> /dev/null || echo 'No ANR traces to pull.';
+    echo '----- ANR / thread dump (/data/anr) -----';
+    cat "${reports_path}"/anr/* "${reports_path}"/traces.txt 2> /dev/null || true;
     echo '----- end ANR / thread dump -----';
   fi
   set -e;
@@ -235,11 +243,79 @@ clear_func() {
   kill_adb_processes;
 }
 
+# Host-side device liveness watchdog for the instrumentation run.
+#
+# A headless swiftshader guest can hard-freeze MID-RUN (run 27266459682: all
+# guest output stopped right after "Tests 25/32 completed"; qemu stayed alive
+# but the guest never answered adb again). Gradle's connectedAndroidTest has
+# no device-liveness detection, so it dead-waits on the ddmlib socket until
+# the workflow step timeout SIGKILLs the job - burning the remaining ~20min
+# budget, starving wretry of its last attempt AND skipping this script's EXIT
+# trap (SIGKILL), so no post-mortem logs survive. This watchdog pings the
+# device while gradle runs; after 4 consecutive failed pings (~2-3min
+# unresponsive) it kills the emulator process, which makes adb report the
+# device gone and gradle fail within seconds - converting an unbounded hang
+# into a fast, retryable failure with a normal trap-driven post-mortem.
+# Emulator-only: never started when the device is real hardware.
+startDeviceLivenessWatchdog() {
+  # Remove a stale marker from a previous attempt (wretry reuses the
+  # workspace); a leftover marker would instantly fail the next fresh run.
+  rm -f "${liveness_marker}";
+  if ! timeout 10 adb devices 2> /dev/null | grep -q '^emulator-'; then
+    echo 'Liveness watchdog: no emulator device detected; watchdog not started.';
+    return 0;
+  fi
+  liveness_qemu_pid="$(pgrep -o -f qemu-system 2> /dev/null || true)";
+  (
+    consecutiveFails=0;
+    checks=0;
+    # Cap the loop (80 * 30s = 40min) so an orphaned watchdog always dies.
+    while [ "${checks}" -lt 80 ]; do
+      sleep 30;
+      checks=$((checks + 1));
+      if timeout 15 adb shell echo liveness-ping > /dev/null 2>&1; then
+        consecutiveFails=0;
+      else
+        consecutiveFails=$((consecutiveFails + 1));
+        echo "Liveness watchdog: adb ping failed (${consecutiveFails}/4 consecutive).";
+        if [ "${consecutiveFails}" -ge 4 ]; then
+          echo "Liveness watchdog: device unresponsive for ~2min; killing emulator (qemu pid: '${liveness_qemu_pid}') so gradle fails fast instead of dead-waiting until the step timeout.";
+          # Marker tells the in-script retry of _executeAndroidTests to bail
+          # out immediately: its boot-wait helpers retry adb ~70x and would
+          # otherwise grind ~10min against a dead device before failing.
+          mkdir -p "$(dirname "${liveness_marker}")" 2> /dev/null;
+          touch "${liveness_marker}" 2> /dev/null;
+          if [ -n "${liveness_qemu_pid}" ]; then
+            kill -9 "${liveness_qemu_pid}" 2> /dev/null || true;
+          fi
+          break;
+        fi
+      fi
+    done
+  ) &
+  pid_liveness_watchdog="$!";
+  echo "Liveness watchdog started (pid: '${pid_liveness_watchdog}', qemu pid: '${liveness_qemu_pid}').";
+}
+
+stopDeviceLivenessWatchdog() {
+  set +u; # Variable is unset when the watchdog was never started.
+  if [ -n "${pid_liveness_watchdog}" ]; then
+    echo "Stopping liveness watchdog (pid: '${pid_liveness_watchdog}').";
+    kill "${pid_liveness_watchdog}" 2> /dev/null || true;
+    pid_liveness_watchdog='';
+  fi
+  set -u;
+}
+
 catch_signal() {
   catch_exit_code="${1:-0}";
   echo "Caught signal (exit code: ${catch_exit_code})";
   trap - EXIT HUP INT QUIT ILL TRAP ABRT TERM; # Disable traps first, to avoid infinite loop.
 
+  # Stop the liveness watchdog FIRST: the post-mortem below issues slow adb
+  # calls on a possibly-degraded device, and the watchdog must not kill qemu
+  # in the middle of that capture.
+  stopDeviceLivenessWatchdog;
   gather_anr_func; # Dump the wedged app's threads before clear_func kills it.
   clear_func;
   gather_logs_func "${catch_exit_code}";
@@ -858,6 +934,7 @@ runInstrumentationTests() {
 
   callAdbShellCommandUntilSuccess 'am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS';
 
+  startDeviceLivenessWatchdog;
   if [ "${run_test}" = 'all' ]; then
     echo 'Running all tests';
     mkdir -p app/build/reports/jacoco/jacocoTestReport;
@@ -885,11 +962,16 @@ runInstrumentationTests() {
   fi
   resInstrumentationTests=${?};
   pid_instrumentation_tests="$!";
+  stopDeviceLivenessWatchdog;
   echo 'Android test(s) executed!';
   echo "pid of instrumentation tests: '${pid_instrumentation_tests}'";
 }
 
 _executeAndroidTests() {
+  if [ -f "${liveness_marker}" ]; then
+    echo 'Liveness watchdog killed the emulator; failing this attempt immediately (a fresh emulator needs a workflow-level retry).';
+    return 1;
+  fi
   unlockDevice;
 
   # Start every iteration from a clean app state. The repeatable workflow
