@@ -1,127 +1,50 @@
 package puscas.mobilertapp;
 
-import android.opengl.GLSurfaceView;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.TextView;
+import com.google.common.util.concurrent.Uninterruptibles;
 
-import androidx.annotation.Nullable;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.matcher.ViewMatchers;
-
-import org.hamcrest.Matcher;
-
-import java.util.Objects;
-import java.util.logging.Logger;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Auxiliary class which represents a {@link ViewAction} that will just wait for some time.
- * <p>
- * This class doesn't need a {@link Logger} because the method {@link ViewActionWait#getDescription()}
- * is already automatically called for logging purposes.
+ * Auxiliary class with the focus-free waits used by the instrumentation tests.
  */
-public final class ViewActionWait<T extends TextView> implements ViewAction {
+public final class ViewActionWait {
 
     /**
-     * The time to wait in milliseconds.
+     * Private constructor to avoid creating instances.
      */
-    private final int delayMillis;
+    private ViewActionWait() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 
     /**
-    * The ID of the {@link View} element.
-    */
-    private final int viewId;
-
-    /**
-    * The expected value from the {@link View} element.
-    */
-    @Nullable
-    private final Object expectedValue;
-
-    /**
-     * Constructor.
+     * Settles the app: an optional test-thread sleep + one bounded main-thread round-trip,
+     * focus-free (see {@link DirectInteraction}); the headless emulator grants no window focus
+     * for Espresso's RootViewPicker.
      *
-     * @param delayMillis Time to wait in milliseconds.
-     * @param viewId      The {@link View} element ID.
-     */
-    public ViewActionWait(final int delayMillis, final int viewId) {
-        this(delayMillis, viewId, null);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param delayMillis   Time to wait in milliseconds.
-     * @param viewId        The {@link View} element ID.
-     * @param expectedValue The expected value from the {@link View} element.
-     */
-    public ViewActionWait(final int delayMillis, final int viewId, @Nullable final Object expectedValue) {
-        this.delayMillis = delayMillis;
-        this.viewId = viewId;
-        this.expectedValue = expectedValue;
-    }
-
-    @Override
-    public Matcher<View> getConstraints() {
-        return ViewMatchers.isAssignableFrom(View.class);
-    }
-
-    @Override
-    public String getDescription() {
-        return "Wait view (" + this.viewId + ") for " + this.delayMillis + " milliseconds";
-    }
-
-    @Override
-    public void perform(final UiController uiController, final View view) {
-        Object value = null;
-        if (this.delayMillis == 0) {
-            do {
-                uiController.loopMainThreadUntilIdle();
-                if (this.viewId == R.id.preview) {
-                    final CheckBox checkbox = view.findViewById(this.viewId);
-                    value = checkbox.isChecked();
-                }
-            } while (this.expectedValue != null && !Objects.equals(value, this.expectedValue));
-        } else {
-            final long endInstantMs = System.currentTimeMillis() + this.delayMillis;
-            do {
-                uiController.loopMainThreadForAtLeast(this.delayMillis);
-                if (this.viewId == R.id.preview) {
-                    final CheckBox checkbox = view.findViewById(this.viewId);
-                    value = checkbox.isChecked();
-                }
-            } while (this.expectedValue != null && !Objects.equals(value, this.expectedValue) && System.currentTimeMillis() < endInstantMs);
-        }
-    }
-
-    /**
-     * Let MobileRT continue processing for some time, or to become idle in case {@code 0} milliseconds
-     * is provided.
-     *
-     * @param delayMillis The time to wait in milliseconds. If {@code 0}, then it waits for the app
-     *                    to become idle.
-     * @implNote This method awaits for render {@link Button} to become idle.
+     * @param delayMillis The time to wait in milliseconds; {@code 0} just settles.
      */
     public static void waitForButtonUpdate(final int delayMillis) {
-        final int viewId = R.id.renderButton;
-        Espresso.onView(ViewMatchers.withId(viewId))
-            .perform(new ViewActionWait<>(delayMillis, viewId, null));
+        settle(delayMillis);
     }
 
     /**
-     * Let MobileRT continue processing for some time, or to become idle in case {@code 0} milliseconds
-     * is provided.
+     * Alias of {@link #waitForButtonUpdate(int)} kept for call-site readability.
      *
-     * @param delayMillis The time to wait in milliseconds. If {@code 0}, then it waits for the app
-     *                    to become idle.
-     * @implNote This method awaits for {@link GLSurfaceView} to become idle.
+     * @param delayMillis The time to wait in milliseconds; {@code 0} just settles.
      */
     public static void waitForBitmapUpdate(final int delayMillis) {
-        final int viewId = R.id.drawLayout;
-        Espresso.onView(ViewMatchers.withId(viewId))
-            .perform(new ViewActionWait<>(delayMillis, viewId, null));
+        settle(delayMillis);
+    }
+
+    /**
+     * Optional test-thread sleep, then one bounded main-thread round-trip.
+     *
+     * @param delayMillis The time to sleep in milliseconds before the round-trip; {@code 0} skips it.
+     */
+    private static void settle(final int delayMillis) {
+        if (delayMillis > 0) {
+            Uninterruptibles.sleepUninterruptibly(delayMillis, TimeUnit.MILLISECONDS);
+        }
+        DirectInteraction.settle();
     }
 }

@@ -759,14 +759,19 @@ void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
 
     {
         const ::std::lock_guard<::std::mutex> lock {mutex_};
-        state_ = State::FINISHED;
-        LOG_DEBUG("STATE = FINISHED");
         if (renderer_ != nullptr) {
             LOG_DEBUG("RENDERER STOP");
             renderer_->stopRender();
         }
-        state_ = State::IDLE;
-        LOG_DEBUG("STATE = IDLE");
+        // Preserve a completed render's FINISHED state so a slow observer (test/UI) can
+        // still see that a render happened; only reset to IDLE when no render completed
+        // (render-start failed, or it was stopped). This makes "rendered-and-done"
+        // (FINISHED) distinguishable from "never-started" (IDLE): otherwise both collapse
+        // to IDLE and a coarse poller that missed the transient BUSY cannot tell them apart.
+        if (state_ != State::FINISHED) {
+            state_ = State::IDLE;
+            LOG_DEBUG("STATE = IDLE");
+        }
         fps_ = 0.0F;
         timeRenderer_ = 0;
         finishedRendering_ = true;
@@ -873,7 +878,10 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
                 LOG_INFO("Casted rays = ", castedRays);
                 LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1'000'000L);
 
-                state_ = State::IDLE;
+                // Leave the state at FINISHED (set above): the render completed, so a slow
+                // test/UI observer must be able to see FINISHED. rtFinishRender (run after
+                // every render via RenderTask#onPostExecute) preserves FINISHED and only the
+                // failure/stop paths fall back to IDLE.
                 LOG_DEBUG("rtRenderIntoBitmap finished");
             }
         };
@@ -899,17 +907,29 @@ void Java_puscas_mobilertapp_MainRenderer_rtRenderIntoBitmap(
     }
 }
 
-extern "C"
-::std::int32_t Java_puscas_mobilertapp_RenderTask_rtGetState(
-    JNIEnv *env,
-    jobject /*thiz*/
-) {
+static ::std::int32_t getState(JNIEnv *const env) {
     errno = 0;
 
     const ::std::int32_t res {static_cast<::std::int32_t> (state_.load())};
     env->ExceptionClear();
     MobileRT::checkSystemError("rtGetState finish");
     return res;
+}
+
+extern "C"
+::std::int32_t Java_puscas_mobilertapp_RenderTask_rtGetState(
+    JNIEnv *env,
+    jobject /*thiz*/
+) {
+    return getState(env);
+}
+
+extern "C"
+::std::int32_t Java_puscas_mobilertapp_MainRenderer_rtGetState(
+    JNIEnv *env,
+    jobject /*thiz*/
+) {
+    return getState(env);
 }
 
 extern "C"

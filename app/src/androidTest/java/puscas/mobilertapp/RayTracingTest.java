@@ -62,7 +62,7 @@ public final class RayTracingTest extends AbstractTest {
 
         assertRenderScene(Scene.OBJ, Shader.WHITTED, Accelerator.NAIVE, 1, 1, true, true);
         logger.info("testNotSelectingScene asserted");
-        Intents.intended(IntentMatchers.filterEquals(expectedIntent));
+        assertIntentFiredOnce(IntentMatchers.filterEquals(expectedIntent));
         logger.info("testNotSelectingScene finished");
     }
 

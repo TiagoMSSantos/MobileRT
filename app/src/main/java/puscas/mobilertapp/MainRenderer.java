@@ -416,7 +416,7 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
 
         return Optional.ofNullable(this.renderTask)
             .map(task -> State.values()[task.rtGetState()])
-            .orElse(State.IDLE);
+            .orElseGet(() -> State.values()[rtGetState()]);
     }
 
     /**
@@ -453,6 +453,14 @@ public final class MainRenderer implements GLSurfaceView.Renderer {
         this.configRenderTask.setSamples(configSamples);
         this.configRenderTask.setNumLights(numLights);
     }
+
+    /**
+     * Reads the current native engine {@link State} directly from the global
+     * atomic, independent of whether a {@link RenderTask} exists yet. Used as
+     * the fallback in {@link #getState()} so the BUSY state set at render start
+     * is observable during the synchronous scene-load (before renderTask is set).
+     */
+    native int rtGetState();
 
     /**
      * Stops the Ray Tracer engine and updates its {@link State} to

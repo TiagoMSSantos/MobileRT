@@ -102,6 +102,38 @@ typeWithCapitalLetter=$(capitalizeFirstletter "${type}");
 ###############################################################################
 # Helper functions.
 ###############################################################################
+# Name the crashed process from the tombstone DEBUG header (">>> <name> <<<") so a
+# native crash is attributable from the job log: a MobileRT crash is a real bug; an
+# emulator system command (input/pm/am app_process) crashing is the known API <= 18
+# Dalvik deadd00d defect where only a retry helps. Best-effort, never fatal.
+# "VM exiting with result code" excludes code 0 (a normal VM exit) to avoid a false
+# native-crash verdict on a run that actually died of an emulator kill.
+analyze_native_crashes_func() {
+  set +e;
+  anc_signatures=$(cat "${reports_path}"/logcat_"${type}".log "${reports_path}"/logcat_dump_"${type}".log 2> /dev/null \
+    | grep -aE "Fatal signal [0-9]+|double-overflow of stack|stack overflow on call|VM exiting with result code -?[1-9]|deadd00d" \
+    | awk '!seen[$0]++' | tail -n 40);
+  if [ -z "${anc_signatures}" ]; then
+    echo 'No native crash signatures found in logcat.';
+  else
+    echo '----- native crash signatures (deduplicated) -----';
+    echo "${anc_signatures}";
+    echo '----- crashed process identification (tombstone headers from logcat) -----';
+    anc_headers=$(cat "${reports_path}"/logcat_"${type}".log "${reports_path}"/logcat_dump_"${type}".log 2> /dev/null \
+      | grep -aE "I DEBUG.*(Build fingerprint|pid: [0-9]+, tid: [0-9]+|signal [0-9]+ \(|>>> )|Couldn't find ProcessRecord" \
+      | awk '!seen[$0]++' | tail -n 40);
+    echo "${anc_headers}";
+    if echo "${anc_headers}" | grep -a '>>> ' | grep -q 'puscas.mobilertapp'; then
+      echo 'CRASH VERDICT: a MobileRT process crashed natively - investigate the app/JNI/native code (full backtrace in the tombstones above).';
+    elif echo "${anc_signatures}" | grep -qa -e 'deadd00d' -e 'double-overflow of stack'; then
+      echo 'CRASH VERDICT: Dalvik deadd00d double-stack-overflow in a NON-MobileRT process (see ">>> <name> <<<" above; typically app_process running input/pm/am on the slow API <= 18 emulator). Known emulator defect, not fixable in this repository - only a retry helps.';
+    else
+      echo 'CRASH VERDICT: native crash in a NON-MobileRT process (see ">>> <name> <<<" above for the culprit).';
+    fi
+  fi
+  set -e;
+}
+
 gather_logs_func() {
   gl_exit_code="${1:-0}";
   set +e;
@@ -156,6 +188,7 @@ gather_logs_func() {
   if [ "${gl_exit_code}" -ne 0 ]; then
     echo "===== Test run failed (exit ${gl_exit_code}); dumping device diagnostics =====";
     echo '----- native crash tombstones (backtrace if SIGSEGV/SIGABRT) -----'; cat "${reports_path}"/tombstones/* 2> /dev/null || echo '(none)';
+    analyze_native_crashes_func;
     echo '----- /proc/meminfo -----'; cat "${reports_path}"/proc_meminfo_"${type}".log 2> /dev/null;
     echo '----- dumpsys meminfo -----'; cat "${reports_path}"/dumpsys_meminfo_"${type}".log 2> /dev/null;
     echo '----- dmesg (lowmemorykiller/oom-killer verdicts appear here) -----'; cat "${reports_path}"/dmesg_"${type}".log 2> /dev/null;
@@ -946,11 +979,14 @@ runInstrumentationTests() {
     ls -lahp .;
     echo 'Checking all screenshots';
     ls -lahp "screenshots";
-    if [ "${androidApiDevice}" -ge 18 ] && [ "${androidApiDevice}" -le 22 ]; then
-      echo 'Checking CornellBox screenshot';
-      ls -lahp "screenshots/CornellBox.png";
-      echo 'Checking Teapot screenshot';
-      ls -lahp "screenshots/Teapot.png";
+    countScreenshots=0;
+    for pngFile in screenshots/*.png; do
+      [ -e "${pngFile}" ] || continue;
+      countScreenshots=$((countScreenshots + 1));
+    done;
+    if [ "${countScreenshots}" -lt 3 ]; then
+      echo "Found only ${countScreenshots} screenshots, failing the test run.";
+      exit 1;
     fi
   elif echo "${run_test}" | grep -q "rep_"; then
     run_test_without_prefix=${run_test#"rep_"};
@@ -995,6 +1031,12 @@ _executeAndroidTests() {
   echo "Validating OBJ was copied to ${sdcard_path_android}/WavefrontOBJs/teapot/teapot.obj";
   callAdbShellCommandUntilSuccess 'ls -la '"${sdcard_path_android}"'/WavefrontOBJs/teapot/teapot.obj';
 
+  # Remove the cross-process fail-fast marker so every gradle attempt runs the full
+  # suite (AbstractTest writes it on failure; a stale marker would skip every test).
+  set +e;
+  timeout 60 adb shell rm "${sdcard_path_android}/.one_test_failed";
+  set -e;
+
   if [ "${run_test}" = 'all' ]; then
     timeout 1800 sh gradlew "${gradle_command}" -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" \
@@ -1002,9 +1044,7 @@ _executeAndroidTests() {
       -DabiFilters="[${cpu_architecture}]" \
       --console plain --parallel --info --warning-mode all --stacktrace;
   elif echo "${run_test}" | grep -q "rep_"; then
-    # Single focused test: disable coverage. A coverage report over one test is
-    # meaningless and createDebugAndroidTestCoverageReport would otherwise fail
-    # the build with "no coverage data was found".
+    # Single focused test: disable coverage (a one-test report fails with "no coverage data").
     timeout 200 sh gradlew connectedAndroidTest -DtestType="${type}" \
       -DandroidApiVersion="${android_api_version}" -DdisableTestCoverage=true \
       -Pandroid.testInstrumentationRunnerArguments.class="${run_test_without_prefix}" \

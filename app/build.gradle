@@ -472,15 +472,13 @@ android {
         unitTests.includeAndroidResources = true
         unitTests.returnDefaultValues = true
         setAnimationsDisabled true
-        // Run each instrumentation test in its own process via the Test
-        // Orchestrator: the app+test process is killed and respawned between
-        // tests, giving each test a clean in-memory state without needing a disk
-        // wipe (clearPackageData is intentionally off - see runnerArgs above).
-        // Guarded to API >= 16: the orchestrator/test-services APKs have a minSdk
-        // floor, so enabling it on API 15 would break that leg. Also backs the
-        // multi-process JaCoCo coverage routed via useTestStorageService.
+        // HOST: run all instrumentation tests in one host-JVM process. Preferred over
+        // ANDROIDX_TEST_ORCHESTRATOR (per-test process respawn): each respawn forks
+        // app_process, multiplying the API <= 18 Dalvik 'deadd00d' crash odds; the
+        // SD-card fail-fast marker (see AbstractTest) replaces the orchestrator's
+        // cross-process isolation. API >= 16: the test-services APKs have that minSdk.
         if (androidApiVersionValue >= 16) {
-            execution = 'ANDROIDX_TEST_ORCHESTRATOR'
+            execution = 'HOST'
         }
     }
 

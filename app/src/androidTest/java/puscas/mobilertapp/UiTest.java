@@ -2,19 +2,10 @@ package puscas.mobilertapp;
 
 import static puscas.mobilertapp.ConstantsAndroid.BUTTON_MESSAGE;
 
-import android.view.InputDevice;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
 
-import androidx.annotation.NonNull;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.PerformException;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.matcher.RootMatchers;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Assert;
@@ -33,7 +24,6 @@ import puscas.mobilertapp.constants.Shader;
 import puscas.mobilertapp.constants.State;
 import puscas.mobilertapp.utils.UtilsContext;
 import puscas.mobilertapp.utils.UtilsContextT;
-import puscas.mobilertapp.utils.UtilsLogging;
 import puscas.mobilertapp.utils.UtilsPickerT;
 import puscas.mobilertapp.utils.UtilsT;
 
@@ -125,15 +115,13 @@ public final class UiTest extends AbstractTest {
      */
     @Test
     public void testClickRenderButtonLongPress() {
-        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionButton(Constants.RENDER, true))
-            .perform(new ViewActionWait<>(0, R.id.renderButton))
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                final Button button = (Button) view;
-                Assert.assertEquals(BUTTON_MESSAGE, Constants.RENDER, button.getText().toString());
-            });
+        // Long-click focus-free (see DirectInteraction).
+        DirectInteraction.clickButton(R.id.renderButton, Constants.RENDER, true, 10_000L);
+        // The long-press restarts the activity; wait for the renderButton to re-resolve to "Render"
+        // (tolerating the transient null during the destroy->create gap on slow software-GL legs).
+        Assert.assertEquals(BUTTON_MESSAGE, Constants.RENDER,
+            DirectInteraction.awaitText(R.id.renderButton, Constants.RENDER, 10_000L)
+        );
         UtilsT.testStateAndBitmap(true);
     }
 
@@ -145,44 +133,26 @@ public final class UiTest extends AbstractTest {
     public static void clickPreviewCheckBox(final boolean expectedValue) {
         ViewActionWait.waitForButtonUpdate(0);
         final int viewId = R.id.preview;
-        Espresso.onView(ViewMatchers.withId(viewId))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionWait<>(0, viewId, !expectedValue))
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                assertPreviewCheckBox(view, !expectedValue);
-            });
-
-        while(true) {
-            try {
-                Espresso.onView(ViewMatchers.withId(viewId))
-                    .perform(ViewActions.click(InputDevice.SOURCE_TOUCHSCREEN, MotionEvent.BUTTON_PRIMARY));
-                break;
-            } catch (final PerformException ex) {
-                UtilsLogging.logException(ex, "clickPreviewCheckBox");
-            }
-        }
-
-        Espresso.onView(ViewMatchers.withId(viewId))
-            .perform(new ViewActionWait<>(10000, viewId, expectedValue))
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                assertPreviewCheckBox(view, expectedValue);
-            });
+        // Drive the checkbox focus-free (performClick(), see DirectInteraction).
+        DirectInteraction.waitChecked(viewId, !expectedValue, 30_000L);
+        assertPreviewCheckBoxDirect(!expectedValue);
+        DirectInteraction.clickView(viewId);
+        DirectInteraction.waitChecked(viewId, expectedValue, 10_000L);
+        assertPreviewCheckBoxDirect(expectedValue);
         ViewActionWait.waitForButtonUpdate(0);
     }
 
     /**
-     * Asserts the {@link CheckBox} expected value.
+     * Asserts the preview {@link CheckBox} text + checked state focus-free (see {@link DirectInteraction}):
+     * the headless emulator grants no window focus, so Espresso's RootViewPicker throws.
      *
-     * @param view          The {@link View}.
-     * @param expectedValue The expected value for the {@link CheckBox}.
+     * @param expectedValue The expected checked state of the {@link CheckBox}.
      */
-    static void assertPreviewCheckBox(@NonNull final View view,
-                                      final boolean expectedValue) {
-        final CheckBox checkbox = view.findViewById(R.id.preview);
-        Assert.assertEquals(Constants.CHECK_BOX_MESSAGE, Constants.PREVIEW, checkbox.getText().toString());
-        Assert.assertEquals( "Check box has not the expected value", expectedValue, checkbox.isChecked());
+    static void assertPreviewCheckBoxDirect(final boolean expectedValue) {
+        Assert.assertEquals(Constants.CHECK_BOX_MESSAGE, Constants.PREVIEW,
+            DirectInteraction.readText(R.id.preview));
+        Assert.assertEquals("Check box has not the expected value",
+            Boolean.valueOf(expectedValue), DirectInteraction.readChecked(R.id.preview));
     }
 
     /**
@@ -230,9 +200,8 @@ public final class UiTest extends AbstractTest {
             final int expectedIndex = currentIndex % buttonTextList.size();
             final String expectedButtonText = buttonTextList.get(expectedIndex);
 
-            Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-                .inRoot(RootMatchers.isTouchable())
-                .perform(new ViewActionButton(expectedButtonText, false));
+            // Click focus-free (see DirectInteraction).
+            DirectInteraction.clickButton(R.id.renderButton, expectedButtonText, false, 10_000L);
 
             if (expectedIndex % 2 == 0) {
                 UtilsContextT.waitUntil(this.testName.getMethodName(), activity, expectedButtonText, State.BUSY);

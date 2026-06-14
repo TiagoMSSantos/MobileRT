@@ -18,7 +18,7 @@
 
     <application
         android:allowBackup="false"
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:label="MobileRT_test"
         android:requestLegacyExternalStorage="true">
         <activity

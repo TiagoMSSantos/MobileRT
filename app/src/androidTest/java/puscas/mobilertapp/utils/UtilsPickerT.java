@@ -3,15 +3,12 @@ package puscas.mobilertapp.utils;
 import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.matcher.RootMatchers;
-import androidx.test.espresso.matcher.ViewMatchers;
 
 import org.junit.Assert;
 
 import java.util.logging.Logger;
 
-import puscas.mobilertapp.ViewActionNumberPicker;
+import puscas.mobilertapp.DirectInteraction;
 import puscas.mobilertapp.ViewActionWait;
 
 /**
@@ -43,17 +40,12 @@ public final class UtilsPickerT {
                                          final int expectedValue) {
         logger.info("changePickerValue picker: " + pickerName + ", value: " + expectedValue);
         ViewActionWait.waitForButtonUpdate(0);
-        Espresso.onView(ViewMatchers.withId(pickerId))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionNumberPicker(expectedValue))
-            .perform(new ViewActionWait<>(0, pickerId))
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                final NumberPicker numberPicker = view.findViewById(pickerId);
-                Assert.assertEquals("Number picker '" + pickerName + "' with wrong value",
-                    expectedValue, numberPicker.getValue()
-                );
-            });
+        // Set + assert off the RootViewPicker, focus-free (see DirectInteraction).
+        DirectInteraction.setPicker(pickerId, expectedValue);
+        final Integer actual = DirectInteraction.readPickerValue(pickerId);
+        Assert.assertEquals("Number picker '" + pickerName + "' with wrong value",
+            Integer.valueOf(expectedValue), actual
+        );
         ViewActionWait.waitForButtonUpdate(0);
     }
 

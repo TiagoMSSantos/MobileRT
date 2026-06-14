@@ -14,11 +14,14 @@
     <!-- Allow to store screenshots -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:minSdkVersion="4" />
 
+    <!-- Allow to move to the Android task to the front of the stack, so it is visible to the user -->
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+
     <uses-feature android:glEsVersion="0x00020000" />
 
     <application
         android:allowBackup="false" tools:ignore="DataExtractionRules"
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"

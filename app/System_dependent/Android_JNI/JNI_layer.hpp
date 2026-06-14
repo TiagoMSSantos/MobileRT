@@ -91,6 +91,12 @@ void JNICALL Java_puscas_mobilertapp_MainActivity_readFile(
 
 // MainRenderer
 extern "C"
+jint Java_puscas_mobilertapp_MainRenderer_rtGetState(
+        JNIEnv *env,
+        jobject thiz
+);
+
+extern "C"
 void Java_puscas_mobilertapp_MainRenderer_rtFinishRender(
         JNIEnv *env,
         jobject thiz

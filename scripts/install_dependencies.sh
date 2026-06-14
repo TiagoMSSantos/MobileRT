@@ -238,6 +238,12 @@ install_dependencies_debian() {
     echo 'Installing APT host build tools (make).';
     apt_get_with_retry install --no-install-recommends -y make;
   fi
+  if ! command -v pkg-config > /dev/null; then
+    # Validated by checkCommand later; ubuntu:26.04 no longer ships it
+    # transitively with the packages above.
+    echo 'Installing APT host build tools (pkg-config).';
+    apt_get_with_retry install --no-install-recommends -y pkg-config;
+  fi
   if ! command -v vim > /dev/null; then
     echo 'Installing vim.';
     apt_get_with_retry install --no-install-recommends -y vim;

@@ -2,11 +2,9 @@ package puscas.mobilertapp;
 
 import android.graphics.Bitmap;
 
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.matcher.RootMatchers;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.FlakyTest;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,12 +40,8 @@ public final class PreviewTest extends AbstractTest {
         logger.info("testPreviewScenePerspectiveCamera start");
 
         ViewActionWait.waitForButtonUpdate(0);
-        Espresso.onView(ViewMatchers.withId(R.id.preview))
-            .inRoot(RootMatchers.isTouchable())
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                UiTest.assertPreviewCheckBox(view, true);
-            });
+        // Read the preview checkbox focus-free (see DirectInteraction).
+        UiTest.assertPreviewCheckBoxDirect(true);
         ViewActionWait.waitForButtonUpdate(0);
         UtilsContextT.resetPickerValues(Scene.CORNELL.ordinal(), Accelerator.NAIVE, 99, 1);
 
@@ -61,6 +55,7 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(false);
 
+        UtilsT.captureScreenshot("CornellBox2.png");
         logger.info("testPreviewScenePerspectiveCamera finished");
     }
 
@@ -77,12 +72,8 @@ public final class PreviewTest extends AbstractTest {
         logger.info("testPreviewSceneOrthographicCamera start");
 
         ViewActionWait.waitForButtonUpdate(0);
-        Espresso.onView(ViewMatchers.withId(R.id.preview))
-            .inRoot(RootMatchers.isTouchable())
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                UiTest.assertPreviewCheckBox(view, true);
-            });
+        // Read the preview checkbox focus-free (see DirectInteraction).
+        UiTest.assertPreviewCheckBoxDirect(true);
         ViewActionWait.waitForButtonUpdate(0);
         UtilsContextT.resetPickerValues(Scene.SPHERES.ordinal(), Accelerator.NAIVE, 99, 1);
 
@@ -90,29 +81,11 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.testStateAndBitmap(true);
         UtilsT.startRendering(false);
         UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.STOP, State.BUSY);
-        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionWait<>(0, R.id.drawLayout))
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                final DrawView drawView = (DrawView) view;
-                final MainRenderer renderer = drawView.getRenderer();
-                final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
-                UtilsT.assertRayTracingResultInBitmap(bitmap, false);
-            });
+        assertRendererBitmap(false);
         ViewActionWait.waitForButtonUpdate(0);
 
         UtilsT.stopRendering();
-        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionWait<>(0, R.id.drawLayout))
-            .check((view, exception) -> {
-                UtilsT.rethrowException(exception);
-                final DrawView drawView = (DrawView) view;
-                final MainRenderer renderer = drawView.getRenderer();
-                final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
-                UtilsT.assertRayTracingResultInBitmap(bitmap, false);
-            });
+        assertRendererBitmap(false);
         ViewActionWait.waitForButtonUpdate(0);
         UtilsContextT.waitUntil(this.testName.getMethodName(), activity, Constants.RENDER, State.IDLE, State.FINISHED);
         UtilsT.testStateAndBitmap(false);
@@ -120,7 +93,16 @@ public final class PreviewTest extends AbstractTest {
         UtilsT.assertRenderButtonText(Constants.RENDER);
         UtilsT.testStateAndBitmap(false);
 
+        UtilsT.captureScreenshot("Spheres.png");
         logger.info("testPreviewSceneOrthographicCamera finished");
+    }
+
+    /** Reads the {@link DrawView}'s renderer focus-free (see {@link DirectInteraction}) and asserts its bitmap. */
+    private static void assertRendererBitmap(final boolean expectedSameValues) {
+        final MainRenderer renderer = DirectInteraction.readRenderer(R.id.drawLayout);
+        Assert.assertNotNull("DrawView/renderer could not be resolved", renderer);
+        final Bitmap bitmap = UtilsT.getPrivateField(renderer, "bitmap");
+        UtilsT.assertRayTracingResultInBitmap(bitmap, expectedSameValues);
     }
 
 }

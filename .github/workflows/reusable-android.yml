@@ -31,6 +31,13 @@ env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
   GITHUB_STEP_TIMEOUT_MEDIUM: 10
   GITHUB_STEP_TIMEOUT_LONG: 20
+  # Workflow-level (not per-step): the AVD cache key references these, so a step-level env
+  # would expand to 'cores_-mem_-' and reuse a stale snapshot. 3 cores (leave 2 for the host)
+  # measured ~3x faster than 4 (4 regressed 8m -> 22m on the Repeatable workflow).
+  ANDROID_EMULATOR_CPU_CORES: 3
+  ANDROID_EMULATOR_MEM_MB: 6144
+  # Run wretry.action JS on Node 24 before GitHub forces it on 2026-06-16 (surfaces breakage early).
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   Build:
@@ -757,66 +764,18 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # v21
+          action: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
           attempt_delay: 30000
           with: |
-            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
-            # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-            # Required, if the artifact is from a different repo
-            # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            # Optional, workflow file name or ID
-            # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-            workflow: android.yml
-            # Optional, the status or conclusion of a completed workflow to search for
-            # Can be one of a workflow conclusion:
-            #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-            # Or a workflow status:
-            #   "completed", "in_progress", "queued"
-            workflow_conclusion: ''
-            # Optional, will get head commit SHA
-            pr: ${{ github.event.pull_request.number }}
-            # Optional, no need to specify if PR is
-            commit: ${{ github.event.pull_request.head.sha }}
-            # Optional, will use the branch
-            # branch: master
-            # Optional, defaults to all types
-            # event: push
-            # Optional, will use specified workflow run
-            # Pin to THIS run so the same-run artifact is read by run_id directly,
-            # not via the flaky cross-run search that paginates GitHub's artifact
-            # API and transiently misses it (cf. CI run 26244860134: only the API
-            # 15 Unit tests job missed, hard-failing via if_no_artifact_found: fail).
-            run_id: ${{ github.run_id }}
-            # Optional, run number from the workflow
-            # run_number: 34
-            # Optional, uploaded artifact name,
-            # will download all artifacts if not specified
-            # and extract them into respective subdirectories
-            # https://github.com/actions/download-artifact#download-all-artifacts
+            # Params: https://github.com/actions/download-artifact/blob/main/action.yml
+            # Official action resolves the artifact name (uploaded by this run's Build job) to a
+            # single newest match; dawidd6 downloaded EVERY duplicate (concurrent same-name uploads
+            # race the overwrite pre-check; 3 x ~338 MB blew the macOS step ceiling). It also
+            # extracts the archive, leaving gradle-packages.zip in the target dir.
             name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
-            # Optional, a directory where to extract artifact(s), defaults to the current directory
             path: ${{ env.GRADLE_PATH }}
-            # Optional, defaults to current repo
-            repo: ${{ github.repository }}
-            allow_forks: true
-            # Optional, check the workflow run to whether it has an artifact
-            # then will get the last available artifact from the previous workflow
-            # default false, just try to download from the last one
-            check_artifacts:  true
-            # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-            # default false
-            search_artifacts: true
-            # Optional, choose to skip unpacking the downloaded artifact(s)
-            # default false
-            skip_unpack: true
-            # Optional, choose how to exit the action if no artifact is found
-            # can be one of:
-            #  "fail", "warn", "ignore"
-            # default fail
-            if_no_artifact_found: fail
 
       - name: Download generated Android APK artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
@@ -842,10 +801,7 @@ jobs:
         if: success()
         run: |
           ls -lahp ${{ env.GRADLE_PATH }};
-          # dawidd6 (skip_unpack) saves the artifact as <artifact-name>.zip.
-          # The artifact name is now commit/run keyed, so normalise the
-          # downloaded file back to the fixed name the extract logic expects.
-          mv "${{ env.GRADLE_PATH }}"/gradle-packages_*.zip "${{ env.GRADLE_PATH }}"/gradle-packages.zip 2> /dev/null || true;
+          # download-artifact already extracted the archive into this directory.
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -974,7 +930,6 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
         run: |
-          echo 'android_arch=\"armeabi-v7a\",\"arm64-v8a\",\"x86\",\"x86_64\"' >> "${GITHUB_ENV}";
           cpuArch=$(uname -m);
           # Linux's `uname -m` returns 'aarch64' for ARM64 hosts (the macOS/iOS
           # 'arm64' string never appears on a GitHub Linux runner). Both are
@@ -985,9 +940,9 @@ jobs:
             # armeabi-v7a, so the emulator must use that on ARM hosts for
             # legacy APIs.
             if [ "${{ inputs.android_api_device }}" -ge 21 ]; then
-              echo 'android_emulator_arch=arm64-v8a' >> "${GITHUB_ENV}";
+              emulatorArch='arm64-v8a';
             else
-              echo 'android_emulator_arch=armeabi-v7a' >> "${GITHUB_ENV}";
+              emulatorArch='armeabi-v7a';
             fi
             # Not all GitHub Apple Silicon runner images expose
             # Hypervisor.framework; `-accel on` then hard-fails with
@@ -996,9 +951,9 @@ jobs:
             echo 'EMULATOR_ACCEL=off' >> "${GITHUB_ENV}";
           else
             if [ "${{ inputs.android_api_device }}" -gt 20 ] && [ "${{ inputs.android_api_device }}" -ne 24 ] && [ "${{ inputs.android_api_device }}" -ne 25 ] && [ "${{ inputs.android_api_device }}" -ne 27 ]; then
-              echo 'android_emulator_arch=x86_64' >> "${GITHUB_ENV}";
+              emulatorArch='x86_64';
             else
-              echo 'android_emulator_arch=x86' >> "${GITHUB_ENV}";
+              emulatorArch='x86';
             fi
             # x86 hosts: Linux runners have KVM; '-accel on' works. GitHub macOS
             # Intel runners may lack Hypervisor.framework, where '-accel on' hard-
@@ -1010,6 +965,11 @@ jobs:
               echo 'EMULATOR_ACCEL=on' >> "${GITHUB_ENV}";
             fi
           fi
+          echo "android_emulator_arch=${emulatorArch}" >> "${GITHUB_ENV}";
+          # This job only runs the emulator's ABI, so build native code for that one instead of
+          # all four (~4m20s of CMake/attempt saved). Build/unit/coverage keep all four (universal
+          # APK). Escaped quotes give -DabiFilters the JSON list it expects: ["x86_64"].
+          echo "android_arch=\\\"${emulatorArch}\\\"" >> "${GITHUB_ENV}";
           # Right-sized to observed reality: a healthy emulator boot on these
           # runners completes in ~15-30s (logs across APIs). The old 240/400s
           # values were ~8-25x over-provisioned, so when an emulator wedged the
@@ -1142,9 +1102,6 @@ jobs:
         timeout-minutes: 20
         if: success() && !startsWith(inputs.target_os, 'windows') && steps.avd-cache.outputs.cache-hit != 'true'
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
-        env:
-          ANDROID_EMULATOR_MEM_MB: 6144
-          ANDROID_EMULATOR_CPU_CORES: 3
         with:
           action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
           pre_retry_command: 'echo "Retrying AVD snapshot generation..."'
@@ -1230,17 +1187,11 @@ jobs:
               qemu_pid="$(pgrep -o -f qemu-system || true)"; nohup sh -c 'sleep 180; if [ -n "$1" ] && kill -0 "$1" 2>/dev/null; then echo "Watchdog: qemu (pid $1) wedged after snapshot save; force-reaping."; kill -9 "$1" 2>/dev/null || true; fi' watchdog "${qemu_pid}" >/dev/null 2>&1 &
 
       - name: Run Android tests
-        timeout-minutes: ${{ case(startsWith(inputs.target_os, 'ubuntu') && inputs.type == 'release', 20, startsWith(inputs.target_os, 'ubuntu') && inputs.type == 'debug', 40, 50) }}
+        timeout-minutes: 30
         if: success() && !startsWith(inputs.target_os, 'windows')
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         env:
           ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
-          ANDROID_EMULATOR_MEM_MB: 6144
-          # Leave headroom for the host (adb, gradle, log capture). Bumping to
-          # all 4 cores caused a severe regression (8m -> 22m on the Repeatable
-          # workflow); 2 was ~3x faster. 3 is a middle ground to speed cold boot
-          # without fully starving the host. Revert to 2 if the regression returns.
-          ANDROID_EMULATOR_CPU_CORES: 3
           ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEY_PASSWORD_DEBUG }}
@@ -1565,7 +1516,7 @@ jobs:
             # Check available parameters in: https://github.com/actions/upload-artifact/blob/main/action.yml
             name: MobileRT_${{ inputs.type }}_android_api-a${{ inputs.android_api }}_d${{ inputs.android_api_device }}_test_screenshots
             path: screenshots
-            if-no-files-found: warn
+            if-no-files-found: error
             retention-days: 90
             overwrite: true
             include-hidden-files: true
@@ -1616,76 +1567,25 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # v21
+          action: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
           attempt_delay: 30000
           with: |
-            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
-            # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-            # Required, if the artifact is from a different repo
-            # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            # Optional, workflow file name or ID
-            # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-            workflow: android.yml
-            # Optional, the status or conclusion of a completed workflow to search for
-            # Can be one of a workflow conclusion:
-            #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-            # Or a workflow status:
-            #   "completed", "in_progress", "queued"
-            workflow_conclusion: ''
-            # Optional, will get head commit SHA
-            pr: ${{ github.event.pull_request.number }}
-            # Optional, no need to specify if PR is
-            commit: ${{ github.event.pull_request.head.sha }}
-            # Optional, will use the branch
-            # branch: master
-            # Optional, defaults to all types
-            # event: push
-            # Optional, will use specified workflow run
-            # Pin to THIS run so the same-run artifact is read by run_id directly,
-            # not via the flaky cross-run search that paginates GitHub's artifact
-            # API and transiently misses it (cf. CI run 26244860134: only the API
-            # 15 Unit tests job missed, hard-failing via if_no_artifact_found: fail).
-            run_id: ${{ github.run_id }}
-            # Optional, run number from the workflow
-            # run_number: 34
-            # Optional, uploaded artifact name,
-            # will download all artifacts if not specified
-            # and extract them into respective subdirectories
-            # https://github.com/actions/download-artifact#download-all-artifacts
+            # Params: https://github.com/actions/download-artifact/blob/main/action.yml
+            # Official action resolves the artifact name (uploaded by this run's Build job) to a
+            # single newest match; dawidd6 downloaded EVERY duplicate (concurrent same-name uploads
+            # race the overwrite pre-check; 3 x ~338 MB blew the macOS step ceiling). It also
+            # extracts the archive, leaving gradle-packages.zip in the target dir.
             name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
-            # Optional, a directory where to extract artifact(s), defaults to the current directory
             path: ${{ env.GRADLE_PATH }}
-            # Optional, defaults to current repo
-            repo: ${{ github.repository }}
-            allow_forks: true
-            # Optional, check the workflow run to whether it has an artifact
-            # then will get the last available artifact from the previous workflow
-            # default false, just try to download from the last one
-            check_artifacts:  true
-            # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-            # default false
-            search_artifacts: true
-            # Optional, choose to skip unpacking the downloaded artifact(s)
-            # default false
-            skip_unpack: true
-            # Optional, choose how to exit the action if no artifact is found
-            # can be one of:
-            #  "fail", "warn", "ignore"
-            # default fail
-            if_no_artifact_found: fail
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
         run: |
           ls -lahp ${{ env.GRADLE_PATH }};
-          # dawidd6 (skip_unpack) saves the artifact as <artifact-name>.zip.
-          # The artifact name is now commit/run keyed, so normalise the
-          # downloaded file back to the fixed name the extract logic expects.
-          mv "${{ env.GRADLE_PATH }}"/gradle-packages_*.zip "${{ env.GRADLE_PATH }}"/gradle-packages.zip 2> /dev/null || true;
+          # download-artifact already extracted the archive into this directory.
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -2007,76 +1907,25 @@ jobs:
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # v21
+          action: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
           pre_retry_command: 'echo "Retrying Download Gradle packages artifact step..."'
           attempt_limit: 3
           attempt_delay: 30000
           with: |
-            # Check available parameters in: https://github.com/dawidd6/action-download-artifact/blob/master/action.yml
-            # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-            # Required, if the artifact is from a different repo
-            # Required, if the repo is private a Personal Access Token with `repo` scope is needed
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            # Optional, workflow file name or ID
-            # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-            workflow: android.yml
-            # Optional, the status or conclusion of a completed workflow to search for
-            # Can be one of a workflow conclusion:
-            #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-            # Or a workflow status:
-            #   "completed", "in_progress", "queued"
-            workflow_conclusion: ''
-            # Optional, will get head commit SHA
-            pr: ${{ github.event.pull_request.number }}
-            # Optional, no need to specify if PR is
-            commit: ${{ github.event.pull_request.head.sha }}
-            # Optional, will use the branch
-            # branch: master
-            # Optional, defaults to all types
-            # event: push
-            # Optional, will use specified workflow run
-            # Pin to THIS run so the same-run artifact is read by run_id directly,
-            # not via the flaky cross-run search that paginates GitHub's artifact
-            # API and transiently misses it (cf. CI run 26244860134: only the API
-            # 15 Unit tests job missed, hard-failing via if_no_artifact_found: fail).
-            run_id: ${{ github.run_id }}
-            # Optional, run number from the workflow
-            # run_number: 34
-            # Optional, uploaded artifact name,
-            # will download all artifacts if not specified
-            # and extract them into respective subdirectories
-            # https://github.com/actions/download-artifact#download-all-artifacts
+            # Params: https://github.com/actions/download-artifact/blob/main/action.yml
+            # Official action resolves the artifact name (uploaded by this run's Build job) to a
+            # single newest match; dawidd6 downloaded EVERY duplicate (concurrent same-name uploads
+            # race the overwrite pre-check; 3 x ~338 MB blew the macOS step ceiling). It also
+            # extracts the archive, leaving gradle-packages.zip in the target dir.
             name: gradle-packages_${{ github.sha }}_${{ github.run_id }}
-            # Optional, a directory where to extract artifact(s), defaults to the current directory
             path: ${{ env.GRADLE_PATH }}
-            # Optional, defaults to current repo
-            repo: ${{ github.repository }}
-            allow_forks: true
-            # Optional, check the workflow run to whether it has an artifact
-            # then will get the last available artifact from the previous workflow
-            # default false, just try to download from the last one
-            check_artifacts:  true
-            # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-            # default false
-            search_artifacts: true
-            # Optional, choose to skip unpacking the downloaded artifact(s)
-            # default false
-            skip_unpack: true
-            # Optional, choose how to exit the action if no artifact is found
-            # can be one of:
-            #  "fail", "warn", "ignore"
-            # default fail
-            if_no_artifact_found: fail
 
       - name: Extract and check files from gradle artifact
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
         if: success()
         run: |
           ls -lahp ${{ env.GRADLE_PATH }};
-          # dawidd6 (skip_unpack) saves the artifact as <artifact-name>.zip.
-          # The artifact name is now commit/run keyed, so normalise the
-          # downloaded file back to the fixed name the extract logic expects.
-          mv "${{ env.GRADLE_PATH }}"/gradle-packages_*.zip "${{ env.GRADLE_PATH }}"/gradle-packages.zip 2> /dev/null || true;
+          # download-artifact already extracted the archive into this directory.
           ls -lahp ${{ env.GRADLE_PATH }}/gradle-packages.zip;
           # shellcheck disable=SC1091
           . scripts/helper_functions.sh && extractFilesFromArtifact ${{ env.GRADLE_PATH }};
@@ -2222,7 +2071,7 @@ jobs:
           # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
           GRADLE_OPTS: -Xms8G -Xmx8G -XX:ActiveProcessorCount=5
         run: |
-          . scripts/helper_functions.sh && callCommandUntilSuccess 2 timeout 180 sh gradlew --profile --parallel \
+          . scripts/helper_functions.sh && callCommandUntilSuccess 10 timeout 180 sh gradlew --profile --parallel \
             -DandroidApiVersion="${{ inputs.android_api }}" \
             -DabiFilters="[ ${{ env.android_arch }} ]" \
             --info --warning-mode all --stacktrace sonar;

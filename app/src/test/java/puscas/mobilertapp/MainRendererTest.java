@@ -418,7 +418,7 @@ public final class MainRendererTest {
                 .anyTimes();
 
             PowerMock.replayAll();
-            mainRenderer = PowerMock.createNicePartialMockAndInvokeDefaultConstructor(MainRenderer.class, "initPreviewArrays", "rtRenderIntoBitmap");
+            mainRenderer = PowerMock.createNicePartialMockAndInvokeDefaultConstructor(MainRenderer.class, "initPreviewArrays", "rtRenderIntoBitmap", "rtGetState");
 
             PowerMock.expectPrivate(mainRenderer, "initPreviewArrays").andVoid().anyTimes();
         } catch (final Exception ex) {

@@ -89,8 +89,8 @@ pullDockerImage() {
   exec 3<> /tmp/fd3; # Open file descriptor 3.
   i=1;
   parallelizeBuild;
-  echo "Creating '${NCPU_CORES}' processes to perform docker pull.";
-  while [ "${i}" -le "${NCPU_CORES}" ]; do
+  echo "Creating '1' process to perform docker pull.";
+  while [ "${i}" -le "1" ]; do
     echo "Scheduling docker pull process: ${i}";
     docker pull "${1}" 2>&1 | tee /tmp/fd3 &
     i=$((i + 1));

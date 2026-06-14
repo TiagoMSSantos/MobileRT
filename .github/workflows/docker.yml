@@ -334,6 +334,34 @@ jobs:
         path: ~/.cache/pip
         key: pip-docker-squash-${{ runner.os }}
 
+    - name: Start Docker daemon (Windows)
+      timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_MEDIUM) }}
+      if: success() && startsWith(matrix.host_os, 'windows')
+      shell: powershell
+      run: |
+        # The windows-2025-vs2026 runner image ships Docker but does not have the
+        # daemon running when the job starts (the windows-2025 image did), so every
+        # docker call fails with: open //./pipe/docker_engine: The system cannot
+        # find the file specified.
+        $ErrorActionPreference = 'Stop'
+        $svc = Get-Service -Name docker -ErrorAction SilentlyContinue
+        if ($null -eq $svc) {
+          Write-Host 'docker service not registered; registering dockerd as a service.'
+          dockerd --register-service
+        }
+        Set-Service -Name docker -StartupType Automatic
+        if ((Get-Service -Name docker).Status -ne 'Running') {
+          Write-Host 'Starting the docker service.'
+          Start-Service docker
+        }
+        $deadline = (Get-Date).AddMinutes(5)
+        while ($true) {
+          docker info *> $null
+          if ($LASTEXITCODE -eq 0) { Write-Host 'Docker daemon is up.'; break }
+          if ((Get-Date) -gt $deadline) { throw 'Docker daemon did not start within 5 minutes.' }
+          Start-Sleep -Seconds 5
+        }
+
     - name: Pull base Docker image
       timeout-minutes: 60
       if: success()

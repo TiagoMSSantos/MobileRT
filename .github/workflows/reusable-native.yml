@@ -34,6 +34,9 @@ env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
   GITHUB_STEP_TIMEOUT_MEDIUM: 10
   GITHUB_STEP_TIMEOUT_LONG: 20
+  # Run JavaScript actions (wretry.action) on Node 24 before GitHub forces it
+  # on 2026-06-16, so a breakage shows up in a branch run instead of all jobs.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   Build:

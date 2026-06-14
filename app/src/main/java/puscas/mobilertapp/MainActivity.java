@@ -469,43 +469,46 @@ public final class MainActivity extends Activity {
                         .setPriority(Thread.NORM_PRIORITY - 1)
                         .build()
                 );
-                final List<Future<?>> tasks = new ArrayList<>();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
-                    final ClipData clipData = data.getClipData();
-                    final int numFiles = clipData.getItemCount();
-                    logger.info("Will read every selected file: " + numFiles);
-                    for (int i = 0; i < numFiles; ++i) {
-                        final int fileIndex = i;
-                        tasks.add(executor.submit(() -> {
-                            final ClipData.Item item = clipData.getItemAt(fileIndex);
-                            final Uri uri = item.getUri();
-                            final File file = new File(Objects.requireNonNull(Objects.requireNonNull(uri).getPath()));
-                            validatePath(file);
-                            final String filePath = getPathFromFile(uri);
-                            readFile(uri);
-                            setSceneFilePathIfObjFile(filePath);
-                        }));
+                try {
+                    final List<Future<?>> tasks = new ArrayList<>();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && data.getClipData() != null) {
+                        final ClipData clipData = data.getClipData();
+                        final int numFiles = clipData.getItemCount();
+                        logger.info("Will read every selected file: " + numFiles);
+                        for (int i = 0; i < numFiles; ++i) {
+                            final int fileIndex = i;
+                            tasks.add(executor.submit(() -> {
+                                final ClipData.Item item = clipData.getItemAt(fileIndex);
+                                final Uri uri = item.getUri();
+                                final File file = new File(Objects.requireNonNull(Objects.requireNonNull(uri).getPath()));
+                                validatePath(file);
+                                final String filePath = getPathFromFile(uri);
+                                readFile(uri);
+                                setSceneFilePathIfObjFile(filePath);
+                            }));
+                        }
+                    } else {
+                        logger.info("Will read every file in a path.");
+                        final Uri uri = data.getData();
+                        final File baseFile = new File(Objects.requireNonNull(Objects.requireNonNull(uri).getPath()));
+                        validatePath(baseFile);
+                        final String filePath = getPathFromFile(uri);
+                        setSceneFilePathIfObjFile(filePath);
+                        final File[] files = getFilesFromDirectory(baseFile);
+                        logger.info("Will read every file in a path: " + files.length);
+                        for(final File file : files) {
+                            tasks.add(executor.submit(() -> readFile(Uri.fromFile(file))));
+                        }
                     }
-                } else {
-                    logger.info("Will read every file in a path.");
-                    final Uri uri = data.getData();
-                    final File baseFile = new File(Objects.requireNonNull(Objects.requireNonNull(uri).getPath()));
-                    validatePath(baseFile);
-                    final String filePath = getPathFromFile(uri);
-                    setSceneFilePathIfObjFile(filePath);
-                    final File[] files = getFilesFromDirectory(baseFile);
-                    logger.info("Will read every file in a path: " + files.length);
-                    for(final File file : files) {
-                        tasks.add(executor.submit(() -> readFile(Uri.fromFile(file))));
+                    logger.info("Waiting for all tasks: " + tasks.size());
+                    for (final Future<?> task : tasks) {
+                        task.get();
                     }
+                    logger.info("Waited for all tasks: " + tasks.size());
+                } finally {
+                    final boolean finished = MoreExecutors.shutdownAndAwaitTermination(executor, 5, TimeUnit.SECONDS);
+                    assert finished == true;
                 }
-                logger.info("Waiting for all tasks: " + tasks.size());
-                for (final Future<?> task : tasks) {
-                    task.get();
-                }
-                logger.info("Waited for all tasks: " + tasks.size());
-                final boolean finished = MoreExecutors.shutdownAndAwaitTermination(executor, 5, TimeUnit.SECONDS);
-                assert finished == true;
             } else {
                 logger.severe("There is no URI to a File!");
                 this.sceneFilePath = null;

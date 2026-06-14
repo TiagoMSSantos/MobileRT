@@ -1,17 +1,11 @@
 package puscas.mobilertapp.utils;
 
+import android.app.UiAutomation;
 import android.graphics.Bitmap;
-import android.widget.Button;
 import android.os.Build;
+import android.widget.Button;
 
-import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.matcher.RootMatchers;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.core.app.DeviceCapture;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.base.Preconditions;
@@ -20,16 +14,16 @@ import org.junit.Assert;
 
 import java.io.File;
 import java.io.FileOutputStream;
-
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 import java8.util.J8Arrays;
+import puscas.mobilertapp.AbstractTest;
 import puscas.mobilertapp.ConstantsAndroid;
-import puscas.mobilertapp.DrawView;
+import puscas.mobilertapp.DirectInteraction;
 import puscas.mobilertapp.MainRenderer;
 import puscas.mobilertapp.R;
-import puscas.mobilertapp.ViewActionButton;
 import puscas.mobilertapp.ViewActionWait;
 import puscas.mobilertapp.constants.Constants;
 import puscas.mobilertapp.constants.ConstantsMethods;
@@ -133,9 +127,9 @@ public final class UtilsT {
         ViewActionWait.waitForButtonUpdate(0);
         assertRenderButtonText(Constants.RENDER);
         ViewActionWait.waitForButtonUpdate(0);
-        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionButton(expectedSameValues ? Constants.RENDER : Constants.STOP, false));
+        final String expectedText = expectedSameValues ? Constants.RENDER : Constants.STOP;
+        // Click focus-free (performClick(), see DirectInteraction).
+        DirectInteraction.clickButton(R.id.renderButton, expectedText, false, 10_000L);
         logger.info("startRendering" + ConstantsMethods.FINISHED);
     }
 
@@ -145,9 +139,8 @@ public final class UtilsT {
      */
     public static void stopRendering() {
         logger.info("stopRendering");
-        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionButton(Constants.RENDER, false));
+        // Click focus-free (performClick(), see DirectInteraction).
+        DirectInteraction.clickButton(R.id.renderButton, Constants.RENDER, false, 10_000L);
 
         // Wait for the app to stop completely.
         ViewActionWait.waitForButtonUpdate(0);
@@ -167,20 +160,15 @@ public final class UtilsT {
     public static void testStateAndBitmap(final boolean expectedSameValues) {
         logger.info("testStateAndBitmap: " + expectedSameValues);
         ViewActionWait.waitForBitmapUpdate(0);
-        Espresso.onView(ViewMatchers.withId(R.id.drawLayout))
-            .inRoot(RootMatchers.isTouchable())
-            .perform(new ViewActionWait<>(0, R.id.drawLayout))
-            .check((view, exception) -> {
-                rethrowException(exception);
-                final DrawView drawView = (DrawView) view;
-                final MainRenderer renderer = drawView.getRenderer();
-                Assert.assertTrue(
-                    "State is not the expected",
-                    renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED
-                );
-                final Bitmap bitmap = getPrivateField(renderer, "bitmap");
-                assertRayTracingResultInBitmap(bitmap, expectedSameValues);
-            });
+        // Read the DrawView's renderer focus-free (see DirectInteraction).
+        final MainRenderer renderer = DirectInteraction.readRenderer(R.id.drawLayout);
+        Assert.assertNotNull("DrawView/renderer could not be resolved", renderer);
+        Assert.assertTrue(
+            "State is not the expected",
+            renderer.getState() == State.IDLE || renderer.getState() == State.FINISHED
+        );
+        final Bitmap bitmap = getPrivateField(renderer, "bitmap");
+        assertRayTracingResultInBitmap(bitmap, expectedSameValues);
         ViewActionWait.waitForButtonUpdate(0);
     }
 
@@ -191,17 +179,9 @@ public final class UtilsT {
      */
     public static void assertRenderButtonText(@NonNull final String expectedText) {
         logger.info("assertRenderButtonText: " + expectedText);
-        Espresso.onView(ViewMatchers.withId(R.id.renderButton))
-            .inRoot(RootMatchers.isTouchable())
-            .check((view, exception) -> {
-                rethrowException(exception);
-                final Button renderButton = view.findViewById(R.id.renderButton);
-                Assert.assertEquals(
-                    ConstantsAndroid.BUTTON_MESSAGE,
-                    expectedText,
-                    renderButton.getText().toString()
-                );
-            });
+        // Read the button text focus-free (see DirectInteraction).
+        final String actual = DirectInteraction.readText(R.id.renderButton);
+        Assert.assertEquals(ConstantsAndroid.BUTTON_MESSAGE, expectedText, actual);
     }
 
     /**
@@ -221,43 +201,102 @@ public final class UtilsT {
     }
 
     /**
-     * Helper method to rethrow any possible {@link Exception}.
-     *
-     * @param exception The exception to throw.
-     */
-    public static void rethrowException(@Nullable final Exception exception) {
-        if (exception != null) {
-            throw new FailureException(exception);
+    * Take a screenshot of the Android emulator showing the MobileRT rendered scene.
+    * <p>
+    * It stores the screenshot in the path: {@code /data/local/tmp/MobileRT/screenshots}.
+    * <p>
+    * The capture method is chosen per API because the {@link puscas.mobilertapp.DrawView}
+    * {@code GLSurfaceView} layer is only reachable by a privileged reader:
+    * <ul>
+    *   <li><b>API &gt;= 21</b>: {@code screencap}, run through
+    *       {@link puscas.mobilertapp.AbstractTest#runShellCommand(String)} which on these APIs uses
+    *       {@code UiAutomation.executeShellCommand} (the shell uid), so it can read the
+    *       SurfaceFlinger framebuffer and capture the full emulator screen including the
+    *       {@code GLSurfaceView}. The app uid cannot ({@code SurfaceFlinger: Permission Denial: can't
+    *       read framebuffer}), so {@code screencap} is not usable below API 21 where no shell-uid exec
+    *       route exists.</li>
+    *   <li><b>API 18-20</b>: {@link UiAutomation#takeScreenshot()} (added in API 18). It captures the
+    *       window but misses the {@code GLSurfaceView} before API 26 (black {@code DrawView}); it is a
+    *       best-effort fallback so the leg still produces an image.</li>
+    *   <li><b>API &lt; 18</b>: no {@link UiAutomation}, so fall back to the rendered {@link Bitmap}
+    *       held by the {@code DrawView}'s {@link MainRenderer} (the ray-traced output itself).</li>
+    * </ul>
+    * None of these fork a Dalvik {@code app_process} ({@code screencap} is a native binary, the others
+    * are in-process), so the API &lt;= 18 'deadd00d' crash is not triggered.
+    *
+    * @param name The name of the screenshot.
+    */
+    public static void captureScreenshot(final String name) {
+        final File path = new File(UtilsContext.getInternalStorageFilePath(), "MobileRT" + ConstantsUI.FILE_SEPARATOR + "screenshots");
+        AbstractTest.runShellCommand("mkdir -p " + path.getAbsolutePath());
+        final File imageFile = new File(path, name);
+        final String imagePath = imageFile.getAbsolutePath();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // API >= 21: screencap runs as the shell uid (executeShellCommand) which can read the framebuffer.
+            AbstractTest.runShellCommand("screencap -p " + imagePath);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // API 18-20: no shell-uid exec, screencap as app uid is denied; fall back to UiAutomation.
+            captureViaUiAutomation(imageFile);
+        } else {
+            // API < 18: no UiAutomation; fall back to the rendered Bitmap held by the DrawView.
+            captureRendererBitmap(imageFile);
+        }
+
+        if (imageFile.exists() && imageFile.length() > 1020L) {
+            logger.info("Captured screenshot: " + imagePath);
+        } else {
+            final String errorMessage = "Failed to capture screenshot: '" + imagePath + "' imageFile.exists()=" + imageFile.exists() + " imageFile.length()=" + imageFile.length();
+            logger.severe(errorMessage);
+            throw new RuntimeException(errorMessage);
         }
     }
 
     /**
-    * Take a screenshot of MobileRT rendered scene.
-    * <p>
-    * It stores the screenshot in the path: {@code /data/local/tmp/MobileRT/screenshots}.
-    *
-    * @param name The name of the screenshot.
-    */
-    @SuppressLint("ObsoleteSdkInt")
-    public static void captureScreenshot(final String name) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            final Bitmap bitmap;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                bitmap = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
-            } else {
-                bitmap = DeviceCapture.takeScreenshot();
-            }
-            final File path = new File(UtilsContext.getInternalStorageFilePath(), "MobileRT" + ConstantsUI.FILE_SEPARATOR + "screenshots");
-            path.mkdirs();
-            final File imageFile = new File(path, name);
-            try (final FileOutputStream out = new FileOutputStream(imageFile)) {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            } catch (final Exception ex) {
-                UtilsLogging.logException(ex, "UtilsT#captureScreenshot");
-                throw new FailureException(ex);
-            }
-        } else {
-            logger.info("Didn't capture screenshot because Android API " + Build.VERSION.SDK_INT + " is not supported yet.");
+     * Captures the screen via {@link UiAutomation#takeScreenshot()} and writes it as a PNG.
+     * Used on API 18-20 (the method exists since API 18) where {@code screencap} is not reachable.
+     *
+     * @param imageFile The destination PNG file.
+     */
+    private static void captureViaUiAutomation(@NonNull final File imageFile) {
+        final UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        final Bitmap bitmap = uiAutomation.takeScreenshot();
+        if (bitmap == null) {
+            logger.severe("UiAutomation.takeScreenshot returned null");
+            return;
+        }
+        writeBitmapAsPng(bitmap, imageFile);
+    }
+
+    /**
+     * Captures the {@link MainRenderer}'s rendered {@link Bitmap} and writes it as a PNG.
+     * Used on API &lt; 18 where neither {@code screencap} (app uid denied) nor {@link UiAutomation}
+     * (added in API 18) is available; the ray-traced output is the best obtainable image there.
+     *
+     * @param imageFile The destination PNG file.
+     */
+    private static void captureRendererBitmap(@NonNull final File imageFile) {
+        final MainRenderer renderer = DirectInteraction.readRenderer(R.id.drawLayout);
+        if (renderer == null) {
+            logger.severe("captureRendererBitmap: DrawView/renderer could not be resolved");
+            return;
+        }
+        final Bitmap bitmap = getPrivateField(renderer, "bitmap");
+        writeBitmapAsPng(bitmap, imageFile);
+    }
+
+    /**
+     * Writes a {@link Bitmap} to a PNG file as the app uid (no {@code app_process} fork).
+     *
+     * @param bitmap    The {@link Bitmap} to write.
+     * @param imageFile The destination PNG file.
+     */
+    private static void writeBitmapAsPng(@NonNull final Bitmap bitmap, @NonNull final File imageFile) {
+        try (FileOutputStream out = new FileOutputStream(imageFile)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+        } catch (final IOException ex) {
+            logger.severe("Failed to write screenshot PNG '" + imageFile.getAbsolutePath() + "': " + ex);
         }
     }
 

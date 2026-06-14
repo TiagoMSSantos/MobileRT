@@ -29,6 +29,13 @@ env:
   GITHUB_STEP_TIMEOUT_SMALL: 4
   GITHUB_STEP_TIMEOUT_MEDIUM: 10
   GITHUB_STEP_TIMEOUT_LONG: 20
+  # Workflow-level (not per-step): the AVD cache key references these, so a step-level env
+  # would expand to 'cores_-mem_-' and reuse a stale snapshot. 3 cores (leave 2 for the host)
+  # measured ~3x faster than 4 (4 regressed 8m -> 22m on the Repeatable workflow).
+  ANDROID_EMULATOR_CPU_CORES: 3
+  ANDROID_EMULATOR_MEM_MB: 6144
+  # Run wretry.action JS on Node 24 before GitHub forces it on 2026-06-16 (surfaces breakage early).
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   Matrix:
@@ -369,9 +376,6 @@ jobs:
       timeout-minutes: 20
       if: success() && !startsWith(matrix.host_os, 'windows') && steps.avd-cache.outputs.cache-hit != 'true'
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
-      env:
-        ANDROID_EMULATOR_MEM_MB: 6144
-        ANDROID_EMULATOR_CPU_CORES: 3
       with:
         action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
         pre_retry_command: 'echo "Retrying AVD snapshot generation..."'
@@ -411,17 +415,13 @@ jobs:
           script: |
             echo "Generated AVD snapshot for caching.";
             # Bounded teardown watchdog. This step omits -no-snapshot-save, so
-            # android-emulator-runner saves the snapshot on quit and then blocks
-            # until the qemu process exits. Under -no-window -gpu
-            # swiftshader_indirect the GL render threads can fail to terminate,
-            # so qemu never exits and the step burns the full 20min cap
-            # (observed: emu kill "OK: killing emulator, bye bye" then ~19min
-            # dead -> SIGINT -> "The action has timed out"). A healthy snapshot
-            # save finishes in seconds, so spawn a detached watchdog that
-            # force-reaps a wedged qemu after 180s; the action's post-script
-            # wait then returns and wretry can retry, instead of one hang
-            # eating the whole budget.
-            nohup sh -c 'sleep 180; if pgrep -f qemu-system >/dev/null 2>&1; then echo "Watchdog: qemu wedged after snapshot save; force-reaping."; pkill -9 -f qemu-system || true; fi' >/dev/null 2>&1 &
+            # The snapshot save blocks until qemu exits, but under swiftshader the GL threads can
+            # fail to terminate so qemu hangs and the step burns the 20min cap. Detached watchdog
+            # force-reaps a wedged qemu after 180s. MUST scope the kill to the current qemu PID: a
+            # pattern kill (pkill -f qemu-system) outlived this step and murdered the TEST step's
+            # fresh emulator (also matched the watchdog's own cmdline). kill -0 = already exited
+            # (healthy, no-op) vs still alive (wedged, reap). Single line: each line is its own `sh -c`.
+            qemu_pid="$(pgrep -o -f qemu-system || true)"; nohup sh -c 'sleep 180; if [ -n "$1" ] && kill -0 "$1" 2>/dev/null; then echo "Watchdog: qemu (pid $1) wedged after snapshot save; force-reaping."; kill -9 "$1" 2>/dev/null || true; fi' watchdog "${qemu_pid}" >/dev/null 2>&1 &
 
     - name: Run Android tests
       timeout-minutes: ${{ case(startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'release', 20, startsWith(matrix.host_os, 'ubuntu') && matrix.type == 'debug', 40, 50) }}
@@ -429,12 +429,6 @@ jobs:
       uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
       env:
         ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 10
-        ANDROID_EMULATOR_MEM_MB: 6144
-        # GitHub-hosted ubuntu runners have 4 vCPUs. Leaving at least 2 cores
-        # for the host (adb, gradle, log capture) was measured to be ~3x faster
-        # than allocating all 4 to the emulator; previous bump to 4 caused
-        # severe regression (8m -> 22m on the Repeatable workflow).
-        ANDROID_EMULATOR_CPU_CORES: 3
         ANDROID_KEYSTORE_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEYSTORE_PASSWORD_DEBUG }}
         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         ANDROID_KEY_PASSWORD_DEBUG: ${{ secrets.ANDROID_KEY_PASSWORD_DEBUG }}

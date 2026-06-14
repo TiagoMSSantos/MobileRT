@@ -106,40 +106,53 @@ jobs:
           # own later jobs. So only delete a cache when its owning run is
           # already 'completed'. The current run is always kept. Pure cache
           # hygiene: no effect on build/test/emulator behaviour.
+          #
+          # AVD snapshot caches (avd-*) also pruned here: the debug matrix draws random APIs, so
+          # one-off snapshots (~0.4-1.7 GB each) pile past the budget and LRU-evict hot caches.
           set +e;
+          now=$(date +%s);
           page=1;
           while :; do
-            entries=$(gh api "repos/${GITHUB_REPOSITORY}/actions/caches?per_page=100&page=${page}" --jq '.actions_caches[] | "\(.id) \(.key)"' 2>/dev/null);
+            entries=$(gh api "repos/${GITHUB_REPOSITORY}/actions/caches?per_page=100&page=${page}" --jq '.actions_caches[] | "\(.id) \(.last_accessed_at | sub("\\.[0-9]*Z$"; "Z") | fromdateiso8601) \(.key)"' 2>/dev/null);
             if [ -z "${entries}" ]; then
               break;
             fi
-            echo "${entries}" | while read -r id key; do
+            echo "${entries}" | while read -r id accessed key; do
               case "${key}" in
-                compiled_*|reports_*) ;;
+                compiled_*|reports_*)
+                  cacheRunId=$(echo "${key}" | cut -d '_' -f3);
+                  # Skip if run id is not numeric or is the current run.
+                  case "${cacheRunId}" in
+                    ''|*[!0-9]*) continue ;;
+                  esac
+                  if [ "${cacheRunId}" = "${GITHUB_RUN_ID}" ]; then
+                    continue;
+                  fi
+                  runStatus=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${cacheRunId}" --jq '.status' 2>/dev/null);
+                  # Delete ONLY when the run is explicitly 'completed': an empty/unknown status
+                  # (API blip or purged run) is kept so we never delete a still-running build's cache.
+                  if [ "${runStatus}" = 'completed' ]; then
+                    echo "Deleting stale cache (run ${cacheRunId} completed): ${key}";
+                    gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/caches/${id}" > /dev/null 2>&1 || true;
+                  else
+                    echo "Keeping cache (run ${cacheRunId} status='${runStatus:-unknown}'): ${key}";
+                  fi
+                  ;;
+                avd-*)
+                  # Drop AVD snapshots unused for 2 days: recent/in-flight runs refresh
+                  # last_accessed_at and are kept, so this can never delete one in use.
+                  case "${accessed}" in
+                    ''|*[!0-9]*) continue ;;
+                  esac
+                  if [ $(( now - accessed )) -gt 172800 ]; then
+                    echo "Deleting cold AVD cache (unused >2 days): ${key}";
+                    gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/caches/${id}" > /dev/null 2>&1 || true;
+                  else
+                    echo "Keeping AVD cache (recently used): ${key}";
+                  fi
+                  ;;
                 *) continue ;;
               esac
-              cacheRunId=$(echo "${key}" | cut -d '_' -f3);
-              # Skip if run id is not numeric (unexpected key shape) or is the
-              # current run.
-              case "${cacheRunId}" in
-                ''|*[!0-9]*) continue ;;
-              esac
-              if [ "${cacheRunId}" = "${GITHUB_RUN_ID}" ]; then
-                continue;
-              fi
-              runStatus=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${cacheRunId}" --jq '.status' 2>/dev/null);
-              # Delete ONLY when the owning run is explicitly 'completed'. An
-              # empty/unknown status (transient API error, or a purged run) is
-              # treated as "keep" on purpose: a network blip must never cause
-              # us to delete the cache of a still-running build. Stale caches
-              # from truly-purged runs are rare and GitHub's own 7-day cache
-              # eviction reclaims them anyway.
-              if [ "${runStatus}" = 'completed' ]; then
-                echo "Deleting stale cache (run ${cacheRunId} completed): ${key}";
-                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/caches/${id}" > /dev/null 2>&1 || true;
-              else
-                echo "Keeping cache (run ${cacheRunId} status='${runStatus:-unknown}'): ${key}";
-              fi
             done;
             page=$((page + 1));
           done;
