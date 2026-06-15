@@ -426,10 +426,13 @@ public abstract class AbstractTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
             if (AbstractTest.activity.getWindow() != null && AbstractTest.activity.getWindow().getDecorView() != null) {
                 logger.info(this.testName.getMethodName() + " requesting focus");
+                // No FLAG_SHOW_WHEN_LOCKED / keyguard-occlusion poking: the CI emulator has no secure
+                // keyguard so it shows nothing, and any keyguard-occluded transition crashes SystemUI on
+                // API 26/27 (NavigationBarFragment.onKeyguardOccludedChanged null-fragment NPE -> "System
+                // UI has stopped"). Focus comes from requestFocus() + forceWindowFocusViaTap, not this flag.
                 AbstractTest.activity.getWindow().addFlags(
                       WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                     | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                    | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                     | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 );
                 AbstractTest.activity.getWindow().getDecorView().requestFocus();
@@ -466,23 +469,18 @@ public abstract class AbstractTest {
             () -> AbstractTest.activity = launchMainActivityBounded(30_000L)
         );
 
-        // Clear any system window (keyguard, launcher, IME) that grabbed focus during teardown.
-        dismissSystemWindows();
-
         // Give the activity window focus (flags dismiss the keyguard on slow API <= 23).
         addFocusFlagsAndRequestFocus();
         // Bounded settle, not waitForIdleSync() (GL surface never idles, same hang as above).
         Uninterruptibles.sleepUninterruptibly(500L, TimeUnit.MILLISECONDS);
     }
 
-    /** Runs an Espresso action after stabilizing window focus + quiescing the GLSurfaceView (Espresso needs a focused, stable root; DrawView never quiesces and the window can exceed Espresso's ~10s focus wait). Each bounded attempt dismisses system windows, re-requests focus, quiesces. */
+    /** Runs an Espresso action after stabilizing window focus + quiescing the GLSurfaceView (Espresso needs a focused, stable root; DrawView never quiesces and the window can exceed Espresso's ~10s focus wait). Each bounded attempt re-fronts the task, re-requests focus, quiesces. */
     private void runWithStabilizedFocus(final Runnable espressoAction) {
         // 4 attempts, each watchdog-bounded to ~30s below, so the loop can never spin forever.
         final int maxFocusAttempts = 4;
         RuntimeException lastFocusFailure = null;
         for (int focusAttempt = 1; focusAttempt <= maxFocusAttempts; focusAttempt++) {
-            // Dismiss system windows (keyguard/IME/shade) that took focus; only system_server can.
-            dismissSystemWindows();
             // Re-front our task so system_server moves focus back (same-process calls cannot).
             bringActivityTaskToFront();
             addFocusFlagsAndRequestFocus();
@@ -559,15 +557,6 @@ public abstract class AbstractTest {
         }
     }
 
-    /** Issues `wm dismiss-keyguard` via {@link UiAutomation} (system_server-side, unlike the Java {@code FLAG_DISMISS_KEYGUARD}) to clear the keyguard holding focus. Best-effort; failures swallowed. */
-    private void dismissSystemWindows() {
-        // `wm dismiss-keyguard` exists from API 23; older APIs rely on FLAG_DISMISS_KEYGUARD.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
-        }
-        runShellCommand("wm dismiss-keyguard");
-    }
-
     /** Re-fronts the test activity's task via {@link ActivityManager#moveTaskToFront(int, int)} so system_server moves WINDOW focus back: no relaunch/Intent, so no orphan activity and setUp's intent counting stays intact. API 26+, needs {@code REORDER_TASKS}. */
     @SuppressLint("ObsoleteSdkInt")
     private void bringActivityTaskToFront() {
@@ -585,7 +574,7 @@ public abstract class AbstractTest {
         }
     }
 
-    /** Runs a shell command on every API and discards stdout (side-effect only), blocking until the command finishes so callers can rely on its side effect (e.g. a screenshot file existing). API >= 21 uses {@link UiAutomation#executeShellCommand} (a binder call, no app_process fork) and drains its stdout to EOF: the command runs asynchronously, so reading the returned pipe to the end is what waits for it to complete - merely closing the pipe returns immediately (and can SIGPIPE-kill the command mid-write, e.g. {@code screencap} producing no file). {@code executeShellCommand} was added in API 21, so older APIs fall back to {@link Runtime#exec(String)} + {@link Process#waitFor()}, which the permissive emulator builds allow as the instrumentation uid. Errors are logged and rethrown. Used by {@link #dismissSystemWindows()}, {@link #grantPermissions()} and {@link UtilsT#captureScreenshot(String)}. */
+    /** Runs a shell command on every API and discards stdout (side-effect only), blocking until the command finishes so callers can rely on its side effect (e.g. a screenshot file existing). API >= 21 uses {@link UiAutomation#executeShellCommand} (a binder call, no app_process fork) and drains its stdout to EOF: the command runs asynchronously, so reading the returned pipe to the end is what waits for it to complete - merely closing the pipe returns immediately (and can SIGPIPE-kill the command mid-write, e.g. {@code screencap} producing no file). {@code executeShellCommand} was added in API 21, so older APIs fall back to {@link Runtime#exec(String)} + {@link Process#waitFor()}, which the permissive emulator builds allow as the instrumentation uid. Errors are logged and rethrown. Used by {@link #grantPermissions()} and {@link UtilsT#captureScreenshot(String)}. */
     public static void runShellCommand(@NonNull final String command) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
