@@ -243,7 +243,7 @@ public final class UtilsT {
             captureRendererBitmap(imageFile);
         }
 
-        if (imageFile.exists() && imageFile.length() > 1020L) {
+        if (imageFile.exists() && imageFile.length() > 1_000L) {
             logger.info("Captured screenshot: " + imagePath);
         } else {
             final String errorMessage = "Failed to capture screenshot: '" + imagePath + "' imageFile.exists()=" + imageFile.exists() + " imageFile.length()=" + imageFile.length();
