@@ -231,6 +231,7 @@ public final class UtilsT {
         AbstractTest.runShellCommand("mkdir -p " + path.getAbsolutePath());
         final File imageFile = new File(path, name);
         final String imagePath = imageFile.getAbsolutePath();
+        dismissSystemUiCrashDialog();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // API >= 21: screencap runs as the shell uid (executeShellCommand) which can read the framebuffer.
@@ -249,6 +250,36 @@ public final class UtilsT {
             final String errorMessage = "Failed to capture screenshot: '" + imagePath + "' imageFile.exists()=" + imageFile.exists() + " imageFile.length()=" + imageFile.length();
             logger.severe(errorMessage);
             throw new RuntimeException(errorMessage);
+        }
+    }
+
+    /**
+     * Dismisses the "System UI has stopped" crash dialog before a {@code screencap} on API 26/27.
+     *
+     * <p>The headless ({@code -no-window}) Oreo emulator SystemUI has a null
+     * {@code NavigationBarFragment} and crashes in {@code onKeyguardOccludedChanged} on the
+     * keyguard-occluded transition that launching an Activity triggers. That AOSP image bug is
+     * unfixable from the app and the crash is cosmetic (the render still finishes, the focus-free
+     * harness reads view fields directly), but its dialog persists and paints over the captured
+     * screenshot. The dialog is an {@code AppErrorDialog} owned by system_server, so neither
+     * {@code pm disable}/{@code am force-stop} of the systemui package nor {@code hide_error_dialogs}
+     * (honored only from API 30) closes it. Activate its single focused "Close app" button instead
+     * with KEYCODE_DPAD_CENTER.
+     */
+    private static void dismissSystemUiCrashDialog() {
+        // Only act when the crash dialog is actually focused: DPAD_CENTER would otherwise trigger a
+        // focused app button (e.g. start a render).
+        final String windowOutput = AbstractTest.runShellCommand("dumpsys window windows");
+        if (!windowOutput.contains("Application Error")) {
+            return;
+        }
+        AbstractTest.runShellCommand("input keyevent KEYCODE_DPAD_CENTER");
+        try {
+            // Let WindowManager remove the dismissed dialog window before the screencap.
+            Thread.sleep(400L);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while waiting for the crash dialog to dismiss", ex);
         }
     }
 
