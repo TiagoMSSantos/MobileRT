@@ -70,7 +70,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
-          distribution: zulu
+          distribution: temurin
           java-package: jdk
           check-latest: false
           server-id: github
@@ -565,7 +565,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
-          distribution: zulu
+          distribution: temurin
           java-package: jdk
           check-latest: false
           server-id: github
@@ -1597,7 +1597,7 @@ jobs:
         with:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           java-version: 21
-          distribution: zulu
+          distribution: temurin
           java-package: jdk
           check-latest: false
           server-id: github
@@ -1944,7 +1944,7 @@ jobs:
           # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
           # Sonar recommended JVM: https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/languages/java
           java-version: 21
-          distribution: zulu
+          distribution: temurin
           java-package: jdk
           check-latest: false
           server-id: github

@@ -113,7 +113,7 @@ jobs:
       with:
         # Check available parameters in: https://github.com/actions/setup-java/blob/main/action.yml
         java-version: 21
-        distribution: zulu
+        distribution: temurin
         java-package: jdk
         check-latest: false
         server-id: github
