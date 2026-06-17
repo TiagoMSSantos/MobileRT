@@ -25,7 +25,7 @@ services:
             - /tmp/.X11-unix:/tmp/.X11-unix
 
     zookeeper:
-        image: confluentinc/cp-zookeeper:7.9.7
+        image: confluentinc/cp-zookeeper:7.9.8
         hostname: zookeeper
         container_name: zookeeper
         ports:
@@ -121,7 +121,7 @@ services:
             KSQL_KSQL_CONNECT_URL: "http://connect:8083"
 
     ksqldb-cli:
-        image: confluentinc/cp-ksqldb-cli:8.0.5
+        image: confluentinc/cp-ksqldb-cli:8.0.6
         container_name: ksqldb-cli
         depends_on:
             - broker
@@ -131,7 +131,7 @@ services:
         tty: true
 
     ksql-datagen:
-        image: confluentinc/ksqldb-examples:8.0.5
+        image: confluentinc/ksqldb-examples:8.0.6
         hostname: ksql-datagen
         container_name: ksql-datagen
         depends_on:
