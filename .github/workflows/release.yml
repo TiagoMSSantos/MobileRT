@@ -349,7 +349,7 @@ jobs:
 
     - name: Release
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
+      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3
       if: github.ref_type == 'tag'
       with:
         # Check available parameters in: https://github.com/softprops/action-gh-release/blob/master/action.yml
