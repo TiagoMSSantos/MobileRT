@@ -328,7 +328,7 @@ jobs:
     - name: Cache pip packages
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && !startsWith(matrix.host_os, 'windows')
-      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
       with:
         # Check available parameters in: https://github.com/actions/cache/blob/main/action.yml
         path: ~/.cache/pip
@@ -414,7 +414,7 @@ jobs:
     - name: Cache Docker ccache
       timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
       if: success() && env.BUILD_IMAGE != 'yes' && !startsWith(matrix.host_os, 'windows')
-      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
       with:
         # Persists the C++ objects compiled inside the container (mounted at
         # ~/.ccache-docker) across runs, keyed per base image. The restore-keys
