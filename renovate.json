@@ -350,7 +350,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "if \\(project.properties\\[\\\"gradle_versions_plugin_version\\\"\\] == null\\) \\{[^}]*?gradle_versions_plugin_version = ['\"](?<currentValue>[^'\"]+)['\"][^}]*\\}"
+        "if \\(!project.hasProperty\\(\\\"gradle_versions_plugin_version\\\"\\)\\) \\{[^}]*?gradle_versions_plugin_version = ['\"](?<currentValue>[^'\"]+)['\"][^}]*\\}"
       ],
       "depNameTemplate": "com.github.ben-manes:gradle-versions-plugin-android-15",
       "packageNameTemplate": "com.github.ben-manes:gradle-versions-plugin",
