@@ -29,6 +29,13 @@ plugins {
     id 'com.github.ben-manes.versions'
 }
 
+// Gradle 9 deprecates implicit lookup of properties from parent projects (it
+// fails with an error in Gradle 10, and the --warning-mode fail tripwire used by
+// the build scripts fails it now). The shared build config is defined in the
+// root project's ext block; copy it into this module's ext so the bare-name
+// references below resolve locally instead of walking up to the root project.
+rootProject.ext.properties.each { name, value -> ext.set(name, value) }
+
 if (gradleVersionMajor < 9) {
     // Add support for the language Kotlin.
     apply plugin: 'kotlin-android'

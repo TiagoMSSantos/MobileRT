@@ -65,51 +65,51 @@ buildscript {
             androidX_test_services_version = '1.6.0'
         }
         if (androidApiVersionValue >= 19) {
-            if (project.properties["androidX_test_junit_version"] == null) {
+            if (!project.hasProperty("androidX_test_junit_version")) {
                 androidX_test_junit_version = '1.2.1'
             }
-            if (project.properties["androidX_test_espresso_version"] == null) {
+            if (!project.hasProperty("androidX_test_espresso_version")) {
                 androidX_test_espresso_version = '3.6.1'
             }
-            if (project.properties["ndk_version"] == null) {
+            if (!project.hasProperty("ndk_version")) {
                 ndk_version = '25.2.9519653'
             }
-            if (project.properties["androidX_core_version"] == null) {
+            if (!project.hasProperty("androidX_core_version")) {
                 androidX_core_version = '1.13.1'
             }
-            if (project.properties["androidX_test_core_version"] == null) {
+            if (!project.hasProperty("androidX_test_core_version")) {
                 androidX_test_core_version = '1.6.1'
             }
-            if (project.properties["androidX_test_orchestrator_version"] == null) {
+            if (!project.hasProperty("androidX_test_orchestrator_version")) {
                 androidX_test_orchestrator_version = '1.5.1'
             }
-            if (project.properties["androidX_test_services_version"] == null) {
+            if (!project.hasProperty("androidX_test_services_version")) {
                 androidX_test_services_version = '1.5.0'
             }
         }
         if (androidApiVersionValue >= 16) {
-            gradle_version = '9.1.0'
+            gradle_version = '9.3.0-rc01'
             gradle_versions_plugin_version = '0.53.0'
             kotlin_gradle_plugin_version = '2.3.10'
         }
 
         // Default dependencies versions which are used on all Android APIs supported >= 14
-        if (project.properties["androidX_appcompat_version"] == null) {
+        if (!project.hasProperty("androidX_appcompat_version")) {
             androidX_appcompat_version = '1.6.1'
         }
-        if (project.properties["ndk_version"] == null) {
+        if (!project.hasProperty("ndk_version")) {
             ndk_version = '23.2.8568313'
         }
-        if (project.properties["androidX_core_version"] == null) {
+        if (!project.hasProperty("androidX_core_version")) {
             androidX_core_version = '1.12.0'
         }
-        if (project.properties["gradle_version"] == null) {
+        if (!project.hasProperty("gradle_version")) {
             gradle_version = '8.2.2'
         }
-        if (project.properties["gradle_versions_plugin_version"] == null) {
+        if (!project.hasProperty("gradle_versions_plugin_version")) {
             gradle_versions_plugin_version = '0.51.0'
         }
-        if (project.properties["kotlin_gradle_plugin_version"] == null) {
+        if (!project.hasProperty("kotlin_gradle_plugin_version")) {
             kotlin_gradle_plugin_version = '2.0.21'
         }
 
@@ -119,16 +119,16 @@ buildscript {
 
         // Test dependencies
         jacoco_version = '0.8.15'
-        if (project.properties["androidX_test_espresso_version"] == null) {
+        if (!project.hasProperty("androidX_test_espresso_version")) {
             androidX_test_espresso_version = '3.5.1'
         }
-        if (project.properties["androidX_test_junit_version"] == null) {
+        if (!project.hasProperty("androidX_test_junit_version")) {
             androidX_test_junit_version = '1.1.5'
         }
-        if (project.properties["bouncycastle_version"] == null) {
+        if (!project.hasProperty("bouncycastle_version")) {
             bouncycastle_version = '1.84'
         }
-        if (project.properties["androidX_test_core_version"] == null) {
+        if (!project.hasProperty("androidX_test_core_version")) {
             androidX_test_core_version = '1.5.0'
         }
         // Test Orchestrator runs each test in its own instrumentation, giving a
@@ -137,14 +137,14 @@ buildscript {
         // services APK minSdk, so older API legs need the 1.4.2 line; it is only
         // wired in (execution + androidTestUtil) for androidApiVersionValue >= 16
         // in app/build.gradle, so API 15 never installs it.
-        if (project.properties["androidX_test_orchestrator_version"] == null) {
+        if (!project.hasProperty("androidX_test_orchestrator_version")) {
             androidX_test_orchestrator_version = '1.4.2'
         }
         // Test-services APK (storage content provider). Installed alongside the
         // Orchestrator so multi-process JaCoCo coverage can be routed through the
         // shared test storage (useTestStorageService) and aggregated by AGP across
         // the per-test processes. Kept in lockstep with the orchestrator tiers.
-        if (project.properties["androidX_test_services_version"] == null) {
+        if (!project.hasProperty("androidX_test_services_version")) {
             androidX_test_services_version = '1.4.2'
         }
 
@@ -183,7 +183,7 @@ tasks.named('wrapper', Wrapper) {it ->
     println('Setting Gradle wrapper version')
     it.distributionType = Wrapper.DistributionType.BIN
     if (androidApiVersionValue >= 16) {
-        it.gradleVersion = '9.6.0'
+        it.gradleVersion = '9.6.1'
     } else {
         it.gradleVersion = '8.7'
     }
@@ -198,6 +198,12 @@ tasks.named('wrapper', Wrapper) {it ->
     // gradle-wrapper.properties, so the committed validateDistributionUrl=false is
     // kept in lockstep).
     it.validateDistributionUrl = false
+    // This task regenerates gradle-wrapper.properties from these settings, so the
+    // download hardening must live here too - otherwise every `gradlew wrapper`
+    // run (CI runs it, and a Gradle version bump regenerates it) resets these to
+    // Gradle defaults (10s / 0 retries / 500ms), undoing the committed values and
+    // failing the whole build on a single dropped connection before Gradle starts.
+    it.networkTimeout = 20000
     println('Gradle wrapper version: ' + it.gradleVersion)
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -212,10 +218,10 @@ subprojects {
         resolutionStrategy {
             eachDependency { details ->
                 if (details.requested.group == 'org.jacoco') {
-                    details.useVersion "${jacoco_version}"
+                    details.useVersion "${rootProject.jacoco_version}"
                 }
                 if (details.requested.group == 'com.android.application') {
-                    details.useVersion "${gradle_version}"
+                    details.useVersion "${rootProject.gradle_version}"
                 }
             }
         }
