@@ -239,7 +239,7 @@ jobs:
       - name: Cache Android CMake
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ${{ steps.android_versions.outputs.ANDROID_HOME }}/cmake/${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
           key: android-${{ inputs.android_api }}-cmake-${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
@@ -260,7 +260,7 @@ jobs:
         id: ndk-cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/restore@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ${{ steps.android_versions.outputs.ANDROID_HOME }}/ndk/${{ steps.android_versions.outputs.NDK_VERSION }}
           key: android-${{ inputs.android_api }}-ndk-${{ steps.android_versions.outputs.NDK_VERSION }}
@@ -280,7 +280,7 @@ jobs:
       - name: Save Android NDK to cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_LONG) }}
         if: success() && steps.ndk-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ${{ steps.android_versions.outputs.ANDROID_HOME }}/ndk/${{ steps.android_versions.outputs.NDK_VERSION }}
           key: android-${{ inputs.android_api }}-ndk-${{ steps.android_versions.outputs.NDK_VERSION }}
@@ -738,7 +738,7 @@ jobs:
         id: ndk-cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/restore@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           key: android-${{ inputs.android_api }}-ndk-${{ needs.Build.outputs.ndk_version }}
           enableCrossOsArchive: true
@@ -1004,7 +1004,7 @@ jobs:
       - name: AVD cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success() && !startsWith(inputs.target_os, 'windows')
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         id: avd-cache
         with:
           # Caches the AVD definition + the post-boot snapshot. On hit, the
@@ -1694,7 +1694,7 @@ jobs:
       - name: Cache Android CMake
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ${{ env.ANDROID_HOME }}/cmake/${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
           key: android-${{ inputs.android_api }}-cmake-${{ steps.android_versions.outputs.ANDROID_CMAKE_VERSION }}
@@ -1715,7 +1715,7 @@ jobs:
         id: ndk-cache
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
         if: success()
-        uses: actions/cache/restore@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           key: android-${{ inputs.android_api }}-ndk-${{ needs.Build.outputs.ndk_version }}
           enableCrossOsArchive: true
