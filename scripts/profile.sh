@@ -554,6 +554,71 @@ benchmark() {
 
 
 ###############################################################################
+# Golden-image correctness regression gate.
+#
+# Renders the built-in scene 0 with the DepthMap shader (no sampling), SPP=1,
+# single-thread, at a small fixed resolution. That render is byte-exact with no
+# RNG seed, so the raw bitmap can be compared byte-for-byte against a committed
+# reference to catch any change that alters output pixels (BVH/grid/shader/
+# sampler/geometry regressions, including those from auto-merged dependencies).
+#
+# Params:
+# * '--update' (optional) - overwrite the reference with the current render
+#   (deliberate regeneration). With no argument: render and compare.
+# The candidate is always written to build_release/golden_candidate.raw so CI
+# can upload it as an artifact for the first-time bootstrap (commit it as the
+# reference to arm the gate). Non-blocking until the reference exists.
+###############################################################################
+golden() {
+  GOLDEN_DIR="${MOBILERT_PATH}/app/Unit_Testing/resources/golden";
+  GOLDEN_REF="${GOLDEN_DIR}/scene0_depthmap.raw";
+  GOLDEN_CAND="${MOBILERT_PATH}/build_release/golden_candidate.raw";
+
+  echo "BIN_RELEASE_EXE = ${BIN_RELEASE_EXE}";
+  echo 'Rendering golden image (scene 0, DepthMap shader, single-thread)...';
+  # Args: THREAD SHADER SCENE SPP SPL WIDTH HEIGHT ACC REP OBJ MTL CAM ASYNC SHOWIMAGE
+  # SHADER=3 (DepthMap, zero sampling) + SCENE=0 + SPP=1 + THREAD=1 => byte-exact.
+  QT_QPA_PLATFORM='offscreen' PATH="${BIN_RELEASE_PATH}":"${PATH}" MOBILERT_DUMP_RAW="${GOLDEN_CAND}" \
+    timeout 120 "${BIN_RELEASE_EXE}" \
+    1 3 0 1 1 128 128 3 1 "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}" 2>&1 || true;
+
+  if [ ! -s "${GOLDEN_CAND}" ]; then
+    echo 'ERROR: golden render produced no output bitmap.';
+    return 1;
+  fi
+  echo "GOLDEN_CANDIDATE=${GOLDEN_CAND}";
+
+  set +u;
+  goldenFlag="${1}";
+  set -u;
+  if [ "${goldenFlag}" = '--update' ]; then
+    mkdir -p "${GOLDEN_DIR}";
+    cp "${GOLDEN_CAND}" "${GOLDEN_REF}";
+    echo "Updated golden reference: ${GOLDEN_REF}";
+    return 0;
+  fi
+
+  if [ ! -f "${GOLDEN_REF}" ]; then
+    echo "No golden reference at ${GOLDEN_REF}; gate is bootstrapping (non-blocking).";
+    echo 'Download the golden_candidate artifact and commit it to that path to arm the gate.';
+    return 0;
+  fi
+
+  if cmp -s "${GOLDEN_REF}" "${GOLDEN_CAND}"; then
+    echo 'GOLDEN OK (render is byte-exact with the committed reference).';
+    return 0;
+  fi
+  echo 'GOLDEN MISMATCH: render differs from the committed reference.';
+  echo "  reference: ${GOLDEN_REF}";
+  echo "  candidate: ${GOLDEN_CAND}";
+  echo 'If the change is intentional, regenerate with: sh scripts/profile.sh golden --update';
+  return 1;
+}
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Parse arguments.
 ###############################################################################
 parseArguments() {
@@ -595,6 +660,7 @@ parseArguments() {
         ;;
       'tidy') clangtidy ;;
       'benchmark') benchmark "${2:-}" ;;
+      'golden') golden "${2:-}" ;;
       'gtest') "${BIN_DEBUG_PATH}"/UnitTestsd ;;
       *)
         printf '\nWrong Parameter: %s\n' "${P}";
@@ -618,6 +684,7 @@ printArguments() {
   echo 'timeout - Execute MobileRT for a given timeout.';
   echo 'tidy - Execute C++ linter (clang-tidy) in MobileRT.';
   echo 'benchmark - Render the built-in scene and report MRays/sec (add --check to gate on scripts/perf_baseline.txt).';
+  echo 'golden - Render the built-in scene (DepthMap) and compare it byte-for-byte to the committed reference (add --update to regenerate it).';
   echo "gtest - Execute MobileRT's unit tests.";
 }
 ###############################################################################

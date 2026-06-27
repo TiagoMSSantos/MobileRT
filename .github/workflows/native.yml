@@ -23,6 +23,7 @@ on:
       - '!scripts/install_dependencies.sh'
       - '!scripts/profile.sh'
       - '!scripts/perf_baseline.txt'
+      - '!app/Unit_Testing/resources/golden/**'
       - '!scripts/compile_native.sh'
       - '!scripts/test/utils/utils.sh'
       - '!codecov.yml'

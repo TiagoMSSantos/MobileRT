@@ -22,6 +22,7 @@
 #include "Scenes/Scenes.hpp"
 
 #include <chrono>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <functional>
@@ -240,6 +241,17 @@ static void work_thread(::MobileRT::Config &config) {
         LOG_INFO("height = ", config.height);
 
         LOG_INFO("Total Millions rays per second = ", (static_cast<double> (castedRays) / renderingTime) / 1'000'000L);
+
+        // Golden-image regression gate: when MOBILERT_DUMP_RAW is set, write the
+        // rendered bitmap as raw bytes (1 int32 per pixel) so CI can compare it
+        // byte-for-byte against a committed reference. A deterministic config
+        // (DepthMap shader, SPP=1, single thread) makes this exact with no seed.
+        // ponytail: raw stdlib ofstream dump, no PNG encoder / new dependency.
+        if (const char *const dumpPath {::std::getenv("MOBILERT_DUMP_RAW")}; dumpPath != nullptr) {
+            ::std::ofstream dumpStream {dumpPath, ::std::ios::binary};
+            dumpStream.write(reinterpret_cast<const char *> (config.bitmap.data()),
+                static_cast<::std::streamsize> (config.bitmap.size() * sizeof(::std::int32_t)));
+        }
     } catch (const ::std::bad_alloc &badAlloc) {
         LOG_ERROR("badAlloc: ", badAlloc.what());
     } catch (const ::std::exception &exception) {
