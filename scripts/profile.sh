@@ -474,6 +474,86 @@ executePerf() {
 }
 
 ###############################################################################
+# Render performance benchmark + regression gate.
+#
+# Renders the built-in Cornell box scene (scene index 0, no external OBJ needed)
+# single-threaded at a fixed resolution and parses the "Total Millions rays per
+# second" line the engine already prints (see C_wrapper.cpp). Single-thread is
+# used on purpose so the number does not depend on the CI runner core count.
+#
+# Params:
+# * '--check' (optional) - compare the result against scripts/perf_baseline.txt
+#   and exit non-zero if it regressed by more than PERF_TOLERANCE (default 0.15).
+###############################################################################
+benchmark() {
+  BENCH_SCENE='0';
+  BENCH_SHADER='1';
+  BENCH_ACC='3';
+  BENCH_THREAD='1';
+  BENCH_SPP='1';
+  BENCH_SPL='1';
+  BENCH_WIDTH='400';
+  BENCH_HEIGHT='400';
+  BENCH_REP='1';
+  BENCH_TIMEOUT='120';
+
+  echo "BIN_RELEASE_EXE = ${BIN_RELEASE_EXE}";
+  ls -lahp "${BIN_RELEASE_EXE}";
+  echo 'Running render benchmark (scene 0, single-thread)...';
+  # OBJ/MTL/CAM are required positionally but ignored for built-in scene 0.
+  benchOutput=$(QT_QPA_PLATFORM='offscreen' PATH=./build_release/bin:"${PATH}" \
+    timeout "${BENCH_TIMEOUT}" "${BIN_RELEASE_EXE}" \
+    "${BENCH_THREAD}" "${BENCH_SHADER}" "${BENCH_SCENE}" "${BENCH_SPP}" "${BENCH_SPL}" \
+    "${BENCH_WIDTH}" "${BENCH_HEIGHT}" "${BENCH_ACC}" "${BENCH_REP}" \
+    "${OBJ}" "${MTL}" "${CAM}" "${ASYNC}" "${SHOWIMAGE}" 2>&1) || true;
+  echo "${benchOutput}";
+
+  benchMRays=$(echo "${benchOutput}" | grep -i 'Total Millions rays per second' | tail -n 1 | sed 's/.*=//' | tr -d '[:space:]' || true);
+  if [ -z "${benchMRays}" ]; then
+    echo 'ERROR: benchmark produced no MRays/sec measurement.';
+    return 1;
+  fi
+  echo "BENCHMARK_MRAYS_PER_SEC=${benchMRays}";
+
+  set +u;
+  checkFlag="${1}";
+  set -u;
+  if [ "${checkFlag}" != '--check' ]; then
+    return 0;
+  fi
+
+  baselineFile="${SCRIPTS_PATH}/perf_baseline.txt";
+  if [ ! -f "${baselineFile}" ]; then
+    echo "No baseline file at ${baselineFile}; skipping regression check.";
+    return 0;
+  fi
+  # shellcheck disable=SC1090
+  . "${baselineFile}";
+  set +u;
+  baseline="${MOBILERT_PERF_MRAYS_BASELINE}";
+  tolerance="${PERF_TOLERANCE}";
+  set -u;
+  if [ -z "${tolerance}" ]; then tolerance='0.15'; fi
+  echo "Baseline MRays/sec = ${baseline}, tolerance = ${tolerance}";
+
+  # baseline <= 0 means "not yet calibrated": print the number and pass.
+  awk -v measured="${benchMRays}" -v base="${baseline}" -v tol="${tolerance}" 'BEGIN {
+    if (base + 0 <= 0) { print "Baseline not calibrated (<= 0); skipping gate."; exit 0; }
+    threshold = base * (1 - tol);
+    printf "Measured %.4f, threshold %.4f (= %.4f * (1 - %.2f))\n", measured, threshold, base, tol;
+    if (measured + 0 < threshold) {
+      printf "PERFORMANCE REGRESSION: %.4f < %.4f\n", measured, threshold;
+      exit 1;
+    }
+    print "Performance within tolerance.";
+    exit 0;
+  }';
+}
+###############################################################################
+###############################################################################
+
+
+###############################################################################
 # Parse arguments.
 ###############################################################################
 parseArguments() {
@@ -514,6 +594,7 @@ parseArguments() {
         fi
         ;;
       'tidy') clangtidy ;;
+      'benchmark') benchmark "${2:-}" ;;
       'gtest') "${BIN_DEBUG_PATH}"/UnitTestsd ;;
       *)
         printf '\nWrong Parameter: %s\n' "${P}";
@@ -536,6 +617,7 @@ printArguments() {
   echo 'perf - Execute perf on MobileRT.';
   echo 'timeout - Execute MobileRT for a given timeout.';
   echo 'tidy - Execute C++ linter (clang-tidy) in MobileRT.';
+  echo 'benchmark - Render the built-in scene and report MRays/sec (add --check to gate on scripts/perf_baseline.txt).';
   echo "gtest - Execute MobileRT's unit tests.";
 }
 ###############################################################################

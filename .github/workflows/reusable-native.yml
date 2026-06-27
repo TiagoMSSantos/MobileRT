@@ -542,7 +542,7 @@ jobs:
       # TODO: Investigate how to use 'perf record' in github actions machines.
       - name: Profile MobileRT ${{ inputs.type }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
-        if: success() && inputs.type == 'release' && startsWith(inputs.target_os, 'ubuntu-22.04')
+        if: success() && inputs.type == 'release' && startsWith(inputs.target_os, 'ubuntu')
         run: |
           sudo sysctl kernel.yama.ptrace_scope=0;
           sudo sysctl kernel.yama.ptrace_scope;
@@ -559,6 +559,17 @@ jobs:
           sudo sysctl net.ipv4.tcp_timestamps=0;
           sudo sysctl net.ipv4.tcp_timestamps;
           sh scripts/profile.sh perf "${{ inputs.type }}" 500;
+
+      # Render-performance regression gate. Pinned to a single OS/build type so
+      # the MRays/sec number is comparable run-to-run (cross-runner variance
+      # would make a baseline meaningless). Prints BENCHMARK_MRAYS_PER_SEC and
+      # fails if it regressed past the tolerance in scripts/perf_baseline.txt
+      # (no-op until that baseline is calibrated from a green run).
+      - name: Benchmark render performance ${{ inputs.type }}
+        timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}
+        if: success() && inputs.type == 'release' && startsWith(inputs.target_os, 'ubuntu')
+        run: |
+          sh scripts/profile.sh benchmark --check;
 
       - name: Generate code coverage
         timeout-minutes: ${{ fromJSON(env.GITHUB_STEP_TIMEOUT_SMALL) }}

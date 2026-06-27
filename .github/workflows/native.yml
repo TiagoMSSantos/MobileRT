@@ -22,6 +22,7 @@ on:
       - '!scripts/helper_functions.sh'
       - '!scripts/install_dependencies.sh'
       - '!scripts/profile.sh'
+      - '!scripts/perf_baseline.txt'
       - '!scripts/compile_native.sh'
       - '!scripts/test/utils/utils.sh'
       - '!codecov.yml'

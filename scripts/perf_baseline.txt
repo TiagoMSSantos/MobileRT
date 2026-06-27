@@ -1,0 +1,10 @@
+# MobileRT render performance baseline (sourced by scripts/profile.sh benchmark).
+#
+# Config: built-in scene 0 (Cornell box), single-thread, 400x400, SPP=1, ACC=3.
+# Measured as "Total Millions rays per second" on the CI Linux release build.
+#
+# Bootstrap: set to 0 so the gate is non-blocking until calibrated. Take the
+# value printed as BENCHMARK_MRAYS_PER_SEC from the first green CI bench run and
+# paste it below (use a conservative value, e.g. the lower of two runs). Update
+# on master only when a real, sustained improvement lands so the gate ratchets.
+MOBILERT_PERF_MRAYS_BASELINE=2.06224
