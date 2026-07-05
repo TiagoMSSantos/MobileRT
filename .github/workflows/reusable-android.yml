@@ -1103,7 +1103,7 @@ jobs:
         if: success() && !startsWith(inputs.target_os, 'windows') && steps.avd-cache.outputs.cache-hit != 'true'
         uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
         with:
-          action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+          action: ReactiveCircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
           pre_retry_command: 'echo "Retrying AVD snapshot generation..."'
           attempt_limit: 3
           attempt_delay: 60000
@@ -1200,7 +1200,7 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         with:
           # Check available parameters in: https://github.com/Wandalen/wretry.action/blob/master/action.yml
-          action: ReactiveCircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+          action: ReactiveCircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
           pre_retry_command: 'echo "Retrying Run Android tests step..."'
           attempt_limit: 3
           attempt_delay: 60000
