@@ -126,7 +126,7 @@ buildscript {
             androidX_test_junit_version = '1.1.5'
         }
         if (!project.hasProperty("bouncycastle_version")) {
-            bouncycastle_version = '1.84'
+            bouncycastle_version = '1.85'
         }
         if (!project.hasProperty("androidX_test_core_version")) {
             androidX_test_core_version = '1.5.0'
