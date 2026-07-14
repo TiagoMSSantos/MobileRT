@@ -10,5 +10,5 @@ gem 'github-pages', '~> 232', group: :jekyll_plugins, require: true
 # Gems for bash code coverage
 group :test do
   gem 'bashcov', '~> 3.3', require: true
-  gem 'simplecov-cobertura', '~> 3.1', require: true
+  gem 'simplecov-cobertura', '~> 4.0', require: true
 end
